@@ -2,24 +2,28 @@ import Link from "next/link"
 
 export default function Home() {
   return (
-    <main className="p-10">
-      <h1 className="text-4xl font-bold">
-        Golf Lesson Scheduler
+    <main className="flex min-h-screen flex-col items-center justify-center">
+      <h1 className="text-5xl font-bold">
+        Gemini Golf
       </h1>
 
-      <div className="mt-6 flex gap-4">
+      <p className="mt-4 text-gray-600">
+        Lesson Booking Portal
+      </p>
+
+      <div className="mt-10 flex gap-4">
         <Link
-          href="/login"
-          className="rounded bg-blue-500 px-4 py-2 text-white"
+          href="/client"
+          className="rounded bg-blue-600 px-6 py-3 text-white"
         >
-          Login
+          Client Login
         </Link>
 
         <Link
-          href="/dashboard"
-          className="rounded bg-green-500 px-4 py-2 text-white"
+          href="/coach"
+          className="rounded bg-green-600 px-6 py-3 text-white"
         >
-          Dashboard
+          Coach Login
         </Link>
       </div>
     </main>
