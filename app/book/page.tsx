@@ -2,16 +2,13 @@
 
 import { useEffect, useState } from "react"
 
-import { createClient }
-from "@/lib/supabaseClient"
+import { createClient } from "@/lib/supabaseClient"
 
-import { DayPicker }
-from "react-day-picker"
+import { DayPicker } from "react-day-picker"
 
 import "react-day-picker/dist/style.css"
 
-const supabase =
-  createClient()
+const supabase = createClient()
 
 type Coach = {
   id: number
@@ -19,212 +16,171 @@ type Coach = {
 }
 
 export default function BookPage() {
+  const [coaches, setCoaches] = useState<Coach[]>([])
 
-  const [coaches, setCoaches] =
-    useState<Coach[]>([])
+  const [selectedCoach, setSelectedCoach] = useState<number | null>(null)
 
-  const [selectedCoach, setSelectedCoach] =
-    useState<number | null>(null)
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>()
 
-  const [selectedDate, setSelectedDate] =
-    useState<Date | undefined>()
+  const [timeSlots, setTimeSlots] = useState<string[]>([])
 
-  const [timeSlots, setTimeSlots] =
-    useState<string[]>([])
+  const [selectedTime, setSelectedTime] = useState("")
 
-  const [selectedTime, setSelectedTime] =
-    useState("")
-
-  const [loading, setLoading] =
-    useState(false)
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-
     fetchCoaches()
-
   }, [])
 
   async function fetchCoaches() {
-
-    const {
-      data,
-    } = await supabase
-      .from("coaches")
-      .select("*")
+    const { data } = await supabase.from("coaches").select("*")
 
     if (data) {
-
       setCoaches(data)
     }
   }
 
   useEffect(() => {
-
     generateSlots()
-
   }, [selectedDate, selectedCoach])
 
-  function formatHour(
-    hour: number
-  ) {
+  function formatHour(hour: number) {
+    const suffix = hour >= 12 ? "PM" : "AM"
 
-    const suffix =
-      hour >= 12
-        ? "PM"
-        : "AM"
-
-    const formattedHour =
-      hour % 12 || 12
+    const formattedHour = hour % 12 || 12
 
     return `${formattedHour}:00 ${suffix}`
   }
 
   async function generateSlots() {
-
-    if (
-      !selectedDate ||
-      !selectedCoach
-    ) {
-
+    if (!selectedDate || !selectedCoach) {
       setTimeSlots([])
 
       return
     }
 
-    const day =
-      selectedDate.getDay()
+    const day = selectedDate.getDay()
 
-    // SUNDAY CLOSED
+    const year = selectedDate.getFullYear()
 
-    if (day === 0) {
+    const month = String(selectedDate.getMonth() + 1).padStart(2, "0")
 
-      setTimeSlots([])
+    const dayOfMonth = String(selectedDate.getDate()).padStart(2, "0")
 
-      return
+    const formattedDate = `${year}-${month}-${dayOfMonth}`
+
+    const { data: availability } = await supabase
+      .from("availability")
+      .select("*")
+      .eq("coach_id", selectedCoach)
+      .eq("day_of_week", day)
+      .maybeSingle()
+
+    const { data: dateOverrides } = await supabase
+      .from("date_overrides")
+      .select("*")
+      .eq("coach_id", selectedCoach)
+      .eq("lesson_date", formattedDate)
+
+    const slotSet = new Set<string>()
+
+    if (availability) {
+      const start = parseInt(availability.start_time.split(":")[0])
+
+      const end = parseInt(availability.end_time.split(":")[0])
+
+      for (let hour = start; hour < end; hour++) {
+        slotSet.add(formatHour(hour))
+      }
     }
 
-    const slots: string[] = []
+    dateOverrides?.forEach((override) => {
+      const hour = parseInt(override.lesson_time.split(":")[0])
 
-    // MONDAY-SATURDAY
-    // 8AM - 8PM
+      const slot = formatHour(hour)
 
-    for (
-      let hour = 8;
-      hour < 20;
-      hour++
-    ) {
+      if (override.is_available) {
+        slotSet.add(slot)
+      } else {
+        slotSet.delete(slot)
+      }
+    })
 
-      slots.push(
-        formatHour(hour)
-      )
-    }
+    let availableSlots = Array.from(slotSet)
 
-    // FORMAT DATE
-
-    const formattedDate =
-      selectedDate
-        .toISOString()
-        .split("T")[0]
-
-    // GET EXISTING BOOKINGS
-
-    const {
-      data: existingBookings,
-    } = await supabase
+    const { data: existingBookings } = await supabase
       .from("bookings")
       .select("lesson_time")
-      .eq(
-        "coach_id",
-        selectedCoach
-      )
-      .eq(
-        "lesson_date",
-        formattedDate
-      )
+      .eq("coach_id", selectedCoach)
+      .eq("lesson_date", formattedDate)
+      .eq("status", "booked")
 
     const bookedTimes =
-      existingBookings?.map(
-        (booking) =>
-          booking.lesson_time
-      ) || []
+      existingBookings?.map((booking) => {
+        const hour = parseInt(booking.lesson_time.split(":")[0])
 
-    // REMOVE BOOKED TIMES
+        return formatHour(hour)
+      }) || []
 
-    let availableSlots =
-      slots.filter(
-        (slot) =>
-          !bookedTimes.includes(slot)
-      )
+    availableSlots = availableSlots.filter((slot) => !bookedTimes.includes(slot))
 
-    // REMOVE PAST TIMES FOR TODAY
+    const { data: weeklyBreaks } = await supabase
+      .from("weekly_breaks")
+      .select("*")
+      .eq("coach_id", selectedCoach)
+      .eq("day_of_week", day)
 
-    const today =
-      new Date()
+    const breakTimes = weeklyBreaks?.map((item) => formatHour(item.hour)) || []
 
-    const selectedDayString =
-      selectedDate.toDateString()
+    availableSlots = availableSlots.filter((slot) => !breakTimes.includes(slot))
 
-    const todayString =
-      today.toDateString()
+    const today = new Date()
 
-    const isToday =
-      selectedDayString ===
-      todayString
+    const isToday = selectedDate.toDateString() === today.toDateString()
 
     if (isToday) {
+      availableSlots = availableSlots.filter((slot) => {
+        const hour = parseInt(slot.split(":")[0])
 
-      availableSlots =
-        availableSlots.filter(
-          (slot) => {
+        const isPM = slot.includes("PM")
 
-            const hour =
-              parseInt(
-                slot.split(":")[0]
-              )
+        let militaryHour = hour
 
-            const isPM =
-              slot.includes("PM")
+        if (isPM && hour !== 12) {
+          militaryHour += 12
+        }
 
-            let militaryHour =
-              hour
+        if (!isPM && hour === 12) {
+          militaryHour = 0
+        }
 
-            if (
-              isPM &&
-              hour !== 12
-            ) {
-
-              militaryHour += 12
-            }
-
-            if (
-              !isPM &&
-              hour === 12
-            ) {
-
-              militaryHour = 0
-            }
-
-            return (
-              militaryHour >
-              today.getHours()
-            )
-          }
-        )
+        return militaryHour > today.getHours()
+      })
     }
 
-    setTimeSlots(
-      availableSlots
-    )
+    availableSlots.sort((a, b) => {
+      const convert = (time: string) => {
+        const hour = parseInt(time)
+
+        if (time.includes("PM") && hour !== 12) {
+          return hour + 12
+        }
+
+        if (time.includes("AM") && hour === 12) {
+          return 0
+        }
+
+        return hour
+      }
+
+      return convert(a) - convert(b)
+    })
+
+    setTimeSlots(availableSlots)
   }
 
   async function confirmBooking() {
-
-    if (
-      !selectedCoach ||
-      !selectedDate ||
-      !selectedTime
-    ) {
-
+    if (!selectedCoach || !selectedDate || !selectedTime) {
       return
     }
 
@@ -237,53 +193,35 @@ export default function BookPage() {
     // NOT LOGGED IN
 
     if (!session) {
+      localStorage.setItem("redirectAfterLogin", "/book")
 
-      localStorage.setItem(
-        "redirectAfterLogin",
-        "/book"
-      )
+      alert("Please login or create an account to confirm your booking.")
 
-      alert(
-        "Please login or create an account to confirm your booking."
-      )
-
-      window.location.href =
-        "/login"
+      window.location.href = "/login"
 
       return
     }
 
-    const formattedDate =
-      selectedDate
-        .toISOString()
-        .split("T")[0]
+    const year = selectedDate.getFullYear()
 
+    const month = String(selectedDate.getMonth() + 1).padStart(2, "0")
+
+    const day = String(selectedDate.getDate()).padStart(2, "0")
+
+    const formattedDate = `${year}-${month}-${day}`
     // DOUBLE BOOKING CHECK
 
-    const {
-      data: existingBooking,
-    } = await supabase
+    const { data: existingBooking } = await supabase
       .from("bookings")
       .select("*")
-      .eq(
-        "coach_id",
-        selectedCoach
-      )
-      .eq(
-        "lesson_date",
-        formattedDate
-      )
-      .eq(
-        "lesson_time",
-        selectedTime
-      )
+      .eq("coach_id", selectedCoach)
+      .eq("lesson_date", formattedDate)
+      .eq("lesson_time", selectedTime)
+      .eq("status", "booked")
       .maybeSingle()
 
     if (existingBooking) {
-
-      alert(
-        "This slot is already booked."
-      )
+      alert("This slot is already booked.")
 
       setLoading(false)
 
@@ -292,34 +230,25 @@ export default function BookPage() {
 
     // INSERT BOOKING
 
-    const {
-      error,
-    } = await supabase
-      .from("bookings")
-      .insert({
-        client_id: 1,
-        coach_id: selectedCoach,
-        lesson_date: formattedDate,
-        lesson_time: selectedTime,
-        status: "booked",
-      })
+    const { error } = await supabase.from("bookings").insert({
+      client_id: 1,
+      coach_id: selectedCoach,
+      lesson_date: formattedDate,
+      lesson_time: selectedTime,
+      status: "booked",
+    })
 
     if (error) {
-
       console.error(error)
 
-      alert(
-        "Booking failed."
-      )
+      alert("Booking failed.")
 
       setLoading(false)
 
       return
     }
 
-    alert(
-      "Booking confirmed!"
-    )
+    alert("Booking confirmed!")
 
     setSelectedTime("")
 
@@ -331,221 +260,107 @@ export default function BookPage() {
   }
 
   return (
-
     <main className="min-h-screen bg-gray-100 p-10 text-black">
-
       <div className="mx-auto max-w-5xl">
-
-        <h1 className="mb-8 text-5xl font-bold">
-
-          Book a Lesson
-
-        </h1>
+        <h1 className="mb-8 text-5xl font-bold">Book a Lesson</h1>
 
         <div className="rounded-2xl bg-white p-8 shadow-lg">
-
           <div className="grid gap-10 md:grid-cols-2">
-
             {/* COACH */}
 
             <div>
-
-              <label className="mb-2 block text-lg font-semibold">
-
-                Select Coach
-
-              </label>
+              <label className="mb-2 block text-lg font-semibold">Select Coach</label>
 
               <select
-                value={
-                  selectedCoach ?? ""
-                }
+                value={selectedCoach ?? ""}
                 onChange={(e) => {
-
-                  setSelectedCoach(
-                    Number(
-                      e.target.value
-                    )
-                  )
+                  setSelectedCoach(Number(e.target.value))
 
                   setSelectedTime("")
                 }}
                 className="w-full rounded-xl border p-4"
               >
-
-                <option value="">
-                  Choose a coach
-                </option>
+                <option value="">Choose a coach</option>
 
                 {coaches.map((coach) => (
-
-                  <option
-                    key={coach.id}
-                    value={coach.id}
-                  >
-
+                  <option key={coach.id} value={coach.id}>
                     {coach.name}
-
                   </option>
-
                 ))}
-
               </select>
-
             </div>
 
             {/* CALENDAR */}
 
             <div>
-
-              <label className="mb-4 block text-lg font-semibold">
-
-                Select Date
-
-              </label>
+              <label className="mb-4 block text-lg font-semibold">Select Date</label>
 
               <div className="rounded-xl border bg-white p-4">
-
                 <DayPicker
                   mode="single"
-                  selected={
-                    selectedDate
-                  }
+                  selected={selectedDate}
                   onSelect={(date) => {
-
                     setSelectedDate(date)
 
                     setSelectedTime("")
                   }}
                   disabled={[
                     {
-                      before:
-                        new Date(),
-                    },
-                    {
-                      dayOfWeek: [0],
+                      before: new Date(),
                     },
                   ]}
                 />
-
               </div>
-
             </div>
-
           </div>
 
           {/* TIME SLOTS */}
 
           <div className="mt-10">
-
-            <h2 className="mb-4 text-2xl font-bold">
-
-              Available Time Slots
-
-            </h2>
+            <h2 className="mb-4 text-2xl font-bold">Available Time Slots</h2>
 
             {timeSlots.length === 0 ? (
-
-              <p className="text-gray-500">
-
-                No available slots.
-
-              </p>
-
+              <p className="text-gray-500">No available slots.</p>
             ) : (
-
               <div className="flex flex-wrap gap-4">
-
                 {timeSlots.map((time) => (
-
                   <button
                     key={time}
-                    onClick={() =>
-                      setSelectedTime(time)
-                    }
+                    onClick={() => setSelectedTime(time)}
                     className={`rounded-xl px-6 py-4 font-semibold text-white transition ${
-                      selectedTime === time
-                        ? "bg-green-600 hover:bg-green-700"
-                        : "bg-blue-600 hover:bg-blue-700"
+                      selectedTime === time ? "bg-green-600 hover:bg-green-700" : "bg-blue-600 hover:bg-blue-700"
                     }`}
                   >
-
                     {time}
-
                   </button>
-
                 ))}
-
               </div>
-
             )}
-
           </div>
 
           {/* BOOKING SUMMARY */}
 
           {selectedTime && (
-
             <div className="mt-10 rounded-2xl bg-gray-100 p-6">
+              <h3 className="text-2xl font-bold">Selected Booking</h3>
 
-              <h3 className="text-2xl font-bold">
+              <p className="mt-4 text-lg">Coach: {coaches.find((coach) => coach.id === selectedCoach)?.name}</p>
 
-                Selected Booking
+              <p className="text-lg">Date: {selectedDate?.toLocaleDateString()}</p>
 
-              </h3>
-
-              <p className="mt-4 text-lg">
-
-                Coach:{" "}
-
-                {
-                  coaches.find(
-                    (coach) =>
-                      coach.id ===
-                      selectedCoach
-                  )?.name
-                }
-
-              </p>
-
-              <p className="text-lg">
-
-                Date:{" "}
-
-                {
-                  selectedDate?.toLocaleDateString()
-                }
-
-              </p>
-
-              <p className="text-lg">
-
-                Time: {selectedTime}
-
-              </p>
+              <p className="text-lg">Time: {selectedTime}</p>
 
               <button
                 onClick={confirmBooking}
                 disabled={loading}
                 className="mt-6 rounded-xl bg-black px-8 py-4 text-lg font-bold text-white transition hover:bg-gray-800 disabled:opacity-50"
               >
-
-                {
-                  loading
-                    ? "Booking..."
-                    : "Confirm Booking"
-                }
-
+                {loading ? "Booking..." : "Confirm Booking"}
               </button>
-
             </div>
-
           )}
-
         </div>
-
       </div>
-
     </main>
   )
 }

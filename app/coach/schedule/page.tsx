@@ -48,6 +48,13 @@ export default async function CoachSchedulePage({
     new Date(selectedDate)
       .getDay()
 
+  console.log(
+  "selectedDate",
+  selectedDate,
+  "dayOfWeek",
+  dayOfWeek
+)
+
   const { data: bookings } =
     await supabase
       .from("bookings")
@@ -72,6 +79,19 @@ export default async function CoachSchedulePage({
       .eq("day_of_week", dayOfWeek)
       .single()
 
+  const { data: weeklyBreaks } =
+  await supabase
+    .from("weekly_breaks")
+    .select("*")
+    .eq(
+      "coach_id",
+      coach.id
+    )
+    .eq(
+      "day_of_week",
+      dayOfWeek
+    )
+
   const { data: dateOverrides } =
     await supabase
       .from("date_overrides")
@@ -86,6 +106,9 @@ export default async function CoachSchedulePage({
       initialBookings={bookings || []}
       selectedDate={selectedDate}
       availability={availability}
+      weeklyBreaks={
+        weeklyBreaks || []
+      }
       dateOverrides={dateOverrides || []}
     />
   )
