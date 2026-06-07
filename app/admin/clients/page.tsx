@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import Link from "next/link"
-import { createClient } from "@/lib/supabaseClient"
+import { supabase } from "@/lib/supabaseClient"
 
 type Client = {
   id: number
@@ -15,7 +15,6 @@ type Client = {
 }
 
 export default function AdminClientsPage() {
-  const supabase = createClient()
 
   const [clients, setClients] = useState<Client[]>([])
   const [search, setSearch] = useState("")
@@ -28,10 +27,7 @@ export default function AdminClientsPage() {
   async function loadClients() {
     setLoading(true)
 
-    const { data, error } = await supabase
-      .from("clients")
-      .select("*")
-      .order("name")
+    const { data, error } = await supabase.from("clients").select("*").order("name")
 
     if (!error && data) {
       setClients(data)
@@ -55,9 +51,7 @@ export default function AdminClientsPage() {
   return (
     <main className="min-h-screen bg-gray-100 p-8 text-black">
       <div className="mb-8 flex items-center justify-between">
-        <h1 className="text-4xl font-bold text-black">
-          Clients
-        </h1>
+        <h1 className="text-4xl font-bold text-black">Clients</h1>
       </div>
 
       <input
@@ -72,82 +66,48 @@ export default function AdminClientsPage() {
         <table className="w-full text-black">
           <thead className="border-b bg-gray-100">
             <tr>
-              <th className="p-4 text-left text-black">
-                Name
-              </th>
+              <th className="p-4 text-left text-black">Name</th>
 
-              <th className="p-4 text-left text-black">
-                Gov ID
-              </th>
+              <th className="p-4 text-left text-black">Gov ID</th>
 
-              <th className="p-4 text-left text-black">
-                Phone
-              </th>
+              <th className="p-4 text-left text-black">Phone</th>
 
-              <th className="p-4 text-left text-black">
-                Email
-              </th>
+              <th className="p-4 text-left text-black">Email</th>
 
-              <th className="p-4 text-left text-black">
-                Lessons
-              </th>
+              <th className="p-4 text-left text-black">Lessons</th>
 
-              <th className="p-4 text-left text-black">
-                Open
-              </th>
+              <th className="p-4 text-left text-black">Open</th>
             </tr>
           </thead>
 
           <tbody>
             {loading ? (
               <tr>
-                <td
-                  colSpan={6}
-                  className="p-8 text-center text-black"
-                >
+                <td colSpan={6} className="p-8 text-center text-black">
                   Loading...
                 </td>
               </tr>
             ) : filteredClients.length === 0 ? (
               <tr>
-                <td
-                  colSpan={6}
-                  className="p-8 text-center text-black"
-                >
+                <td colSpan={6} className="p-8 text-center text-black">
                   No clients found
                 </td>
               </tr>
             ) : (
               filteredClients.map((client) => (
-                <tr
-                  key={client.id}
-                  className="border-b"
-                >
-                  <td className="p-4 text-black">
-                    {client.name}
-                  </td>
+                <tr key={client.id} className="border-b">
+                  <td className="p-4 text-black">{client.name}</td>
 
-                  <td className="p-4 text-black">
-                    {client.gov_id || "-"}
-                  </td>
+                  <td className="p-4 text-black">{client.gov_id || "-"}</td>
 
-                  <td className="p-4 text-black">
-                    {client.phone || "-"}
-                  </td>
+                  <td className="p-4 text-black">{client.phone || "-"}</td>
 
-                  <td className="p-4 text-black">
-                    {client.email || "-"}
-                  </td>
+                  <td className="p-4 text-black">{client.email || "-"}</td>
 
-                  <td className="p-4 text-black">
-                    {client.lessons_remaining ?? 0}
-                  </td>
+                  <td className="p-4 text-black">{client.lessons_remaining ?? 0}</td>
 
                   <td className="p-4">
-                    <Link
-                      href={`/admin/clients/${client.id}`}
-                      className="rounded-lg bg-blue-600 px-4 py-2 text-white"
-                    >
+                    <Link href={`/admin/clients/${client.id}`} className="rounded-lg bg-blue-600 px-4 py-2 text-white">
                       Open
                     </Link>
                   </td>

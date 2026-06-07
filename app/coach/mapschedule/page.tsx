@@ -1,12 +1,8 @@
 "use client"
 
 import { useEffect, useState } from "react"
-
 import { useRouter } from "next/navigation"
-
-import { createClient } from "@/lib/supabaseClient"
-
-const supabase = createClient()
+import { supabase } from "@/lib/supabaseClient"
 
 const days = [
   {

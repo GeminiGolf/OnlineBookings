@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import { useState } from "react"
 import { supabase } from "@/lib/supabase"
 
@@ -184,9 +185,7 @@ export default function CoachDashboardClient({
 
   async function toggleSlot(hour: number) {
     if (rescheduleBooking || moveBooking) {
-
-      const activeBooking =
-        moveBooking || rescheduleBooking
+      const activeBooking = moveBooking || rescheduleBooking
 
       if (!activeBooking) {
         return
@@ -218,9 +217,7 @@ export default function CoachDashboardClient({
         return timeString.replace(":00", "")
       }
 
-      const firstName =
-        activeBooking?.clients?.name?.split(" ")[0] ||
-        "Client"
+      const firstName = activeBooking?.clients?.name?.split(" ")[0] || "Client"
       const confirmed = window.confirm(
         `Move ${firstName} from ${formatDisplayDate(activeBooking.lesson_date)} ${formatDisplayTime(
           activeBooking.lesson_time
@@ -677,7 +674,12 @@ export default function CoachDashboardClient({
             <div className="space-y-4">
               <div>
                 <p className="text-sm text-gray-500">Client</p>
-                <p className="text-xl font-semibold">{selectedBooking.clients?.name}</p>
+                <Link
+                  href={`/coach/clients/${selectedBooking.clients?.id}`}
+                  className="text-xl font-semibold underline text-blue-600 hover:text-blue-800"
+                >
+                  {selectedBooking.clients?.name}
+                </Link>
               </div>
 
               <div>
@@ -701,19 +703,15 @@ export default function CoachDashboardClient({
               </div>
 
               {selectedBooking.status === "completed" ? (
-                <>
-                  <div className="rounded-lg bg-sky-100 p-3 text-sky-800">...</div>
-
-                  <button
-                    onClick={() => {
-                      setMoveBooking(selectedBooking)
-                      setSelectedBooking(null)
-                    }}
-                    className="mt-3 rounded-lg bg-sky-400 px-4 py-2 text-white hover:bg-sky-500"
-                  >
-                    Move Lesson
-                  </button>
-                </>
+                <button
+                  onClick={() => {
+                    setMoveBooking(selectedBooking)
+                    setSelectedBooking(null)
+                  }}
+                  className="rounded-lg bg-sky-400 px-4 py-2 text-white hover:bg-sky-500"
+                >
+                  Move Lesson
+                </button>
               ) : (
                 <div className="flex gap-3 pt-4">
                   <button
@@ -843,18 +841,58 @@ export default function CoachDashboardClient({
                     })
                     .eq("id", selectedBooking.id)
 
-                  if (selectedBooking.clients && selectedBooking.clients.lessons_remaining > 0) {
-                    const newLessonsRemaining = selectedBooking.clients.lessons_remaining - 1
+                  if (selectedBooking.clients) {
+                    const todayDate = new Date().toISOString().split("T")[0]
 
-                    const { error } = await supabase
+                    const { data: packages } = await supabase
+                      .from("lesson_packages")
+                      .select("*")
+                      .eq("client_id", selectedBooking.clients.id)
+                      .gte("expiration_date", todayDate)
+                      .order("expiration_date", { ascending: true })
+
+                    const packageToUse = packages?.find((pkg) => (pkg.lessons_added || 0) > (pkg.lessons_used || 0))
+
+                    if (packageToUse) {
+                      await supabase
+                        .from("lesson_packages")
+                        .update({
+                          lessons_used: (packageToUse.lessons_used || 0) + 1,
+                        })
+                        .eq("id", packageToUse.id)
+
+                      const { data: updatedPackages } = await supabase
+                        .from("lesson_packages")
+                        .select("*")
+                        .eq("client_id", selectedBooking.clients.id)
+                        .gte("expiration_date", todayDate)
+
+                      const lessonsRemaining =
+                        updatedPackages?.reduce((total, pkg) => {
+                          return total + ((pkg.lessons_added || 0) - (pkg.lessons_used || 0))
+                        }, 0) || 0
+
+                      await supabase
+                        .from("clients")
+                        .update({
+                          lessons_remaining: lessonsRemaining,
+                        })
+                        .eq("id", selectedBooking.clients.id)
+                    }
+
+                    const { data: clientData } = await supabase
                       .from("clients")
-                      .update({
-                        lessons_remaining: newLessonsRemaining,
-                      })
+                      .select("primary_coach_id")
                       .eq("id", selectedBooking.clients.id)
+                      .single()
 
-                    if (error) {
-                      console.error(error)
+                    if (!clientData?.primary_coach_id) {
+                      await supabase
+                        .from("clients")
+                        .update({
+                          primary_coach_id: coachId,
+                        })
+                        .eq("id", selectedBooking.clients.id)
                     }
                   }
 

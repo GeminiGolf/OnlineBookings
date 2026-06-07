@@ -2,13 +2,12 @@
 
 import { useEffect, useState } from "react"
 
-import { createClient } from "@/lib/supabaseClient"
+import { supabase } from "@/lib/supabaseClient"
 
 import { DayPicker } from "react-day-picker"
 
 import "react-day-picker/dist/style.css"
 
-const supabase = createClient()
 
 type Coach = {
   id: number

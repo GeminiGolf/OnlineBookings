@@ -133,7 +133,6 @@ export default function ClientPage() {
   async function createBooking(coachId: number) {
     if (!selectedDate) return
 
-
     const year = selectedDate.getFullYear()
 
     const month = String(selectedDate.getMonth() + 1).padStart(2, "0")
