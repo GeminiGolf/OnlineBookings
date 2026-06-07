@@ -133,13 +133,6 @@ export default function ClientPage() {
   async function createBooking(coachId: number) {
     if (!selectedDate) return
 
-    console.log("selectedDate", selectedDate)
-
-    console.log("ISO", selectedDate.toISOString())
-
-    console.log("LOCAL", selectedDate.toString())
-
-    alert("DEBUG")
 
     const year = selectedDate.getFullYear()
 

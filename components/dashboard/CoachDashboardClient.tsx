@@ -8,7 +8,12 @@ type Booking = {
   lesson_date: string
   lesson_time: string
   status: string
+  payment_method: string | null
+  payment_date: string | null
+  completion_date: string | null
+
   clients: {
+    id: number
     name: string
     phone: string | null
     email: string | null
@@ -47,6 +52,8 @@ type Props = {
   availability: Availability | null
   weeklyBreaks: WeeklyBreak[]
   dateOverrides: DateOverride[]
+
+  rescheduleBooking?: Booking | null
 }
 
 export default function CoachDashboardClient({
@@ -57,10 +64,14 @@ export default function CoachDashboardClient({
   availability,
   weeklyBreaks,
   dateOverrides,
+  rescheduleBooking: initialRescheduleBooking,
 }: Props) {
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null)
   const [showCancelModal, setShowCancelModal] = useState(false)
-
+  const [showCompleteModal, setShowCompleteModal] = useState(false)
+  const [paymentMethod, setPaymentMethod] = useState("")
+  const [rescheduleBooking, setRescheduleBooking] = useState<Booking | null>(initialRescheduleBooking || null)
+  const [moveBooking, setMoveBooking] = useState<Booking | null>(null)
   const [cancellationReason, setCancellationReason] = useState("")
   const hours: number[] = []
 
@@ -117,7 +128,7 @@ export default function CoachDashboardClient({
 
   function getBookingForHour(hour: number) {
     return initialBookings.find((booking) => {
-      if (booking.status !== "booked") {
+      if (booking.status !== "booked" && booking.status !== "completed") {
         return false
       }
 
@@ -172,6 +183,80 @@ export default function CoachDashboardClient({
   }
 
   async function toggleSlot(hour: number) {
+    if (rescheduleBooking || moveBooking) {
+
+      const activeBooking =
+        moveBooking || rescheduleBooking
+
+      if (!activeBooking) {
+        return
+      }
+
+      const available = (isAvailableHour(hour) || isOverrideOpen(hour)) && !isBreakHour(hour) && !isOverrideClosed(hour)
+
+      if (!available) {
+        const confirmed = window.confirm("This is a closed slot.\n\nConfirming will open it.")
+
+        if (!confirmed) {
+          return
+        }
+      }
+
+      const newTime = formatHour(hour)
+
+      const formatDisplayDate = (dateString: string) => {
+        const date = new Date(dateString)
+
+        const day = String(date.getDate()).padStart(2, "0")
+        const month = String(date.getMonth() + 1).padStart(2, "0")
+        const year = String(date.getFullYear()).slice(-2)
+
+        return `${day}/${month}/${year}`
+      }
+
+      const formatDisplayTime = (timeString: string) => {
+        return timeString.replace(":00", "")
+      }
+
+      const firstName =
+        activeBooking?.clients?.name?.split(" ")[0] ||
+        "Client"
+      const confirmed = window.confirm(
+        `Move ${firstName} from ${formatDisplayDate(activeBooking.lesson_date)} ${formatDisplayTime(
+          activeBooking.lesson_time
+        )} to ${formatDisplayDate(selectedDate)} ${formatDisplayTime(newTime)}?`
+      )
+
+      if (!confirmed) {
+        return
+      }
+
+      await supabase
+        .from("bookings")
+        .update({
+          lesson_date: selectedDate,
+          lesson_time: newTime,
+        })
+        .eq("id", activeBooking.id)
+
+      await supabase.from("booking_changes").insert({
+        booking_id: activeBooking.id,
+        action: "rescheduled",
+        performed_by: "coach",
+        old_date: activeBooking.lesson_date,
+        old_time: activeBooking.lesson_time,
+        new_date: selectedDate,
+        new_time: newTime,
+      })
+
+      setRescheduleBooking(null)
+      setMoveBooking(null)
+
+      window.location.href = `/coach/schedule?date=${selectedDate}`
+
+      return
+    }
+
     const booking = getBookingForHour(hour)
 
     if (booking) {
@@ -233,7 +318,13 @@ export default function CoachDashboardClient({
   }
 
   function goToDate(date: string) {
-    window.location.href = `/coach/schedule?date=${date}`
+    let url = `/coach/schedule?date=${date}`
+
+    if (rescheduleBooking) {
+      url += `&reschedule=${rescheduleBooking.id}`
+    }
+
+    window.location.href = url
   }
 
   function previousDay() {
@@ -395,6 +486,32 @@ export default function CoachDashboardClient({
           </button>
         </div>
 
+        {(rescheduleBooking || moveBooking) && (
+          <div className="mb-4 rounded-xl border border-green-300 bg-green-100 p-4">
+            <p className="font-bold">
+              {moveBooking
+                ? `Moving Completed Lesson: ${moveBooking.clients?.name}`
+                : `Rescheduling: ${rescheduleBooking?.clients?.name}`}
+            </p>
+
+            <p className="text-sm">
+              {moveBooking
+                ? "Choose an empty slot on today's schedule."
+                : "Navigate to any day and click an available slot."}
+            </p>
+
+            <button
+              onClick={() => {
+                setRescheduleBooking(null)
+                setMoveBooking(null)
+              }}
+              className="mt-2 rounded bg-gray-700 px-3 py-1 text-white"
+            >
+              Cancel
+            </button>
+          </div>
+        )}
+
         <div className="overflow-hidden rounded-2xl border bg-white shadow-lg">
           <div className="grid grid-cols-[120px_1fr] border-b bg-gray-50">
             <div className="border-r p-4 font-bold">Time</div>
@@ -431,7 +548,11 @@ export default function CoachDashboardClient({
             }
 
             if (booking) {
-              bgClass = booking.clients?.lessons_remaining === 0 ? "bg-yellow-200" : "bg-green-200"
+              if (booking.status === "completed") {
+                bgClass = "bg-sky-200"
+              } else {
+                bgClass = booking.clients?.lessons_remaining === 0 ? "bg-yellow-200" : "bg-green-200"
+              }
             }
 
             return (
@@ -446,7 +567,9 @@ export default function CoachDashboardClient({
                     <div>
                       <p className="font-bold">{booking.clients?.name}</p>
 
-                      <p className="text-sm text-gray-700">Booked Lesson</p>
+                      <p className="text-sm text-gray-700">
+                        {booking.status === "completed" ? "Completed Lesson" : "Booked Lesson"}
+                      </p>
                     </div>
                   ) : overrideClosed ? (
                     <p className="text-gray-600">Closed (Override)</p>
@@ -577,14 +700,170 @@ export default function CoachDashboardClient({
                 <p className="font-bold">{selectedBooking.clients?.lessons_remaining}</p>
               </div>
 
-              <div className="pt-4">
-                <button
-                  onClick={() => setShowCancelModal(true)}
-                  className="rounded-lg bg-red-600 px-4 py-2 text-white hover:bg-red-700"
+              {selectedBooking.status === "completed" ? (
+                <>
+                  <div className="rounded-lg bg-sky-100 p-3 text-sky-800">...</div>
+
+                  <button
+                    onClick={() => {
+                      setMoveBooking(selectedBooking)
+                      setSelectedBooking(null)
+                    }}
+                    className="mt-3 rounded-lg bg-sky-400 px-4 py-2 text-white hover:bg-sky-500"
+                  >
+                    Move Lesson
+                  </button>
+                </>
+              ) : (
+                <div className="flex gap-3 pt-4">
+                  <button
+                    onClick={() => {
+                      const today = new Date()
+
+                      const todayString = today.toISOString().split("T")[0]
+
+                      if (selectedBooking.lesson_date !== todayString) {
+                        alert("Please reschedule the appointment to today before completing.")
+                        return
+                      }
+
+                      const lessonTime = selectedBooking.lesson_time.trim().toUpperCase()
+
+                      let lessonHour = parseInt(lessonTime)
+
+                      if (lessonTime.includes("PM") && lessonHour !== 12) {
+                        lessonHour += 12
+                      }
+
+                      if (lessonTime.includes("AM") && lessonHour === 12) {
+                        lessonHour = 0
+                      }
+
+                      const lessonStart = new Date()
+
+                      lessonStart.setHours(lessonHour, 0, 0, 0)
+
+                      const completionAllowedTime = new Date(lessonStart.getTime() + 30 * 60 * 1000)
+
+                      if (today < completionAllowedTime) {
+                        const confirmed = window.confirm(`This lesson starts at ${selectedBooking.lesson_time}`)
+
+                        if (!confirmed) {
+                          return
+                        }
+                      }
+
+                      setShowCompleteModal(true)
+                    }}
+                    className="rounded-lg bg-sky-400 px-4 py-2 text-white hover:bg-sky-500"
+                  >
+                    Completed
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setRescheduleBooking(selectedBooking)
+                      setSelectedBooking(null)
+                    }}
+                    className="rounded-lg bg-green-600 px-4 py-2 text-white hover:bg-green-700"
+                  >
+                    Reschedule Lesson
+                  </button>
+
+                  <button
+                    onClick={() => setShowCancelModal(true)}
+                    className="rounded-lg bg-red-600 px-4 py-2 text-white hover:bg-red-700"
+                  >
+                    Cancel Lesson
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showCompleteModal && selectedBooking && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-6">
+          <div className="w-full max-w-lg rounded-2xl bg-white p-6">
+            <h2 className="mb-4 text-2xl font-bold">Complete Lesson</h2>
+
+            {selectedBooking.clients?.lessons_remaining === 0 && (
+              <div className="mb-4">
+                <p className="mb-2 font-medium">Payment Method</p>
+
+                <select
+                  value={paymentMethod}
+                  onChange={(e) => setPaymentMethod(e.target.value)}
+                  className="w-full rounded-lg border p-3"
                 >
-                  Cancel Lesson
-                </button>
+                  <option value="">Select payment method</option>
+
+                  <option value="cash">Cash</option>
+
+                  <option value="card">Card</option>
+
+                  <option value="transfer">Transfer</option>
+
+                  <option value="e-wallet">E-wallet</option>
+
+                  <option value="free lesson">Free Lesson</option>
+                </select>
               </div>
+            )}
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => {
+                  setShowCompleteModal(false)
+                  setPaymentMethod("")
+                }}
+                className="rounded-lg border px-4 py-2"
+              >
+                Close
+              </button>
+
+              <button
+                onClick={async () => {
+                  if (selectedBooking.clients?.lessons_remaining === 0 && !paymentMethod) {
+                    alert("Please select a payment method.")
+
+                    return
+                  }
+
+                  const todayDate = new Date().toISOString().split("T")[0]
+
+                  await supabase
+                    .from("bookings")
+                    .update({
+                      status: "completed",
+                      completion_date: todayDate,
+                      payment_method: selectedBooking.clients?.lessons_remaining === 0 ? paymentMethod : null,
+                      payment_date: selectedBooking.clients?.lessons_remaining === 0 ? todayDate : null,
+                    })
+                    .eq("id", selectedBooking.id)
+
+                  if (selectedBooking.clients && selectedBooking.clients.lessons_remaining > 0) {
+                    const newLessonsRemaining = selectedBooking.clients.lessons_remaining - 1
+
+                    const { error } = await supabase
+                      .from("clients")
+                      .update({
+                        lessons_remaining: newLessonsRemaining,
+                      })
+                      .eq("id", selectedBooking.clients.id)
+
+                    if (error) {
+                      console.error(error)
+                    }
+                  }
+
+                  window.location.reload()
+                }}
+                className="rounded-lg bg-sky-500 px-4 py-2 text-white"
+              >
+                Confirm
+              </button>
             </div>
           </div>
         </div>

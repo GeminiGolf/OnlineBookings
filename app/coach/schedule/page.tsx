@@ -1,32 +1,32 @@
 import { createClient } from "@/lib/supabaseServer"
-
 import CoachDashboardClient from "@/components/dashboard/CoachDashboardClient"
 
 type Props = {
   searchParams: Promise<{
     date?: string
+    reschedule?: string
   }>
 }
 
 export default async function CoachSchedulePage({
   searchParams,
 }: Props) {
-  const params =
-    await searchParams
+  const params = await searchParams
 
   const selectedDate =
     params.date ||
-    new Date()
-      .toISOString()
-      .split("T")[0]
+    new Date().toISOString().split("T")[0]
+
+  const rescheduleId =
+    params.reschedule
+      ? Number(params.reschedule)
+      : null
 
   const supabase =
     await createClient()
 
   const {
-    data: {
-      user,
-    },
+    data: { user },
   } = await supabase.auth.getUser()
 
   if (!user) {
@@ -45,15 +45,7 @@ export default async function CoachSchedulePage({
   }
 
   const dayOfWeek =
-    new Date(selectedDate)
-      .getDay()
-
-  console.log(
-  "selectedDate",
-  selectedDate,
-  "dayOfWeek",
-  dayOfWeek
-)
+    new Date(selectedDate).getDay()
 
   const { data: bookings } =
     await supabase
@@ -61,6 +53,7 @@ export default async function CoachSchedulePage({
       .select(`
         *,
         clients (
+          id,
           name,
           phone,
           email,
@@ -80,17 +73,11 @@ export default async function CoachSchedulePage({
       .single()
 
   const { data: weeklyBreaks } =
-  await supabase
-    .from("weekly_breaks")
-    .select("*")
-    .eq(
-      "coach_id",
-      coach.id
-    )
-    .eq(
-      "day_of_week",
-      dayOfWeek
-    )
+    await supabase
+      .from("weekly_breaks")
+      .select("*")
+      .eq("coach_id", coach.id)
+      .eq("day_of_week", dayOfWeek)
 
   const { data: dateOverrides } =
     await supabase
@@ -99,6 +86,29 @@ export default async function CoachSchedulePage({
       .eq("coach_id", coach.id)
       .eq("lesson_date", selectedDate)
 
+  let rescheduleBooking = null
+
+  if (rescheduleId) {
+    const { data } =
+      await supabase
+        .from("bookings")
+        .select(`
+          *,
+          clients (
+            id,
+            name,
+            phone,
+            email,
+            notes,
+            lessons_remaining
+          )
+        `)
+        .eq("id", rescheduleId)
+        .single()
+
+    rescheduleBooking = data
+  }
+
   return (
     <CoachDashboardClient
       coachId={coach.id}
@@ -106,10 +116,9 @@ export default async function CoachSchedulePage({
       initialBookings={bookings || []}
       selectedDate={selectedDate}
       availability={availability}
-      weeklyBreaks={
-        weeklyBreaks || []
-      }
+      weeklyBreaks={weeklyBreaks || []}
       dateOverrides={dateOverrides || []}
+      rescheduleBooking={rescheduleBooking}
     />
   )
 }

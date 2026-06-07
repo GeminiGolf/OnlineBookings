@@ -1,95 +1,65 @@
 "use client"
 
 import Link from "next/link"
+import { useEffect, useState } from "react"
+import { createClient } from "../lib/supabaseClient"
 
-import {
-  useEffect,
-  useState,
-} from "react"
-
-import { createClient }
-  from "../lib/supabaseClient"
-
-const supabase =
-  createClient()
+const supabase = createClient()
 
 export default function Navbar() {
-
-  const [
-    loggedIn,
-    setLoggedIn,
-  ] = useState(false)
-
-  const [
-    isCoach,
-    setIsCoach,
-  ] = useState(false)
+  const [loggedIn, setLoggedIn] = useState(false)
+  const [isCoach, setIsCoach] = useState(false)
 
   useEffect(() => {
-
     checkSession()
 
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(() => {
+      checkSession()
+    })
+
+    return () => {
+      subscription.unsubscribe()
+    }
   }, [])
 
   async function checkSession() {
-
     const {
       data: { session },
-    } = await supabase
-      .auth
-      .getSession()
+    } = await supabase.auth.getSession()
 
-    setLoggedIn(
-      !!session
-    )
+    setLoggedIn(!!session)
 
-    if (!session) return
-
-    const { data: profile } =
-      await supabase
-        .from("profiles")
-        .select("role")
-        .eq(
-          "id",
-          session.user.id
-        )
-        .single()
-
-    if (
-      profile?.role ===
-      "coach"
-    ) {
-      setIsCoach(true)
+    if (!session) {
+      setIsCoach(false)
+      return
     }
+
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", session.user.id)
+      .single()
+
+    setIsCoach(profile?.role === "coach")
   }
 
   async function handleLogout() {
-
     await supabase.auth.signOut()
-
-    window.location.href =
-      "/login"
+    window.location.href = "/login"
   }
 
   return (
-
     <nav className="flex items-center justify-between border-b border-gray-800 bg-black px-8 py-5">
-
-      <Link
-        href="/"
-        className="text-xl font-bold"
-      >
+      <Link href="/" className="text-xl font-bold">
         Home
       </Link>
 
       <div className="flex gap-6">
-
         {loggedIn ? (
-
           isCoach ? (
-
             <>
-
               <Link
                 href="/coach/schedule"
                 className="text-lg transition hover:text-yellow-400"
@@ -110,13 +80,9 @@ export default function Navbar() {
               >
                 Logout
               </button>
-
             </>
-
           ) : (
-
             <>
-
               <Link
                 href="/book"
                 className="text-lg transition hover:text-yellow-400"
@@ -137,15 +103,10 @@ export default function Navbar() {
               >
                 Logout
               </button>
-
             </>
-
           )
-
         ) : (
-
           <>
-
             <Link
               href="/book"
               className="text-lg transition hover:text-yellow-400"
@@ -166,13 +127,9 @@ export default function Navbar() {
             >
               Sign Up
             </Link>
-
           </>
-
         )}
-
       </div>
-
     </nav>
   )
 }

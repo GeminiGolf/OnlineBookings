@@ -76,7 +76,13 @@ export default function LoginPage() {
       return
     }
 
-    if (profile.role === "coach") {
+    if (profile.role === "admin") {
+
+      router.push(
+        "/admin"
+      )
+
+    } else if (profile.role === "coach") {
 
       router.push(
         "/coach/dashboard"

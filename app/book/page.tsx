@@ -113,16 +113,11 @@ export default function BookPage() {
       .select("lesson_time")
       .eq("coach_id", selectedCoach)
       .eq("lesson_date", formattedDate)
-      .eq("status", "booked")
+      .in("status", ["booked", "completed"])
 
-    const bookedTimes =
-      existingBookings?.map((booking) => {
-        const hour = parseInt(booking.lesson_time.split(":")[0])
+    const bookedTimes = existingBookings?.map((booking) => booking.lesson_time.trim()) || []
 
-        return formatHour(hour)
-      }) || []
-
-    availableSlots = availableSlots.filter((slot) => !bookedTimes.includes(slot))
+    availableSlots = availableSlots.filter((slot) => !bookedTimes.includes(slot.trim()))
 
     const { data: weeklyBreaks } = await supabase
       .from("weekly_breaks")
@@ -230,8 +225,36 @@ export default function BookPage() {
 
     // INSERT BOOKING
 
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("id")
+      .eq("id", session.user.id)
+      .single()
+
+    if (!profile) {
+      alert("Profile not found.")
+
+      setLoading(false)
+
+      return
+    }
+
+    const { data: client } = await supabase
+      .from("clients")
+      .select("id")
+      .eq("profile_id", profile.id)
+      .single()
+
+    if (!client) {
+      alert("Client record not found.")
+
+      setLoading(false)
+
+      return
+    }
+
     const { error } = await supabase.from("bookings").insert({
-      client_id: 1,
+      client_id: client.id,
       coach_id: selectedCoach,
       lesson_date: formattedDate,
       lesson_time: selectedTime,
