@@ -44,11 +44,7 @@ export default function NotificationsPage() {
       return
     }
 
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("role")
-      .eq("id", session.user.id)
-      .single()
+    const { data: profile } = await supabase.from("profiles").select("role").eq("id", session.user.id).single()
 
     setCurrentRole(profile?.role || "")
 
@@ -56,11 +52,7 @@ export default function NotificationsPage() {
     let error = null
 
     if (profile?.role === "coach") {
-      const { data: coach } = await supabase
-        .from("coaches")
-        .select("id")
-        .eq("profile_id", session.user.id)
-        .single()
+      const { data: coach } = await supabase.from("coaches").select("id").eq("profile_id", session.user.id).single()
 
       const result = await supabase
         .from("notifications")
@@ -71,10 +63,7 @@ export default function NotificationsPage() {
       data = result.data
       error = result.error
     } else {
-      const result = await supabase
-        .from("notifications")
-        .select("*")
-        .order("created_at", { ascending: false })
+      const result = await supabase.from("notifications").select("*").order("created_at", { ascending: false })
 
       data = result.data
       error = result.error
@@ -114,28 +103,14 @@ export default function NotificationsPage() {
           lesson_time = booking?.lesson_time || ""
         }
 
-        if (
-          notification.type === "client_cancelled" &&
-          lesson_date
-        ) {
-          display_message =
-            `Cancelled lesson | ${new Date(
-              lesson_date
-            ).toLocaleDateString("en-GB", {
-              day: "2-digit",
-              month: "2-digit",
-            })} @ ${lesson_time}`
+        if (notification.type === "client_cancelled" && lesson_date) {
+          display_message = `Cancelled lesson | ${new Date(lesson_date).toLocaleDateString("en-GB", {
+            day: "2-digit",
+            month: "2-digit",
+          })} @ ${lesson_time}`
         }
-        console.log(
-          "TYPE:",
-          notification.type,
-          "BOOKING:",
-          notification.booking_id
-        )
-        if (
-          notification.type === "client_rescheduled" &&
-          notification.booking_id
-        ) {
+
+        if (notification.type === "client_rescheduled" && notification.booking_id) {
           const { data: changes } = await supabase
             .from("booking_changes")
             .select("*")
@@ -145,24 +120,15 @@ export default function NotificationsPage() {
             })
 
           const change = changes?.[0]
-          console.log(
-            "RESCHEDULE CHANGE:",
-            notification.booking_id,
-            changes
-          )
 
           if (change) {
             const formatDate = (date: string) =>
-              new Date(date).toLocaleDateString(
-                "en-GB",
-                {
-                  day: "2-digit",
-                  month: "2-digit",
-                }
-              )
+              new Date(date).toLocaleDateString("en-GB", {
+                day: "2-digit",
+                month: "2-digit",
+              })
 
-            const formatTime = (time: string) =>
-              time.replace(":00", "")
+            const formatTime = (time: string) => time.replace(":00", "")
 
             display_message =
               `Rescheduled lesson | ` +
@@ -181,36 +147,19 @@ export default function NotificationsPage() {
       })
     )
 
-    setUrgentNotifications(
-      enrichedNotifications.filter(
-        (n) =>
-          n.is_urgent &&
-          !n.is_read
-      )
-    )
+    setUrgentNotifications(enrichedNotifications.filter((n) => n.is_urgent && !n.is_read))
 
-    setNotifications(
-      enrichedNotifications.filter(
-        (n) =>
-          !n.is_urgent ||
-          n.is_read
-      )
-    )
+    setNotifications(enrichedNotifications.filter((n) => !n.is_urgent || n.is_read))
 
     setLoading(false)
-    }
+  }
 
-    async function toggleNotification(
-      id: number,
-      value: boolean
-    ) {
+  async function toggleNotification(id: number, value: boolean) {
     const { error } = await supabase
       .from("notifications")
       .update({
         is_read: value,
-        resolved_at: value
-          ? new Date().toISOString()
-          : null,
+        resolved_at: value ? new Date().toISOString() : null,
       })
       .eq("id", id)
 
@@ -222,13 +171,9 @@ export default function NotificationsPage() {
   if (loading) {
     return (
       <main className="min-h-screen bg-gray-100 p-8">
-        <h1 className="text-4xl font-bold text-black">
-          Notifications
-        </h1>
+        <h1 className="text-4xl font-bold text-black">Notifications</h1>
 
-        <p className="mt-4 text-black">
-          Loading...
-        </p>
+        <p className="mt-4 text-black">Loading...</p>
       </main>
     )
   }
@@ -236,58 +181,35 @@ export default function NotificationsPage() {
   return (
     <main className="min-h-screen bg-gray-100 p-8">
       <div className="mx-auto max-w-6xl">
-
-        <h1 className="mb-8 text-4xl font-bold text-black">
-          Notifications
-        </h1>
+        <h1 className="mb-8 text-4xl font-bold text-black">Notifications</h1>
 
         {/* URGENT */}
 
         <div className="mb-10">
-          <h2 className="mb-4 text-3xl font-bold text-red-700">
-            Urgent
-          </h2>
+          <h2 className="mb-4 text-3xl font-bold text-red-700">Urgent</h2>
 
           {urgentNotifications.length === 0 ? (
             <div className="rounded-xl bg-white p-6 shadow">
-              <p className="text-black">
-                No urgent notifications.
-              </p>
+              <p className="text-black">No urgent notifications.</p>
             </div>
           ) : (
             <div className="space-y-4">
               {urgentNotifications.map((notification) => (
-                <div
-                  key={notification.id}
-                  className="rounded-xl border border-red-300 bg-red-100 p-6 shadow"
-                >
-                  <h3 className="text-xl font-bold text-red-700">
-                    LATE BOOKING
-                  </h3>
+                <div key={notification.id} className="rounded-xl border border-red-300 bg-red-100 p-6 shadow">
+                  <h3 className="text-xl font-bold text-red-700">LATE BOOKING</h3>
 
                   <p className="mt-3 text-black">
-                    <strong>Client:</strong>{" "}
-                    {notification.client_name}
+                    <strong>Client:</strong> {notification.client_name}
                   </p>
 
                   <p className="mt-1 text-black">
-                    <strong>Time:</strong>{" "}
-                    {notification.lesson_date} @{" "}
-                    {notification.lesson_time}
+                    <strong>Time:</strong> {notification.lesson_date} @ {notification.lesson_time}
                   </p>
 
                   <div className="mt-4 flex gap-3">
-                    <button
-                      className="rounded bg-green-600 px-4 py-2 text-white"
-                    >
-                      Approve
-                    </button>
+                    <button className="rounded bg-green-600 px-4 py-2 text-white">Approve</button>
 
-                    <button
-                      className="rounded bg-red-600 px-4 py-2 text-white"
-                    >
-                      Reject
-                    </button>
+                    <button className="rounded bg-red-600 px-4 py-2 text-white">Reject</button>
                   </div>
                 </div>
               ))}
@@ -298,58 +220,40 @@ export default function NotificationsPage() {
         {/* STANDARD */}
 
         <div>
-          <h2 className="mb-4 text-3xl font-bold text-black">
-            Notifications
-          </h2>
+          <h2 className="mb-4 text-3xl font-bold text-black">Notifications</h2>
 
           {notifications.length === 0 ? (
             <div className="rounded-xl bg-white p-6 shadow">
-              <p className="text-black">
-                No notifications.
-              </p>
+              <p className="text-black">No notifications.</p>
             </div>
           ) : (
             <div className="space-y-4">
               {notifications.map((notification) => (
                 <div
                   key={notification.id}
-                  className={`rounded-xl p-4 shadow ${
-                    notification.is_read
-                      ? "bg-gray-200"
-                      : "bg-white"
-                  }`}
+                  className={`rounded-xl p-4 shadow ${notification.is_read ? "bg-gray-200" : "bg-white"}`}
                 >
                   <label className="flex items-center justify-between gap-4 cursor-pointer">
                     <div className="flex items-center gap-3">
                       <input
                         type="checkbox"
                         checked={notification.is_read}
-                        onChange={(e) =>
-                          toggleNotification(
-                            notification.id,
-                            e.target.checked
-                          )
-                        }
+                        onChange={(e) => toggleNotification(notification.id, e.target.checked)}
                         className="h-5 w-5"
                       />
 
                       <span className="font-medium text-black">
-                        {notification.display_message ??
-                          notification.message}
+                        {notification.display_message ?? notification.message}
                       </span>
                     </div>
 
                     <span className="text-sm text-gray-600 whitespace-nowrap">
-                      {new Date(
-                        notification.created_at
-                      ).toLocaleDateString("en-GB", {
+                      {new Date(notification.created_at).toLocaleDateString("en-GB", {
                         day: "2-digit",
                         month: "2-digit",
                       })}
                       {" | "}
-                      {new Date(
-                        notification.created_at
-                      ).toLocaleTimeString([], {
+                      {new Date(notification.created_at).toLocaleTimeString([], {
                         hour: "2-digit",
                         minute: "2-digit",
                       })}
@@ -360,7 +264,6 @@ export default function NotificationsPage() {
             </div>
           )}
         </div>
-
       </div>
     </main>
   )

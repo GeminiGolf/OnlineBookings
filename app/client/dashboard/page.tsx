@@ -306,12 +306,8 @@ export default function ClientDashboard() {
       .eq("status", "booked")
 
     const bookedTimes =
-      bookings
-        ?.filter(
-          (booking) =>
-            booking.id !== rescheduleLesson.id
-        )
-        .map((booking) => booking.lesson_time.trim()) || []
+      bookings?.filter((booking) => booking.id !== rescheduleLesson.id).map((booking) => booking.lesson_time.trim()) ||
+      []
 
     const slots = Array.from(slotSet).filter((slot) => !bookedTimes.includes(slot.trim()))
 
@@ -370,25 +366,20 @@ export default function ClientDashboard() {
       return
     }
 
-    const {
-      data: changeData,
-      error: changeError,
-    } = await supabase
-      .from("booking_changes")
-      .insert({
-        booking_id: rescheduleLesson.id,
-        action: "rescheduled",
-        performed_by: "client",
-        old_date: oldDate,
-        old_time: oldTime,
-        new_date: formattedDate,
-        new_time: rescheduleTime,
-      })
+    const { data: changeData, error: changeError } = await supabase.from("booking_changes").insert({
+      booking_id: rescheduleLesson.id,
+      action: "rescheduled",
+      performed_by: "client",
+      old_date: oldDate,
+      old_time: oldTime,
+      new_date: formattedDate,
+      new_time: rescheduleTime,
+    })
 
     alert(
       JSON.stringify({
         changeData,
-        changeError
+        changeError,
       })
     )
 
