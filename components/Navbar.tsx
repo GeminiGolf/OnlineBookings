@@ -4,6 +4,7 @@ import Link from "next/link"
 import { useEffect, useState } from "react"
 import { supabase } from "../lib/supabaseClient"
 
+console.log("NAVBAR RENDER")
 export default function Navbar() {
   const [loggedIn, setLoggedIn] = useState(false)
   const [role, setRole] = useState("")

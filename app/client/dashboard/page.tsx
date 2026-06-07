@@ -300,12 +300,18 @@ export default function ClientDashboard() {
 
     const { data: bookings } = await supabase
       .from("bookings")
-      .select("lesson_time")
+      .select("id, lesson_time")
       .eq("coach_id", coachId)
       .eq("lesson_date", formattedDate)
       .eq("status", "booked")
 
-    const bookedTimes = bookings?.map((booking) => booking.lesson_time.trim()) || []
+    const bookedTimes =
+      bookings
+        ?.filter(
+          (booking) =>
+            booking.id !== rescheduleLesson.id
+        )
+        .map((booking) => booking.lesson_time.trim()) || []
 
     const slots = Array.from(slotSet).filter((slot) => !bookedTimes.includes(slot.trim()))
 
@@ -364,21 +370,27 @@ export default function ClientDashboard() {
       return
     }
 
-    await supabase.from("booking_changes").insert({
-      booking_id: rescheduleLesson.id,
+    const {
+      data: changeData,
+      error: changeError,
+    } = await supabase
+      .from("booking_changes")
+      .insert({
+        booking_id: rescheduleLesson.id,
+        action: "rescheduled",
+        performed_by: "client",
+        old_date: oldDate,
+        old_time: oldTime,
+        new_date: formattedDate,
+        new_time: rescheduleTime,
+      })
 
-      action_type: "rescheduled",
-
-      performed_by: "client",
-
-      old_date: oldDate,
-
-      old_time: oldTime,
-
-      new_date: formattedDate,
-
-      new_time: rescheduleTime,
-    })
+    alert(
+      JSON.stringify({
+        changeData,
+        changeError
+      })
+    )
 
     await supabase.from("notifications").insert({
       coach_id: rescheduleLesson.coach_id,

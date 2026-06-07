@@ -249,14 +249,14 @@ export default function CoachDashboardClient({
       setRescheduleBooking(null)
       setMoveBooking(null)
 
-      window.location.href = `/coach/schedule?date=${selectedDate}`
+      window.location.reload()
 
       return
     }
 
     const booking = getBookingForHour(hour)
 
-    if (booking) {
+    if (booking && !rescheduleBooking && !moveBooking) {
       setSelectedBooking(booking)
       return
     }

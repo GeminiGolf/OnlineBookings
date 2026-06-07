@@ -19,6 +19,7 @@ type Notification = {
   client_name?: string
   lesson_date?: string
   lesson_time?: string
+  display_message?: string
 }
 
 export default function NotificationsPage() {
@@ -51,9 +52,6 @@ export default function NotificationsPage() {
 
     setCurrentRole(profile?.role || "")
 
-    console.log("SESSION USER", session.user.id)
-    console.log("ROLE", profile?.role)
-
     let data = null
     let error = null
 
@@ -64,13 +62,10 @@ export default function NotificationsPage() {
         .eq("profile_id", session.user.id)
         .single()
 
-      console.log("COACH", coach)
-
       const result = await supabase
         .from("notifications")
         .select("*")
         .eq("coach_id", coach?.id)
-        .eq("is_read", false)
         .order("created_at", { ascending: false })
 
       data = result.data
@@ -79,16 +74,11 @@ export default function NotificationsPage() {
       const result = await supabase
         .from("notifications")
         .select("*")
-        .eq("is_read", false)
         .order("created_at", { ascending: false })
 
       data = result.data
       error = result.error
     }
-
-    console.log("NOTIFICATION ERROR", error)
-    console.log("NOTIFICATION DATA", data)
-
 
     if (error || !data) {
       console.error(error)
@@ -96,18 +86,12 @@ export default function NotificationsPage() {
       return
     }
 
-      console.log("RAW NOTIFICATIONS", data)
-
-      console.log(
-        "URGENT COUNT",
-        data.filter((n) => n.is_urgent).length
-      )
-
-          const enrichedNotifications = await Promise.all(
+    const enrichedNotifications = await Promise.all(
       data.map(async (notification) => {
         let client_name = ""
         let lesson_date = ""
         let lesson_time = ""
+        let display_message = notification.message
 
         if (notification.client_id) {
           const { data: client } = await supabase
@@ -130,38 +114,103 @@ export default function NotificationsPage() {
           lesson_time = booking?.lesson_time || ""
         }
 
+        if (
+          notification.type === "client_cancelled" &&
+          lesson_date
+        ) {
+          display_message =
+            `Cancelled lesson | ${new Date(
+              lesson_date
+            ).toLocaleDateString("en-GB", {
+              day: "2-digit",
+              month: "2-digit",
+            })} @ ${lesson_time}`
+        }
+        console.log(
+          "TYPE:",
+          notification.type,
+          "BOOKING:",
+          notification.booking_id
+        )
+        if (
+          notification.type === "client_rescheduled" &&
+          notification.booking_id
+        ) {
+          const { data: changes } = await supabase
+            .from("booking_changes")
+            .select("*")
+            .eq("booking_id", notification.booking_id)
+            .order("created_at", {
+              ascending: false,
+            })
+
+          const change = changes?.[0]
+          console.log(
+            "RESCHEDULE CHANGE:",
+            notification.booking_id,
+            changes
+          )
+
+          if (change) {
+            const formatDate = (date: string) =>
+              new Date(date).toLocaleDateString(
+                "en-GB",
+                {
+                  day: "2-digit",
+                  month: "2-digit",
+                }
+              )
+
+            const formatTime = (time: string) =>
+              time.replace(":00", "")
+
+            display_message =
+              `Rescheduled lesson | ` +
+              `${formatDate(change.old_date)} @ ${formatTime(change.old_time)} → ` +
+              `${formatDate(change.new_date)} @ ${formatTime(change.new_time)}`
+          }
+        }
+
         return {
           ...notification,
           client_name,
           lesson_date,
           lesson_time,
+          display_message,
         }
       })
     )
 
     setUrgentNotifications(
       enrichedNotifications.filter(
-        (n) => n.is_urgent
+        (n) =>
+          n.is_urgent &&
+          !n.is_read
       )
     )
 
     setNotifications(
       enrichedNotifications.filter(
-        (n) => !n.is_urgent
+        (n) =>
+          !n.is_urgent ||
+          n.is_read
       )
     )
 
     setLoading(false)
-  }
+    }
 
-  async function toggleNotification(
-    id: number,
-    value: boolean
-  ) {
+    async function toggleNotification(
+      id: number,
+      value: boolean
+    ) {
     const { error } = await supabase
       .from("notifications")
       .update({
         is_read: value,
+        resolved_at: value
+          ? new Date().toISOString()
+          : null,
       })
       .eq("id", id)
 
@@ -264,7 +313,11 @@ export default function NotificationsPage() {
               {notifications.map((notification) => (
                 <div
                   key={notification.id}
-                  className="rounded-xl bg-white p-4 shadow"
+                  className={`rounded-xl p-4 shadow ${
+                    notification.is_read
+                      ? "bg-gray-200"
+                      : "bg-white"
+                  }`}
                 >
                   <label className="flex items-center justify-between gap-4 cursor-pointer">
                     <div className="flex items-center gap-3">
@@ -281,7 +334,8 @@ export default function NotificationsPage() {
                       />
 
                       <span className="font-medium text-black">
-                        {notification.message}
+                        {notification.display_message ??
+                          notification.message}
                       </span>
                     </div>
 
