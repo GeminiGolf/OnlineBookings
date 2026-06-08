@@ -288,6 +288,13 @@ export default function BookPage() {
         is_read: false,
       })
       .select()
+
+    if (error) {
+      alert(
+        "NOTIFICATION FAILED:\n\n" +
+        JSON.stringify(error, null, 2)
+      )
+    }
   }
 
   alert("Booking confirmed!")

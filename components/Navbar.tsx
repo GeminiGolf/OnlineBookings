@@ -8,10 +8,18 @@ export default function Navbar() {
   const [loggedIn, setLoggedIn] = useState(false)
   const [role, setRole] = useState("")
   const [loading, setLoading] = useState(true)
-
   const [urgentCount, setUrgentCount] = useState(0)
   const [normalCount, setNormalCount] = useState(0)
-
+  const [showUrgentDropdown, setShowUrgentDropdown] = useState(false)
+  const [urgentNotifications, setUrgentNotifications] = useState<
+    {
+      id: number
+      booking_id: number | null
+      client_name: string
+      lesson_date: string
+      lesson_time: string
+    }[]
+  >([])
   useEffect(() => {
     checkSession()
 
@@ -63,7 +71,7 @@ export default function Navbar() {
       if (coach) {
         const { data: notifications } = await supabase
           .from("notifications")
-          .select("is_urgent")
+          .select("*")
           .eq("coach_id", coach.id)
           .eq("is_read", false)
 
@@ -78,13 +86,55 @@ export default function Navbar() {
             (n) => !n.is_urgent
           ).length || 0
         )
+
+        const urgentItems =
+          notifications?.filter((n) => n.is_urgent) || []
+
+        const enrichedUrgent = await Promise.all(
+          urgentItems.map(async (notification) => {
+            let client_name = ""
+            let lesson_date = ""
+            let lesson_time = ""
+
+            if (notification.client_id) {
+              const { data: client } = await supabase
+                .from("clients")
+                .select("name")
+                .eq("id", notification.client_id)
+                .single()
+
+              client_name = client?.name || "Unknown Client"
+            }
+
+            if (notification.booking_id) {
+              const { data: booking } = await supabase
+                .from("bookings")
+                .select("lesson_date, lesson_time")
+                .eq("id", notification.booking_id)
+                .single()
+
+              lesson_date = booking?.lesson_date || ""
+              lesson_time = booking?.lesson_time || ""
+            }
+
+            return {
+              id: notification.id,
+              booking_id: notification.booking_id,
+              client_name,
+              lesson_date,
+              lesson_time,
+            }
+          })
+        )
+
+        setUrgentNotifications(enrichedUrgent)
       }
     }
 
     if (currentRole === "admin") {
       const { data: notifications } = await supabase
         .from("notifications")
-        .select("is_urgent")
+        .select("*")
         .eq("is_read", false)
 
       setUrgentCount(
@@ -103,6 +153,70 @@ export default function Navbar() {
     setLoading(false)
   }
 
+  async function handleApprove(notificationId: number) {
+    const { error } = await supabase
+      .from("notifications")
+      .update({
+        is_read: true,
+        is_urgent: false,
+        resolved_at: new Date().toISOString(),
+        resolved_by: "coach",
+        rejection_reason: "Approved",
+      })
+      .eq("id", notificationId)
+
+    if (!error) {
+      checkSession()
+    }
+  }
+
+  async function handleReject(
+    notificationId: number,
+    bookingId: number | null
+  ) {
+    let reason = ""
+
+    while (!reason.trim()) {
+      const response = prompt("Reason for rejection:")
+
+      if (response === null) {
+        return
+      }
+
+      if (!response.trim()) {
+        alert("Please fill in a reason.")
+        continue
+      }
+
+      reason = response.trim()
+    }
+
+    if (bookingId) {
+      await supabase
+        .from("bookings")
+        .update({
+          status: "cancelled",
+          cancellation_reason: reason,
+        })
+        .eq("id", bookingId)
+    }
+
+    const { error } = await supabase
+      .from("notifications")
+      .update({
+        is_read: true,
+        is_urgent: false,
+        resolved_at: new Date().toISOString(),
+        resolved_by: "coach",
+        rejection_reason: reason,
+      })
+      .eq("id", notificationId)
+
+    if (!error) {
+      checkSession()
+    }
+  }
+
   async function handleLogout() {
     await supabase.auth.signOut()
     window.location.href = "/login"
@@ -119,18 +233,80 @@ export default function Navbar() {
           <>
             {loggedIn && role === "coach" && (
               <>
-                <Link
-                  href="/notifications"
-                  className={`text-lg transition ${
-                    urgentCount > 0
-                      ? "font-bold text-red-500"
-                      : "hover:text-red-400"
-                  }`}
-                >
-                  {urgentCount > 0
-                    ? `Urgent (${urgentCount})`
-                    : "Urgent"}
-                </Link>
+                <div className="relative">
+                  <button
+                    onClick={() =>
+                      setShowUrgentDropdown(!showUrgentDropdown)
+                    }
+                    className={`text-lg transition ${
+                      urgentCount > 0
+                        ? "font-bold text-red-500"
+                        : "hover:text-red-400"
+                    }`}
+                  >
+                    {urgentCount > 0
+                      ? `Urgent (${urgentCount})`
+                      : "Urgent"}
+                  </button>
+
+                  {showUrgentDropdown && (
+                    <div className="absolute left-0 top-10 z-50 w-[420px] rounded-xl border bg-white p-3 shadow-xl">
+                      {urgentNotifications.length === 0 ? (
+                        <p className="text-sm text-black">
+                          No urgent notifications.
+                        </p>
+                      ) : (
+                        <div className="space-y-3">
+                          {urgentNotifications.map((notification) => (
+                            <div
+                              key={notification.id}
+                              className="rounded-lg border border-red-200 bg-red-50 p-3"
+                            >
+                              <div className="mb-2 text-sm font-bold text-black">
+                                Late Booking - {notification.client_name}
+                              </div>
+
+                              <div className="mb-3 text-xs text-gray-700">
+                                {new Date(notification.lesson_date)
+                                  .toLocaleDateString("en-GB", {
+                                    day: "2-digit",
+                                    month: "2-digit",
+                                  })}
+                                {" @ "}
+                                {notification.lesson_time
+                                  .replace(":00", "")
+                                  .toLowerCase()}
+                              </div>
+
+                              <div className="flex gap-2">
+                                <button
+                                  onClick={() =>
+                                    handleApprove(notification.id)
+                                  }
+                                  className="rounded bg-green-600 px-3 py-1 text-sm text-white"
+                                >
+                                  Approve
+                                </button>
+
+                                <button
+                                  onClick={() =>
+                                    handleReject(
+                                      notification.id,
+                                      notification.booking_id
+                                    )
+                                  }
+                                  className="rounded bg-red-600 px-3 py-1 text-sm text-white"
+                                >
+                                  Reject
+                                </button>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
 
                 <Link
                   href="/coach/schedule"
@@ -159,18 +335,73 @@ export default function Navbar() {
 
             {loggedIn && role === "admin" && (
               <>
-                <Link
-                  href="/notifications"
-                  className={`text-lg transition ${
-                    urgentCount > 0
-                      ? "font-bold text-red-500"
-                      : "hover:text-red-400"
-                  }`}
-                >
-                  {urgentCount > 0
-                    ? `Urgent (${urgentCount})`
-                    : "Urgent"}
-                </Link>
+                <div className="relative">
+                  <button
+                    onClick={() =>
+                      setShowUrgentDropdown(!showUrgentDropdown)
+                    }
+                    className={`text-lg transition ${
+                      urgentCount > 0
+                        ? "font-bold text-red-500"
+                        : "hover:text-red-400"
+                    }`}
+                  >
+                    {urgentCount > 0
+                      ? `Urgent (${urgentCount})`
+                      : "Urgent"}
+                  </button>
+
+                  {showUrgentDropdown && (
+                    <div className="absolute left-0 top-10 z-50 w-[420px] rounded-xl border bg-white p-3 shadow-xl">
+                      {urgentNotifications.length === 0 ? (
+                        <p className="text-sm text-black">
+                          No urgent notifications.
+                        </p>
+                      ) : (
+                        <div className="space-y-3">
+                          {urgentNotifications.map((notification) => (
+                            <div
+                              key={notification.id}
+                              className="rounded-lg border border-red-200 bg-red-50 p-3"
+                            >
+                              <div className="mb-2 text-sm font-bold text-black">
+                                Late Booking - {notification.client_name}
+                              </div>
+
+                              <div className="mb-3 text-xs text-gray-700">
+                                {notification.lesson_date} @{" "}
+                                {notification.lesson_time}
+                              </div>
+
+                              <div className="flex gap-2">
+                                <button
+                                  onClick={() =>
+                                    handleApprove(notification.id)
+                                  }
+                                  className="rounded bg-green-600 px-3 py-1 text-sm text-white"
+                                >
+                                  Approve
+                                </button>
+
+                                <button
+                                  onClick={() =>
+                                    handleReject(
+                                      notification.id,
+                                      notification.booking_id
+                                    )
+                                  }
+                                  className="rounded bg-red-600 px-3 py-1 text-sm text-white"
+                                >
+                                  Reject
+                                </button>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
 
                 <Link
                   href="/book"

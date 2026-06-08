@@ -271,9 +271,22 @@ export default function NotificationsPage() {
   }
 
   async function handleReject(notification: Notification) {
-    const reason = prompt("Reason for rejection:")
+    let reason = ""
 
-    if (!reason) return
+    while (!reason.trim()) {
+      const response = prompt("Reason for rejection:")
+
+      if (response === null) {
+        return
+      }
+
+      if (!response.trim()) {
+        alert("Please fill in a reason.")
+        continue
+      }
+
+      reason = response.trim()
+    }
 
     if (notification.booking_id) {
       await supabase
