@@ -24,13 +24,20 @@ export default function Navbar() {
     checkSession()
 
     const {
-      data: { subscription },
+      data: { subscription: authSubscription },
     } = supabase.auth.onAuthStateChange(() => {
       checkSession()
     })
 
+    const notificationChannel = supabase
+      .channel("navbar-notifications")
+      .on("postgres_changes", { event: "*", schema: "public", table: "notifications" }, checkSession)
+      .on("postgres_changes", { event: "*", schema: "public", table: "bookings" }, checkSession)
+      .subscribe()
+
     return () => {
-      subscription.unsubscribe()
+      authSubscription.unsubscribe()
+      supabase.removeChannel(notificationChannel)
     }
   }, [])
 
@@ -51,22 +58,14 @@ export default function Navbar() {
       return
     }
 
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("role")
-      .eq("id", session.user.id)
-      .single()
+    const { data: profile } = await supabase.from("profiles").select("role").eq("id", session.user.id).single()
 
     const currentRole = profile?.role || ""
 
     setRole(currentRole)
 
     if (currentRole === "coach") {
-      const { data: coach } = await supabase
-        .from("coaches")
-        .select("id")
-        .eq("profile_id", session.user.id)
-        .single()
+      const { data: coach } = await supabase.from("coaches").select("id").eq("profile_id", session.user.id).single()
 
       if (coach) {
         const { data: notifications } = await supabase
@@ -75,20 +74,11 @@ export default function Navbar() {
           .eq("coach_id", coach.id)
           .eq("is_read", false)
 
-        setUrgentCount(
-          notifications?.filter(
-            (n) => n.is_urgent
-          ).length || 0
-        )
+        setUrgentCount(notifications?.filter((n) => n.is_urgent).length || 0)
 
-        setNormalCount(
-          notifications?.filter(
-            (n) => !n.is_urgent
-          ).length || 0
-        )
+        setNormalCount(notifications?.filter((n) => !n.is_urgent).length || 0)
 
-        const urgentItems =
-          notifications?.filter((n) => n.is_urgent) || []
+        const urgentItems = notifications?.filter((n) => n.is_urgent) || []
 
         const enrichedUrgent = await Promise.all(
           urgentItems.map(async (notification) => {
@@ -132,22 +122,10 @@ export default function Navbar() {
     }
 
     if (currentRole === "admin") {
-      const { data: notifications } = await supabase
-        .from("notifications")
-        .select("*")
-        .eq("is_read", false)
+      const { data: notifications } = await supabase.from("notifications").select("*").eq("is_read", false)
 
-      setUrgentCount(
-        notifications?.filter(
-          (n) => n.is_urgent
-        ).length || 0
-      )
-
-      setNormalCount(
-        notifications?.filter(
-          (n) => !n.is_urgent
-        ).length || 0
-      )
+      setUrgentCount(notifications?.filter((n) => n.is_urgent).length || 0)
+      setNormalCount(notifications?.filter((n) => !n.is_urgent).length || 0)
     }
 
     setLoading(false)
@@ -170,10 +148,7 @@ export default function Navbar() {
     }
   }
 
-  async function handleReject(
-    notificationId: number,
-    bookingId: number | null
-  ) {
+  async function handleReject(notificationId: number, bookingId: number | null) {
     let reason = ""
 
     while (!reason.trim()) {
@@ -235,66 +210,45 @@ export default function Navbar() {
               <>
                 <div className="relative">
                   <button
-                    onClick={() =>
-                      setShowUrgentDropdown(!showUrgentDropdown)
-                    }
+                    onClick={() => setShowUrgentDropdown(!showUrgentDropdown)}
                     className={`text-lg transition ${
-                      urgentCount > 0
-                        ? "font-bold text-red-500"
-                        : "hover:text-red-400"
+                      urgentCount > 0 ? "font-bold text-red-500" : "hover:text-red-400"
                     }`}
                   >
-                    {urgentCount > 0
-                      ? `Urgent (${urgentCount})`
-                      : "Urgent"}
+                    {urgentCount > 0 ? `Urgent (${urgentCount})` : "Urgent"}
                   </button>
 
                   {showUrgentDropdown && (
                     <div className="absolute left-0 top-10 z-50 w-[420px] rounded-xl border bg-white p-3 shadow-xl">
                       {urgentNotifications.length === 0 ? (
-                        <p className="text-sm text-black">
-                          No urgent notifications.
-                        </p>
+                        <p className="text-sm text-black">No urgent notifications.</p>
                       ) : (
                         <div className="space-y-3">
                           {urgentNotifications.map((notification) => (
-                            <div
-                              key={notification.id}
-                              className="rounded-lg border border-red-200 bg-red-50 p-3"
-                            >
+                            <div key={notification.id} className="rounded-lg border border-red-200 bg-red-50 p-3">
                               <div className="mb-2 text-sm font-bold text-black">
                                 Late Booking - {notification.client_name}
                               </div>
 
                               <div className="mb-3 text-xs text-gray-700">
-                                {new Date(notification.lesson_date)
-                                  .toLocaleDateString("en-GB", {
-                                    day: "2-digit",
-                                    month: "2-digit",
-                                  })}
+                                {new Date(notification.lesson_date).toLocaleDateString("en-GB", {
+                                  day: "2-digit",
+                                  month: "2-digit",
+                                })}
                                 {" @ "}
-                                {notification.lesson_time
-                                  .replace(":00", "")
-                                  .toLowerCase()}
+                                {notification.lesson_time.replace(":00", "").toLowerCase()}
                               </div>
 
                               <div className="flex gap-2">
                                 <button
-                                  onClick={() =>
-                                    handleApprove(notification.id)
-                                  }
+                                  onClick={() => handleApprove(notification.id)}
                                   className="rounded bg-green-600 px-3 py-1 text-sm text-white"
                                 >
                                   Approve
                                 </button>
 
                                 <button
-                                  onClick={() =>
-                                    handleReject(
-                                      notification.id,
-                                      notification.booking_id
-                                    )
-                                  }
+                                  onClick={() => handleReject(notification.id, notification.booking_id)}
                                   className="rounded bg-red-600 px-3 py-1 text-sm text-white"
                                 >
                                   Reject
@@ -308,26 +262,15 @@ export default function Navbar() {
                   )}
                 </div>
 
-                <Link
-                  href="/coach/schedule"
-                  className="text-lg transition hover:text-yellow-400"
-                >
+                <Link href="/coach/schedule" className="text-lg transition hover:text-yellow-400">
                   Schedule
                 </Link>
 
-                <Link
-                  href="/coach/dashboard"
-                  className="text-lg transition hover:text-green-400"
-                >
-                  {normalCount > 0
-                    ? `Dashboard (${normalCount})`
-                    : "Dashboard"}
+                <Link href="/coach/dashboard" className="text-lg transition hover:text-green-400">
+                  {normalCount > 0 ? `Dashboard (${normalCount})` : "Dashboard"}
                 </Link>
 
-                <button
-                  onClick={handleLogout}
-                  className="text-lg transition hover:text-red-400"
-                >
+                <button onClick={handleLogout} className="text-lg transition hover:text-red-400">
                   Logout
                 </button>
               </>
@@ -337,59 +280,40 @@ export default function Navbar() {
               <>
                 <div className="relative">
                   <button
-                    onClick={() =>
-                      setShowUrgentDropdown(!showUrgentDropdown)
-                    }
+                    onClick={() => setShowUrgentDropdown(!showUrgentDropdown)}
                     className={`text-lg transition ${
-                      urgentCount > 0
-                        ? "font-bold text-red-500"
-                        : "hover:text-red-400"
+                      urgentCount > 0 ? "font-bold text-red-500" : "hover:text-red-400"
                     }`}
                   >
-                    {urgentCount > 0
-                      ? `Urgent (${urgentCount})`
-                      : "Urgent"}
+                    {urgentCount > 0 ? `Urgent (${urgentCount})` : "Urgent"}
                   </button>
 
                   {showUrgentDropdown && (
                     <div className="absolute left-0 top-10 z-50 w-[420px] rounded-xl border bg-white p-3 shadow-xl">
                       {urgentNotifications.length === 0 ? (
-                        <p className="text-sm text-black">
-                          No urgent notifications.
-                        </p>
+                        <p className="text-sm text-black">No urgent notifications.</p>
                       ) : (
                         <div className="space-y-3">
                           {urgentNotifications.map((notification) => (
-                            <div
-                              key={notification.id}
-                              className="rounded-lg border border-red-200 bg-red-50 p-3"
-                            >
+                            <div key={notification.id} className="rounded-lg border border-red-200 bg-red-50 p-3">
                               <div className="mb-2 text-sm font-bold text-black">
                                 Late Booking - {notification.client_name}
                               </div>
 
                               <div className="mb-3 text-xs text-gray-700">
-                                {notification.lesson_date} @{" "}
-                                {notification.lesson_time}
+                                {notification.lesson_date} @ {notification.lesson_time}
                               </div>
 
                               <div className="flex gap-2">
                                 <button
-                                  onClick={() =>
-                                    handleApprove(notification.id)
-                                  }
+                                  onClick={() => handleApprove(notification.id)}
                                   className="rounded bg-green-600 px-3 py-1 text-sm text-white"
                                 >
                                   Approve
                                 </button>
 
                                 <button
-                                  onClick={() =>
-                                    handleReject(
-                                      notification.id,
-                                      notification.booking_id
-                                    )
-                                  }
+                                  onClick={() => handleReject(notification.id, notification.booking_id)}
                                   className="rounded bg-red-600 px-3 py-1 text-sm text-white"
                                 >
                                   Reject
@@ -403,26 +327,15 @@ export default function Navbar() {
                   )}
                 </div>
 
-                <Link
-                  href="/book"
-                  className="text-lg transition hover:text-yellow-400"
-                >
+                <Link href="/book" className="text-lg transition hover:text-yellow-400">
                   Book
                 </Link>
 
-                <Link
-                  href="/admin"
-                  className="text-lg transition hover:text-green-400"
-                >
-                  {normalCount > 0
-                    ? `Dashboard (${normalCount})`
-                    : "Dashboard"}
+                <Link href="/admin" className="text-lg transition hover:text-green-400">
+                  {normalCount > 0 ? `Dashboard (${normalCount})` : "Dashboard"}
                 </Link>
 
-                <button
-                  onClick={handleLogout}
-                  className="text-lg transition hover:text-red-400"
-                >
+                <button onClick={handleLogout} className="text-lg transition hover:text-red-400">
                   Logout
                 </button>
               </>
@@ -430,31 +343,19 @@ export default function Navbar() {
 
             {loggedIn && role === "client" && (
               <>
-                <Link
-                  href="/notifications"
-                  className="text-lg transition hover:text-blue-400"
-                >
+                <Link href="/notifications" className="text-lg transition hover:text-blue-400">
                   Notifications
                 </Link>
 
-                <Link
-                  href="/book"
-                  className="text-lg transition hover:text-yellow-400"
-                >
+                <Link href="/book" className="text-lg transition hover:text-yellow-400">
                   Book
                 </Link>
 
-                <Link
-                  href="/client/dashboard"
-                  className="text-lg transition hover:text-green-400"
-                >
+                <Link href="/client/dashboard" className="text-lg transition hover:text-green-400">
                   Dashboard
                 </Link>
 
-                <button
-                  onClick={handleLogout}
-                  className="text-lg transition hover:text-red-400"
-                >
+                <button onClick={handleLogout} className="text-lg transition hover:text-red-400">
                   Logout
                 </button>
               </>
@@ -462,24 +363,15 @@ export default function Navbar() {
 
             {!loggedIn && (
               <>
-                <Link
-                  href="/book"
-                  className="text-lg transition hover:text-yellow-400"
-                >
+                <Link href="/book" className="text-lg transition hover:text-yellow-400">
                   Book
                 </Link>
 
-                <Link
-                  href="/login"
-                  className="text-lg transition hover:text-blue-400"
-                >
+                <Link href="/login" className="text-lg transition hover:text-blue-400">
                   Login
                 </Link>
 
-                <Link
-                  href="/signup"
-                  className="text-lg transition hover:text-green-400"
-                >
+                <Link href="/signup" className="text-lg transition hover:text-green-400">
                   Sign Up
                 </Link>
               </>
