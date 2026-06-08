@@ -8,7 +8,6 @@ import { DayPicker } from "react-day-picker"
 
 import "react-day-picker/dist/style.css"
 
-
 type Coach = {
   id: number
   name: string
@@ -224,11 +223,7 @@ export default function BookPage() {
 
     // INSERT BOOKING
 
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("id")
-      .eq("id", session.user.id)
-      .single()
+    const { data: profile } = await supabase.from("profiles").select("id").eq("id", session.user.id).single()
 
     if (!profile) {
       alert("Profile not found.")
@@ -238,11 +233,7 @@ export default function BookPage() {
       return
     }
 
-    const { data: client } = await supabase
-      .from("clients")
-      .select("id")
-      .eq("profile_id", profile.id)
-      .single()
+    const { data: client } = await supabase.from("clients").select("id").eq("profile_id", profile.id).single()
 
     if (!client) {
       alert("Client record not found.")
@@ -252,13 +243,17 @@ export default function BookPage() {
       return
     }
 
-    const { error } = await supabase.from("bookings").insert({
-      client_id: client.id,
-      coach_id: selectedCoach,
-      lesson_date: formattedDate,
-      lesson_time: selectedTime,
-      status: "booked",
-    })
+    const { data: booking, error } = await supabase
+      .from("bookings")
+      .insert({
+        client_id: client.id,
+        coach_id: selectedCoach,
+        lesson_date: formattedDate,
+        lesson_time: selectedTime,
+        status: "booked",
+      })
+      .select()
+      .single()
 
     if (error) {
       console.error(error)
@@ -268,6 +263,25 @@ export default function BookPage() {
       setLoading(false)
 
       return
+    }
+
+    const bookingDate = new Date(formattedDate)
+    const today = new Date()
+
+    today.setHours(0, 0, 0, 0)
+
+    const daysDifference = Math.ceil((bookingDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
+
+    if (daysDifference <= 1 && booking) {
+      await supabase.from("notifications").insert({
+        coach_id: selectedCoach,
+        client_id: client.id,
+        booking_id: booking.id,
+        type: "late_booking",
+        message: "Late booking requires review.",
+        is_urgent: true,
+        is_read: false,
+      })
     }
 
     alert("Booking confirmed!")

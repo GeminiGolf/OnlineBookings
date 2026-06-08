@@ -238,6 +238,54 @@ export default function NotificationsPage() {
     }
   }
 
+  async function handleApprove(notification: Notification) {
+    const { error } = await supabase
+      .from("notifications")
+      .update({
+        is_read: true,
+        is_urgent: false,
+        resolved_at: new Date().toISOString(),
+        resolved_by: "coach",
+        rejection_reason: "Accepted",
+      })
+      .eq("id", notification.id)
+
+    if (!error) {
+      loadNotifications()
+    }
+  }
+
+  async function handleReject(notification: Notification) {
+    const reason = prompt("Reason for rejection:")
+
+    if (!reason) return
+
+    if (notification.booking_id) {
+      await supabase
+        .from("bookings")
+        .update({
+          status: "cancelled",
+          cancellation_reason: reason,
+        })
+        .eq("id", notification.booking_id)
+    }
+
+    const { error } = await supabase
+      .from("notifications")
+      .update({
+        is_read: true,
+        is_urgent: false,
+        resolved_at: new Date().toISOString(),
+        resolved_by: "coach",
+        rejection_reason: reason,
+      })
+      .eq("id", notification.id)
+
+    if (!error) {
+      loadNotifications()
+    }
+  }
+
   const activeStart = (activePage - 1) * PAGE_SIZE
   const activeEnd = activeStart + PAGE_SIZE
   const olderStart = (olderPage - 1) * PAGE_SIZE
@@ -287,9 +335,19 @@ export default function NotificationsPage() {
                   </p>
 
                   <div className="mt-4 flex gap-3">
-                    <button className="rounded bg-green-600 px-4 py-2 text-white">Approve</button>
+                    <button
+                      onClick={() => handleApprove(notification)}
+                      className="rounded bg-green-600 px-4 py-2 text-white"
+                    >
+                      Approve
+                    </button>
 
-                    <button className="rounded bg-red-600 px-4 py-2 text-white">Reject</button>
+                    <button
+                      onClick={() => handleReject(notification)}
+                      className="rounded bg-red-600 px-4 py-2 text-white"
+                    >
+                      Reject
+                    </button>
                   </div>
                 </div>
               ))}
