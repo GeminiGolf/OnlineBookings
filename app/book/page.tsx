@@ -242,7 +242,7 @@ export default function BookPage() {
 
       return
     }
-
+  
     const { data: booking, error } = await supabase
       .from("bookings")
       .insert({
@@ -265,15 +265,20 @@ export default function BookPage() {
       return
     }
 
-    const bookingDate = new Date(formattedDate)
-    const today = new Date()
+  const todayString = new Date().toISOString().split("T")[0]
 
-    today.setHours(0, 0, 0, 0)
+  const daysDifference = Math.floor(
+    (
+      new Date(formattedDate + "T00:00:00").getTime() -
+      new Date(todayString + "T00:00:00").getTime()
+    ) /
+      (1000 * 60 * 60 * 24)
+  )
 
-    const daysDifference = Math.ceil((bookingDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
-
-    if (daysDifference <= 1 && booking) {
-      await supabase.from("notifications").insert({
+  if (daysDifference <= 1 && booking) {
+    const { data, error } = await supabase
+      .from("notifications")
+      .insert({
         coach_id: selectedCoach,
         client_id: client.id,
         booking_id: booking.id,
@@ -282,17 +287,16 @@ export default function BookPage() {
         is_urgent: true,
         is_read: false,
       })
-    }
+      .select()
+  }
 
-    alert("Booking confirmed!")
+  alert("Booking confirmed!")
 
-    setSelectedTime("")
+  setSelectedTime("")
 
-    // REFRESH SLOTS
+  await generateSlots()
 
-    await generateSlots()
-
-    setLoading(false)
+  setLoading(false)
   }
 
   return (

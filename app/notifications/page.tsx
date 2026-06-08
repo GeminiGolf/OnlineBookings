@@ -161,6 +161,21 @@ export default function NotificationsPage() {
           })} @ ${lesson_time.replace(":00", "")}`
         }
 
+        if (notification.type === "late_booking") {
+          type_label = "Late Booking"
+
+          original_datetime = `${new Date(lesson_date).toLocaleDateString("en-GB", {
+            day: "2-digit",
+            month: "2-digit",
+          })} @ ${lesson_time.replace(":00", "")}`
+
+          if (notification.rejection_reason === "Approved") {
+            notes = "Approved"
+          } else if (notification.rejection_reason) {
+            notes = `Rejected (${notification.rejection_reason})`
+          }
+        }
+
         if (notification.type === "client_rescheduled" && notification.booking_id) {
           const { data: changes } = await supabase
             .from("booking_changes")
@@ -246,7 +261,7 @@ export default function NotificationsPage() {
         is_urgent: false,
         resolved_at: new Date().toISOString(),
         resolved_by: "coach",
-        rejection_reason: "Accepted",
+        rejection_reason: "Approved",
       })
       .eq("id", notification.id)
 
