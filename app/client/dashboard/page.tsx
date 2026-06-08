@@ -376,13 +376,6 @@ export default function ClientDashboard() {
       new_time: rescheduleTime,
     })
 
-    alert(
-      JSON.stringify({
-        changeData,
-        changeError,
-      })
-    )
-
     await supabase.from("notifications").insert({
       coach_id: rescheduleLesson.coach_id,
 

@@ -434,7 +434,6 @@ export default function CoachDashboardClient({
       .eq("coach_id", coachId)
       .eq("lesson_date", selectedDate)
       .eq("is_available", false)
-    alert(JSON.stringify(overrides, null, 2))
     await supabase.from("date_overrides").upsert(overrides, {
       onConflict: "coach_id,lesson_date,lesson_time",
     })

@@ -104,10 +104,11 @@ export default function NotificationsPage() {
         }
 
         if (notification.type === "client_cancelled" && lesson_date) {
-          display_message = `Cancelled lesson | ${new Date(lesson_date).toLocaleDateString("en-GB", {
-            day: "2-digit",
-            month: "2-digit",
-          })} @ ${lesson_time}`
+          display_message = `Cancelled lesson | ${new Date(lesson_date)
+            .toLocaleDateString("en-GB", {
+              day: "2-digit",
+              month: "2-digit",
+            })} @ ${lesson_time.replace(":00", "").toLowerCase()}`
         }
 
         if (notification.type === "client_rescheduled" && notification.booking_id) {
@@ -203,7 +204,16 @@ export default function NotificationsPage() {
                   </p>
 
                   <p className="mt-1 text-black">
-                    <strong>Time:</strong> {notification.lesson_date} @ {notification.lesson_time}
+                    <strong>Time:</strong>{" "}
+                    {(notification.lesson_date ?? "")
+                      .split("-")
+                      .reverse()
+                      .slice(0, 2)
+                      .join("/")}{" "}
+                    @{" "}
+                    {(notification.lesson_time ?? "")
+                      .replace(":00", "")
+                      .toLowerCase()}
                   </p>
 
                   <div className="mt-4 flex gap-3">
