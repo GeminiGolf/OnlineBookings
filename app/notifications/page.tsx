@@ -41,6 +41,7 @@ export default function NotificationsPage() {
   const [loading, setLoading] = useState(true)
   const [currentRole, setCurrentRole] = useState("")
   const [selectedClient, setSelectedClient] = useState<Notification | null>(null)
+  const [olderFilter, setOlderFilter] = useState("all")
 
   useEffect(() => {
     loadNotifications()
@@ -231,11 +232,12 @@ export default function NotificationsPage() {
     )
 
     setUrgentNotifications(enrichedNotifications.filter((n) => n.is_urgent && !n.is_read))
-
     setActiveNotifications(enrichedNotifications.filter((n) => !n.is_urgent && !n.is_read))
-
-    setOlderNotifications(enrichedNotifications.filter((n) => !n.is_urgent && n.is_read))
-
+    setOlderNotifications(
+      enrichedNotifications
+        .filter((n) => !n.is_urgent && n.is_read)
+        .sort((a, b) => new Date(b.resolved_at || 0).getTime() - new Date(a.resolved_at || 0).getTime())
+    )
     setLoading(false)
   }
 
@@ -319,9 +321,12 @@ export default function NotificationsPage() {
   const olderStart = (olderPage - 1) * PAGE_SIZE
   const olderEnd = olderStart + PAGE_SIZE
   const paginatedActiveNotifications = activeNotifications.slice(activeStart, activeEnd)
-  const paginatedOlderNotifications = olderNotifications.slice(olderStart, olderEnd)
+  const filteredOlderNotifications =
+    olderFilter === "all" ? olderNotifications : olderNotifications.filter((n) => n.type_label === olderFilter)
+
+  const paginatedOlderNotifications = filteredOlderNotifications.slice(olderStart, olderEnd)
   const activeHasNext = activeEnd < activeNotifications.length
-  const olderHasNext = olderEnd < olderNotifications.length
+  const olderHasNext = olderEnd < filteredOlderNotifications.length
 
   if (loading) {
     return (
@@ -470,52 +475,85 @@ export default function NotificationsPage() {
 
           {showOlder && (
             <>
+              <div className="mb-4">
+                <select
+                  value={olderFilter}
+                  onChange={(e) => setOlderFilter(e.target.value)}
+                  className="rounded border px-3 py-2 text-black bg-white"
+                >
+                  <option value="all">All</option>
+                  <option value="Cancelled">Cancelled</option>
+                  <option value="Rescheduled">Rescheduled</option>
+                  <option value="Late Booking">Late Booking</option>
+                </select>
+              </div>
+              <div className="mb-3 ml-16 grid grid-cols-[140px_180px_180px_1fr_140px_140px] gap-4 text-sm font-bold text-gray-600">
+                <span>Type</span>
+                <span>Original Date</span>
+                <span>New Date</span>
+                <span>Notes</span>
+                <span>Done At</span>
+                <span>Created</span>
+              </div>
+
               {olderNotifications.length === 0 ? (
                 <div className="rounded-xl bg-white p-6 shadow">
                   <p className="text-black">No older notifications.</p>
                 </div>
               ) : (
                 <>
-                  <div className="space-y-4">
+                  <div className="overflow-hidden rounded-xl border border-gray-300 bg-white">
                     {paginatedOlderNotifications.map((notification) => (
-                      <div key={notification.id} className="rounded-xl bg-gray-200 p-4 shadow">
-                        <div className="flex items-center justify-between gap-4">
-                          <div className="flex items-center gap-3">
-                            <input
-                              type="checkbox"
-                              checked={notification.is_read}
-                              onChange={(e) => toggleNotification(notification.id, e.target.checked)}
-                              className="h-5 w-5"
-                            />
-                            <button
-                              onClick={() => setSelectedClient(notification)}
-                              className="text-lg hover:opacity-70"
-                            >
-                              👤
-                            </button>
+                      <div key={notification.id} className="border-b border-gray-300 bg-white">
+                        <div className="grid grid-cols-[40px_40px_140px_180px_180px_1fr_140px_140px] items-center">
+                          <input
+                            type="checkbox"
+                            checked={notification.is_read}
+                            onChange={(e) => toggleNotification(notification.id, e.target.checked)}
+                            className="h-5 w-5"
+                          />
 
-                            <div className="grid grid-cols-[140px_180px_180px_1fr] gap-4 text-sm text-black">
-                              <span>{notification.type_label || "-"}</span>
+                          <button onClick={() => setSelectedClient(notification)} className="text-lg hover:opacity-70">
+                            👤
+                          </button>
 
-                              <span>{notification.original_datetime || "-"}</span>
+                          <div className="contents text-sm text-black">
+                            <span className="border-l border-gray-300 px-3 py-3">{notification.type_label || "-"}</span>
 
-                              <span>{notification.new_datetime || "-"}</span>
+                            <span className="border-l border-gray-300 px-3 py-3">
+                              {notification.original_datetime || "-"}
+                            </span>
 
-                              <span>{notification.notes || "-"}</span>
-                            </div>
+                            <span className="border-l border-gray-300 px-3 py-3">
+                              {notification.new_datetime || "-"}
+                            </span>
+
+                            <span className="border-l border-gray-300 px-3 py-3">{notification.notes || "-"}</span>
+
+                            <span className="border-l border-gray-300 px-3 py-3">
+                              {notification.resolved_at
+                                ? `${new Date(notification.resolved_at).toLocaleDateString("en-GB", {
+                                    day: "2-digit",
+                                    month: "2-digit",
+                                  })} | ${new Date(notification.resolved_at).toLocaleTimeString([], {
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                  })}`
+                                : "-"}
+                            </span>
+
+                            <span className="border-l border-gray-300 px-3 py-3">
+                              {new Date(notification.created_at).toLocaleDateString("en-GB", {
+                                day: "2-digit",
+                                month: "2-digit",
+                              })}
+                              {" | "}
+                              {new Date(notification.created_at).toLocaleTimeString([], {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}
+                            </span>
                           </div>
-
-                          <span className="text-sm text-gray-600 whitespace-nowrap">
-                            {new Date(notification.created_at).toLocaleDateString("en-GB", {
-                              day: "2-digit",
-                              month: "2-digit",
-                            })}
-                            {" | "}
-                            {new Date(notification.created_at).toLocaleTimeString([], {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })}
-                          </span>
                         </div>
                       </div>
                     ))}
