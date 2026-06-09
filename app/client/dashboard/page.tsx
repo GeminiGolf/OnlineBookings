@@ -33,6 +33,7 @@ export default function ClientDashboard() {
   const [packages, setPackages] = useState<any[]>([])
   const [completedDates, setCompletedDates] = useState<Date[]>([])
   const [upcomingDates, setUpcomingDates] = useState<Date[]>([])
+  const [noShowDates, setNoShowDates] = useState<Date[]>([])
   const [showRescheduleModal, setShowRescheduleModal] = useState(false)
   const [rescheduleLesson, setRescheduleLesson] = useState<any>(null)
   const [rescheduleDate, setRescheduleDate] = useState<Date>()
@@ -62,6 +63,16 @@ export default function ClientDashboard() {
       return
     }
 
+    const today = new Date().toISOString().split("T")[0]
+
+    await supabase
+      .from("bookings")
+      .update({
+        status: "no_show",
+      })
+      .eq("status", "booked")
+      .lt("lesson_date", today)
+
     setClient(clientRecord)
 
     const { data: upcoming } = await supabase
@@ -85,14 +96,22 @@ export default function ClientDashboard() {
       .from("bookings")
       .select("*")
       .eq("client_id", clientRecord.id)
-      .eq("status", "completed")
+      .in("status", ["completed", "no_show"])
       .order("lesson_date", { ascending: false })
 
     setPreviousLessons(previous || [])
 
-    const completedLessonDates = (previous || []).map((lesson) => new Date(lesson.lesson_date))
+    const completedLessonDates = (previous || [])
+      .filter((lesson) => lesson.status === "completed")
+      .map((lesson) => new Date(lesson.lesson_date))
 
     setCompletedDates(completedLessonDates)
+
+    const noShowLessonDates = (previous || [])
+      .filter((lesson) => lesson.status === "no_show")
+      .map((lesson) => new Date(lesson.lesson_date))
+
+    setNoShowDates(noShowLessonDates)
 
     const upcomingLessonDates = (upcoming || []).map((lesson) => new Date(lesson.lesson_date))
 
@@ -329,9 +348,7 @@ export default function ClientDashboard() {
       bookings?.filter((booking) => booking.id !== rescheduleLesson.id).map((booking) => booking.lesson_time.trim()) ||
       []
 
-    let slots = Array.from(slotSet).filter(
-      (slot) => !bookedTimes.includes(slot.trim())
-    )
+    let slots = Array.from(slotSet).filter((slot) => !bookedTimes.includes(slot.trim()))
 
     const { data: dateOverrides } = await supabase
       .from("date_overrides")
@@ -359,8 +376,7 @@ export default function ClientDashboard() {
       .eq("coach_id", coachId)
       .eq("day_of_week", day)
 
-    const breakTimes =
-      weeklyBreaks?.map((item) => formatHour(item.hour)) || []
+    const breakTimes = weeklyBreaks?.map((item) => formatHour(item.hour)) || []
 
     slots = slots.filter((slot) => !breakTimes.includes(slot))
 
@@ -469,27 +485,26 @@ export default function ClientDashboard() {
       new_time: rescheduleTime,
     })
 
-  const today = new Date()
+    const today = new Date()
 
-  const daysDifference = Math.floor(
-    (new Date(formattedDate).getTime() -
-      new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime()) /
-      (1000 * 60 * 60 * 24)
-  )
+    const daysDifference = Math.floor(
+      (new Date(formattedDate).getTime() - new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime()) /
+        (1000 * 60 * 60 * 24)
+    )
 
-  await supabase.from("notifications").insert({
-    coach_id: rescheduleLesson.coach_id,
+    await supabase.from("notifications").insert({
+      coach_id: rescheduleLesson.coach_id,
 
-    client_id: rescheduleLesson.client_id,
+      client_id: rescheduleLesson.client_id,
 
-    booking_id: rescheduleLesson.id,
+      booking_id: rescheduleLesson.id,
 
-    type: "client_rescheduled",
+      type: "client_rescheduled",
 
-    is_urgent: daysDifference <= 1,
+      is_urgent: daysDifference <= 1,
 
-    message: `Client rescheduled lesson.\n\nOld:\n${oldDate} ${oldTime}\n\nNew:\n${formattedDate} ${rescheduleTime}`,
-  })
+      message: `Client rescheduled lesson.\n\nOld:\n${oldDate} ${oldTime}\n\nNew:\n${formattedDate} ${rescheduleTime}`,
+    })
 
     alert("Lesson rescheduled.")
 
@@ -713,10 +728,12 @@ export default function ClientDashboard() {
               modifiers={{
                 completedLesson: completedDates,
                 upcomingLesson: upcomingDates,
+                noShowLesson: noShowDates,
               }}
               modifiersClassNames={{
                 completedLesson: "bg-sky-300 text-black rounded-md",
                 upcomingLesson: "bg-gray-300 text-black rounded-md",
+                noShowLesson: "bg-red-300 text-black rounded-md",
               }}
             />
           </div>
@@ -832,7 +849,9 @@ export default function ClientDashboard() {
                   <td className="p-3">{formatDate(lesson.lesson_date)}</td>
 
                   <td className="p-3">
-                    {lesson.lesson_notes ? (
+                    {lesson.status === "no_show" ? (
+                      "No Show"
+                    ) : lesson.lesson_notes ? (
                       <button
                         onClick={() => setSelectedLessonNote(lesson)}
                         className="rounded bg-blue-600 px-3 py-1 text-white"

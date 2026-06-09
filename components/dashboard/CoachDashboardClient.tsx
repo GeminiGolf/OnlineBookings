@@ -162,7 +162,7 @@ export default function CoachDashboardClient({
 
   function getBookingForHour(hour: number) {
     return initialBookings.find((booking) => {
-      if (booking.status !== "booked" && booking.status !== "completed") {
+      if (booking.status !== "booked" && booking.status !== "completed" && booking.status !== "no_show") {
         return false
       }
 
@@ -579,6 +579,8 @@ export default function CoachDashboardClient({
             if (booking) {
               if (booking.status === "completed") {
                 bgClass = "bg-sky-200"
+              } else if (booking.status === "no_show") {
+                bgClass = "bg-red-200"
               } else {
                 bgClass = booking.clients?.lessons_remaining === 0 ? "bg-yellow-200" : "bg-green-200"
               }
@@ -597,7 +599,11 @@ export default function CoachDashboardClient({
                       <p className="font-bold">{booking.clients?.name}</p>
 
                       <p className="text-sm text-gray-700">
-                        {booking.status === "completed" ? "Completed Lesson" : "Booked Lesson"}
+                        {booking.status === "completed"
+                          ? "Completed Lesson"
+                          : booking.status === "no_show"
+                            ? "No Show"
+                            : "Booked Lesson"}
                       </p>
                     </div>
                   ) : overrideClosed ? (
