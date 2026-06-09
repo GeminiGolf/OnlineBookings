@@ -254,9 +254,21 @@ export default function ClientDashboard() {
 
     if (selectedDate.toDateString() === today.toDateString()) {
       availableSlots = availableSlots.filter((slot) => {
-        const hour = parseInt(slot)
+        const hour = parseInt(slot.split(":")[0])
 
-        return hour > today.getHours()
+        const isPM = slot.includes("PM")
+
+        let militaryHour = hour
+
+        if (isPM && hour !== 12) {
+          militaryHour += 12
+        }
+
+        if (!isPM && hour === 12) {
+          militaryHour = 0
+        }
+
+        return militaryHour > today.getHours()
       })
     }
 
