@@ -376,17 +376,27 @@ export default function ClientDashboard() {
       new_time: rescheduleTime,
     })
 
-    await supabase.from("notifications").insert({
-      coach_id: rescheduleLesson.coach_id,
+  const today = new Date()
 
-      client_id: rescheduleLesson.client_id,
+  const daysDifference = Math.floor(
+    (new Date(formattedDate).getTime() -
+      new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime()) /
+      (1000 * 60 * 60 * 24)
+  )
 
-      booking_id: rescheduleLesson.id,
+  await supabase.from("notifications").insert({
+    coach_id: rescheduleLesson.coach_id,
 
-      type: "client_rescheduled",
-      is_urgent: false,
-      message: `Client rescheduled lesson.\n\nOld:\n${oldDate} ${oldTime}\n\nNew:\n${formattedDate} ${rescheduleTime}`,
-    })
+    client_id: rescheduleLesson.client_id,
+
+    booking_id: rescheduleLesson.id,
+
+    type: "client_rescheduled",
+
+    is_urgent: daysDifference <= 1,
+
+    message: `Client rescheduled lesson.\n\nOld:\n${oldDate} ${oldTime}\n\nNew:\n${formattedDate} ${rescheduleTime}`,
+  })
 
     alert("Lesson rescheduled.")
 

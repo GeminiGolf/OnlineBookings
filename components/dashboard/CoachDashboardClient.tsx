@@ -1,7 +1,8 @@
 "use client"
 
 import Link from "next/link"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
 import { supabase } from "@/lib/supabase"
 
 type Booking = {
@@ -67,6 +68,7 @@ export default function CoachDashboardClient({
   dateOverrides,
   rescheduleBooking: initialRescheduleBooking,
 }: Props) {
+  const router = useRouter()
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null)
   const [showCancelModal, setShowCancelModal] = useState(false)
   const [showCompleteModal, setShowCompleteModal] = useState(false)
@@ -75,8 +77,39 @@ export default function CoachDashboardClient({
   const [moveBooking, setMoveBooking] = useState<Booking | null>(null)
   const [cancellationReason, setCancellationReason] = useState("")
   const hours: number[] = []
-
   const [showExtendModal, setShowExtendModal] = useState(false)
+
+  useEffect(() => {
+    const channel = supabase
+      .channel(`coach-schedule-${coachId}-${selectedDate}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "bookings",
+        },
+        () => {
+          router.refresh()
+        }
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "booking_changes",
+        },
+        () => {
+          router.refresh()
+        }
+      )
+      .subscribe()
+
+    return () => {
+      supabase.removeChannel(channel)
+    }
+  }, [coachId, selectedDate, router])
 
   const [extendStartHour, setExtendStartHour] = useState("8")
 

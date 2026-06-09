@@ -250,12 +250,25 @@ export default function NotificationsPage() {
       })
       .eq("id", id)
 
-    if (!error) {
-      loadNotifications()
-    }
-  }
+    if (!error && value) {
+      const movedNotification = activeNotifications.find((n) => n.id === id)
 
-  async function handleApprove(notification: Notification) {
+      if (movedNotification) {
+        setActiveNotifications((prev) => prev.filter((n) => n.id !== id))
+
+        setOlderNotifications((prev) => [
+          {
+            ...movedNotification,
+            is_read: true,
+            resolved_at: new Date().toISOString(),
+          },
+          ...prev,
+        ])
+      }
+    }
+    }
+
+    async function handleApprove(notification: Notification) {
     const { error } = await supabase
       .from("notifications")
       .update({
@@ -268,7 +281,26 @@ export default function NotificationsPage() {
       .eq("id", notification.id)
 
     if (!error) {
-      loadNotifications()
+      const movedNotification = urgentNotifications.find(
+        (n) => n.id === notification.id
+      )
+
+      if (movedNotification) {
+        setUrgentNotifications((prev) =>
+          prev.filter((n) => n.id !== notification.id)
+        )
+
+        setOlderNotifications((prev) => [
+          {
+            ...movedNotification,
+            is_read: true,
+            is_urgent: false,
+            resolved_at: new Date().toISOString(),
+            rejection_reason: "Approved",
+          },
+          ...prev,
+        ])
+      }
     }
   }
 
@@ -312,7 +344,7 @@ export default function NotificationsPage() {
       .eq("id", notification.id)
 
     if (!error) {
-      loadNotifications()
+      return
     }
   }
 
