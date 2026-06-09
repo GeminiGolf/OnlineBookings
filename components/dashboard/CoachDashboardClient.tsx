@@ -282,7 +282,7 @@ export default function CoachDashboardClient({
       setRescheduleBooking(null)
       setMoveBooking(null)
 
-      window.location.reload()
+      router.push(`/coach/schedule?date=${selectedDate}`)
 
       return
     }

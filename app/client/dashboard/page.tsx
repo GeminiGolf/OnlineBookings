@@ -70,8 +70,16 @@ export default function ClientDashboard() {
       .eq("client_id", clientRecord.id)
       .eq("status", "booked")
       .order("lesson_date", { ascending: true })
+      .order("lesson_time", { ascending: true })
 
-    setUpcomingLessons(upcoming || [])
+    const sortedUpcoming = (upcoming || []).sort((a, b) => {
+      const dateA = new Date(`${a.lesson_date} ${a.lesson_time}`)
+      const dateB = new Date(`${b.lesson_date} ${b.lesson_time}`)
+
+      return dateA.getTime() - dateB.getTime()
+    })
+
+    setUpcomingLessons(sortedUpcoming)
 
     const { data: previous } = await supabase
       .from("bookings")
@@ -321,7 +329,80 @@ export default function ClientDashboard() {
       bookings?.filter((booking) => booking.id !== rescheduleLesson.id).map((booking) => booking.lesson_time.trim()) ||
       []
 
-    const slots = Array.from(slotSet).filter((slot) => !bookedTimes.includes(slot.trim()))
+    let slots = Array.from(slotSet).filter(
+      (slot) => !bookedTimes.includes(slot.trim())
+    )
+
+    const { data: dateOverrides } = await supabase
+      .from("date_overrides")
+      .select("*")
+      .eq("coach_id", coachId)
+      .eq("lesson_date", formattedDate)
+
+    dateOverrides?.forEach((override) => {
+      const hour = parseInt(override.lesson_time.split(":")[0])
+
+      const slot = formatHour(hour)
+
+      if (override.is_available) {
+        if (!slots.includes(slot)) {
+          slots.push(slot)
+        }
+      } else {
+        slots = slots.filter((s) => s !== slot)
+      }
+    })
+
+    const { data: weeklyBreaks } = await supabase
+      .from("weekly_breaks")
+      .select("*")
+      .eq("coach_id", coachId)
+      .eq("day_of_week", day)
+
+    const breakTimes =
+      weeklyBreaks?.map((item) => formatHour(item.hour)) || []
+
+    slots = slots.filter((slot) => !breakTimes.includes(slot))
+
+    const today = new Date()
+
+    if (date.toDateString() === today.toDateString()) {
+      slots = slots.filter((slot) => {
+        const hour = parseInt(slot.split(":")[0])
+
+        const isPM = slot.includes("PM")
+
+        let militaryHour = hour
+
+        if (isPM && hour !== 12) {
+          militaryHour += 12
+        }
+
+        if (!isPM && hour === 12) {
+          militaryHour = 0
+        }
+
+        return militaryHour > today.getHours()
+      })
+    }
+
+    slots.sort((a, b) => {
+      const convert = (time: string) => {
+        const hour = parseInt(time)
+
+        if (time.includes("PM") && hour !== 12) {
+          return hour + 12
+        }
+
+        if (time.includes("AM") && hour === 12) {
+          return 0
+        }
+
+        return hour
+      }
+
+      return convert(a) - convert(b)
+    })
 
     setRescheduleSlots(slots)
   }

@@ -10,13 +10,9 @@ type Props = {
 
 export default async function CoachSchedulePage({ searchParams }: Props) {
   const params = await searchParams
-
   const selectedDate = params.date || new Date().toISOString().split("T")[0]
-
   const rescheduleId = params.reschedule ? Number(params.reschedule) : null
-
   const supabase = await createClient()
-
   const {
     data: { user },
   } = await supabase.auth.getUser()
@@ -32,7 +28,6 @@ export default async function CoachSchedulePage({ searchParams }: Props) {
   }
 
   const dayOfWeek = new Date(selectedDate).getDay()
-
   const { data: bookings } = await supabase
     .from("bookings")
     .select(
