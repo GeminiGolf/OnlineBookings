@@ -9,6 +9,7 @@ export default function ClientNotificationsPage() {
   const [olderNotifications, setOlderNotifications] = useState<any[]>([])
   const [showOlder, setShowOlder] = useState(false)
   const router = useRouter()
+  const [expandedNotifications, setExpandedNotifications] = useState<number[]>([])
 
   useEffect(() => {
     loadNotifications()
@@ -112,6 +113,14 @@ export default function ClientNotificationsPage() {
     }
   }
 
+  function toggleNotification(id: number) {
+    setExpandedNotifications((prev) =>
+      prev.includes(id)
+        ? prev.filter((item) => item !== id)
+        : [...prev, id]
+    )
+  }
+
   return (
     <main className="min-h-screen bg-gray-100 p-8 text-black">
         <div className="mx-auto max-w-7xl p-10">
@@ -125,7 +134,7 @@ export default function ClientNotificationsPage() {
           </h2>
 
           <div className="space-y-4">
-            <div className="grid grid-cols-[60px_200px_1fr_220px] gap-4 px-4 font-semibold">
+            <div className="hidden md:grid grid-cols-[60px_200px_1fr_220px] gap-4 px-4 font-semibold">
               <div></div>
               <div>Type</div>
               <div>Notes</div>
@@ -133,27 +142,54 @@ export default function ClientNotificationsPage() {
             </div>
 
             {notifications.map((notification) => (
-              <div
-                key={notification.id}
-                className="grid grid-cols-[60px_200px_1fr_220px] items-center gap-4 rounded-xl bg-white p-4 shadow"
-              >
-                <div>
-                  <input
-                    type="checkbox"
-                    onChange={() => markAsRead(notification.id)}
-                  />
+              <div key={notification.id}>
+                {/* Desktop */}
+                <div className="hidden md:grid grid-cols-[60px_200px_1fr_220px] items-center gap-4 rounded-xl bg-white p-4 shadow">
+                  <div>
+                    <input
+                      type="checkbox"
+                      onChange={() => markAsRead(notification.id)}
+                    />
+                  </div>
+
+                  <div>{getTypeLabel(notification.type)}</div>
+
+                  <div>{notification.message}</div>
+
+                  <div>{formatDateTime(notification.created_at)}</div>
                 </div>
 
-                <div>
-                  {getTypeLabel(notification.type)}
-                </div>
+                {/* Mobile */}
+                <div className="md:hidden rounded-xl bg-white p-4 shadow">
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="checkbox"
+                      onChange={() => markAsRead(notification.id)}
+                    />
 
-                <div>
-                  {notification.message}
-                </div>
+                    <button
+                      onClick={() => toggleNotification(notification.id)}
+                      className="flex-1 text-left font-semibold"
+                    >
+                      {getTypeLabel(notification.type)}
+                      {" "}
+                      {expandedNotifications.includes(notification.id) ? "▲" : "▼"}
+                    </button>
+                  </div>
 
-                <div>
-                  {formatDateTime(notification.created_at)}
+                  {expandedNotifications.includes(notification.id) && (
+                    <div className="mt-4 space-y-4">
+                      <div>
+                        <p className="font-semibold">Notes</p>
+                        <p>{notification.message}</p>
+                      </div>
+
+                      <div>
+                        <p className="font-semibold">Created</p>
+                        <p>{formatDateTime(notification.created_at)}</p>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             ))}
@@ -176,22 +212,42 @@ export default function ClientNotificationsPage() {
             {showOlder && (
               <div className="mt-4 space-y-4">
                 {olderNotifications.map((notification) => (
-                  <div
-                    key={notification.id}
-                    className="grid grid-cols-[60px_200px_1fr_220px] items-center gap-4 rounded-xl bg-white p-4 shadow"
-                  >
-                    <div>✓</div>
+                  <div key={notification.id}>
+                    {/* Desktop */}
+                    <div className="hidden md:grid grid-cols-[60px_200px_1fr_220px] items-center gap-4 rounded-xl bg-white p-4 shadow">
+                      <div>✓</div>
 
-                    <div>
-                      {getTypeLabel(notification.type)}
+                      <div>{getTypeLabel(notification.type)}</div>
+
+                      <div>{notification.message}</div>
+
+                      <div>{formatDateTime(notification.created_at)}</div>
                     </div>
 
-                    <div>
-                      {notification.message}
-                    </div>
+                    {/* Mobile */}
+                    <div className="md:hidden rounded-xl bg-white p-4 shadow">
+                      <button
+                        onClick={() => toggleNotification(notification.id)}
+                        className="w-full text-left font-semibold"
+                      >
+                        {getTypeLabel(notification.type)}
+                        {" "}
+                        {expandedNotifications.includes(notification.id) ? "▲" : "▼"}
+                      </button>
 
-                    <div>
-                      {formatDateTime(notification.created_at)}
+                      {expandedNotifications.includes(notification.id) && (
+                        <div className="mt-4 space-y-4">
+                          <div>
+                            <p className="font-semibold">Notes</p>
+                            <p>{notification.message}</p>
+                          </div>
+
+                          <div>
+                            <p className="font-semibold">Created</p>
+                            <p>{formatDateTime(notification.created_at)}</p>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
                 ))}
