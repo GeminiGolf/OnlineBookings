@@ -14,6 +14,7 @@ type Coach = {
 type ClientData = {
   id: number
   name: string
+  preferred_name: string | null
   phone: string | null
   email: string | null
   lessons_remaining: number
@@ -57,8 +58,14 @@ export default function ClientDashboard() {
       return
     }
 
-    const { data: clientRecord } = await supabase.from("clients").select("*").eq("profile_id", session.user.id).single()
+    const { data: clientRecord, error: clientError } = await supabase
+      .from("clients")
+      .select("*")
+      .eq("profile_id", session.user.id)
+      .maybeSingle()
 
+    console.log("CLIENT", clientRecord)
+    console.log("CLIENT ERROR", clientError)
     if (!clientRecord) {
       return
     }
@@ -168,6 +175,7 @@ export default function ClientDashboard() {
     }
 
     const { data: allCoaches } = await supabase.from("coaches").select("*")
+    console.log("ALL COACHES", allCoaches)
 
     if (allCoaches) {
       setCoaches(allCoaches)
@@ -723,10 +731,14 @@ export default function ClientDashboard() {
         <div className="rounded-2xl bg-white p-8 shadow">
           <h2 className="mb-6 text-3xl font-bold text-black">Book A Lesson</h2>
 
-          {coaches.length > 1 && (
+          {!client?.primary_coach_id && (
             <select
               value={selectedCoach ?? ""}
-              onChange={(e) => setSelectedCoach(Number(e.target.value))}
+              onChange={(e) =>
+                setSelectedCoach(
+                  e.target.value ? Number(e.target.value) : null
+                )
+              }
               className="mb-6 w-full rounded-xl border p-4"
             >
               <option value="">Choose Coach</option>
@@ -744,6 +756,11 @@ export default function ClientDashboard() {
               mode="single"
               selected={selectedDate}
               onSelect={(date) => {
+                if (!selectedCoach) {
+                  alert("Please choose a coach")
+                  return
+                }
+
                 setSelectedDate(date)
                 setSelectedTime("")
               }}
@@ -810,7 +827,7 @@ export default function ClientDashboard() {
           <div className="space-y-4 text-black">
             <div>
               <p className="font-semibold">Name</p>
-              <p>{client?.name || "-"}</p>
+              <p>{client?.preferred_name || client?.name || "-"}</p>
             </div>
 
             <div>

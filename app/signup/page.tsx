@@ -57,10 +57,13 @@ export default function SignupPage() {
       preferredName.trim() ||
       `${givenName.trim()} ${familyName.trim()}`
 
-    await supabase.from("clients").insert({
-      profile_id: user.id,
-      name: displayName,
-    })
+    await supabase
+      .from("clients")
+      .update({
+        name: `${givenName.trim()} ${familyName.trim()}`,
+        preferred_name: preferredName.trim() || null,
+      })
+      .eq("profile_id", user.id)
 
     alert(
       "Account created successfully! Please check your email to verify your account, then log in."
