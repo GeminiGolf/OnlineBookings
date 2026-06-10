@@ -117,7 +117,7 @@ export default function LoginPage() {
             onChange={(e) =>
               setEmail(e.target.value)
             }
-            className="w-full rounded-xl border p-4 text-lg"
+            className="w-full rounded-xl border p-4 text-lg text-black"
           />
 
           <input
@@ -127,7 +127,7 @@ export default function LoginPage() {
             onChange={(e) =>
               setPassword(e.target.value)
             }
-            className="w-full rounded-xl border p-4 text-lg"
+            className="w-full rounded-xl border p-4 text-lg text-black"
           />
 
           <button
