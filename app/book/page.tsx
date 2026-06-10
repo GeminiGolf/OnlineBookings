@@ -15,16 +15,12 @@ type Coach = {
 
 export default function BookPage() {
   const [coaches, setCoaches] = useState<Coach[]>([])
-
   const [selectedCoach, setSelectedCoach] = useState<number | null>(null)
-
   const [selectedDate, setSelectedDate] = useState<Date | undefined>()
-
   const [timeSlots, setTimeSlots] = useState<string[]>([])
-
   const [selectedTime, setSelectedTime] = useState("")
-
   const [loading, setLoading] = useState(false)
+  const [selectedCoachData, setSelectedCoachData] = useState<any>(null)
 
   useEffect(() => {
     fetchCoaches()
@@ -320,10 +316,19 @@ export default function BookPage() {
 
               <select
                 value={selectedCoach ?? ""}
-                onChange={(e) => {
-                  setSelectedCoach(Number(e.target.value))
+                onChange={async (e) => {
+                  const coachId = Number(e.target.value)
 
+                  setSelectedCoach(coachId)
                   setSelectedTime("")
+
+                  const { data } = await supabase
+                    .from("coaches")
+                    .select("*")
+                    .eq("id", coachId)
+                    .single()
+
+                  setSelectedCoachData(data)
                 }}
                 className="w-full rounded-xl border p-4"
               >
@@ -335,6 +340,24 @@ export default function BookPage() {
                   </option>
                 ))}
               </select>
+
+              {selectedCoachData && (
+                <div className="mt-4 rounded-xl border bg-white p-4">
+                  {selectedCoachData.photo_url && (
+                    <img
+                      src={selectedCoachData.photo_url}
+                      alt={selectedCoachData.name}
+                      className="mb-4 w-full rounded-lg"
+                    />
+                  )}
+
+                  {selectedCoachData.specializations && (
+                    <div className="mt-3 whitespace-pre-line">
+                      {selectedCoachData.specializations}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* CALENDAR */}
@@ -342,7 +365,7 @@ export default function BookPage() {
             <div>
               <label className="mb-4 block text-lg font-semibold">Select Date</label>
 
-              <div className="mx-auto w-fit rounded-xl border p-4">
+              <div className="rounded-xl border p-4 h-fit flex flex-col items-center">
                 <DayPicker
                   mode="single"
                   selected={selectedDate}
@@ -357,32 +380,38 @@ export default function BookPage() {
                     },
                   ]}
                 />
+
+                <div className="mt-6 border-t pt-4 min-h-[80px] w-full flex flex-col items-center">
+                  <h3 className="mb-3 text-lg font-semibold text-center">
+                    Available Time Slots
+                  </h3>
+
+                  {timeSlots.length === 0 ? (
+                    <p className="text-sm text-gray-500">
+                      No available slots.
+                    </p>
+                  ) : (
+                    <div className="mx-auto max-w-[340px]">
+                      <div className="flex flex-wrap justify-center gap-2">
+                        {timeSlots.map((time) => (
+                          <button
+                            key={time}
+                            onClick={() => setSelectedTime(time)}
+                            className={`rounded-lg px-4 py-2 text-sm font-semibold text-white transition ${
+                              selectedTime === time
+                                ? "bg-green-700 hover:bg-green-800"
+                                : "bg-green-600 hover:bg-green-700"
+                            }`}
+                          >
+                            {time}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
-
-          {/* TIME SLOTS */}
-
-          <div className="mt-10">
-            <h2 className="mb-4 text-2xl font-bold">Available Time Slots</h2>
-
-            {timeSlots.length === 0 ? (
-              <p className="text-gray-500">No available slots.</p>
-            ) : (
-              <div className="flex flex-wrap gap-4">
-                {timeSlots.map((time) => (
-                  <button
-                    key={time}
-                    onClick={() => setSelectedTime(time)}
-                    className={`rounded-xl px-6 py-4 font-semibold text-white transition ${
-                      selectedTime === time ? "bg-green-600 hover:bg-green-700" : "bg-blue-600 hover:bg-blue-700"
-                    }`}
-                  >
-                    {time}
-                  </button>
-                ))}
-              </div>
-            )}
           </div>
 
           {/* BOOKING SUMMARY */}
