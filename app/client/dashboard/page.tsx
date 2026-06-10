@@ -41,6 +41,7 @@ export default function ClientDashboard() {
   const [rescheduleSlots, setRescheduleSlots] = useState<string[]>([])
   const [rescheduleTime, setRescheduleTime] = useState("")
   const [selectedLessonNote, setSelectedLessonNote] = useState<any>(null)
+  const [showClientInfo, setShowClientInfo] = useState(false)
   useEffect(() => {
     loadDashboardData()
   }, [])
@@ -726,322 +727,377 @@ export default function ClientDashboard() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-100 p-10 text-black">
-      <div className="grid gap-8 lg:grid-cols-2">
-        <div className="rounded-2xl bg-white p-8 shadow">
-          <h2 className="mb-6 text-3xl font-bold text-black">Book A Lesson</h2>
+    <main className="min-h-screen bg-gray-100 text-black">
+      <div className="mx-auto max-w-7xl p-10">
+        <div className="grid gap-8 lg:grid-cols-2">
+          <div className="order-2 lg:order-1 rounded-2xl bg-white p-8 shadow">
+            <h2 className="mb-6 text-3xl font-bold text-black">Book A Lesson</h2>
 
-          {!client?.primary_coach_id && (
-            <select
-              value={selectedCoach ?? ""}
-              onChange={(e) =>
-                setSelectedCoach(
-                  e.target.value ? Number(e.target.value) : null
-                )
-              }
-              className="mb-6 w-full rounded-xl border p-4"
-            >
-              <option value="">Choose Coach</option>
-
-              {coaches.map((coach) => (
-                <option key={coach.id} value={coach.id}>
-                  {coach.preferred_name || coach.name}
-                </option>
-              ))}
-            </select>
-          )}
-
-          <div className="rounded-xl border p-4">
-            <DayPicker
-              mode="single"
-              selected={selectedDate}
-              onSelect={(date) => {
-                if (!selectedCoach) {
-                  alert("Please choose a coach")
-                  return
+            {!client?.primary_coach_id && (
+              <select
+                value={selectedCoach ?? ""}
+                onChange={(e) =>
+                  setSelectedCoach(
+                    e.target.value ? Number(e.target.value) : null
+                  )
                 }
+                className="mb-6 w-full rounded-xl border p-4"
+              >
+                <option value="">Choose Coach</option>
 
-                setSelectedDate(date)
-                setSelectedTime("")
-              }}
-              disabled={[
-                {
-                  before: new Date(),
-                },
-              ]}
-              modifiers={{
-                completedLesson: completedDates,
-                upcomingLesson: upcomingDates,
-                noShowLesson: noShowDates,
-              }}
-              modifiersClassNames={{
-                completedLesson: "bg-sky-300 text-black rounded-md",
-                upcomingLesson: "bg-gray-300 text-black rounded-md",
-                noShowLesson: "bg-red-300 text-black rounded-md",
-              }}
-            />
+                {coaches.map((coach) => (
+                  <option key={coach.id} value={coach.id}>
+                    {coach.preferred_name || coach.name}
+                  </option>
+                ))}
+              </select>
+            )}
+
+            <div className="rounded-xl border p-4">
+              <DayPicker
+                mode="single"
+                selected={selectedDate}
+                onSelect={(date) => {
+                  if (!selectedCoach) {
+                    alert("Please choose a coach")
+                    return
+                  }
+
+                  setSelectedDate(date)
+                  setSelectedTime("")
+                }}
+                disabled={[
+                  {
+                    before: new Date(),
+                  },
+                ]}
+                modifiers={{
+                  completedLesson: completedDates,
+                  upcomingLesson: upcomingDates,
+                  noShowLesson: noShowDates,
+                }}
+                modifiersClassNames={{
+                  completedLesson: "bg-sky-300 text-black rounded-md",
+                  upcomingLesson: "bg-gray-300 text-black rounded-md",
+                  noShowLesson: "bg-red-300 text-black rounded-md",
+                }}
+              />
+            </div>
+
+            <div className="mt-6">
+              <h3 className="mb-3 text-lg font-bold text-black">Available Time Slots</h3>
+
+              {timeSlots.length === 0 ? (
+                <p className="text-black">No available slots.</p>
+              ) : (
+                <div className="flex flex-wrap gap-2">
+                  {timeSlots.map((time) => (
+                    <button
+                      key={time}
+                      onClick={() => setSelectedTime(time)}
+                      className={`rounded-lg px-4 py-2 text-white ${
+                        selectedTime === time ? "bg-green-700" : "bg-green-600"
+                      }`}
+                    >
+                      {time}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {selectedTime && (
+              <div className="mt-6 rounded-xl bg-gray-100 p-4">
+                <p className="font-bold">Date: {selectedDate?.toLocaleDateString()}</p>
+
+                <p className="font-bold">Time: {selectedTime}</p>
+
+                <button
+                  onClick={confirmBooking}
+                  disabled={loading}
+                  className="mt-4 rounded-lg bg-black px-6 py-3 text-white"
+                >
+                  {loading ? "Booking..." : "Confirm Booking"}
+                </button>
+              </div>
+            )}
           </div>
 
-          <div className="mt-6">
-            <h3 className="mb-3 text-lg font-bold text-black">Available Time Slots</h3>
+          <>
+            {/* Mobile / Small Screen */}
+            <div className="lg:hidden rounded-2xl bg-white shadow">
+              <button
+                onClick={() => setShowClientInfo(!showClientInfo)}
+                className="w-full p-6 text-left"
+              >
+                <div className="flex items-center justify-between">
+                  <h2 className="text-3xl font-bold text-black">
+                    Client Information
+                  </h2>
 
-            {timeSlots.length === 0 ? (
-              <p className="text-black">No available slots.</p>
-            ) : (
-              <div className="flex flex-wrap gap-2">
-                {timeSlots.map((time) => (
+                  <span className="text-2xl">
+                    {showClientInfo ? "▲" : "▼"}
+                  </span>
+                </div>
+              </button>
+
+              {showClientInfo && (
+                <div className="px-8 pb-8">
+                  <div className="space-y-4 text-black">
+                    <div>
+                      <p className="font-semibold">Name</p>
+                      <p>{client?.preferred_name || client?.name || "-"}</p>
+                    </div>
+
+                    <div>
+                      <p className="font-semibold">Phone</p>
+                      <p>{client?.phone || "Not Provided"}</p>
+                    </div>
+
+                    <div>
+                      <p className="font-semibold">Coach</p>
+                      <p>{coaches[0]?.preferred_name || coaches[0]?.name || "Unassigned"}</p>
+                    </div>
+
+                    <div>
+                      <p className="font-semibold">Lessons Remaining</p>
+                      <p className="text-3xl font-bold">
+                        {client?.lessons_remaining ?? 0}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Desktop */}
+            <div className="order-1 lg:order-2 hidden lg:block rounded-2xl bg-white p-8 shadow">
+              <h2 className="mb-6 text-3xl font-bold text-black">
+                Client Information
+              </h2>
+
+              <div className="space-y-4 text-black">
+                <div>
+                  <p className="font-semibold">Name</p>
+                  <p>{client?.preferred_name || client?.name || "-"}</p>
+                </div>
+
+                <div>
+                  <p className="font-semibold">Phone</p>
+                  <p>{client?.phone || "Not Provided"}</p>
+                </div>
+
+                <div>
+                  <p className="font-semibold">Coach</p>
+                  <p>{coaches[0]?.preferred_name || coaches[0]?.name || "Unassigned"}</p>
+                </div>
+
+                <div>
+                  <p className="font-semibold">Lessons Remaining</p>
+                  <p className="text-3xl font-bold">
+                    {client?.lessons_remaining ?? 0}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </>
+        </div>
+      
+
+        <div className="mt-8 rounded-2xl bg-white p-8 shadow">
+          <h2 className="mb-4 text-3xl font-bold text-black">Upcoming Lessons</h2>
+
+          <div className="space-y-2">
+            {upcomingLessons.map((lesson) => (
+              <div key={lesson.id} className="flex items-center justify-between rounded-lg border p-3">
+                <div>
+                  {formatDate(lesson.lesson_date)} - {formatLessonTime(lesson.lesson_time)}
+                </div>
+
+                <div className="flex gap-2">
+                  <button onClick={() => openReschedule(lesson)} className="rounded bg-green-600 px-3 py-1 text-white">
+                    Reschedule
+                  </button>
+
+                  <button onClick={() => cancelLesson(lesson)} className="rounded bg-red-600 px-3 py-1 text-white">
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            ))}
+
+            {upcomingLessons.length === 0 && <p>No upcoming lessons.</p>}
+          </div>
+        </div>
+
+        <div className="mt-8 rounded-2xl bg-white p-8 shadow">
+          <h2 className="mb-4 text-3xl font-bold text-black">Previous Lessons</h2>
+
+          <div className="overflow-x-auto rounded-xl border">
+            <table className="min-w-[700px] w-full">
+              <thead>
+                <tr className="border-b bg-gray-50">
+                  <th className="p-3 text-left">Date</th>
+                  <th className="p-3 text-left">Notes</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {previousLessons.map((lesson) => (
+                  <tr key={lesson.id} className="border-b">
+                    <td className="p-3">{formatDate(lesson.lesson_date)}</td>
+
+                    <td className="p-3">
+                      {lesson.status === "no_show" ? (
+                        "No Show"
+                      ) : lesson.lesson_notes ? (
+                        <button
+                          onClick={() => setSelectedLessonNote(lesson)}
+                          className="rounded bg-blue-600 px-3 py-1 text-white"
+                        >
+                          View Note
+                        </button>
+                      ) : (
+                        ""
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            {previousLessons.length === 0 && <div className="p-4">No previous lessons.</div>}
+          </div>
+        </div>
+
+        <div className="mt-8 rounded-2xl bg-white p-8 shadow">
+          <h2 className="mb-4 text-3xl font-bold text-black">Lessons Remaining</h2>
+
+          <div className="overflow-x-auto rounded-xl border">
+            <table className="min-w-[700px] w-full">
+              <thead>
+                <tr className="border-b bg-gray-50">
+                  <th className="p-3 text-left">Balance</th>
+                  <th className="p-3 text-left">Purchase</th>
+                  <th className="p-3 text-left">Purchased On</th>
+                  <th className="p-3 text-left">Expiry</th>
+                  <th className="p-3 text-left">Method</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {packages
+                  .filter((pkg) => (pkg.lessons_added || 0) - (pkg.lessons_used || 0) > 0)
+                  .sort((a, b) => new Date(a.expiration_date).getTime() - new Date(b.expiration_date).getTime())
+                  .map((pkg) => (
+                    <tr key={pkg.id} className="border-b">
+                      <td className="p-3">{(pkg.lessons_added || 0) - (pkg.lessons_used || 0)}</td>
+
+                      <td className="p-3">{pkg.transaction_name}</td>
+
+                      <td className="p-3">{formatDate(pkg.purchase_date)}</td>
+
+                      <td className="p-3">{formatDate(pkg.expiration_date)}</td>
+
+                      <td className="p-3">{pkg.payment_method}</td>
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
+
+            {packages.filter((pkg) => (pkg.lessons_added || 0) - (pkg.lessons_used || 0) > 0).length === 0 && (
+              <div className="p-4">No active lessons remaining.</div>
+            )}
+          </div>
+        </div>
+        {showRescheduleModal && rescheduleLesson && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-6">
+            <div className="w-full max-w-2xl rounded-2xl bg-white p-6">
+              <h2 className="mb-4 text-2xl font-bold">Reschedule Lesson</h2>
+
+              <div className="mb-4">
+                <p>
+                  <strong>Current Lesson:</strong> {formatDate(rescheduleLesson.lesson_date)}
+                  {" - "}
+                  {formatLessonTime(rescheduleLesson.lesson_time)}
+                </p>
+
+                <p className="mt-2">
+                  <strong>Reschedules Used:</strong> {rescheduleLesson.client_reschedules || 0}
+                  {" / 3"}
+                </p>
+              </div>
+
+              <DayPicker
+                mode="single"
+                selected={rescheduleDate}
+                onSelect={(date) => {
+                  setRescheduleDate(date)
+
+                  setRescheduleTime("")
+
+                  if (date) {
+                    generateRescheduleSlots(date)
+                  }
+                }}
+                disabled={(date) => {
+                  const start = new Date()
+
+                  start.setHours(0, 0, 0, 0)
+
+                  const end = new Date(rescheduleLesson.lesson_date)
+
+                  end.setDate(end.getDate() + 7)
+
+                  return date < start || date > end
+                }}
+              />
+
+              <div className="mt-6 flex flex-wrap gap-2">
+                {rescheduleSlots.map((time) => (
                   <button
                     key={time}
-                    onClick={() => setSelectedTime(time)}
-                    className={`rounded-lg px-4 py-2 text-white ${
-                      selectedTime === time ? "bg-green-700" : "bg-green-600"
+                    onClick={() => setRescheduleTime(time)}
+                    className={`rounded px-3 py-2 text-white ${
+                      rescheduleTime === time ? "bg-green-700" : "bg-green-600"
                     }`}
                   >
                     {time}
                   </button>
                 ))}
               </div>
-            )}
-          </div>
 
-          {selectedTime && (
-            <div className="mt-6 rounded-xl bg-gray-100 p-4">
-              <p className="font-bold">Date: {selectedDate?.toLocaleDateString()}</p>
-
-              <p className="font-bold">Time: {selectedTime}</p>
-
-              <button
-                onClick={confirmBooking}
-                disabled={loading}
-                className="mt-4 rounded-lg bg-black px-6 py-3 text-white"
-              >
-                {loading ? "Booking..." : "Confirm Booking"}
-              </button>
-            </div>
-          )}
-        </div>
-
-        <div className="rounded-2xl bg-white p-8 shadow">
-          <h2 className="mb-6 text-3xl font-bold text-black">Client Information</h2>
-
-          <div className="space-y-4 text-black">
-            <div>
-              <p className="font-semibold">Name</p>
-              <p>{client?.preferred_name || client?.name || "-"}</p>
-            </div>
-
-            <div>
-              <p className="font-semibold">Phone</p>
-              <p>{client?.phone || "Not Provided"}</p>
-            </div>
-
-            <div>
-              <p className="font-semibold">Coach</p>
-              <p>{coaches[0]?.preferred_name || coaches[0]?.name || "Unassigned"}</p>
-            </div>
-
-            <div>
-              <p className="font-semibold">Lessons Remaining</p>
-
-              <p className="text-3xl font-bold">{client?.lessons_remaining ?? 0}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="mt-8 rounded-2xl bg-white p-8 shadow">
-        <h2 className="mb-4 text-3xl font-bold text-black">Upcoming Lessons</h2>
-
-        <div className="space-y-2">
-          {upcomingLessons.map((lesson) => (
-            <div key={lesson.id} className="flex items-center justify-between rounded-lg border p-3">
-              <div>
-                {formatDate(lesson.lesson_date)} - {formatLessonTime(lesson.lesson_time)}
-              </div>
-
-              <div className="flex gap-2">
-                <button onClick={() => openReschedule(lesson)} className="rounded bg-green-600 px-3 py-1 text-white">
-                  Reschedule
+              <div className="mt-6 flex gap-3">
+                <button onClick={() => setShowRescheduleModal(false)} className="rounded border px-4 py-2">
+                  Close
                 </button>
 
-                <button onClick={() => cancelLesson(lesson)} className="rounded bg-red-600 px-3 py-1 text-white">
-                  Cancel
+                <button onClick={confirmReschedule} className="rounded bg-black px-4 py-2 text-white">
+                  Confirm
                 </button>
               </div>
             </div>
-          ))}
+          </div>
+        )}
 
-          {upcomingLessons.length === 0 && <p>No upcoming lessons.</p>}
-        </div>
-      </div>
+        {selectedLessonNote && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+            <div className="w-full max-w-2xl rounded-xl bg-white p-6 shadow-xl">
+              <h3 className="mb-4 text-2xl font-bold">Lesson Notes</h3>
 
-      <div className="mt-8 rounded-2xl bg-white p-8 shadow">
-        <h2 className="mb-4 text-3xl font-bold text-black">Previous Lessons</h2>
+              <div className="min-h-[250px] rounded-lg border p-4 whitespace-pre-wrap">
+                {selectedLessonNote.lesson_notes}
+              </div>
 
-        <div className="overflow-hidden rounded-xl border">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b bg-gray-50">
-                <th className="p-3 text-left">Date</th>
-                <th className="p-3 text-left">Notes</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {previousLessons.map((lesson) => (
-                <tr key={lesson.id} className="border-b">
-                  <td className="p-3">{formatDate(lesson.lesson_date)}</td>
-
-                  <td className="p-3">
-                    {lesson.status === "no_show" ? (
-                      "No Show"
-                    ) : lesson.lesson_notes ? (
-                      <button
-                        onClick={() => setSelectedLessonNote(lesson)}
-                        className="rounded bg-blue-600 px-3 py-1 text-white"
-                      >
-                        View Note
-                      </button>
-                    ) : (
-                      ""
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-
-          {previousLessons.length === 0 && <div className="p-4">No previous lessons.</div>}
-        </div>
-      </div>
-
-      <div className="mt-8 rounded-2xl bg-white p-8 shadow">
-        <h2 className="mb-4 text-3xl font-bold text-black">Lessons Remaining</h2>
-
-        <div className="overflow-hidden rounded-xl border">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b bg-gray-50">
-                <th className="p-3 text-left">Balance</th>
-                <th className="p-3 text-left">Purchase</th>
-                <th className="p-3 text-left">Purchased On</th>
-                <th className="p-3 text-left">Expiry</th>
-                <th className="p-3 text-left">Method</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {packages
-                .filter((pkg) => (pkg.lessons_added || 0) - (pkg.lessons_used || 0) > 0)
-                .sort((a, b) => new Date(a.expiration_date).getTime() - new Date(b.expiration_date).getTime())
-                .map((pkg) => (
-                  <tr key={pkg.id} className="border-b">
-                    <td className="p-3">{(pkg.lessons_added || 0) - (pkg.lessons_used || 0)}</td>
-
-                    <td className="p-3">{pkg.transaction_name}</td>
-
-                    <td className="p-3">{formatDate(pkg.purchase_date)}</td>
-
-                    <td className="p-3">{formatDate(pkg.expiration_date)}</td>
-
-                    <td className="p-3">{pkg.payment_method}</td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
-
-          {packages.filter((pkg) => (pkg.lessons_added || 0) - (pkg.lessons_used || 0) > 0).length === 0 && (
-            <div className="p-4">No active lessons remaining.</div>
-          )}
-        </div>
-      </div>
-      {showRescheduleModal && rescheduleLesson && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-6">
-          <div className="w-full max-w-2xl rounded-2xl bg-white p-6">
-            <h2 className="mb-4 text-2xl font-bold">Reschedule Lesson</h2>
-
-            <div className="mb-4">
-              <p>
-                <strong>Current Lesson:</strong> {formatDate(rescheduleLesson.lesson_date)}
-                {" - "}
-                {formatLessonTime(rescheduleLesson.lesson_time)}
-              </p>
-
-              <p className="mt-2">
-                <strong>Reschedules Used:</strong> {rescheduleLesson.client_reschedules || 0}
-                {" / 3"}
-              </p>
-            </div>
-
-            <DayPicker
-              mode="single"
-              selected={rescheduleDate}
-              onSelect={(date) => {
-                setRescheduleDate(date)
-
-                setRescheduleTime("")
-
-                if (date) {
-                  generateRescheduleSlots(date)
-                }
-              }}
-              disabled={(date) => {
-                const start = new Date()
-
-                start.setHours(0, 0, 0, 0)
-
-                const end = new Date(rescheduleLesson.lesson_date)
-
-                end.setDate(end.getDate() + 7)
-
-                return date < start || date > end
-              }}
-            />
-
-            <div className="mt-6 flex flex-wrap gap-2">
-              {rescheduleSlots.map((time) => (
-                <button
-                  key={time}
-                  onClick={() => setRescheduleTime(time)}
-                  className={`rounded px-3 py-2 text-white ${
-                    rescheduleTime === time ? "bg-green-700" : "bg-green-600"
-                  }`}
-                >
-                  {time}
+              <div className="mt-4 flex justify-end">
+                <button onClick={() => setSelectedLessonNote(null)} className="rounded border px-4 py-2">
+                  Close
                 </button>
-              ))}
-            </div>
-
-            <div className="mt-6 flex gap-3">
-              <button onClick={() => setShowRescheduleModal(false)} className="rounded border px-4 py-2">
-                Close
-              </button>
-
-              <button onClick={confirmReschedule} className="rounded bg-black px-4 py-2 text-white">
-                Confirm
-              </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
-
-      {selectedLessonNote && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="w-full max-w-2xl rounded-xl bg-white p-6 shadow-xl">
-            <h3 className="mb-4 text-2xl font-bold">Lesson Notes</h3>
-
-            <div className="min-h-[250px] rounded-lg border p-4 whitespace-pre-wrap">
-              {selectedLessonNote.lesson_notes}
-            </div>
-
-            <div className="mt-4 flex justify-end">
-              <button onClick={() => setSelectedLessonNote(null)} className="rounded border px-4 py-2">
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+        )}
+      </div>
     </main>
   )
 }

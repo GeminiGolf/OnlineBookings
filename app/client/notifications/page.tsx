@@ -114,88 +114,90 @@ export default function ClientNotificationsPage() {
 
   return (
     <main className="min-h-screen bg-gray-100 p-8 text-black">
-      <div className="mx-auto max-w-7xl">
-        <h1 className="mb-8 text-4xl font-bold">
-          Notifications
-        </h1>
+        <div className="mx-auto max-w-7xl p-10">
+        <div className="mx-auto max-w-7xl">
+          <h1 className="mb-8 text-4xl font-bold">
+            Notifications
+          </h1>
 
-        <h2 className="mb-4 text-3xl font-bold">
-          Notifications ({notifications.length})
-        </h2>
+          <h2 className="mb-4 text-3xl font-bold">
+            Notifications ({notifications.length})
+          </h2>
 
-        <div className="space-y-4">
-          <div className="grid grid-cols-[60px_200px_1fr_220px] gap-4 px-4 font-semibold">
-            <div></div>
-            <div>Type</div>
-            <div>Notes</div>
-            <div>Created At</div>
+          <div className="space-y-4">
+            <div className="grid grid-cols-[60px_200px_1fr_220px] gap-4 px-4 font-semibold">
+              <div></div>
+              <div>Type</div>
+              <div>Notes</div>
+              <div>Created At</div>
+            </div>
+
+            {notifications.map((notification) => (
+              <div
+                key={notification.id}
+                className="grid grid-cols-[60px_200px_1fr_220px] items-center gap-4 rounded-xl bg-white p-4 shadow"
+              >
+                <div>
+                  <input
+                    type="checkbox"
+                    onChange={() => markAsRead(notification.id)}
+                  />
+                </div>
+
+                <div>
+                  {getTypeLabel(notification.type)}
+                </div>
+
+                <div>
+                  {notification.message}
+                </div>
+
+                <div>
+                  {formatDateTime(notification.created_at)}
+                </div>
+              </div>
+            ))}
+
+            {notifications.length === 0 && (
+              <div className="rounded-xl bg-white p-6 shadow">
+                No notifications.
+              </div>
+            )}
           </div>
 
-          {notifications.map((notification) => (
-            <div
-              key={notification.id}
-              className="grid grid-cols-[60px_200px_1fr_220px] items-center gap-4 rounded-xl bg-white p-4 shadow"
+          <div className="mt-10">
+            <button
+              onClick={() => setShowOlder(!showOlder)}
+              className="text-3xl font-bold"
             >
-              <div>
-                <input
-                  type="checkbox"
-                  onChange={() => markAsRead(notification.id)}
-                />
-              </div>
+              Older Notifications {showOlder ? "▲" : "▼"}
+            </button>
 
-              <div>
-                {getTypeLabel(notification.type)}
-              </div>
+            {showOlder && (
+              <div className="mt-4 space-y-4">
+                {olderNotifications.map((notification) => (
+                  <div
+                    key={notification.id}
+                    className="grid grid-cols-[60px_200px_1fr_220px] items-center gap-4 rounded-xl bg-white p-4 shadow"
+                  >
+                    <div>✓</div>
 
-              <div>
-                {notification.message}
-              </div>
+                    <div>
+                      {getTypeLabel(notification.type)}
+                    </div>
 
-              <div>
-                {formatDateTime(notification.created_at)}
-              </div>
-            </div>
-          ))}
+                    <div>
+                      {notification.message}
+                    </div>
 
-          {notifications.length === 0 && (
-            <div className="rounded-xl bg-white p-6 shadow">
-              No notifications.
-            </div>
-          )}
-        </div>
-
-        <div className="mt-10">
-          <button
-            onClick={() => setShowOlder(!showOlder)}
-            className="text-3xl font-bold"
-          >
-            Older Notifications {showOlder ? "▲" : "▼"}
-          </button>
-
-          {showOlder && (
-            <div className="mt-4 space-y-4">
-              {olderNotifications.map((notification) => (
-                <div
-                  key={notification.id}
-                  className="grid grid-cols-[60px_200px_1fr_220px] items-center gap-4 rounded-xl bg-white p-4 shadow"
-                >
-                  <div>✓</div>
-
-                  <div>
-                    {getTypeLabel(notification.type)}
+                    <div>
+                      {formatDateTime(notification.created_at)}
+                    </div>
                   </div>
-
-                  <div>
-                    {notification.message}
-                  </div>
-
-                  <div>
-                    {formatDateTime(notification.created_at)}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </main>
