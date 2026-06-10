@@ -279,6 +279,14 @@ export default function CoachDashboardClient({
         new_time: newTime,
       })
 
+      await supabase.from("notifications").insert({
+        coach_id: coachId,
+        client_id: activeBooking.clients?.id,
+        booking_id: activeBooking.id,
+        type: "coach_rescheduled",
+        message: "Coach rescheduled lesson",
+      })
+
       setRescheduleBooking(null)
       setMoveBooking(null)
 
@@ -985,6 +993,14 @@ export default function CoachDashboardClient({
                       cancellation_reason: cancellationReason,
                     })
                     .eq("id", selectedBooking.id)
+
+                  await supabase.from("notifications").insert({
+                    coach_id: coachId,
+                    client_id: selectedBooking.clients?.id,
+                    booking_id: selectedBooking.id,
+                    type: "coach_cancelled",
+                    message: cancellationReason,
+                  })
 
                   setShowCancelModal(false)
                   setSelectedBooking(null)

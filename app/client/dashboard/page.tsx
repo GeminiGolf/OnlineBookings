@@ -65,13 +65,40 @@ export default function ClientDashboard() {
 
     const today = new Date().toISOString().split("T")[0]
 
-    await supabase
+    const { data: missedLessons } = await supabase
       .from("bookings")
-      .update({
-        status: "no_show",
-      })
+      .select("id, coach_id, client_id")
       .eq("status", "booked")
       .lt("lesson_date", today)
+
+    if (missedLessons?.length) {
+      await supabase
+        .from("bookings")
+        .update({
+          status: "no_show",
+        })
+        .eq("status", "booked")
+        .lt("lesson_date", today)
+
+      for (const lesson of missedLessons) {
+        const { data: existing } = await supabase
+          .from("notifications")
+          .select("id")
+          .eq("booking_id", lesson.id)
+          .eq("type", "no_show")
+          .maybeSingle()
+
+        if (!existing) {
+          await supabase.from("notifications").insert({
+            coach_id: lesson.coach_id,
+            client_id: lesson.client_id,
+            booking_id: lesson.id,
+            type: "no_show",
+            message: "Missed lesson",
+          })
+        }
+      }
+    }
 
     setClient(clientRecord)
 

@@ -73,6 +73,11 @@ export default function NotificationsPage() {
         .from("notifications")
         .select("*")
         .eq("coach_id", coach?.id)
+        .in("type", [
+          "late_booking",
+          "client_cancelled",
+          "client_rescheduled",
+        ])
         .order("created_at", { ascending: false })
 
       data = result.data
@@ -211,6 +216,34 @@ export default function NotificationsPage() {
           }
         }
 
+        if (notification.type === "coach_cancelled" && lesson_date) {
+          const formatDate = (date: string) =>
+            new Date(date).toLocaleDateString("en-GB", {
+              day: "2-digit",
+              month: "2-digit",
+            })
+
+          type_label = "Coach Cancelled"
+
+          original_datetime = `${formatDate(lesson_date)} @ ${lesson_time.replace(":00", "")}`
+
+          notes = notification.message || cancellationReason || "-"
+        }
+
+        if (notification.type === "no_show" && lesson_date) {
+          const formatDate = (date: string) =>
+            new Date(date).toLocaleDateString("en-GB", {
+              day: "2-digit",
+              month: "2-digit",
+            })
+
+          type_label = "No Show"
+
+          original_datetime = `${formatDate(lesson_date)} @ ${lesson_time.replace(":00", "")}`
+
+          notes = "Missed Lesson"
+        }
+
         return {
           ...notification,
           client_name,
@@ -330,6 +363,22 @@ export default function NotificationsPage() {
           cancellation_reason: reason,
         })
         .eq("id", notification.booking_id)
+    }
+
+    const { data: originalNotification } = await supabase
+      .from("notifications")
+      .select("client_id, booking_id, coach_id")
+      .eq("id", notification.id)
+      .single()
+
+    if (originalNotification?.client_id) {
+      await supabase.from("notifications").insert({
+        coach_id: originalNotification.coach_id,
+        client_id: originalNotification.client_id,
+        booking_id: originalNotification.booking_id,
+        type: "coach_cancelled",
+        message: `Late booking request rejected.\n\nReason:\n${reason}`,
+      })
     }
 
     const { error } = await supabase
@@ -517,6 +566,8 @@ export default function NotificationsPage() {
                   <option value="Cancelled">Cancelled</option>
                   <option value="Rescheduled">Rescheduled</option>
                   <option value="Late Booking">Late Booking</option>
+                  <option value="Coach Cancelled">Coach Cancelled</option>
+                  <option value="No Show">No Show</option>
                 </select>
               </div>
               <div className="mb-3 ml-16 grid grid-cols-[140px_180px_180px_1fr_140px_140px] gap-4 text-sm font-bold text-gray-600">

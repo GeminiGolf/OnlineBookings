@@ -32,6 +32,11 @@ export default function CoachDashboardPage() {
       .select("is_urgent")
       .eq("coach_id", coach.id)
       .eq("is_read", false)
+      .in("type", [
+        "late_booking",
+        "client_cancelled",
+        "client_rescheduled",
+      ])
 
     if (!notifications) return
 

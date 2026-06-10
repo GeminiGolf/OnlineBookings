@@ -10,6 +10,7 @@ export default function Navbar() {
   const [loading, setLoading] = useState(true)
   const [urgentCount, setUrgentCount] = useState(0)
   const [normalCount, setNormalCount] = useState(0)
+  const [clientNotificationCount, setClientNotificationCount] = useState(0)
   const [showUrgentDropdown, setShowUrgentDropdown] = useState(false)
   const [urgentNotifications, setUrgentNotifications] = useState<
     {
@@ -73,6 +74,11 @@ export default function Navbar() {
           .select("*")
           .eq("coach_id", coach.id)
           .eq("is_read", false)
+          .in("type", [
+            "late_booking",
+            "client_cancelled",
+            "client_rescheduled",
+          ])
 
         setUrgentCount(notifications?.filter((n) => n.is_urgent).length || 0)
 
@@ -118,6 +124,30 @@ export default function Navbar() {
         )
 
         setUrgentNotifications(enrichedUrgent)
+      }
+    }
+
+    if (currentRole === "client") {
+      const { data: client } = await supabase
+        .from("clients")
+        .select("id")
+        .eq("profile_id", session.user.id)
+        .single()
+
+      if (client) {
+        const { data: notifications } = await supabase
+          .from("notifications")
+          .select("id")
+          .eq("client_id", client.id)
+          .is("client_read_at", null)
+          .in("type", [
+            "coach_cancelled",
+            "coach_rescheduled",
+            "coach_booked",
+            "no_show",
+          ])
+
+        setClientNotificationCount(notifications?.length || 0)
       }
     }
 
@@ -176,6 +206,22 @@ export default function Navbar() {
         .eq("id", bookingId)
     }
 
+    const { data: originalNotification } = await supabase
+      .from("notifications")
+      .select("client_id, booking_id, coach_id")
+      .eq("id", notificationId)
+      .single()
+
+    if (originalNotification?.client_id) {
+      await supabase.from("notifications").insert({
+        coach_id: originalNotification.coach_id,
+        client_id: originalNotification.client_id,
+        booking_id: originalNotification.booking_id,
+        type: "coach_cancelled",
+        message: `Late booking request rejected.\n\nReason:\n${reason}`,
+      })
+    }
+    
     const { error } = await supabase
       .from("notifications")
       .update({
@@ -343,8 +389,10 @@ export default function Navbar() {
 
             {loggedIn && role === "client" && (
               <>
-                <Link href="/notifications" className="text-lg transition hover:text-blue-400">
-                  Notifications
+                <Link href="/client/notifications" className="text-lg transition hover:text-blue-400">
+                  {clientNotificationCount > 0
+                    ? `Notifications (${clientNotificationCount})`
+                    : "Notifications"}
                 </Link>
 
                 <Link href="/book" className="text-lg transition hover:text-yellow-400">
