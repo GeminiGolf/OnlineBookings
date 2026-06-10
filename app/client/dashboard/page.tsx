@@ -933,8 +933,8 @@ export default function ClientDashboard() {
         <div className="mt-8 rounded-2xl bg-white p-8 shadow">
           <h2 className="mb-4 text-3xl font-bold text-black">Previous Lessons</h2>
 
-          <div className="overflow-x-auto rounded-xl border">
-            <table className="min-w-[700px] w-full">
+        <div className="rounded-xl border">
+          <table className="w-full">
               <thead>
                 <tr className="border-b bg-gray-50">
                   <th className="p-3 text-left">Date</th>
@@ -973,7 +973,14 @@ export default function ClientDashboard() {
         <div className="mt-8 rounded-2xl bg-white p-8 shadow">
           <h2 className="mb-4 text-3xl font-bold text-black">Lessons Remaining</h2>
 
-          <div className="overflow-x-auto rounded-xl border">
+          <div className="lg:hidden rounded-xl border p-4">
+            <div className="text-sm font-semibold text-gray-600">Balance</div>
+            <div className="text-3xl font-bold">
+              {client?.lessons_remaining ?? 0}
+            </div>
+          </div>
+
+          <div className="hidden lg:block overflow-x-auto rounded-xl border">
             <table className="min-w-[700px] w-full">
               <thead>
                 <tr className="border-b bg-gray-50">

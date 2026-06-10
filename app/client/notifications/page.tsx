@@ -237,7 +237,7 @@ export default function ClientNotificationsPage() {
           </h2>
 
           <div className="space-y-4">
-            <div className="hidden md:grid grid-cols-[60px_180px_220px_1fr_220px] gap-4 px-4 font-semibold">
+            <div className="hidden lg:grid grid-cols-[60px_180px_220px_1fr_220px] gap-4 px-4 font-semibold">
               <div></div>
               <div>Type</div>
               <div>Lesson</div>
@@ -248,7 +248,7 @@ export default function ClientNotificationsPage() {
             {notifications.map((notification) => (
               <div key={notification.id}>
                 {/* Desktop */}
-                <div className="hidden md:grid grid-cols-[60px_180px_220px_1fr_220px] items-center gap-4 rounded-xl bg-white p-4 shadow">
+                <div className="hidden lg:grid grid-cols-[60px_180px_220px_1fr_220px] items-center gap-4 rounded-xl bg-white p-4 shadow">
                   <div>
                     <input
                       type="checkbox"
@@ -268,7 +268,7 @@ export default function ClientNotificationsPage() {
                 </div>
 
                 {/* Mobile */}
-                <div className="md:hidden rounded-xl bg-white p-4 shadow">
+                <div className="lg:hidden rounded-xl bg-white p-4 shadow">
                   <div className="flex items-center gap-3">
                     <input
                       type="checkbox"
@@ -277,11 +277,17 @@ export default function ClientNotificationsPage() {
 
                     <button
                       onClick={() => toggleNotification(notification.id)}
-                      className="flex-1 text-left font-semibold"
+                      className="flex-1 text-left"
                     >
-                      {getTypeLabel(notification.type)}
-                      {" "}
-                      {expandedNotifications.includes(notification.id) ? "▲" : "▼"}
+                      <div className="font-semibold">
+                        {getTypeLabel(notification.type)}
+                        {" "}
+                        {expandedNotifications.includes(notification.id) ? "▲" : "▼"}
+                      </div>
+
+                      <div className="text-sm text-gray-600">
+                        {notification.original_datetime}
+                      </div>
                     </button>
                   </div>
 
@@ -322,7 +328,7 @@ export default function ClientNotificationsPage() {
                 {olderNotifications.map((notification) => (
                   <div key={notification.id}>
                     {/* Desktop */}
-                    <div className="hidden md:grid grid-cols-[60px_180px_220px_1fr_220px] items-center gap-4 rounded-xl bg-white p-4 shadow">
+                    <div className="hidden lg:grid grid-cols-[60px_180px_220px_1fr_220px] items-center gap-4 rounded-xl bg-white p-4 shadow">
                       <div>✓</div>
 
                       <div>{getTypeLabel(notification.type)}</div>
@@ -337,14 +343,20 @@ export default function ClientNotificationsPage() {
                     </div>
 
                     {/* Mobile */}
-                    <div className="md:hidden rounded-xl bg-white p-4 shadow">
+                    <div className="lg:hidden rounded-xl bg-white p-4 shadow">
                       <button
                         onClick={() => toggleNotification(notification.id)}
-                        className="w-full text-left font-semibold"
+                        className="flex-1 text-left"
                       >
-                        {getTypeLabel(notification.type)}
-                        {" "}
-                        {expandedNotifications.includes(notification.id) ? "▲" : "▼"}
+                        <div className="font-semibold">
+                          {getTypeLabel(notification.type)}
+                          {" "}
+                          {expandedNotifications.includes(notification.id) ? "▲" : "▼"}
+                        </div>
+
+                        <div className="text-sm text-gray-600">
+                          {notification.original_datetime}
+                        </div>
                       </button>
 
                       {expandedNotifications.includes(notification.id) && (
