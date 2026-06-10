@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { supabase } from "@/lib/supabaseClient"
+import { useRouter } from "next/navigation"
 
 export default function SignupPage() {
   const [preferredName, setPreferredName] = useState("")
@@ -11,6 +12,7 @@ export default function SignupPage() {
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
+  const router = useRouter()
 
   async function handleSignup() {
     if (!preferredName.trim() && !givenName.trim() && !familyName.trim()) {
@@ -42,6 +44,15 @@ export default function SignupPage() {
     })
 
     if (error) {
+      if (
+        error.message.toLowerCase().includes("already") ||
+        error.message.toLowerCase().includes("registered")
+      ) {
+        alert("Existing account found with this email. Please log in instead.")
+        router.push("/login")
+        return
+      }
+
       alert(error.message)
       return
     }
