@@ -66,8 +66,111 @@ export default function ClientNotificationsPage() {
       ])
       .order("created_at", { ascending: false })
 
-    const unread = (data || []).filter((n) => !n.client_read_at)
-    const read = (data || []).filter((n) => n.client_read_at)
+    const enrichedNotifications = await Promise.all(
+      (data || []).map(async (notification) => {
+        let original_datetime = "-"
+        let new_datetime = ""
+        let details = notification.message || ""
+
+        if (notification.booking_id) {
+          const { data: booking, error: bookingError } = await supabase
+            .from("bookings")
+            .select("*")
+            .eq("id", notification.booking_id)
+            .single()
+
+
+          const formatDate = (date: string) =>
+            new Date(date).toLocaleDateString("en-GB", {
+              day: "2-digit",
+              month: "2-digit",
+            })
+
+          const formatTime = (time: string) =>
+            time.replace(":00", "")
+
+          if (booking?.lesson_date) {
+            original_datetime =
+              `${formatDate(booking.lesson_date)} @ ${formatTime(booking.lesson_time)}`
+          }
+
+          if (notification.type === "coach_cancelled") {
+            console.log("coach_cancelled", {
+              notification,
+              booking,
+            })
+
+            if (
+              notification.message?.toLowerCase().includes("late booking")
+            ) {
+              details =
+                "Late booking rejected" +
+                (booking?.cancellation_reason
+                  ? `\n\nCoach: ${booking.cancellation_reason}`
+                  : "")
+            } else {
+              details =
+                booking?.cancellation_reason
+                  ? `Coach: ${booking.cancellation_reason}`
+                  : notification.message || "-"
+            }
+          }
+          if (notification.type === "coach_booked") {
+            details =
+              "Coach has booked a new lesson for you." +
+              (booking?.lesson_notes
+                ? `\n\n${booking.lesson_notes}`
+                : "")
+          }
+
+          if (notification.type === "no_show") {
+            details = "Missed Lesson"
+          }
+
+          if (notification.type === "coach_rescheduled") {
+            const { data: changes } = await supabase
+              .from("booking_changes")
+              .select("*")
+              .eq("booking_id", notification.booking_id)
+              .order("created_at", {
+                ascending: false,
+              })
+
+            const change = changes?.[0]
+
+            if (change) {
+              original_datetime =
+                `${formatDate(change.old_date)} @ ${formatTime(change.old_time)}`
+
+              new_datetime =
+                `${formatDate(change.new_date)} @ ${formatTime(change.new_time)}`
+
+              details =
+                `New Lesson:\n${new_datetime}` +
+                (
+                  notification.message &&
+                  notification.message !== "Coach rescheduled lesson"
+                    ? `\n\n${notification.message}`
+                    : ""
+                )
+            }
+          }
+        }
+        return {
+          ...notification,
+          original_datetime,
+          new_datetime,
+          details,
+        }
+      })
+    )
+    const unread = enrichedNotifications.filter(
+      (n) => !n.client_read_at
+    )
+
+    const read = enrichedNotifications.filter(
+      (n) => n.client_read_at
+    )
 
     setNotifications(unread)
     setOlderNotifications(read)
@@ -134,17 +237,18 @@ export default function ClientNotificationsPage() {
           </h2>
 
           <div className="space-y-4">
-            <div className="hidden md:grid grid-cols-[60px_200px_1fr_220px] gap-4 px-4 font-semibold">
+            <div className="hidden md:grid grid-cols-[60px_180px_220px_1fr_220px] gap-4 px-4 font-semibold">
               <div></div>
               <div>Type</div>
-              <div>Notes</div>
+              <div>Lesson</div>
+              <div>Details</div>
               <div>Created At</div>
             </div>
 
             {notifications.map((notification) => (
               <div key={notification.id}>
                 {/* Desktop */}
-                <div className="hidden md:grid grid-cols-[60px_200px_1fr_220px] items-center gap-4 rounded-xl bg-white p-4 shadow">
+                <div className="hidden md:grid grid-cols-[60px_180px_220px_1fr_220px] items-center gap-4 rounded-xl bg-white p-4 shadow">
                   <div>
                     <input
                       type="checkbox"
@@ -154,7 +258,11 @@ export default function ClientNotificationsPage() {
 
                   <div>{getTypeLabel(notification.type)}</div>
 
-                  <div>{notification.message}</div>
+                  <div>{notification.original_datetime}</div>
+
+                  <div className="whitespace-pre-line">
+                    {notification.details}
+                  </div>
 
                   <div>{formatDateTime(notification.created_at)}</div>
                 </div>
@@ -214,12 +322,16 @@ export default function ClientNotificationsPage() {
                 {olderNotifications.map((notification) => (
                   <div key={notification.id}>
                     {/* Desktop */}
-                    <div className="hidden md:grid grid-cols-[60px_200px_1fr_220px] items-center gap-4 rounded-xl bg-white p-4 shadow">
+                    <div className="hidden md:grid grid-cols-[60px_180px_220px_1fr_220px] items-center gap-4 rounded-xl bg-white p-4 shadow">
                       <div>✓</div>
 
                       <div>{getTypeLabel(notification.type)}</div>
 
-                      <div>{notification.message}</div>
+                      <div>{notification.original_datetime}</div>
+
+                      <div className="whitespace-pre-line">
+                        {notification.details}
+                      </div>
 
                       <div>{formatDateTime(notification.created_at)}</div>
                     </div>
