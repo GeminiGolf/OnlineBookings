@@ -342,7 +342,7 @@ export default function BookPage() {
             <div>
               <label className="mb-4 block text-lg font-semibold">Select Date</label>
 
-              <div className="rounded-xl border bg-white p-4">
+              <div className="mx-auto w-fit rounded-xl border p-4">
                 <DayPicker
                   mode="single"
                   selected={selectedDate}

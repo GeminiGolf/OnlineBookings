@@ -736,11 +736,7 @@ export default function ClientDashboard() {
             {!client?.primary_coach_id && (
               <select
                 value={selectedCoach ?? ""}
-                onChange={(e) =>
-                  setSelectedCoach(
-                    e.target.value ? Number(e.target.value) : null
-                  )
-                }
+                onChange={(e) => setSelectedCoach(e.target.value ? Number(e.target.value) : null)}
                 className="mb-6 w-full rounded-xl border p-4"
               >
                 <option value="">Choose Coach</option>
@@ -753,7 +749,7 @@ export default function ClientDashboard() {
               </select>
             )}
 
-            <div className="rounded-xl border p-4">
+            <div className="mx-auto w-fit rounded-xl border p-4">
               <DayPicker
                 mode="single"
                 selected={selectedDate}
@@ -826,18 +822,11 @@ export default function ClientDashboard() {
           <>
             {/* Mobile / Small Screen */}
             <div className="lg:hidden rounded-2xl bg-white shadow">
-              <button
-                onClick={() => setShowClientInfo(!showClientInfo)}
-                className="w-full p-6 text-left"
-              >
+              <button onClick={() => setShowClientInfo(!showClientInfo)} className="w-full p-6 text-left">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-3xl font-bold text-black">
-                    Client Information
-                  </h2>
+                  <h2 className="text-3xl font-bold text-black">Client Information</h2>
 
-                  <span className="text-2xl">
-                    {showClientInfo ? "▲" : "▼"}
-                  </span>
+                  <span className="text-2xl">{showClientInfo ? "▲" : "▼"}</span>
                 </div>
               </button>
 
@@ -861,9 +850,7 @@ export default function ClientDashboard() {
 
                     <div>
                       <p className="font-semibold">Lessons Remaining</p>
-                      <p className="text-3xl font-bold">
-                        {client?.lessons_remaining ?? 0}
-                      </p>
+                      <p className="text-3xl font-bold">{client?.lessons_remaining ?? 0}</p>
                     </div>
                   </div>
                 </div>
@@ -872,9 +859,7 @@ export default function ClientDashboard() {
 
             {/* Desktop */}
             <div className="order-1 lg:order-2 hidden lg:block rounded-2xl bg-white p-8 shadow">
-              <h2 className="mb-6 text-3xl font-bold text-black">
-                Client Information
-              </h2>
+              <h2 className="mb-6 text-3xl font-bold text-black">Client Information</h2>
 
               <div className="space-y-4 text-black">
                 <div>
@@ -894,15 +879,12 @@ export default function ClientDashboard() {
 
                 <div>
                   <p className="font-semibold">Lessons Remaining</p>
-                  <p className="text-3xl font-bold">
-                    {client?.lessons_remaining ?? 0}
-                  </p>
+                  <p className="text-3xl font-bold">{client?.lessons_remaining ?? 0}</p>
                 </div>
               </div>
             </div>
           </>
         </div>
-      
 
         <div className="mt-8 rounded-2xl bg-white p-8 shadow">
           <h2 className="mb-4 text-3xl font-bold text-black">Upcoming Lessons</h2>
@@ -933,8 +915,8 @@ export default function ClientDashboard() {
         <div className="mt-8 rounded-2xl bg-white p-8 shadow">
           <h2 className="mb-4 text-3xl font-bold text-black">Previous Lessons</h2>
 
-        <div className="rounded-xl border">
-          <table className="w-full">
+          <div className="overflow-hidden rounded-xl border">
+            <table className="w-full border-collapse">
               <thead>
                 <tr className="border-b bg-gray-50">
                   <th className="p-3 text-left">Date</th>
@@ -973,11 +955,29 @@ export default function ClientDashboard() {
         <div className="mt-8 rounded-2xl bg-white p-8 shadow">
           <h2 className="mb-4 text-3xl font-bold text-black">Lessons Remaining</h2>
 
-          <div className="lg:hidden rounded-xl border p-4">
-            <div className="text-sm font-semibold text-gray-600">Balance</div>
-            <div className="text-3xl font-bold">
-              {client?.lessons_remaining ?? 0}
-            </div>
+          <div className="lg:hidden space-y-3">
+            {packages
+              .filter((pkg) => (pkg.lessons_added || 0) - (pkg.lessons_used || 0) > 0)
+              .sort((a, b) => new Date(a.expiration_date).getTime() - new Date(b.expiration_date).getTime())
+              .map((pkg) => (
+                <div key={pkg.id} className="rounded-xl border p-4">
+                  <div className="mb-2">
+                    <div className="text-sm font-semibold text-gray-600">Balance</div>
+                    <div className="text-3xl font-bold">{(pkg.lessons_added || 0) - (pkg.lessons_used || 0)}</div>
+                  </div>
+
+                  <div className="space-y-1 text-sm">
+                    <div>{pkg.transaction_name}</div>
+                    <div>Purchased: {formatDate(pkg.purchase_date)}</div>
+                    <div>Expires: {formatDate(pkg.expiration_date)}</div>
+                    <div>Method: {pkg.payment_method}</div>
+                  </div>
+                </div>
+              ))}
+
+            {packages.filter((pkg) => (pkg.lessons_added || 0) - (pkg.lessons_used || 0) > 0).length === 0 && (
+              <div className="rounded-xl border p-4">No active lessons remaining.</div>
+            )}
           </div>
 
           <div className="hidden lg:block overflow-x-auto rounded-xl border">
