@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { supabase } from "@/lib/supabaseClient"
+import { useRouter } from "next/navigation"
 
 type Notification = {
   id: number
@@ -42,6 +43,7 @@ export default function NotificationsPage() {
   const [currentRole, setCurrentRole] = useState("")
   const [selectedClient, setSelectedClient] = useState<Notification | null>(null)
   const [olderFilter, setOlderFilter] = useState("all")
+  const router = useRouter()
 
   useEffect(() => {
     loadNotifications()
@@ -55,7 +57,8 @@ export default function NotificationsPage() {
     } = await supabase.auth.getSession()
 
     if (!session) {
-      setLoading(false)
+      alert("Please log in as coach.")
+      router.push("/login")
       return
     }
 
@@ -63,11 +66,26 @@ export default function NotificationsPage() {
 
     setCurrentRole(profile?.role || "")
 
+    if (profile?.role === "client") {
+      router.push("/client/notifications")
+      return
+    }
+
+    if (profile?.role !== "coach" && profile?.role !== "admin") {
+      alert("Please log in as coach.")
+      router.push("/login")
+      return
+    }
+
     let data = null
     let error = null
 
     if (profile?.role === "coach") {
-      const { data: coach } = await supabase.from("coaches").select("id").eq("profile_id", session.user.id).single()
+      const { data: coach } = await supabase
+        .from("coaches")
+        .select("id")
+        .eq("profile_id", session.user.id)
+        .single()
 
       const result = await supabase
         .from("notifications")
@@ -83,10 +101,8 @@ export default function NotificationsPage() {
       data = result.data
       error = result.error
     } else {
-      const result = await supabase.from("notifications").select("*").order("created_at", { ascending: false })
-
-      data = result.data
-      error = result.error
+      setLoading(false)
+      return
     }
 
     if (error || !data) {
@@ -492,7 +508,7 @@ export default function NotificationsPage() {
                     key={notification.id}
                     className={`rounded-xl p-4 shadow ${notification.is_read ? "bg-gray-200" : "bg-white"}`}
                   >
-                    <label className="flex items-center justify-between gap-4 cursor-pointer">
+                    <div className="flex items-center justify-between gap-4">
                       <div className="flex items-center gap-3">
                         <input
                           type="checkbox"
@@ -501,7 +517,10 @@ export default function NotificationsPage() {
                           className="h-5 w-5"
                         />
 
-                        <button onClick={() => setSelectedClient(notification)} className="text-lg">
+                        <button
+                          onClick={() => setSelectedClient(notification)}
+                          className="rounded-md px-2 py-1 text-lg transition hover:bg-sky-200 hover:scale-110 cursor-pointer"
+                        >
                           👤
                         </button>
 
@@ -527,7 +546,7 @@ export default function NotificationsPage() {
                           minute: "2-digit",
                         })}
                       </span>
-                    </label>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -596,7 +615,10 @@ export default function NotificationsPage() {
                             className="h-5 w-5"
                           />
 
-                          <button onClick={() => setSelectedClient(notification)} className="text-lg hover:opacity-70">
+                          <button
+                            onClick={() => setSelectedClient(notification)}
+                            className="rounded-md px-2 py-1 text-lg transition hover:bg-sky-200 hover:scale-110 cursor-pointer"
+                          >
                             👤
                           </button>
 

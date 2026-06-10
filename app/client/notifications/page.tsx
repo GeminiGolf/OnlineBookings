@@ -2,11 +2,13 @@
 
 import { useEffect, useState } from "react"
 import { supabase } from "@/lib/supabaseClient"
+import { useRouter } from "next/navigation"
 
 export default function ClientNotificationsPage() {
   const [notifications, setNotifications] = useState<any[]>([])
   const [olderNotifications, setOlderNotifications] = useState<any[]>([])
   const [showOlder, setShowOlder] = useState(false)
+  const router = useRouter()
 
   useEffect(() => {
     loadNotifications()
@@ -17,13 +19,37 @@ export default function ClientNotificationsPage() {
       data: { session },
     } = await supabase.auth.getSession()
 
-    if (!session) return
+    if (!session) {
+      alert("Please log in as client.")
+      router.push("/login")
+      return
+    }
 
     const { data: client } = await supabase
       .from("clients")
       .select("*")
       .eq("profile_id", session.user.id)
       .single()
+
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", session.user.id)
+      .single()
+
+    if (profile?.role === "coach") {
+      router.push("/notifications")
+      return
+    }
+
+    if (
+      profile?.role !== "client" &&
+      profile?.role !== "admin"
+    ) {
+      alert("Please log in as client.")
+      router.push("/login")
+      return
+    }
 
     if (!client) return
 
