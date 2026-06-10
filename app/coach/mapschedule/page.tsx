@@ -299,73 +299,99 @@ function DayAvailabilityRow({ dayLabel, dayValue, coachId, existing, weeklyBreak
   }
 
   return (
-    <div className="rounded-2xl border border-black p-8">
+    <div className="rounded-xl border border-black p-5">
       <div className="flex items-center justify-between">
-        <h3 className="text-3xl font-bold">{dayLabel}</h3>
+        <h3 className="text-2xl font-bold">{dayLabel}</h3>
 
-        <div className="flex items-end gap-4">
+        <div className="flex items-end gap-3">
           <div>
-            <label className="mb-2 block text-lg">Start Time</label>
+            <label className="mb-1 block text-sm font-semibold">
+              Start Time
+            </label>
 
             <input
               type="time"
               step="3600"
               value={start}
               onChange={(e) => setStart(e.target.value)}
-              className="rounded-xl border border-black p-4"
+              className="rounded-lg border border-black px-3 py-2"
             />
           </div>
 
           <div>
-            <label className="mb-2 block text-lg">End Time</label>
+            <label className="mb-1 block text-sm font-semibold">
+              End Time
+            </label>
 
             <input
               type="time"
               step="3600"
               value={end}
               onChange={(e) => setEnd(e.target.value)}
-              className="rounded-xl border border-black p-4"
+              className="rounded-lg border border-black px-3 py-2"
             />
           </div>
 
-          <button onClick={() => onSave(start, end)} className="rounded-xl bg-black px-8 py-4 font-bold text-white">
-            Save
-          </button>
-
-          <button
-            onClick={() => {
-              setStart("")
-              setEnd("")
-
-              onSave("", "")
-            }}
-            className="rounded-xl bg-red-600 px-8 py-4 font-bold text-white"
-          >
-            Closed
-          </button>
-
-          {!!start && !!end && (
+          {!start || !end ? (
             <button
-              onClick={() => setShowBreaks(!showBreaks)}
-              className="rounded-xl bg-blue-600 px-8 py-4 font-bold text-white"
+              onClick={() => {
+                const confirmed = window.confirm(
+                  "Confirm opening this day for all future weeks?"
+                )
+
+                if (!confirmed) return
+
+                setStart("08:00")
+                setEnd("19:00")
+
+                onSave("08:00", "19:00")
+              }}
+              className="rounded-lg bg-green-600 px-5 py-2 font-semibold text-white"
             >
-              Breaks ({selectedBreaks.length})
+              Open
+            </button>
+          ) : (
+            <button
+              onClick={() => {
+                const confirmed = window.confirm(
+                  "Confirm closing this day for all future weeks?"
+                )
+
+                if (!confirmed) return
+
+                setStart("")
+                setEnd("")
+
+                onSave("", "")
+              }}
+              className="rounded-lg bg-red-600 px-5 py-2 font-semibold text-white"
+            >
+              Close
             </button>
           )}
+
+          <button
+            onClick={() => setShowBreaks(!showBreaks)}
+            className="rounded-lg bg-blue-600 px-5 py-2 font-semibold text-white"
+          >
+            Breaks ({selectedBreaks.length})
+          </button>
         </div>
       </div>
 
-      {showBreaks && (
-        <div className="mt-6 rounded-xl border p-6">
-          <div className="grid grid-cols-4 gap-3">
+      {showBreaks && start && end && (
+        <div className="mt-4 rounded-lg border p-4">
+          <div className="grid grid-cols-3 gap-2 md:grid-cols-4">
             {generateHours().map((hour) => (
-              <label key={hour} className="flex items-center gap-2">
+              <label key={hour} className="flex items-center gap-2 text-sm">
                 <input
                   type="checkbox"
                   checked={selectedBreaks.includes(hour)}
                   onChange={() => {
                     setSelectedBreaks((current) =>
-                      current.includes(hour) ? current.filter((item) => item !== hour) : [...current, hour]
+                      current.includes(hour)
+                        ? current.filter((item) => item !== hour)
+                        : [...current, hour]
                     )
                   }}
                 />
@@ -375,7 +401,10 @@ function DayAvailabilityRow({ dayLabel, dayValue, coachId, existing, weeklyBreak
             ))}
           </div>
 
-          <button onClick={saveBreaks} className="mt-6 rounded-xl bg-black px-6 py-3 font-bold text-white">
+          <button
+            onClick={saveBreaks}
+            className="mt-4 rounded-lg bg-black px-4 py-2 font-semibold text-white"
+          >
             Save Breaks
           </button>
         </div>
