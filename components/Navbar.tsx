@@ -3,6 +3,7 @@
 import Link from "next/link"
 import { useEffect, useState } from "react"
 import { supabase } from "../lib/supabaseClient"
+import { Home, Bell } from "lucide-react"
 
 export default function Navbar() {
   const [loggedIn, setLoggedIn] = useState(false)
@@ -244,12 +245,14 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="flex items-center justify-between border-b border-gray-800 bg-black px-8 py-5 text-white">
-      <Link href="/" className="text-xl font-bold">
-        Home
+    <nav className="flex flex-wrap items-center justify-between border-b border-gray-800 bg-black px-4 py-4 lg:px-8 lg:py-5 text-white">
+      <Link
+        href="/"
+        className="flex items-center justify-center text-white transition hover:text-gray-300"
+      >
+        <Home size={24} strokeWidth={2.5} />
       </Link>
-
-      <div className="flex gap-6">
+      <div className="flex gap-2 text-sm lg:gap-6 lg:text-lg">
         {!loading && (
           <>
             {loggedIn && role === "coach" && (
@@ -389,10 +392,17 @@ export default function Navbar() {
 
             {loggedIn && role === "client" && (
               <>
-                <Link href="/client/notifications" className="text-lg transition hover:text-blue-400">
-                  {clientNotificationCount > 0
-                    ? `Notifications (${clientNotificationCount})`
-                    : "Notifications"}
+                <Link
+                  href="/client/notifications"
+                  className="relative flex items-center justify-center text-lg transition hover:text-blue-400"
+                >
+                  <Bell size={20} />
+
+                  {clientNotificationCount > 0 && (
+                    <span className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-[10px] font-bold text-white">
+                      {clientNotificationCount}
+                    </span>
+                  )}
                 </Link>
 
                 <Link href="/book" className="text-lg transition hover:text-yellow-400">
