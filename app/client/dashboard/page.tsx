@@ -42,6 +42,7 @@ export default function ClientDashboard() {
   const [rescheduleTime, setRescheduleTime] = useState("")
   const [selectedLessonNote, setSelectedLessonNote] = useState<any>(null)
   const [showClientInfo, setShowClientInfo] = useState(false)
+  const [expandedLessonId, setExpandedLessonId] = useState<number | null>(null)
   useEffect(() => {
     loadDashboardData()
   }, [])
@@ -892,24 +893,71 @@ export default function ClientDashboard() {
           </>
         </div>
 
-        <div className="mt-8 rounded-2xl bg-white p-8 shadow">
-          <h2 className="mb-4 text-3xl font-bold text-black">Upcoming Lessons</h2>
+        <div className="mt-8 rounded-2xl bg-white p-3 lg:p-8 shadow">
+          <h2 className="mb-3 text-xl lg:text-3xl font-bold text-black">Upcoming Lessons</h2>
 
           <div className="space-y-2">
             {upcomingLessons.map((lesson) => (
-              <div key={lesson.id} className="flex items-center justify-between rounded-lg border p-3">
-                <div>
-                  {formatDate(lesson.lesson_date)} - {formatLessonTime(lesson.lesson_time)}
+              <div key={lesson.id} className="rounded-lg border p-3">
+                {/* Mobile */}
+                <div className="lg:hidden">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      {formatDate(lesson.lesson_date)} - {formatLessonTime(lesson.lesson_time)}
+                    </div>
+
+                    <button
+                      onClick={() =>
+                        setExpandedLessonId(
+                          expandedLessonId === lesson.id ? null : lesson.id
+                        )
+                      }
+                      className="rounded bg-blue-600 px-3 py-1 text-white"
+                    >
+                      Edit
+                    </button>
+                  </div>
+
+                  {expandedLessonId === lesson.id && (
+                    <div className="mt-3 flex gap-2">
+                      <button
+                        onClick={() => openReschedule(lesson)}
+                        className="rounded bg-green-600 px-3 py-1 text-white"
+                      >
+                        Reschedule
+                      </button>
+
+                      <button
+                        onClick={() => cancelLesson(lesson)}
+                        className="rounded bg-red-600 px-3 py-1 text-white"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  )}
                 </div>
 
-                <div className="flex gap-2">
-                  <button onClick={() => openReschedule(lesson)} className="rounded bg-green-600 px-3 py-1 text-white">
-                    Reschedule
-                  </button>
+                {/* Desktop */}
+                <div className="hidden lg:flex items-center justify-between">
+                  <div>
+                    {formatDate(lesson.lesson_date)} - {formatLessonTime(lesson.lesson_time)}
+                  </div>
 
-                  <button onClick={() => cancelLesson(lesson)} className="rounded bg-red-600 px-3 py-1 text-white">
-                    Cancel
-                  </button>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => openReschedule(lesson)}
+                      className="rounded bg-green-600 px-3 py-1 text-white"
+                    >
+                      Reschedule
+                    </button>
+
+                    <button
+                      onClick={() => cancelLesson(lesson)}
+                      className="rounded bg-red-600 px-3 py-1 text-white"
+                    >
+                      Cancel
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
@@ -918,8 +966,8 @@ export default function ClientDashboard() {
           </div>
         </div>
 
-        <div className="mt-8 rounded-2xl bg-white p-8 shadow">
-          <h2 className="mb-4 text-3xl font-bold text-black">Previous Lessons</h2>
+        <div className="mt-8 rounded-2xl bg-white p-3 lg:p-8 shadow">
+          <h2 className="mb-3 text-xl lg:text-3xl font-bold text-black">Previous Lessons</h2>
 
           <div className="overflow-hidden rounded-xl border">
             <table className="w-full border-collapse">
@@ -958,8 +1006,8 @@ export default function ClientDashboard() {
           </div>
         </div>
 
-        <div className="mt-8 rounded-2xl bg-white p-8 shadow">
-          <h2 className="mb-4 text-3xl font-bold text-black">Lessons Remaining</h2>
+        <div className="mt-8 rounded-2xl bg-white p-3 lg:p-8 shadow">
+          <h2 className="mb-3 text-xl lg:text-3xl font-bold text-black">Lessons Remaining</h2>
 
           <div className="lg:hidden space-y-3">
             {packages
