@@ -728,10 +728,12 @@ export default function ClientDashboard() {
 
   return (
     <main className="min-h-screen bg-gray-100 text-black">
-      <div className="mx-auto max-w-7xl p-10">
+      <div className="mx-auto max-w-7xl p-4 lg:p-10">
         <div className="grid gap-8 lg:grid-cols-2">
-          <div className="order-2 lg:order-1 rounded-2xl bg-white p-8 shadow">
-            <h2 className="mb-6 text-3xl font-bold text-black">Book A Lesson</h2>
+          <div className="order-2 lg:order-1 rounded-2xl bg-white p-3 lg:p-8 shadow">
+            <h2 className="mb-3 text-xl lg:text-3xl font-bold text-black">
+              Book A Lesson
+            </h2>
 
             {!client?.primary_coach_id && (
               <select
@@ -751,6 +753,7 @@ export default function ClientDashboard() {
 
             <div className="mx-auto w-fit rounded-xl border p-4">
               <DayPicker
+                className="scale-90 lg:scale-100 origin-top"
                 mode="single"
                 selected={selectedDate}
                 onSelect={(date) => {
@@ -822,35 +825,38 @@ export default function ClientDashboard() {
           <>
             {/* Mobile / Small Screen */}
             <div className="lg:hidden rounded-2xl bg-white shadow">
-              <button onClick={() => setShowClientInfo(!showClientInfo)} className="w-full p-6 text-left">
+              <button
+                onClick={() => setShowClientInfo(!showClientInfo)}
+                className="w-full p-4 lg:p-6 text-left"
+              >
                 <div className="flex items-center justify-between">
-                  <h2 className="text-3xl font-bold text-black">Client Information</h2>
+                  <h2 className="text-xl lg:text-3xl font-bold text-black">Client Information</h2>
 
                   <span className="text-2xl">{showClientInfo ? "▲" : "▼"}</span>
                 </div>
               </button>
 
               {showClientInfo && (
-                <div className="px-8 pb-8">
-                  <div className="space-y-4 text-black">
+                <div className="px-4 pb-4 lg:px-8 lg:pb-8">
+                  <div className="space-y-3 text-sm lg:text-base text-black">
                     <div>
-                      <p className="font-semibold">Name</p>
+                      <p className="text-sm lg:text-base font-semibold">Name</p>
                       <p>{client?.preferred_name || client?.name || "-"}</p>
                     </div>
 
                     <div>
-                      <p className="font-semibold">Phone</p>
+                      <p className="text-sm lg:text-base font-semibold">Phone</p>
                       <p>{client?.phone || "Not Provided"}</p>
                     </div>
 
                     <div>
-                      <p className="font-semibold">Coach</p>
+                      <p className="text-sm lg:text-base font-semibold">Coach</p>
                       <p>{coaches[0]?.preferred_name || coaches[0]?.name || "Unassigned"}</p>
                     </div>
 
                     <div>
-                      <p className="font-semibold">Lessons Remaining</p>
-                      <p className="text-3xl font-bold">{client?.lessons_remaining ?? 0}</p>
+                      <p className="text-sm lg:text-base font-semibold">Lessons Remaining</p>
+                      <p className="text-2xl lg:text-3xl font-bold">{client?.lessons_remaining ?? 0}</p>
                     </div>
                   </div>
                 </div>
@@ -1036,6 +1042,7 @@ export default function ClientDashboard() {
               </div>
 
               <DayPicker
+                className="scale-90 lg:scale-100 origin-top"
                 mode="single"
                 selected={rescheduleDate}
                 onSelect={(date) => {

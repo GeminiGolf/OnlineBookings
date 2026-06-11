@@ -24,3 +24,15 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+@media (max-width: 1023px) {
+  .rdp {
+    --rdp-day-width: 38px;
+    --rdp-day-height: 38px;
+    font-size: 0.9rem;
+  }
+
+  .rdp-month {
+    width: 100%;
+  }
+}
