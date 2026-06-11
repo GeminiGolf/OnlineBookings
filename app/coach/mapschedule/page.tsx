@@ -239,11 +239,9 @@ type RowProps = {
 
 function DayAvailabilityRow({ dayLabel, dayValue, coachId, existing, weeklyBreaks, onSave }: RowProps) {
   const [start, setStart] = useState(existing?.start_time || "")
-
   const [end, setEnd] = useState(existing?.end_time || "")
-
   const [showBreaks, setShowBreaks] = useState(false)
-
+  const [expanded, setExpanded] = useState(false)
   const [selectedBreaks, setSelectedBreaks] = useState<number[]>([])
 
   useEffect(() => {
@@ -262,9 +260,7 @@ function DayAvailabilityRow({ dayLabel, dayValue, coachId, existing, weeklyBreak
     }
 
     const startHour = parseInt(start.split(":")[0])
-
     const endHour = parseInt(end.split(":")[0])
-
     const hours = []
 
     for (let hour = startHour; hour < endHour; hour++) {
@@ -300,8 +296,13 @@ function DayAvailabilityRow({ dayLabel, dayValue, coachId, existing, weeklyBreak
 
   return (
     <div className="rounded-xl border border-black p-5">
-      <div className="flex items-center justify-between">
-        <h3 className="text-2xl font-bold">{dayLabel}</h3>
+
+      {/* DESKTOP */}
+
+      <div className="hidden min-[900px]:flex items-center justify-between">
+        <h3 className="min-w-[180px] text-2xl font-bold">
+          {dayLabel}
+        </h3>
 
         <div className="flex items-end gap-3">
           <div>
@@ -372,11 +373,109 @@ function DayAvailabilityRow({ dayLabel, dayValue, coachId, existing, weeklyBreak
 
           <button
             onClick={() => setShowBreaks(!showBreaks)}
-            className="rounded-lg bg-blue-600 px-5 py-2 font-semibold text-white"
+            className="shrink-0 rounded-lg bg-blue-600 px-5 py-2 font-semibold text-white"
           >
             Breaks ({selectedBreaks.length})
           </button>
         </div>
+      </div>
+
+      {/* MOBILE */}
+
+      <div className="min-[900px]:hidden">
+        <button
+          onClick={() => setExpanded(!expanded)}
+          className="flex w-full items-center justify-between"
+        >
+          <h3 className="text-2xl font-bold">{dayLabel}</h3>
+
+          <span className="text-xl">
+            {expanded ? "▼" : "▶"}
+          </span>
+        </button>
+
+        {expanded && (
+          <div className="mt-4 space-y-4">
+
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="mb-1 block text-sm font-semibold">
+                  Start Time
+                </label>
+
+                <input
+                  type="time"
+                  step="3600"
+                  value={start}
+                  onChange={(e) => setStart(e.target.value)}
+                  className="w-full rounded-lg border border-black px-3 py-2"
+                />
+              </div>
+
+              <div>
+                <label className="mb-1 block text-sm font-semibold">
+                  End Time
+                </label>
+
+                <input
+                  type="time"
+                  step="3600"
+                  value={end}
+                  onChange={(e) => setEnd(e.target.value)}
+                  className="w-full rounded-lg border border-black px-3 py-2"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+
+              {!start || !end ? (
+                <button
+                  onClick={() => {
+                    const confirmed = window.confirm(
+                      "Confirm opening this day for all future weeks?"
+                    )
+
+                    if (!confirmed) return
+
+                    setStart("08:00")
+                    setEnd("19:00")
+
+                    onSave("08:00", "19:00")
+                  }}
+                  className="rounded-lg bg-green-600 px-5 py-2 font-semibold text-white"
+                >
+                  Open
+                </button>
+              ) : (
+                <button
+                  onClick={() => {
+                    const confirmed = window.confirm(
+                      "Confirm closing this day for all future weeks?"
+                    )
+
+                    if (!confirmed) return
+
+                    setStart("")
+                    setEnd("")
+
+                    onSave("", "")
+                  }}
+                  className="rounded-lg bg-red-600 px-5 py-2 font-semibold text-white"
+                >
+                  Close
+                </button>
+              )}
+
+              <button
+                onClick={() => setShowBreaks(!showBreaks)}
+                className="rounded-lg bg-blue-600 px-5 py-2 font-semibold text-white"
+              >
+                Breaks ({selectedBreaks.length})
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       {showBreaks && start && end && (
