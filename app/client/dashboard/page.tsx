@@ -56,158 +56,60 @@ export default function ClientDashboard() {
   }, [selectedDate, selectedCoach])
 
   async function loadDashboardData() {
-    const {
-      data: { session },
-    } = await supabase.auth.getSession()
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session) return
 
-    if (!session) {
-      return
-    }
-
-    const { data: clientRecord, error: clientError } = await supabase
-      .from("clients")
-      .select("*")
-      .eq("profile_id", session.user.id)
-      .maybeSingle()
-
-    console.log("CLIENT", clientRecord)
-    console.log("CLIENT ERROR", clientError)
-    if (!clientRecord) {
-      return
-    }
+    const { data: clientRecord, error: clientError } = await supabase.from("clients").select("*").eq("profile_id", session.user.id).maybeSingle()
+    console.log("CLIENT", clientRecord); console.log("CLIENT ERROR", clientError)
+    if (!clientRecord) return
 
     const today = new Date().toISOString().split("T")[0]
-
-    const { data: missedLessons } = await supabase
-      .from("bookings")
-      .select("id, coach_id, client_id")
-      .eq("status", "booked")
-      .lt("lesson_date", today)
+    const { data: missedLessons } = await supabase.from("bookings").select("id, coach_id, client_id").eq("status", "booked").lt("lesson_date", today)
 
     if (missedLessons?.length) {
-      await supabase
-        .from("bookings")
-        .update({
-          status: "no_show",
-        })
-        .eq("status", "booked")
-        .lt("lesson_date", today)
-
+      await supabase.from("bookings").update({ status: "no_show" }).eq("status", "booked").lt("lesson_date", today)
       for (const lesson of missedLessons) {
-        const { data: existing } = await supabase
-          .from("notifications")
-          .select("id")
-          .eq("booking_id", lesson.id)
-          .eq("type", "no_show")
-          .maybeSingle()
-
+        const { data: existing } = await supabase.from("notifications").select("id").eq("booking_id", lesson.id).eq("type", "no_show").maybeSingle()
         if (!existing) {
-          await supabase.from("notifications").insert({
-            coach_id: lesson.coach_id,
-            client_id: lesson.client_id,
-            booking_id: lesson.id,
-            type: "no_show",
-            message: "Missed lesson",
-          })
+          await supabase.from("notifications").insert({ coach_id: lesson.coach_id, client_id: lesson.client_id, booking_id: lesson.id, type: "no_show", message: "Missed lesson" })
         }
       }
     }
-
     setClient(clientRecord)
 
-    const { data: upcoming } = await supabase
-      .from("bookings")
-      .select("*")
-      .eq("client_id", clientRecord.id)
-      .eq("status", "booked")
-      .order("lesson_date", { ascending: true })
-      .order("lesson_time", { ascending: true })
-
-    const sortedUpcoming = (upcoming || []).sort((a, b) => {
-      const dateA = new Date(`${a.lesson_date} ${a.lesson_time}`)
-      const dateB = new Date(`${b.lesson_date} ${b.lesson_time}`)
-
-      return dateA.getTime() - dateB.getTime()
-    })
-
+    const { data: upcoming } = await supabase.from("bookings").select("*").eq("client_id", clientRecord.id).eq("status", "booked").order("lesson_date", { ascending: true }).order("lesson_time", { ascending: true })
+    const sortedUpcoming = (upcoming || []).sort((a, b) => new Date(`${a.lesson_date} ${a.lesson_time}`).getTime() - new Date(`${b.lesson_date} ${b.lesson_time}`).getTime())
     setUpcomingLessons(sortedUpcoming)
 
-    const { data: previous } = await supabase
-      .from("bookings")
-      .select("*")
-      .eq("client_id", clientRecord.id)
-      .in("status", ["completed", "no_show"])
-      .order("lesson_date", { ascending: false })
-
+    const { data: previous } = await supabase.from("bookings").select("*").eq("client_id", clientRecord.id).in("status", ["completed", "no_show"]).order("lesson_date", { ascending: false })
     setPreviousLessons(previous || [])
 
-    const completedLessonDates = (previous || [])
-      .filter((lesson) => lesson.status === "completed")
-      .map((lesson) => new Date(lesson.lesson_date))
+    setCompletedDates((previous || []).filter((lesson) => lesson.status === "completed").map((lesson) => new Date(lesson.lesson_date)))
+    setNoShowDates((previous || []).filter((lesson) => lesson.status === "no_show").map((lesson) => new Date(lesson.lesson_date)))
+    setUpcomingDates((upcoming || []).map((lesson) => new Date(lesson.lesson_date)))
 
-    setCompletedDates(completedLessonDates)
-
-    const noShowLessonDates = (previous || [])
-      .filter((lesson) => lesson.status === "no_show")
-      .map((lesson) => new Date(lesson.lesson_date))
-
-    setNoShowDates(noShowLessonDates)
-
-    const upcomingLessonDates = (upcoming || []).map((lesson) => new Date(lesson.lesson_date))
-
-    setUpcomingDates(upcomingLessonDates)
-
-    const { data: packageData } = await supabase
-      .from("lesson_packages")
-      .select("*")
-      .eq("client_id", clientRecord.id)
-      .order("purchase_date", { ascending: false })
-
+    const { data: packageData } = await supabase.from("lesson_packages").select("*").eq("client_id", clientRecord.id).order("purchase_date", { ascending: false })
     setPackages(packageData || [])
 
     if (clientRecord.primary_coach_id) {
-      const { data: coach } = await supabase
-        .from("coaches")
-        .select("*")
-        .eq("id", clientRecord.primary_coach_id)
-        .single()
-
-      if (coach) {
-        setCoaches([coach])
-        setSelectedCoach(coach.id)
-      }
-
+      const { data: coach } = await supabase.from("coaches").select("*").eq("id", clientRecord.primary_coach_id).single()
+      if (coach) { setCoaches([coach]); setSelectedCoach(coach.id); }
       return
     }
 
     const { data: allCoaches } = await supabase.from("coaches").select("*")
-    console.log("ALL COACHES", allCoaches)
-
-    if (allCoaches) {
-      setCoaches(allCoaches)
-    }
+    if (allCoaches) setCoaches(allCoaches)
   }
 
   function timeTo24Hour(time: string) {
-    let hour = parseInt(time)
-
-    const isPM = time.includes("PM")
-    const isAM = time.includes("AM")
-
-    if (isPM && hour !== 12) {
-      hour += 12
-    }
-
-    if (isAM && hour === 12) {
-      hour = 0
-    }
-
-    return hour
+    let hour = parseInt(time);
+    if (time.includes("PM") && hour !== 12) hour += 12;
+    if (time.includes("AM") && hour === 12) hour = 0;
+    return hour;
   }
 
   function formatDate(dateString: string) {
     const date = new Date(dateString)
-
     const day = String(date.getDate()).padStart(2, "0")
     const month = String(date.getMonth() + 1).padStart(2, "0")
     const year = String(date.getFullYear()).slice(-2)
@@ -232,7 +134,6 @@ export default function ClientDashboard() {
     }
 
     const lessonDateTime = new Date(year, month - 1, day, hour, 0, 0)
-
     const cutoff = new Date(lessonDateTime.getTime() - 12 * 60 * 60 * 1000)
 
     return new Date() <= cutoff
@@ -240,7 +141,6 @@ export default function ClientDashboard() {
 
   function formatHour(hour: number) {
     const suffix = hour >= 12 ? "PM" : "AM"
-
     const formattedHour = hour % 12 || 12
 
     return `${formattedHour}:00 ${suffix}`
@@ -349,17 +249,11 @@ export default function ClientDashboard() {
     }
 
     const coachId = rescheduleLesson.coach_id
-
     const day = date.getDay()
-
     const year = date.getFullYear()
-
     const month = String(date.getMonth() + 1).padStart(2, "0")
-
     const dayOfMonth = String(date.getDate()).padStart(2, "0")
-
     const formattedDate = `${year}-${month}-${dayOfMonth}`
-
     const { data: availability } = await supabase
       .from("availability")
       .select("*")
@@ -370,7 +264,6 @@ export default function ClientDashboard() {
 
     availability?.forEach((row) => {
       const start = parseInt(row.start_time.split(":")[0])
-
       const end = parseInt(row.end_time.split(":")[0])
 
       for (let hour = start; hour < end; hour++) {
@@ -426,7 +319,6 @@ export default function ClientDashboard() {
     if (date.toDateString() === today.toDateString()) {
       slots = slots.filter((slot) => {
         const hour = parseInt(slot.split(":")[0])
-
         const isPM = slot.includes("PM")
 
         let militaryHour = hour
@@ -446,21 +338,16 @@ export default function ClientDashboard() {
     slots.sort((a, b) => {
       const convert = (time: string) => {
         const hour = parseInt(time)
-
         if (time.includes("PM") && hour !== 12) {
           return hour + 12
         }
-
         if (time.includes("AM") && hour === 12) {
           return 0
         }
-
         return hour
       }
-
       return convert(a) - convert(b)
     })
-
     setRescheduleSlots(slots)
   }
 
@@ -484,23 +371,16 @@ export default function ClientDashboard() {
     }
 
     const confirmed = window.confirm("Confirm reschedule?")
-
     if (!confirmed) {
       return
     }
 
     const oldDate = rescheduleLesson.lesson_date
-
     const oldTime = rescheduleLesson.lesson_time
-
     const year = rescheduleDate.getFullYear()
-
     const month = String(rescheduleDate.getMonth() + 1).padStart(2, "0")
-
     const day = String(rescheduleDate.getDate()).padStart(2, "0")
-
     const formattedDate = `${year}-${month}-${day}`
-
     const { error } = await supabase
       .from("bookings")
       .update({
@@ -535,15 +415,10 @@ export default function ClientDashboard() {
 
     await supabase.from("notifications").insert({
       coach_id: rescheduleLesson.coach_id,
-
       client_id: rescheduleLesson.client_id,
-
       booking_id: rescheduleLesson.id,
-
       type: "client_rescheduled",
-
       is_urgent: daysDifference <= 1,
-
       message: `Client rescheduled lesson.\n\nOld:\n${oldDate} ${oldTime}\n\nNew:\n${formattedDate} ${rescheduleTime}`,
     })
 
@@ -560,7 +435,6 @@ export default function ClientDashboard() {
     }
 
     const reason = window.prompt("Reason for cancellation:")
-
     if (!reason || !reason.trim()) {
       alert("Please type your reason for cancellation.")
 
@@ -568,7 +442,6 @@ export default function ClientDashboard() {
     }
 
     const confirmed = window.confirm("Cancel this lesson?")
-
     if (!confirmed) {
       return
     }
@@ -589,11 +462,8 @@ export default function ClientDashboard() {
 
     await supabase.from("notifications").insert({
       coach_id: lesson.coach_id,
-
       client_id: lesson.client_id,
-
       booking_id: lesson.id,
-
       type: "client_cancelled",
       is_urgent: false,
 
@@ -609,7 +479,6 @@ export default function ClientDashboard() {
     if (!client || !selectedCoach || !selectedDate || !selectedTime) {
       return
     }
-
     const confirmed = window.confirm(
       `Book lesson?\n\nDate: ${selectedDate.toLocaleDateString()}\nTime: ${selectedTime}`
     )
@@ -617,15 +486,12 @@ export default function ClientDashboard() {
     if (!confirmed) {
       return
     }
-
     setLoading(true)
 
     const year = selectedDate.getFullYear()
     const month = String(selectedDate.getMonth() + 1).padStart(2, "0")
     const day = String(selectedDate.getDate()).padStart(2, "0")
-
     const formattedDate = `${year}-${month}-${day}`
-
     const { data: existingBooking } = await supabase
       .from("bookings")
       .select("*")
@@ -664,9 +530,7 @@ export default function ClientDashboard() {
     let isLateBooking = false
 
     const today = new Date()
-
     const bookingDate = new Date(formattedDate)
-
     const diffDays = Math.floor(
       (bookingDate.getTime() - new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime()) /
         (1000 * 60 * 60 * 24)
@@ -707,33 +571,22 @@ export default function ClientDashboard() {
     if (isLateBooking && newBooking) {
       await supabase.from("notifications").insert({
         coach_id: selectedCoach,
-
         client_id: client.id,
-
         booking_id: newBooking.id,
-
         type: "late_booking",
-
         is_urgent: true,
-
         message: `Late booking requires review.\n\nDate: ${formattedDate}\nTime: ${selectedTime}`,
       })
     }
 
     alert("Booking confirmed!")
-
     setSelectedTime("")
-
     await generateSlots()
-
     await loadDashboardData()
-
     setLoading(false)
   }
   const paginatedUpcoming = upcomingLessons.slice((upcomingPage - 1) * ITEMS_PER_PAGE, upcomingPage * ITEMS_PER_PAGE)
-
   const paginatedPrevious = previousLessons.slice((previousPage - 1) * ITEMS_PER_PAGE, previousPage * ITEMS_PER_PAGE)
-
   const paginatedPackages = packages
     .filter((pkg) => (pkg.lessons_added || 0) - (pkg.lessons_used || 0) > 0)
     .sort((a, b) => new Date(a.expiration_date).getTime() - new Date(b.expiration_date).getTime())
@@ -959,10 +812,7 @@ export default function ClientDashboard() {
                         Reschedule
                       </button>
 
-                      <button
-                        onClick={() => cancelLesson(lesson)}
-                        className="rounded bg-red-600 px-3 py-1 text-white"
-                      >
+                      <button onClick={() => cancelLesson(lesson)} className="rounded bg-red-600 px-3 py-1 text-white">
                         Cancel
                       </button>
                     </div>
@@ -1066,111 +916,110 @@ export default function ClientDashboard() {
             </div>
           </div>
           <div className="rounded-2xl bg-white p-3 lg:p-8 shadow">
-            <h2 className="mb-3 text-xl lg:text-3xl font-bold text-black">
-              Lessons Remaining</h2>
+            <h2 className="mb-3 text-xl lg:text-3xl font-bold text-black">Lessons Remaining</h2>
 
-          <div className="lg:hidden space-y-3">
-            {paginatedPackages.map((pkg) => (
-              <div key={pkg.id} className="rounded-xl border p-4">
-                <div className="mb-2">
-                  <div className="text-sm font-semibold text-gray-600">Balance</div>
-                  <div className="text-3xl font-bold">{(pkg.lessons_added || 0) - (pkg.lessons_used || 0)}</div>
+            <div className="lg:hidden space-y-3">
+              {paginatedPackages.map((pkg) => (
+                <div key={pkg.id} className="rounded-xl border p-4">
+                  <div className="mb-2">
+                    <div className="text-sm font-semibold text-gray-600">Balance</div>
+                    <div className="text-3xl font-bold">{(pkg.lessons_added || 0) - (pkg.lessons_used || 0)}</div>
+                  </div>
+
+                  <div className="space-y-1 text-sm">
+                    <div>{pkg.transaction_name}</div>
+                    <div>Purchased: {formatDate(pkg.purchase_date)}</div>
+                    <div>Expires: {formatDate(pkg.expiration_date)}</div>
+                    <div>Method: {pkg.payment_method}</div>
+                  </div>
                 </div>
+              ))}
 
-                <div className="space-y-1 text-sm">
-                  <div>{pkg.transaction_name}</div>
-                  <div>Purchased: {formatDate(pkg.purchase_date)}</div>
-                  <div>Expires: {formatDate(pkg.expiration_date)}</div>
-                  <div>Method: {pkg.payment_method}</div>
-                </div>
-              </div>
-            ))}
+              {packages.filter((pkg) => (pkg.lessons_added || 0) - (pkg.lessons_used || 0) > 0).length === 0 && (
+                <div className="rounded-xl border p-4">No active lessons remaining.</div>
+              )}
+            </div>
 
-            {packages.filter((pkg) => (pkg.lessons_added || 0) - (pkg.lessons_used || 0) > 0).length === 0 && (
-              <div className="rounded-xl border p-4">No active lessons remaining.</div>
-            )}
-          </div>
-
-          <div className="hidden lg:block overflow-x-auto rounded-xl border">
-            <table className="min-w-[700px] w-full">
-              <thead>
-                <tr className="border-b bg-gray-50">
-                  <th className="p-3 text-left">Balance</th>
-                  <th className="p-3 text-left">Purchase</th>
-                  <th className="p-3 text-left">Purchased On</th>
-                  <th className="p-3 text-left">Expiry</th>
-                  <th className="p-3 text-left">Method</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {paginatedPackages.map((pkg) => (
-                  <tr key={pkg.id} className="border-b">
-                    <td className="p-3">{(pkg.lessons_added || 0) - (pkg.lessons_used || 0)}</td>
-
-                    <td className="p-3">{pkg.transaction_name}</td>
-
-                    <td className="p-3">{formatDate(pkg.purchase_date)}</td>
-
-                    <td className="p-3">{formatDate(pkg.expiration_date)}</td>
-
-                    <td className="p-3">{pkg.payment_method}</td>
+            <div className="hidden lg:block overflow-x-auto rounded-xl border">
+              <table className="min-w-[700px] w-full">
+                <thead>
+                  <tr className="border-b bg-gray-50">
+                    <th className="p-3 text-left">Balance</th>
+                    <th className="p-3 text-left">Purchase</th>
+                    <th className="p-3 text-left">Purchased On</th>
+                    <th className="p-3 text-left">Expiry</th>
+                    <th className="p-3 text-left">Method</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
 
-            {packages.filter((pkg) => (pkg.lessons_added || 0) - (pkg.lessons_used || 0) > 0).length === 0 && (
-              <div className="p-4">No active lessons remaining.</div>
-            )}
+                <tbody>
+                  {paginatedPackages.map((pkg) => (
+                    <tr key={pkg.id} className="border-b">
+                      <td className="p-3">{(pkg.lessons_added || 0) - (pkg.lessons_used || 0)}</td>
 
-            {packages.filter((pkg) => (pkg.lessons_added || 0) - (pkg.lessons_used || 0) > 0).length >
-              ITEMS_PER_PAGE && (
-              <div className="flex h-16 items-center justify-center gap-4">
-                <button
-                  onClick={() => setPackagesPage((p) => Math.max(1, p - 1))}
-                  disabled={packagesPage === 1}
-                  className="rounded border px-3 py-1 disabled:opacity-50"
-                >
-                  Previous
-                </button>
+                      <td className="p-3">{pkg.transaction_name}</td>
 
-                <span>
-                  {packagesPage} of{" "}
-                  {Math.ceil(
-                    packages.filter((pkg) => (pkg.lessons_added || 0) - (pkg.lessons_used || 0) > 0).length /
-                      ITEMS_PER_PAGE
-                  )}
-                </span>
+                      <td className="p-3">{formatDate(pkg.purchase_date)}</td>
 
-                <button
-                  onClick={() =>
-                    setPackagesPage((p) =>
-                      Math.min(
-                        Math.ceil(
-                          packages.filter((pkg) => (pkg.lessons_added || 0) - (pkg.lessons_used || 0) > 0).length /
-                            ITEMS_PER_PAGE
-                        ),
-                        p + 1
-                      )
-                    )
-                  }
-                  disabled={
-                    packagesPage >=
-                    Math.ceil(
+                      <td className="p-3">{formatDate(pkg.expiration_date)}</td>
+
+                      <td className="p-3">{pkg.payment_method}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+
+              {packages.filter((pkg) => (pkg.lessons_added || 0) - (pkg.lessons_used || 0) > 0).length === 0 && (
+                <div className="p-4">No active lessons remaining.</div>
+              )}
+
+              {packages.filter((pkg) => (pkg.lessons_added || 0) - (pkg.lessons_used || 0) > 0).length >
+                ITEMS_PER_PAGE && (
+                <div className="flex h-16 items-center justify-center gap-4">
+                  <button
+                    onClick={() => setPackagesPage((p) => Math.max(1, p - 1))}
+                    disabled={packagesPage === 1}
+                    className="rounded border px-3 py-1 disabled:opacity-50"
+                  >
+                    Previous
+                  </button>
+
+                  <span>
+                    {packagesPage} of{" "}
+                    {Math.ceil(
                       packages.filter((pkg) => (pkg.lessons_added || 0) - (pkg.lessons_used || 0) > 0).length /
                         ITEMS_PER_PAGE
-                    )
-                  }
-                  className="rounded border px-3 py-1 disabled:opacity-50"
-                >
-                  Next
-                </button>
-              </div>
-            )}
+                    )}
+                  </span>
+
+                  <button
+                    onClick={() =>
+                      setPackagesPage((p) =>
+                        Math.min(
+                          Math.ceil(
+                            packages.filter((pkg) => (pkg.lessons_added || 0) - (pkg.lessons_used || 0) > 0).length /
+                              ITEMS_PER_PAGE
+                          ),
+                          p + 1
+                        )
+                      )
+                    }
+                    disabled={
+                      packagesPage >=
+                      Math.ceil(
+                        packages.filter((pkg) => (pkg.lessons_added || 0) - (pkg.lessons_used || 0) > 0).length /
+                          ITEMS_PER_PAGE
+                      )
+                    }
+                    className="rounded border px-3 py-1 disabled:opacity-50"
+                  >
+                    Next
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
-      </div>
 
         {showRescheduleModal && rescheduleLesson && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-6">
@@ -1205,13 +1054,9 @@ export default function ClientDashboard() {
                 }}
                 disabled={(date) => {
                   const start = new Date()
-
                   start.setHours(0, 0, 0, 0)
-
                   const end = new Date(rescheduleLesson.lesson_date)
-
                   end.setDate(end.getDate() + 7)
-
                   return date < start || date > end
                 }}
               />
@@ -1247,11 +1092,9 @@ export default function ClientDashboard() {
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
             <div className="w-full max-w-2xl rounded-xl bg-white p-6 shadow-xl">
               <h3 className="mb-4 text-2xl font-bold">Lesson Notes</h3>
-
               <div className="min-h-[250px] rounded-lg border p-4 whitespace-pre-wrap">
                 {selectedLessonNote.lesson_notes}
               </div>
-
               <div className="mt-4 flex justify-end">
                 <button onClick={() => setSelectedLessonNote(null)} className="rounded border px-4 py-2">
                   Close
