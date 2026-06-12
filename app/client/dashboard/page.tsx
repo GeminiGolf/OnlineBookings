@@ -47,6 +47,7 @@ export default function ClientDashboard() {
   const [selectedLessonNote, setSelectedLessonNote] = useState<any>(null)
   const [showClientInfo, setShowClientInfo] = useState(false)
   const [expandedLessonId, setExpandedLessonId] = useState<number | null>(null)
+  const [expandedPackageId, setExpandedPackageId] = useState<number | null>(null)
   useEffect(() => {
     loadDashboardData()
   }, [])
@@ -599,7 +600,7 @@ export default function ClientDashboard() {
           <div className="lg:hidden rounded-2xl bg-white shadow">
             <button onClick={() => setShowClientInfo(!showClientInfo)} className="w-full p-4 lg:p-6 text-left">
               <div className="flex items-center justify-between">
-                <h2 className="text-xl lg:text-3xl font-bold text-black">Client Information</h2>
+                <h2 className="text-2xl font-bold text-black">Client Information</h2>
 
                 <span className="text-2xl">{showClientInfo ? "▲" : "▼"}</span>
               </div>
@@ -635,10 +636,14 @@ export default function ClientDashboard() {
           {/* Desktop */}
           <div className="order-1 lg:order-2 hidden lg:block rounded-2xl bg-white shadow">
             <button onClick={() => setShowClientInfo(!showClientInfo)} className="w-full p-6 text-left">
-              <div className="flex items-center justify-between">
-                <h2 className="text-3xl font-bold text-black">Client Information</h2>
+              <div className="flex items-center justify-center gap-8">
+                <h2 className="text-2xl font-bold text-black">
+                  Client Information
+                </h2>
 
-                <span className="text-3xl">{showClientInfo ? "▲" : "▼"}</span>
+                <span className="text-2xl">
+                  {showClientInfo ? "▲" : "▼"}
+                </span>
               </div>
             </button>
 
@@ -672,7 +677,7 @@ export default function ClientDashboard() {
 
         <div className="mt-8 grid gap-8 lg:grid-cols-2">
           <div className="rounded-2xl bg-white p-3 lg:p-8 shadow">
-            <h2 className="mb-3 text-xl lg:text-3xl font-bold text-black">Book A Lesson</h2>
+            <h2 className="mb-3 text-2xl font-bold text-black">Book A Lesson</h2>
 
             {!client?.primary_coach_id && (
               <select
@@ -761,7 +766,7 @@ export default function ClientDashboard() {
             )}
           </div>
           <div className="rounded-2xl bg-white p-3 lg:p-8 shadow">
-            <h2 className="mb-3 text-xl lg:text-3xl font-bold text-black">Upcoming Lessons</h2>
+            <h2 className="mb-3 text-2xl font-bold text-black">Upcoming Lessons</h2>
 
             <div className="space-y-2">
               {paginatedUpcoming.map((lesson) => (
@@ -852,7 +857,7 @@ export default function ClientDashboard() {
 
         <div className="mt-8 grid gap-8 lg:grid-cols-2">
           <div className="rounded-2xl bg-white p-3 lg:p-8 shadow">
-            <h2 className="mb-3 text-xl lg:text-3xl font-bold text-black">Previous Lessons</h2>
+            <h2 className="mb-3 text-2xl font-bold text-black">Previous Lessons</h2>
 
             <div className="overflow-hidden rounded-xl border">
               <table className="w-full border-collapse">
@@ -916,7 +921,7 @@ export default function ClientDashboard() {
             </div>
           </div>
           <div className="rounded-2xl bg-white p-3 lg:p-8 shadow">
-            <h2 className="mb-3 text-xl lg:text-3xl font-bold text-black">Lessons Remaining</h2>
+            <h2 className="mb-3 text-2xl font-bold text-black">Lessons Remaining</h2>
 
             <div className="lg:hidden space-y-3">
               {paginatedPackages.map((pkg) => (
@@ -940,81 +945,46 @@ export default function ClientDashboard() {
               )}
             </div>
 
-            <div className="hidden lg:block overflow-x-auto rounded-xl border">
-              <table className="min-w-[700px] w-full">
-                <thead>
-                  <tr className="border-b bg-gray-50">
-                    <th className="p-3 text-left">Balance</th>
-                    <th className="p-3 text-left">Purchase</th>
-                    <th className="p-3 text-left">Purchased On</th>
-                    <th className="p-3 text-left">Expiry</th>
-                    <th className="p-3 text-left">Method</th>
-                  </tr>
-                </thead>
-
-                <tbody>
-                  {paginatedPackages.map((pkg) => (
-                    <tr key={pkg.id} className="border-b">
-                      <td className="p-3">{(pkg.lessons_added || 0) - (pkg.lessons_used || 0)}</td>
-
-                      <td className="p-3">{pkg.transaction_name}</td>
-
-                      <td className="p-3">{formatDate(pkg.purchase_date)}</td>
-
-                      <td className="p-3">{formatDate(pkg.expiration_date)}</td>
-
-                      <td className="p-3">{pkg.payment_method}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-
-              {packages.filter((pkg) => (pkg.lessons_added || 0) - (pkg.lessons_used || 0) > 0).length === 0 && (
-                <div className="p-4">No active lessons remaining.</div>
-              )}
-
-              {packages.filter((pkg) => (pkg.lessons_added || 0) - (pkg.lessons_used || 0) > 0).length >
-                ITEMS_PER_PAGE && (
-                <div className="flex h-16 items-center justify-center gap-4">
-                  <button
-                    onClick={() => setPackagesPage((p) => Math.max(1, p - 1))}
-                    disabled={packagesPage === 1}
-                    className="rounded border px-3 py-1 disabled:opacity-50"
-                  >
-                    Previous
-                  </button>
-
-                  <span>
-                    {packagesPage} of{" "}
-                    {Math.ceil(
-                      packages.filter((pkg) => (pkg.lessons_added || 0) - (pkg.lessons_used || 0) > 0).length /
-                        ITEMS_PER_PAGE
-                    )}
-                  </span>
-
+            <div className="space-y-3">
+              {paginatedPackages.map((pkg) => (
+                <div key={pkg.id} className="rounded-xl border p-4">
                   <button
                     onClick={() =>
-                      setPackagesPage((p) =>
-                        Math.min(
-                          Math.ceil(
-                            packages.filter((pkg) => (pkg.lessons_added || 0) - (pkg.lessons_used || 0) > 0).length /
-                              ITEMS_PER_PAGE
-                          ),
-                          p + 1
-                        )
+                      setExpandedPackageId(
+                        expandedPackageId === pkg.id ? null : pkg.id
                       )
                     }
-                    disabled={
-                      packagesPage >=
-                      Math.ceil(
-                        packages.filter((pkg) => (pkg.lessons_added || 0) - (pkg.lessons_used || 0) > 0).length /
-                          ITEMS_PER_PAGE
-                      )
-                    }
-                    className="rounded border px-3 py-1 disabled:opacity-50"
+                    className="flex w-full items-center justify-between"
                   >
-                    Next
+                    <div>
+                      <div className="text-sm font-semibold text-gray-600">
+                        Balance
+                      </div>
+
+                      <div className="text-2xl font-bold">
+                        {(pkg.lessons_added || 0) - (pkg.lessons_used || 0)}
+                      </div>
+                    </div>
+
+                    <span className="text-2xl">
+                      {expandedPackageId === pkg.id ? "▲" : "▼"}
+                    </span>
                   </button>
+
+                  {expandedPackageId === pkg.id && (
+                    <div className="mt-4 space-y-2 border-t pt-4">
+                      <div>Purchase: {pkg.transaction_name}</div>
+                      <div>Purchased: {formatDate(pkg.purchase_date)}</div>
+                      <div>Expiry: {formatDate(pkg.expiration_date)}</div>
+                      <div>Method: {pkg.payment_method}</div>
+                    </div>
+                  )}
+                </div>
+              ))}
+
+              {paginatedPackages.length === 0 && (
+                <div className="rounded-xl border p-4">
+                  No active lessons remaining.
                 </div>
               )}
             </div>
