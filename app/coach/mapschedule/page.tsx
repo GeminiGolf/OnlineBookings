@@ -5,35 +5,14 @@ import { useRouter } from "next/navigation"
 import { supabase } from "@/lib/supabaseClient"
 
 const days = [
-  {
-    label: "Monday",
-    value: 1,
-  },
-  {
-    label: "Tuesday",
-    value: 2,
-  },
-  {
-    label: "Wednesday",
-    value: 3,
-  },
-  {
-    label: "Thursday",
-    value: 4,
-  },
-  {
-    label: "Friday",
-    value: 5,
-  },
-  {
-    label: "Saturday",
-    value: 6,
-  },
-  {
-    label: "Sunday",
-    value: 0,
-  },
-]
+  { label: "Monday",    value: 1 },
+  { label: "Tuesday",   value: 2 },
+  { label: "Wednesday", value: 3 },
+  { label: "Thursday",  value: 4 },
+  { label: "Friday",    value: 5 },
+  { label: "Saturday",  value: 6 },
+  { label: "Sunday",    value: 0 },
+];
 
 type Availability = {
   id?: number
@@ -51,17 +30,11 @@ type WeeklyBreak = {
 
 export default function CoachPage() {
   const router = useRouter()
-
   const [authorized, setAuthorized] = useState(false)
-
   const [loadingPage, setLoadingPage] = useState(true)
-
   const [coachId, setCoachId] = useState<number | null>(null)
-
   const [availability, setAvailability] = useState<Availability[]>([])
-
   const [weeklyBreaks, setWeeklyBreaks] = useState<WeeklyBreak[]>([])
-
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
@@ -72,88 +45,55 @@ export default function CoachPage() {
     const {
       data: { session },
     } = await supabase.auth.getSession()
-
-    // NOT LOGGED IN
-
     if (!session) {
       router.push("/login")
-
       return
     }
-
-    // PROFILE
 
     const { data: profile } = await supabase.from("profiles").select("*").eq("id", session.user.id).single()
-
-    // NOT COACH
-
     if (!profile || profile.role !== "coach") {
       router.push("/")
-
       return
     }
-
-    // LOAD COACH
-
     const { data: coach } = await supabase.from("coaches").select("*").eq("profile_id", session.user.id).single()
-
     if (!coach) {
       router.push("/")
-
       return
     }
-
     setCoachId(coach.id)
-
     setAuthorized(true)
-
     setLoadingPage(false)
-
     fetchAvailability(coach.id)
   }
 
   async function fetchAvailability(currentCoachId: number) {
     const { data } = await supabase.from("availability").select("*").eq("coach_id", currentCoachId)
-
     if (data) {
       setAvailability(data)
     }
-
     const { data: breaksData } = await supabase.from("weekly_breaks").select("*").eq("coach_id", currentCoachId)
-
     if (breaksData) {
       setWeeklyBreaks(breaksData)
     }
   }
-
   function getDayAvailability(day: number) {
     return availability.find((item) => item.day_of_week === day)
   }
-
   async function saveAvailability(day: number, start: string, end: string) {
     if (!coachId) {
       return
     }
-
     setLoading(true)
-
     const existing = getDayAvailability(day)
-
-    // CLOSED DAY
 
     if (start === "" || end === "") {
       if (existing?.id) {
         await supabase.from("availability").delete().eq("id", existing.id)
       }
-
       await fetchAvailability(coachId)
-
       setLoading(false)
-
       return
     }
-
-    // UPDATE
 
     if (existing?.id) {
       await supabase
@@ -164,7 +104,6 @@ export default function CoachPage() {
         })
         .eq("id", existing.id)
     } else {
-      // INSERT
 
       await supabase.from("availability").insert({
         coach_id: coachId,
@@ -173,13 +112,9 @@ export default function CoachPage() {
         end_time: end,
       })
     }
-
     await fetchAvailability(coachId)
-
     setLoading(false)
   }
-
-  // LOADING SCREEN
 
   if (loadingPage) {
     return (
@@ -189,25 +124,21 @@ export default function CoachPage() {
     )
   }
 
-  // SAFETY
-
   if (!authorized) {
     return null
   }
 
   return (
-    <main className="min-h-screen bg-gray-100 p-10 text-black">
-      <div className="mx-auto max-w-4xl rounded-2xl bg-white p-8 shadow-lg">
+    <main className="min-h-screen bg-gray-100 p-2 sm:p-10 text-black">
+      <div className="mx-auto max-w-4xl rounded-2xl bg-white p-4 sm:p-8 shadow-lg">
         <div className="mb-8">
-          <h1 className="text-5xl font-bold">Coach Availability</h1>
-
+          <h1 className="text-4xl font-bold">Coach Availability</h1>
           <p className="mt-2 text-gray-500">Configure your weekly lesson schedule.</p>
         </div>
 
         <div className="space-y-4">
           {days.map((day) => {
             const existing = getDayAvailability(day.value)
-
             return (
               <DayAvailabilityRow
                 key={day.value}
@@ -246,11 +177,8 @@ function DayAvailabilityRow({ dayLabel, dayValue, coachId, existing, weeklyBreak
 
   useEffect(() => {
     setStart(existing?.start_time || "")
-
     setEnd(existing?.end_time || "")
-
     const breaksForDay = weeklyBreaks.filter((item) => item.day_of_week === dayValue).map((item) => item.hour)
-
     setSelectedBreaks(breaksForDay)
   }, [existing, weeklyBreaks, dayValue])
 
@@ -258,29 +186,23 @@ function DayAvailabilityRow({ dayLabel, dayValue, coachId, existing, weeklyBreak
     if (!start || !end) {
       return []
     }
-
     const startHour = parseInt(start.split(":")[0])
     const endHour = parseInt(end.split(":")[0])
     const hours = []
-
     for (let hour = startHour; hour < endHour; hour++) {
       hours.push(hour)
     }
-
     return hours
   }
 
   function formatHour(hour: number) {
     const suffix = hour >= 12 ? "PM" : "AM"
-
     const display = hour % 12 || 12
-
     return `${display}:00 ${suffix}`
   }
 
   async function saveBreaks() {
     await supabase.from("weekly_breaks").delete().eq("coach_id", coachId).eq("day_of_week", dayValue)
-
     if (selectedBreaks.length > 0) {
       await supabase.from("weekly_breaks").insert(
         selectedBreaks.map((hour) => ({
@@ -290,20 +212,16 @@ function DayAvailabilityRow({ dayLabel, dayValue, coachId, existing, weeklyBreak
         }))
       )
     }
-
     setShowBreaks(false)
   }
 
   return (
     <div className="rounded-xl border border-black p-5">
-
       {/* DESKTOP */}
-
       <div className="hidden min-[900px]:flex items-center justify-between">
         <h3 className="min-w-[180px] text-2xl font-bold">
           {dayLabel}
         </h3>
-
         <div className="flex items-end gap-3">
           <div>
             <label className="mb-1 block text-sm font-semibold">
@@ -339,12 +257,9 @@ function DayAvailabilityRow({ dayLabel, dayValue, coachId, existing, weeklyBreak
                 const confirmed = window.confirm(
                   "Confirm opening this day for all future weeks?"
                 )
-
                 if (!confirmed) return
-
                 setStart("08:00")
                 setEnd("19:00")
-
                 onSave("08:00", "19:00")
               }}
               className="rounded-lg bg-green-600 px-5 py-2 font-semibold text-white"
@@ -357,12 +272,9 @@ function DayAvailabilityRow({ dayLabel, dayValue, coachId, existing, weeklyBreak
                 const confirmed = window.confirm(
                   "Confirm closing this day for all future weeks?"
                 )
-
                 if (!confirmed) return
-
                 setStart("")
                 setEnd("")
-
                 onSave("", "")
               }}
               className="rounded-lg bg-red-600 px-5 py-2 font-semibold text-white"
@@ -388,7 +300,6 @@ function DayAvailabilityRow({ dayLabel, dayValue, coachId, existing, weeklyBreak
           className="flex w-full items-center justify-between"
         >
           <h3 className="text-2xl font-bold">{dayLabel}</h3>
-
           <span className="text-xl">
             {expanded ? "▼" : "▶"}
           </span>
@@ -396,19 +307,17 @@ function DayAvailabilityRow({ dayLabel, dayValue, coachId, existing, weeklyBreak
 
         {expanded && (
           <div className="mt-4 space-y-4">
-
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className="mb-1 block text-sm font-semibold">
                   Start Time
                 </label>
-
                 <input
                   type="time"
                   step="3600"
                   value={start}
                   onChange={(e) => setStart(e.target.value)}
-                  className="w-full rounded-lg border border-black px-3 py-2"
+                  className="w-full appearance-none rounded-lg border border-black px-3 py-2"
                 />
               </div>
 
@@ -422,13 +331,12 @@ function DayAvailabilityRow({ dayLabel, dayValue, coachId, existing, weeklyBreak
                   step="3600"
                   value={end}
                   onChange={(e) => setEnd(e.target.value)}
-                  className="w-full rounded-lg border border-black px-3 py-2"
+                  className="w-full appearance-none rounded-lg border border-black px-3 py-2"
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-3">
-
               {!start || !end ? (
                 <button
                   onClick={() => {
@@ -437,10 +345,8 @@ function DayAvailabilityRow({ dayLabel, dayValue, coachId, existing, weeklyBreak
                     )
 
                     if (!confirmed) return
-
                     setStart("08:00")
                     setEnd("19:00")
-
                     onSave("08:00", "19:00")
                   }}
                   className="rounded-lg bg-green-600 px-5 py-2 font-semibold text-white"
@@ -453,12 +359,9 @@ function DayAvailabilityRow({ dayLabel, dayValue, coachId, existing, weeklyBreak
                     const confirmed = window.confirm(
                       "Confirm closing this day for all future weeks?"
                     )
-
                     if (!confirmed) return
-
                     setStart("")
                     setEnd("")
-
                     onSave("", "")
                   }}
                   className="rounded-lg bg-red-600 px-5 py-2 font-semibold text-white"
@@ -466,7 +369,6 @@ function DayAvailabilityRow({ dayLabel, dayValue, coachId, existing, weeklyBreak
                   Close
                 </button>
               )}
-
               <button
                 onClick={() => setShowBreaks(!showBreaks)}
                 className="rounded-lg bg-blue-600 px-5 py-2 font-semibold text-white"
@@ -494,12 +396,10 @@ function DayAvailabilityRow({ dayLabel, dayValue, coachId, existing, weeklyBreak
                     )
                   }}
                 />
-
                 {formatHour(hour)}
               </label>
             ))}
           </div>
-
           <button
             onClick={saveBreaks}
             className="mt-4 rounded-lg bg-black px-4 py-2 font-semibold text-white"

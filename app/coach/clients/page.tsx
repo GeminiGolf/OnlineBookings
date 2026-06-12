@@ -4,31 +4,22 @@ import { createClient } from "@/lib/supabaseServer"
 
 export default async function CoachClientsPage() {
   const supabase = await createClient()
-
   const {
     data: { user },
   } = await supabase.auth.getUser()
-
   if (!user) {
     return null
   }
-
   const { data: coach } = await supabase.from("coaches").select("*").eq("profile_id", user.id).single()
-
   if (!coach) {
     return null
   }
-
   const { data: clients } = await supabase.from("clients").select("*").eq("primary_coach_id", coach.id).order("name")
-
   return (
-    <main className="min-h-screen bg-gray-100 p-10 text-black">
+    <main className="min-h-screen bg-gray-100 p-3 sm:p-10 text-black">
       <div className="mx-auto max-w-6xl">
-        <h1 className="text-5xl font-bold">My Clients</h1>
-
-        <p className="mt-2 text-gray-600">Clients assigned to you.</p>
-
-        <div className="mt-8 overflow-hidden rounded-2xl border bg-white shadow">
+        <h1 className="text-3xl font-bold sm:text-4xl">My Clients</h1>
+        <div className="mt-6 overflow-x-auto rounded-2xl border bg-white shadow">
           <table className="w-full">
             <thead>
               <tr className="border-b bg-gray-50">
@@ -47,11 +38,8 @@ export default async function CoachClientsPage() {
                       {client.name}
                     </Link>
                   </td>
-
                   <td className="p-4">{client.phone || "-"}</td>
-
                   <td className="p-4">{client.email || "-"}</td>
-
                   <td className="p-4">{client.lessons_remaining}</td>
                 </tr>
               ))}
