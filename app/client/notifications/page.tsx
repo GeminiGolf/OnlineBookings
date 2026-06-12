@@ -10,7 +10,9 @@ export default function ClientNotificationsPage() {
   const [showOlder, setShowOlder] = useState(false)
   const router = useRouter()
   const [expandedNotifications, setExpandedNotifications] = useState<number[]>([])
-
+  const ITEMS_PER_PAGE = 5
+  const [notificationsPage, setNotificationsPage] = useState(1)
+  const [olderNotificationsPage, setOlderNotificationsPage] = useState(1)
   useEffect(() => {
     loadNotifications()
   }, [])
@@ -216,6 +218,16 @@ export default function ClientNotificationsPage() {
     }
   }
 
+  const paginatedNotifications = notifications.slice(
+    (notificationsPage - 1) * ITEMS_PER_PAGE,
+    notificationsPage * ITEMS_PER_PAGE
+  )
+
+  const paginatedOlderNotifications = olderNotifications.slice(
+    (olderNotificationsPage - 1) * ITEMS_PER_PAGE,
+    olderNotificationsPage * ITEMS_PER_PAGE
+  )
+
   function toggleNotification(id: number) {
     setExpandedNotifications((prev) =>
       prev.includes(id)
@@ -225,14 +237,11 @@ export default function ClientNotificationsPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-100 p-8 text-black">
-        <div className="mx-auto max-w-7xl p-10">
-        <div className="mx-auto max-w-7xl">
-          <h1 className="mb-8 text-4xl font-bold">
-            Notifications
-          </h1>
+    <main className="min-h-screen bg-gray-100 p-4 lg:p-8 text-black">
+      <div className="mx-auto max-w-7xl lg:p-10">
+        <div className="w-full">
 
-          <h2 className="mb-4 text-3xl font-bold">
+          <h2 className="mb-4 text-[22px] lg:text-3xl font-bold text-left">
             Notifications ({notifications.length})
           </h2>
 
@@ -245,7 +254,7 @@ export default function ClientNotificationsPage() {
               <div>Created At</div>
             </div>
 
-            {notifications.map((notification) => (
+            {paginatedNotifications.map((notification) => (
               <div key={notification.id}>
                 {/* Desktop */}
                 <div className="hidden lg:grid grid-cols-[60px_180px_220px_1fr_220px] items-center gap-4 rounded-xl bg-white p-4 shadow">
@@ -313,19 +322,54 @@ export default function ClientNotificationsPage() {
                 No notifications.
               </div>
             )}
+
+            {notifications.length > ITEMS_PER_PAGE && (
+              <div className="flex items-center justify-center gap-4 pt-4">
+                <button
+                  onClick={() => setNotificationsPage((p) => Math.max(1, p - 1))}
+                  disabled={notificationsPage === 1}
+                  className="rounded border px-3 py-1 disabled:opacity-50"
+                >
+                  Previous
+                </button>
+
+                <span>
+                  {notificationsPage} of{" "}
+                  {Math.ceil(notifications.length / ITEMS_PER_PAGE)}
+                </span>
+
+                <button
+                  onClick={() =>
+                    setNotificationsPage((p) =>
+                      Math.min(
+                        Math.ceil(notifications.length / ITEMS_PER_PAGE),
+                        p + 1
+                      )
+                    )
+                  }
+                  disabled={
+                    notificationsPage >=
+                    Math.ceil(notifications.length / ITEMS_PER_PAGE)
+                  }
+                  className="rounded border px-3 py-1 disabled:opacity-50"
+                >
+                  Next
+                </button>
+              </div>
+            )}
           </div>
 
           <div className="mt-10">
             <button
               onClick={() => setShowOlder(!showOlder)}
-              className="text-3xl font-bold"
+              className="text-[22px] lg:text-3xl font-bold text-left"
             >
               Older Notifications {showOlder ? "▲" : "▼"}
             </button>
 
             {showOlder && (
               <div className="mt-4 space-y-4">
-                {olderNotifications.map((notification) => (
+                {paginatedOlderNotifications.map((notification) => (
                   <div key={notification.id}>
                     {/* Desktop */}
                     <div className="hidden lg:grid grid-cols-[60px_180px_220px_1fr_220px] items-center gap-4 rounded-xl bg-white p-4 shadow">
@@ -375,6 +419,41 @@ export default function ClientNotificationsPage() {
                     </div>
                   </div>
                 ))}
+
+                {olderNotifications.length > ITEMS_PER_PAGE && (
+                  <div className="flex items-center justify-center gap-4 pt-4">
+                    <button
+                      onClick={() => setOlderNotificationsPage((p) => Math.max(1, p - 1))}
+                      disabled={olderNotificationsPage === 1}
+                      className="rounded border px-3 py-1 disabled:opacity-50"
+                    >
+                      Previous
+                    </button>
+
+                    <span>
+                      {olderNotificationsPage} of{" "}
+                      {Math.ceil(olderNotifications.length / ITEMS_PER_PAGE)}
+                    </span>
+
+                    <button
+                      onClick={() =>
+                        setOlderNotificationsPage((p) =>
+                          Math.min(
+                            Math.ceil(olderNotifications.length / ITEMS_PER_PAGE),
+                            p + 1
+                          )
+                        )
+                      }
+                      disabled={
+                        olderNotificationsPage >=
+                        Math.ceil(olderNotifications.length / ITEMS_PER_PAGE)
+                      }
+                      className="rounded border px-3 py-1 disabled:opacity-50"
+                    >
+                      Next
+                    </button>
+                  </div>
+                )}
               </div>
             )}
           </div>
