@@ -53,61 +53,63 @@ export default function CoachDashboardPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-100 p-10">
+    <main className="min-h-screen bg-gray-100 p-4 sm:p-10">
       <div className="mx-auto max-w-5xl">
-        <h1 className="text-6xl font-black text-black">
-          Coach Dashboard
-        </h1>
+        <div className="mb-3 text-center sm:mb-8 sm:text-left">
+          <h1 className="whitespace-nowrap text-3xl font-bold text-black sm:text-5xl">
+            Coach Dashboard
+          </h1>
 
-        <p className="mt-4 text-2xl text-gray-600">
-          Manage your coaching business.
-        </p>
+          <p className="whitespace-nowrap text-sm text-gray-600 sm:text-2xl">
+            Manage your coaching business.
+          </p>
+        </div>
 
-        <div className="mt-10 grid gap-6 md:grid-cols-2">
+        <div className="mt-3 grid gap-4 md:mt-10 md:grid-cols-2">
           <Link
             href="/coach/clients"
-            className="rounded-3xl bg-white p-8 shadow-lg transition hover:scale-[1.02]"
+            className="rounded-3xl bg-white p-5 sm:p-8 shadow-lg transition hover:scale-[1.02]"
           >
-            <h2 className="text-3xl font-bold text-black">
+            <h2 className="text-2xl font-bold text-black sm:text-3xl">
               My Clients
             </h2>
 
-            <p className="mt-3 text-lg text-gray-600">
+            <p className="mt-2 text-base text-gray-600 sm:mt-3 sm:text-lg">
               View and manage assigned clients.
             </p>
           </Link>
 
           <Link
             href="/coach/mapschedule"
-            className="rounded-3xl bg-white p-8 shadow-lg transition hover:scale-[1.02]"
+            className="rounded-3xl bg-white p-5 sm:p-8 shadow-lg transition hover:scale-[1.02]"
           >
-            <h2 className="text-3xl font-bold text-black">
+            <h2 className="text-2xl font-bold text-black sm:text-3xl">
               Map Schedule
             </h2>
 
-            <p className="mt-3 text-lg text-gray-600">
+            <p className="mt-2 text-base text-gray-600 sm:mt-3 sm:text-lg">
               Edit your weekly coaching availability.
             </p>
           </Link>
 
           <Link
             href="/coach/lessons"
-            className="rounded-3xl bg-white p-8 shadow-lg transition hover:scale-[1.02]"
+            className="rounded-3xl bg-white p-5 sm:p-8 shadow-lg transition hover:scale-[1.02]"
           >
-            <h2 className="text-3xl font-bold text-black">
+            <h2 className="text-2xl font-bold text-black sm:text-3xl">
               Previous Lessons
             </h2>
 
-            <p className="mt-3 text-lg text-gray-600">
+            <p className="mt-2 text-base text-gray-600 sm:mt-3 sm:text-lg">
               View lesson history and past clients.
             </p>
           </Link>
 
           <Link
             href="/notifications"
-            className="rounded-3xl bg-white p-8 shadow-lg transition hover:scale-[1.02]"
+            className="rounded-3xl bg-white p-5 sm:p-8 shadow-lg transition hover:scale-[1.02]"
           >
-            <h2 className="text-3xl font-bold text-black">
+            <h2 className="text-2xl font-bold text-black sm:text-3xl">
               Notifications ({totalNotifications})
 
               {urgentNotifications > 0 && (
@@ -117,7 +119,7 @@ export default function CoachDashboardPage() {
               )}
             </h2>
 
-            <p className="mt-3 text-lg text-gray-600">
+            <p className="mt-2 text-base text-gray-600 sm:mt-3 sm:text-lg">
               View unread notifications.
             </p>
           </Link>

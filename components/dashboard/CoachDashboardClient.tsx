@@ -419,21 +419,29 @@ export default function CoachDashboardClient({
   return (
     <main className="min-h-screen bg-gray-100 p-6 text-black">
       <div className="mx-auto max-w-7xl">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold">Coach Schedule</h1>
-          <p className="mt-2 text-gray-600">Welcome back, {coachName}</p>
+        <h1 className="text-3xl font-bold">Schedule</h1>
+        <div className="mb-4">
+          <p className="mt-1 text-gray-600">Welcome back, {coachName}</p>
         </div>
-        <div className="mb-6 flex flex-wrap items-center gap-3">
-          <button onClick={previousDay} className="rounded-lg border bg-white px-4 py-2 shadow-sm">
-            ← Previous
+        <div className="mb-3 sm:mb-6 flex flex-wrap items-center gap-3">
+          <button
+            onClick={previousDay}
+            className="rounded-lg border bg-white px-4 py-2 shadow-sm"
+          >
+            <span className="hidden sm:inline">← Previous</span>
+            <span className="sm:hidden">←</span>
           </button>
 
           <button onClick={today} className="rounded-lg border bg-white px-4 py-2 shadow-sm">
             Today
           </button>
 
-          <button onClick={nextDay} className="rounded-lg border bg-white px-4 py-2 shadow-sm">
-            Next →
+          <button
+            onClick={nextDay}
+            className="rounded-lg border bg-white px-4 py-2 shadow-sm"
+          >
+            <span className="hidden sm:inline">Next →</span>
+            <span className="sm:hidden">→</span>
           </button>
 
           <input
@@ -703,7 +711,7 @@ export default function CoachDashboardClient({
                       }
                       setShowCompleteModal(true)
                     }}
-                    className="rounded-lg bg-sky-400 px-4 py-2 text-white hover:bg-sky-500"
+                    className="rounded-lg bg-sky-400 px-2 py-2 text-sm text-white hover:bg-sky-500"
                   >
                     Completed
                   </button>
@@ -713,14 +721,14 @@ export default function CoachDashboardClient({
                       setRescheduleBooking(selectedBooking)
                       setSelectedBooking(null)
                     }}
-                    className="rounded-lg bg-green-600 px-4 py-2 text-white hover:bg-green-700"
+                    className="rounded-lg bg-green-600 px-2 py-2 text-sm text-white hover:bg-green-700"
                   >
                     Reschedule Lesson
                   </button>
 
                   <button
                     onClick={() => setShowCancelModal(true)}
-                    className="rounded-lg bg-red-600 px-4 py-2 text-white hover:bg-red-700"
+                    className="rounded-lg bg-red-600 px-2 py-2 text-sm text-white hover:bg-red-700"
                   >
                     Cancel Lesson
                   </button>

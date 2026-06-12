@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { useEffect, useState } from "react"
 import { supabase } from "../lib/supabaseClient"
-import { Home, Bell } from "lucide-react"
+import { Home, Bell, CalendarDays } from "lucide-react"
 
 export default function Navbar() {
   const [loggedIn, setLoggedIn] = useState(false)
@@ -30,13 +30,11 @@ export default function Navbar() {
     } = supabase.auth.onAuthStateChange(() => {
       checkSession()
     })
-
     const notificationChannel = supabase
       .channel("navbar-notifications")
       .on("postgres_changes", { event: "*", schema: "public", table: "notifications" }, checkSession)
       .on("postgres_changes", { event: "*", schema: "public", table: "bookings" }, checkSession)
       .subscribe()
-
     return () => {
       authSubscription.unsubscribe()
       supabase.removeChannel(notificationChannel)
@@ -45,13 +43,11 @@ export default function Navbar() {
 
   async function checkSession() {
     setLoading(true)
-
     const {
       data: { session },
     } = await supabase.auth.getSession()
 
     setLoggedIn(!!session)
-
     if (!session) {
       setRole("")
       setUrgentCount(0)
@@ -61,14 +57,10 @@ export default function Navbar() {
     }
 
     const { data: profile } = await supabase.from("profiles").select("role").eq("id", session.user.id).single()
-
     const currentRole = profile?.role || ""
-
     setRole(currentRole)
-
     if (currentRole === "coach") {
       const { data: coach } = await supabase.from("coaches").select("id").eq("profile_id", session.user.id).single()
-
       if (coach) {
         const { data: notifications } = await supabase
           .from("notifications")
@@ -82,11 +74,8 @@ export default function Navbar() {
           ])
 
         setUrgentCount(notifications?.filter((n) => n.is_urgent).length || 0)
-
         setNormalCount(notifications?.filter((n) => !n.is_urgent).length || 0)
-
         const urgentItems = notifications?.filter((n) => n.is_urgent) || []
-
         const enrichedUrgent = await Promise.all(
           urgentItems.map(async (notification) => {
             let client_name = ""
@@ -99,21 +88,17 @@ export default function Navbar() {
                 .select("name")
                 .eq("id", notification.client_id)
                 .single()
-
               client_name = client?.name || "Unknown Client"
             }
-
             if (notification.booking_id) {
               const { data: booking } = await supabase
                 .from("bookings")
                 .select("lesson_date, lesson_time")
                 .eq("id", notification.booking_id)
                 .single()
-
               lesson_date = booking?.lesson_date || ""
               lesson_time = booking?.lesson_time || ""
             }
-
             return {
               id: notification.id,
               booking_id: notification.booking_id,
@@ -123,7 +108,6 @@ export default function Navbar() {
             }
           })
         )
-
         setUrgentNotifications(enrichedUrgent)
       }
     }
@@ -134,7 +118,6 @@ export default function Navbar() {
         .select("id")
         .eq("profile_id", session.user.id)
         .single()
-
       if (client) {
         const { data: notifications } = await supabase
           .from("notifications")
@@ -147,18 +130,14 @@ export default function Navbar() {
             "coach_booked",
             "no_show",
           ])
-
         setClientNotificationCount(notifications?.length || 0)
       }
     }
-
     if (currentRole === "admin") {
       const { data: notifications } = await supabase.from("notifications").select("*").eq("is_read", false)
-
       setUrgentCount(notifications?.filter((n) => n.is_urgent).length || 0)
       setNormalCount(notifications?.filter((n) => !n.is_urgent).length || 0)
     }
-
     setLoading(false)
   }
 
@@ -181,19 +160,15 @@ export default function Navbar() {
 
   async function handleReject(notificationId: number, bookingId: number | null) {
     let reason = ""
-
     while (!reason.trim()) {
       const response = prompt("Reason for rejection:")
-
       if (response === null) {
         return
       }
-
       if (!response.trim()) {
         alert("Please fill in a reason.")
         continue
       }
-
       reason = response.trim()
     }
 
@@ -233,7 +208,6 @@ export default function Navbar() {
         rejection_reason: reason,
       })
       .eq("id", notificationId)
-
     if (!error) {
       checkSession()
     }
@@ -252,7 +226,7 @@ export default function Navbar() {
       >
         <Home size={24} strokeWidth={2.5} />
       </Link>
-      <div className="flex gap-2 text-sm lg:gap-6 lg:text-lg">
+      <div className="flex items-center gap-2 text-sm lg:gap-6 lg:text-lg">
         {!loading && (
           <>
             {loggedIn && role === "coach" && (
@@ -260,11 +234,18 @@ export default function Navbar() {
                 <div className="relative">
                   <button
                     onClick={() => setShowUrgentDropdown(!showUrgentDropdown)}
-                    className={`text-lg transition ${
+                    className={`relative flex items-center justify-center transition ${
                       urgentCount > 0 ? "font-bold text-red-500" : "hover:text-red-400"
                     }`}
                   >
-                    {urgentCount > 0 ? `Urgent (${urgentCount})` : "Urgent"}
+                    <>
+                    <Bell size={20} />
+                    {urgentCount > 0 && (
+                      <span className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-[10px] font-bold text-white">
+                        {urgentCount}
+                      </span>
+                    )}
+                  </>
                   </button>
 
                   {showUrgentDropdown && (
@@ -314,11 +295,9 @@ export default function Navbar() {
                 <Link href="/coach/schedule" className="text-lg transition hover:text-yellow-400">
                   Schedule
                 </Link>
-
                 <Link href="/coach/dashboard" className="text-lg transition hover:text-green-400">
                   {normalCount > 0 ? `Dashboard (${normalCount})` : "Dashboard"}
                 </Link>
-
                 <button onClick={handleLogout} className="text-lg transition hover:text-red-400">
                   Logout
                 </button>
@@ -330,11 +309,18 @@ export default function Navbar() {
                 <div className="relative">
                   <button
                     onClick={() => setShowUrgentDropdown(!showUrgentDropdown)}
-                    className={`text-lg transition ${
+                    className={`relative flex items-center justify-center transition ${
                       urgentCount > 0 ? "font-bold text-red-500" : "hover:text-red-400"
                     }`}
                   >
-                    {urgentCount > 0 ? `Urgent (${urgentCount})` : "Urgent"}
+                    <>
+                      <Bell size={20} />
+                      {urgentCount > 0 && (
+                        <span className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-[10px] font-bold text-white">
+                          {urgentCount}
+                        </span>
+                      )}
+                    </>
                   </button>
 
                   {showUrgentDropdown && (
@@ -360,7 +346,6 @@ export default function Navbar() {
                                 >
                                   Approve
                                 </button>
-
                                 <button
                                   onClick={() => handleReject(notification.id, notification.booking_id)}
                                   className="rounded bg-red-600 px-3 py-1 text-sm text-white"
@@ -379,11 +364,9 @@ export default function Navbar() {
                 <Link href="/book" className="text-lg transition hover:text-yellow-400">
                   Book
                 </Link>
-
                 <Link href="/admin" className="text-lg transition hover:text-green-400">
                   {normalCount > 0 ? `Dashboard (${normalCount})` : "Dashboard"}
                 </Link>
-
                 <button onClick={handleLogout} className="text-lg transition hover:text-red-400">
                   Logout
                 </button>
@@ -397,22 +380,18 @@ export default function Navbar() {
                   className="relative flex items-center justify-center text-lg transition hover:text-blue-400"
                 >
                   <Bell size={20} />
-
                   {clientNotificationCount > 0 && (
                     <span className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-[10px] font-bold text-white">
                       {clientNotificationCount}
                     </span>
                   )}
                 </Link>
-
                 <Link href="/book" className="text-lg transition hover:text-yellow-400">
                   Book
                 </Link>
-
                 <Link href="/client/dashboard" className="text-lg transition hover:text-green-400">
                   Dashboard
                 </Link>
-
                 <button onClick={handleLogout} className="text-lg transition hover:text-red-400">
                   Logout
                 </button>
@@ -424,11 +403,9 @@ export default function Navbar() {
                 <Link href="/book" className="text-lg transition hover:text-yellow-400">
                   Book
                 </Link>
-
                 <Link href="/login" className="text-lg transition hover:text-blue-400">
                   Login
                 </Link>
-
                 <Link href="/signup" className="text-lg transition hover:text-green-400">
                   Sign Up
                 </Link>
