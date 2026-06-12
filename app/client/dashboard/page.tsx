@@ -730,35 +730,96 @@ export default function ClientDashboard() {
 
     setLoading(false)
   }
-  const paginatedUpcoming = upcomingLessons.slice(
-    (upcomingPage - 1) * ITEMS_PER_PAGE,
-    upcomingPage * ITEMS_PER_PAGE
-  )
+  const paginatedUpcoming = upcomingLessons.slice((upcomingPage - 1) * ITEMS_PER_PAGE, upcomingPage * ITEMS_PER_PAGE)
 
-  const paginatedPrevious = previousLessons.slice(
-    (previousPage - 1) * ITEMS_PER_PAGE,
-    previousPage * ITEMS_PER_PAGE
-  )
+  const paginatedPrevious = previousLessons.slice((previousPage - 1) * ITEMS_PER_PAGE, previousPage * ITEMS_PER_PAGE)
 
   const paginatedPackages = packages
     .filter((pkg) => (pkg.lessons_added || 0) - (pkg.lessons_used || 0) > 0)
-    .sort(
-      (a, b) =>
-        new Date(a.expiration_date).getTime() -
-        new Date(b.expiration_date).getTime()
-    )
-    .slice(
-      (packagesPage - 1) * ITEMS_PER_PAGE,
-      packagesPage * ITEMS_PER_PAGE
-    )
+    .sort((a, b) => new Date(a.expiration_date).getTime() - new Date(b.expiration_date).getTime())
+    .slice((packagesPage - 1) * ITEMS_PER_PAGE, packagesPage * ITEMS_PER_PAGE)
   return (
     <main className="min-h-screen bg-gray-100 text-black">
       <div className="mx-auto max-w-7xl p-4 lg:p-10">
-        <div className="grid gap-8 lg:grid-cols-2">
-          <div className="order-2 lg:order-1 rounded-2xl bg-white p-3 lg:p-8 shadow">
-            <h2 className="mb-3 text-xl lg:text-3xl font-bold text-black">
-              Book A Lesson
-            </h2>
+        <div className="mt-8">
+          {/* Mobile / Small Screen */}
+          <div className="lg:hidden rounded-2xl bg-white shadow">
+            <button onClick={() => setShowClientInfo(!showClientInfo)} className="w-full p-4 lg:p-6 text-left">
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl lg:text-3xl font-bold text-black">Client Information</h2>
+
+                <span className="text-2xl">{showClientInfo ? "▲" : "▼"}</span>
+              </div>
+            </button>
+
+            {showClientInfo && (
+              <div className="px-4 pb-4 lg:px-8 lg:pb-8">
+                <div className="space-y-3 text-sm lg:text-base text-black">
+                  <div>
+                    <p className="text-sm lg:text-base font-semibold">Name</p>
+                    <p>{client?.preferred_name || client?.name || "-"}</p>
+                  </div>
+
+                  <div>
+                    <p className="text-sm lg:text-base font-semibold">Phone</p>
+                    <p>{client?.phone || "Not Provided"}</p>
+                  </div>
+
+                  <div>
+                    <p className="text-sm lg:text-base font-semibold">Coach</p>
+                    <p>{coaches[0]?.preferred_name || coaches[0]?.name || "Unassigned"}</p>
+                  </div>
+
+                  <div>
+                    <p className="text-sm lg:text-base font-semibold">Lessons Remaining</p>
+                    <p className="text-2xl lg:text-3xl font-bold">{client?.lessons_remaining ?? 0}</p>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Desktop */}
+          <div className="order-1 lg:order-2 hidden lg:block rounded-2xl bg-white shadow">
+            <button onClick={() => setShowClientInfo(!showClientInfo)} className="w-full p-6 text-left">
+              <div className="flex items-center justify-between">
+                <h2 className="text-3xl font-bold text-black">Client Information</h2>
+
+                <span className="text-3xl">{showClientInfo ? "▲" : "▼"}</span>
+              </div>
+            </button>
+
+            {showClientInfo && (
+              <div className="px-8 pb-8">
+                <div className="space-y-4 text-black">
+                  <div>
+                    <p className="font-semibold">Name</p>
+                    <p>{client?.preferred_name || client?.name || "-"}</p>
+                  </div>
+
+                  <div>
+                    <p className="font-semibold">Phone</p>
+                    <p>{client?.phone || "Not Provided"}</p>
+                  </div>
+
+                  <div>
+                    <p className="font-semibold">Coach</p>
+                    <p>{coaches[0]?.preferred_name || coaches[0]?.name || "Unassigned"}</p>
+                  </div>
+
+                  <div>
+                    <p className="font-semibold">Lessons Remaining</p>
+                    <p className="text-3xl font-bold">{client?.lessons_remaining ?? 0}</p>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="mt-8 grid gap-8 lg:grid-cols-2">
+          <div className="rounded-2xl bg-white p-3 lg:p-8 shadow">
+            <h2 className="mb-3 text-xl lg:text-3xl font-bold text-black">Book A Lesson</h2>
 
             {!client?.primary_coach_id && (
               <select
@@ -846,79 +907,6 @@ export default function ClientDashboard() {
               </div>
             )}
           </div>
-
-          <>
-            {/* Mobile / Small Screen */}
-            <div className="lg:hidden rounded-2xl bg-white shadow">
-              <button
-                onClick={() => setShowClientInfo(!showClientInfo)}
-                className="w-full p-4 lg:p-6 text-left"
-              >
-                <div className="flex items-center justify-between">
-                  <h2 className="text-xl lg:text-3xl font-bold text-black">Client Information</h2>
-
-                  <span className="text-2xl">{showClientInfo ? "▲" : "▼"}</span>
-                </div>
-              </button>
-
-              {showClientInfo && (
-                <div className="px-4 pb-4 lg:px-8 lg:pb-8">
-                  <div className="space-y-3 text-sm lg:text-base text-black">
-                    <div>
-                      <p className="text-sm lg:text-base font-semibold">Name</p>
-                      <p>{client?.preferred_name || client?.name || "-"}</p>
-                    </div>
-
-                    <div>
-                      <p className="text-sm lg:text-base font-semibold">Phone</p>
-                      <p>{client?.phone || "Not Provided"}</p>
-                    </div>
-
-                    <div>
-                      <p className="text-sm lg:text-base font-semibold">Coach</p>
-                      <p>{coaches[0]?.preferred_name || coaches[0]?.name || "Unassigned"}</p>
-                    </div>
-
-                    <div>
-                      <p className="text-sm lg:text-base font-semibold">Lessons Remaining</p>
-                      <p className="text-2xl lg:text-3xl font-bold">{client?.lessons_remaining ?? 0}</p>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Desktop */}
-            <div className="order-1 lg:order-2 hidden lg:block rounded-2xl bg-white p-8 shadow">
-              <h2 className="mb-6 text-3xl font-bold text-black">Client Information</h2>
-
-              <div className="space-y-4 text-black">
-                <div>
-                  <p className="font-semibold">Name</p>
-                  <p>{client?.preferred_name || client?.name || "-"}</p>
-                </div>
-
-                <div>
-                  <p className="font-semibold">Phone</p>
-                  <p>{client?.phone || "Not Provided"}</p>
-                </div>
-
-                <div>
-                  <p className="font-semibold">Coach</p>
-                  <p>{coaches[0]?.preferred_name || coaches[0]?.name || "Unassigned"}</p>
-                </div>
-
-                <div>
-                  <p className="font-semibold">Lessons Remaining</p>
-                  <p className="text-3xl font-bold">{client?.lessons_remaining ?? 0}</p>
-                </div>
-              </div>
-            </div>
-          </>
-        </div>
-
-        <div className="mt-8 grid gap-8 lg:grid-cols-2">
-
           <div className="rounded-2xl bg-white p-3 lg:p-8 shadow">
             <h2 className="mb-3 text-xl lg:text-3xl font-bold text-black">Upcoming Lessons</h2>
 
@@ -933,11 +921,7 @@ export default function ClientDashboard() {
                       </div>
 
                       <button
-                        onClick={() =>
-                          setExpandedLessonId(
-                            expandedLessonId === lesson.id ? null : lesson.id
-                          )
-                        }
+                        onClick={() => setExpandedLessonId(expandedLessonId === lesson.id ? null : lesson.id)}
                         className="rounded bg-blue-600 px-3 py-1 text-white"
                       >
                         Edit
@@ -962,8 +946,6 @@ export default function ClientDashboard() {
                       </div>
                     )}
                   </div>
-
-                  {/* Desktop */}
                   <div className="hidden lg:flex items-center justify-between">
                     <div>
                       {formatDate(lesson.lesson_date)} - {formatLessonTime(lesson.lesson_time)}
@@ -1005,17 +987,9 @@ export default function ClientDashboard() {
 
                   <button
                     onClick={() =>
-                      setUpcomingPage((p) =>
-                        Math.min(
-                          Math.ceil(upcomingLessons.length / ITEMS_PER_PAGE),
-                          p + 1
-                        )
-                      )
+                      setUpcomingPage((p) => Math.min(Math.ceil(upcomingLessons.length / ITEMS_PER_PAGE), p + 1))
                     }
-                    disabled={
-                      upcomingPage >=
-                      Math.ceil(upcomingLessons.length / ITEMS_PER_PAGE)
-                    }
+                    disabled={upcomingPage >= Math.ceil(upcomingLessons.length / ITEMS_PER_PAGE)}
                     className="rounded border px-3 py-1 disabled:opacity-50"
                   >
                     Next
@@ -1024,101 +998,93 @@ export default function ClientDashboard() {
               )}
             </div>
           </div>
+        </div>
 
+        <div className="mt-8 grid gap-8 lg:grid-cols-2">
           <div className="rounded-2xl bg-white p-3 lg:p-8 shadow">
             <h2 className="mb-3 text-xl lg:text-3xl font-bold text-black">Previous Lessons</h2>
 
-          <div className="overflow-hidden rounded-xl border">
-            <table className="w-full border-collapse">
-              <thead>
-                <tr className="border-b bg-gray-50">
-                  <th className="p-3 text-left">Date</th>
-                  <th className="p-3 text-left">Notes</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {paginatedPrevious.map((lesson) => (
-                  <tr key={lesson.id} className="border-b">
-                    <td className="p-3">{formatDate(lesson.lesson_date)}</td>
-
-                    <td className="p-3">
-                      {lesson.status === "no_show" ? (
-                        "No Show"
-                      ) : lesson.lesson_notes ? (
-                        <button
-                          onClick={() => setSelectedLessonNote(lesson)}
-                          className="rounded bg-blue-600 px-3 py-1 text-white"
-                        >
-                          View Note
-                        </button>
-                      ) : (
-                        ""
-                      )}
-                    </td>
+            <div className="overflow-hidden rounded-xl border">
+              <table className="w-full border-collapse">
+                <thead>
+                  <tr className="border-b bg-gray-50">
+                    <th className="p-3 text-left">Date</th>
+                    <th className="p-3 text-left">Notes</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
 
-            {previousLessons.length === 0 && <div className="p-4">No previous lessons.</div>}
-            {previousLessons.length > ITEMS_PER_PAGE && (
-              <div className="flex h-16 items-center justify-center gap-4">
-                <button
-                  onClick={() => setPreviousPage((p) => Math.max(1, p - 1))}
-                  disabled={previousPage === 1}
-                  className="rounded border px-3 py-1 disabled:opacity-50"
-                >
-                  Previous
-                </button>
+                <tbody>
+                  {paginatedPrevious.map((lesson) => (
+                    <tr key={lesson.id} className="border-b">
+                      <td className="p-3">{formatDate(lesson.lesson_date)}</td>
 
-                <span>
-                  {previousPage} of {Math.ceil(previousLessons.length / ITEMS_PER_PAGE)}
-                </span>
+                      <td className="p-3">
+                        {lesson.status === "no_show" ? (
+                          "No Show"
+                        ) : lesson.lesson_notes ? (
+                          <button
+                            onClick={() => setSelectedLessonNote(lesson)}
+                            className="rounded bg-blue-600 px-3 py-1 text-white"
+                          >
+                            View Note
+                          </button>
+                        ) : (
+                          ""
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
 
-                <button
-                  onClick={() =>
-                    setPreviousPage((p) =>
-                      Math.min(
-                        Math.ceil(previousLessons.length / ITEMS_PER_PAGE),
-                        p + 1
-                      )
-                    )
-                  }
-                  disabled={
-                    previousPage >=
-                    Math.ceil(previousLessons.length / ITEMS_PER_PAGE)
-                  }
-                  className="rounded border px-3 py-1 disabled:opacity-50"
-                >
-                  Next
-                </button>
-              </div>
-            )}
+              {previousLessons.length === 0 && <div className="p-4">No previous lessons.</div>}
+              {previousLessons.length > ITEMS_PER_PAGE && (
+                <div className="flex h-16 items-center justify-center gap-4">
+                  <button
+                    onClick={() => setPreviousPage((p) => Math.max(1, p - 1))}
+                    disabled={previousPage === 1}
+                    className="rounded border px-3 py-1 disabled:opacity-50"
+                  >
+                    Previous
+                  </button>
+
+                  <span>
+                    {previousPage} of {Math.ceil(previousLessons.length / ITEMS_PER_PAGE)}
+                  </span>
+
+                  <button
+                    onClick={() =>
+                      setPreviousPage((p) => Math.min(Math.ceil(previousLessons.length / ITEMS_PER_PAGE), p + 1))
+                    }
+                    disabled={previousPage >= Math.ceil(previousLessons.length / ITEMS_PER_PAGE)}
+                    className="rounded border px-3 py-1 disabled:opacity-50"
+                  >
+                    Next
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
-        </div>
-
-        </div>
-
-        <div className="mt-8 rounded-2xl bg-white p-3 lg:p-8 shadow">
-          <h2 className="mb-3 text-xl lg:text-3xl font-bold text-black">Lessons Remaining</h2>
+          <div className="rounded-2xl bg-white p-3 lg:p-8 shadow">
+            <h2 className="mb-3 text-xl lg:text-3xl font-bold text-black">
+              Lessons Remaining</h2>
 
           <div className="lg:hidden space-y-3">
             {paginatedPackages.map((pkg) => (
-                <div key={pkg.id} className="rounded-xl border p-4">
-                  <div className="mb-2">
-                    <div className="text-sm font-semibold text-gray-600">Balance</div>
-                    <div className="text-3xl font-bold">{(pkg.lessons_added || 0) - (pkg.lessons_used || 0)}</div>
-                  </div>
-
-                  <div className="space-y-1 text-sm">
-                    <div>{pkg.transaction_name}</div>
-                    <div>Purchased: {formatDate(pkg.purchase_date)}</div>
-                    <div>Expires: {formatDate(pkg.expiration_date)}</div>
-                    <div>Method: {pkg.payment_method}</div>
-                  </div>
+              <div key={pkg.id} className="rounded-xl border p-4">
+                <div className="mb-2">
+                  <div className="text-sm font-semibold text-gray-600">Balance</div>
+                  <div className="text-3xl font-bold">{(pkg.lessons_added || 0) - (pkg.lessons_used || 0)}</div>
                 </div>
-              ))}
+
+                <div className="space-y-1 text-sm">
+                  <div>{pkg.transaction_name}</div>
+                  <div>Purchased: {formatDate(pkg.purchase_date)}</div>
+                  <div>Expires: {formatDate(pkg.expiration_date)}</div>
+                  <div>Method: {pkg.payment_method}</div>
+                </div>
+              </div>
+            ))}
 
             {packages.filter((pkg) => (pkg.lessons_added || 0) - (pkg.lessons_used || 0) > 0).length === 0 && (
               <div className="rounded-xl border p-4">No active lessons remaining.</div>
@@ -1139,18 +1105,18 @@ export default function ClientDashboard() {
 
               <tbody>
                 {paginatedPackages.map((pkg) => (
-                    <tr key={pkg.id} className="border-b">
-                      <td className="p-3">{(pkg.lessons_added || 0) - (pkg.lessons_used || 0)}</td>
+                  <tr key={pkg.id} className="border-b">
+                    <td className="p-3">{(pkg.lessons_added || 0) - (pkg.lessons_used || 0)}</td>
 
-                      <td className="p-3">{pkg.transaction_name}</td>
+                    <td className="p-3">{pkg.transaction_name}</td>
 
-                      <td className="p-3">{formatDate(pkg.purchase_date)}</td>
+                    <td className="p-3">{formatDate(pkg.purchase_date)}</td>
 
-                      <td className="p-3">{formatDate(pkg.expiration_date)}</td>
+                    <td className="p-3">{formatDate(pkg.expiration_date)}</td>
 
-                      <td className="p-3">{pkg.payment_method}</td>
-                    </tr>
-                  ))}
+                    <td className="p-3">{pkg.payment_method}</td>
+                  </tr>
+                ))}
               </tbody>
             </table>
 
@@ -1158,7 +1124,8 @@ export default function ClientDashboard() {
               <div className="p-4">No active lessons remaining.</div>
             )}
 
-            {packages.filter((pkg) => (pkg.lessons_added || 0) - (pkg.lessons_used || 0) > 0).length > ITEMS_PER_PAGE && (
+            {packages.filter((pkg) => (pkg.lessons_added || 0) - (pkg.lessons_used || 0) > 0).length >
+              ITEMS_PER_PAGE && (
               <div className="flex h-16 items-center justify-center gap-4">
                 <button
                   onClick={() => setPackagesPage((p) => Math.max(1, p - 1))}
@@ -1171,9 +1138,8 @@ export default function ClientDashboard() {
                 <span>
                   {packagesPage} of{" "}
                   {Math.ceil(
-                    packages.filter(
-                      (pkg) => (pkg.lessons_added || 0) - (pkg.lessons_used || 0) > 0
-                    ).length / ITEMS_PER_PAGE
+                    packages.filter((pkg) => (pkg.lessons_added || 0) - (pkg.lessons_used || 0) > 0).length /
+                      ITEMS_PER_PAGE
                   )}
                 </span>
 
@@ -1182,9 +1148,8 @@ export default function ClientDashboard() {
                     setPackagesPage((p) =>
                       Math.min(
                         Math.ceil(
-                          packages.filter(
-                            (pkg) => (pkg.lessons_added || 0) - (pkg.lessons_used || 0) > 0
-                          ).length / ITEMS_PER_PAGE
+                          packages.filter((pkg) => (pkg.lessons_added || 0) - (pkg.lessons_used || 0) > 0).length /
+                            ITEMS_PER_PAGE
                         ),
                         p + 1
                       )
@@ -1193,9 +1158,8 @@ export default function ClientDashboard() {
                   disabled={
                     packagesPage >=
                     Math.ceil(
-                      packages.filter(
-                        (pkg) => (pkg.lessons_added || 0) - (pkg.lessons_used || 0) > 0
-                      ).length / ITEMS_PER_PAGE
+                      packages.filter((pkg) => (pkg.lessons_added || 0) - (pkg.lessons_used || 0) > 0).length /
+                        ITEMS_PER_PAGE
                     )
                   }
                   className="rounded border px-3 py-1 disabled:opacity-50"
@@ -1206,6 +1170,8 @@ export default function ClientDashboard() {
             )}
           </div>
         </div>
+      </div>
+
         {showRescheduleModal && rescheduleLesson && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-6">
             <div className="w-full max-w-2xl rounded-2xl bg-white p-6">
