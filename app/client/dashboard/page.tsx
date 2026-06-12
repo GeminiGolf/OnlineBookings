@@ -600,7 +600,7 @@ export default function ClientDashboard() {
           <div className="lg:hidden rounded-2xl bg-white shadow">
             <button onClick={() => setShowClientInfo(!showClientInfo)} className="w-full p-4 lg:p-6 text-left">
               <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-bold text-black">Client Information</h2>
+                <h2 className="text-[22px] font-bold text-black">Profile</h2>
 
                 <span className="text-2xl">{showClientInfo ? "▲" : "▼"}</span>
               </div>
@@ -637,8 +637,8 @@ export default function ClientDashboard() {
           <div className="order-1 lg:order-2 hidden lg:block rounded-2xl bg-white shadow">
             <button onClick={() => setShowClientInfo(!showClientInfo)} className="w-full p-6 text-left">
               <div className="flex items-center justify-center gap-8">
-                <h2 className="text-2xl font-bold text-black">
-                  Client Information
+                <h2 className="text-[2xl] font-bold text-black">
+                  Profile
                 </h2>
 
                 <span className="text-2xl">
@@ -922,28 +922,6 @@ export default function ClientDashboard() {
           </div>
           <div className="rounded-2xl bg-white p-3 lg:p-8 shadow">
             <h2 className="mb-3 text-2xl font-bold text-black">Lessons Remaining</h2>
-
-            <div className="lg:hidden space-y-3">
-              {paginatedPackages.map((pkg) => (
-                <div key={pkg.id} className="rounded-xl border p-4">
-                  <div className="mb-2">
-                    <div className="text-sm font-semibold text-gray-600">Balance</div>
-                    <div className="text-3xl font-bold">{(pkg.lessons_added || 0) - (pkg.lessons_used || 0)}</div>
-                  </div>
-
-                  <div className="space-y-1 text-sm">
-                    <div>{pkg.transaction_name}</div>
-                    <div>Purchased: {formatDate(pkg.purchase_date)}</div>
-                    <div>Expires: {formatDate(pkg.expiration_date)}</div>
-                    <div>Method: {pkg.payment_method}</div>
-                  </div>
-                </div>
-              ))}
-
-              {packages.filter((pkg) => (pkg.lessons_added || 0) - (pkg.lessons_used || 0) > 0).length === 0 && (
-                <div className="rounded-xl border p-4">No active lessons remaining.</div>
-              )}
-            </div>
 
             <div className="space-y-3">
               {paginatedPackages.map((pkg) => (

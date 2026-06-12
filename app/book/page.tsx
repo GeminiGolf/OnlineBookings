@@ -1,11 +1,7 @@
 "use client"
-
 import { useEffect, useState } from "react"
-
 import { supabase } from "@/lib/supabaseClient"
-
 import { DayPicker } from "react-day-picker"
-
 import "react-day-picker/dist/style.css"
 
 type Coach = {
@@ -40,29 +36,21 @@ export default function BookPage() {
 
   function formatHour(hour: number) {
     const suffix = hour >= 12 ? "PM" : "AM"
-
     const formattedHour = hour % 12 || 12
-
     return `${formattedHour}:00 ${suffix}`
   }
 
   async function generateSlots() {
     if (!selectedDate || !selectedCoach) {
       setTimeSlots([])
-
       return
     }
 
     const day = selectedDate.getDay()
-
     const year = selectedDate.getFullYear()
-
     const month = String(selectedDate.getMonth() + 1).padStart(2, "0")
-
     const dayOfMonth = String(selectedDate.getDate()).padStart(2, "0")
-
     const formattedDate = `${year}-${month}-${dayOfMonth}`
-
     const { data: availability } = await supabase
       .from("availability")
       .select("*")
@@ -80,9 +68,7 @@ export default function BookPage() {
 
     if (availability) {
       const start = parseInt(availability.start_time.split(":")[0])
-
       const end = parseInt(availability.end_time.split(":")[0])
-
       for (let hour = start; hour < end; hour++) {
         slotSet.add(formatHour(hour))
       }
@@ -110,9 +96,7 @@ export default function BookPage() {
       .in("status", ["booked", "completed"])
 
     const bookedTimes = existingBookings?.map((booking) => booking.lesson_time.trim()) || []
-
     availableSlots = availableSlots.filter((slot) => !bookedTimes.includes(slot.trim()))
-
     const { data: weeklyBreaks } = await supabase
       .from("weekly_breaks")
       .select("*")
@@ -120,25 +104,19 @@ export default function BookPage() {
       .eq("day_of_week", day)
 
     const breakTimes = weeklyBreaks?.map((item) => formatHour(item.hour)) || []
-
     availableSlots = availableSlots.filter((slot) => !breakTimes.includes(slot))
-
     const today = new Date()
-
     const isToday = selectedDate.toDateString() === today.toDateString()
 
     if (isToday) {
       availableSlots = availableSlots.filter((slot) => {
         const hour = parseInt(slot.split(":")[0])
-
         const isPM = slot.includes("PM")
 
         let militaryHour = hour
-
         if (isPM && hour !== 12) {
           militaryHour += 12
         }
-
         if (!isPM && hour === 12) {
           militaryHour = 0
         }
@@ -154,17 +132,13 @@ export default function BookPage() {
         if (time.includes("PM") && hour !== 12) {
           return hour + 12
         }
-
         if (time.includes("AM") && hour === 12) {
           return 0
         }
-
         return hour
       }
-
       return convert(a) - convert(b)
     })
-
     setTimeSlots(availableSlots)
   }
 
@@ -172,34 +146,23 @@ export default function BookPage() {
     if (!selectedCoach || !selectedDate || !selectedTime) {
       return
     }
-
     setLoading(true)
 
     const {
       data: { session },
     } = await supabase.auth.getSession()
 
-    // NOT LOGGED IN
-
     if (!session) {
       localStorage.setItem("redirectAfterLogin", "/book")
-
       alert("Please login or create an account to confirm your booking.")
-
       window.location.href = "/login"
-
       return
     }
 
     const year = selectedDate.getFullYear()
-
     const month = String(selectedDate.getMonth() + 1).padStart(2, "0")
-
     const day = String(selectedDate.getDate()).padStart(2, "0")
-
     const formattedDate = `${year}-${month}-${day}`
-    // DOUBLE BOOKING CHECK
-
     const { data: existingBooking } = await supabase
       .from("bookings")
       .select("*")
@@ -211,7 +174,6 @@ export default function BookPage() {
 
     if (existingBooking) {
       alert("This slot is already booked.")
-
       setLoading(false)
 
       return
@@ -223,9 +185,7 @@ export default function BookPage() {
 
     if (!profile) {
       alert("Profile not found.")
-
       setLoading(false)
-
       return
     }
 
@@ -233,12 +193,10 @@ export default function BookPage() {
 
     if (!client) {
       alert("Client record not found.")
-
       setLoading(false)
-
       return
     }
-  
+
     const { data: booking, error } = await supabase
       .from("bookings")
       .insert({
@@ -253,81 +211,59 @@ export default function BookPage() {
 
     if (error) {
       console.error(error)
-
       alert("Booking failed.")
-
       setLoading(false)
-
       return
     }
 
-  const todayString = new Date().toISOString().split("T")[0]
+    const todayString = new Date().toISOString().split("T")[0]
+    const daysDifference = Math.floor(
+      (new Date(formattedDate + "T00:00:00").getTime() - new Date(todayString + "T00:00:00").getTime()) /
+        (1000 * 60 * 60 * 24)
+    )
 
-  const daysDifference = Math.floor(
-    (
-      new Date(formattedDate + "T00:00:00").getTime() -
-      new Date(todayString + "T00:00:00").getTime()
-    ) /
-      (1000 * 60 * 60 * 24)
-  )
+    if (daysDifference <= 1 && booking) {
+      const { data, error } = await supabase
+        .from("notifications")
+        .insert({
+          coach_id: selectedCoach,
+          client_id: client.id,
+          booking_id: booking.id,
+          type: "late_booking",
+          message: "Late booking requires review.",
+          is_urgent: true,
+          is_read: false,
+        })
+        .select()
 
-  if (daysDifference <= 1 && booking) {
-    const { data, error } = await supabase
-      .from("notifications")
-      .insert({
-        coach_id: selectedCoach,
-        client_id: client.id,
-        booking_id: booking.id,
-        type: "late_booking",
-        message: "Late booking requires review.",
-        is_urgent: true,
-        is_read: false,
-      })
-      .select()
-
-    if (error) {
-      alert(
-        "NOTIFICATION FAILED:\n\n" +
-        JSON.stringify(error, null, 2)
-      )
+      if (error) {
+        alert("NOTIFICATION FAILED:\n\n" + JSON.stringify(error, null, 2))
+      }
     }
-  }
 
-  alert("Booking confirmed!")
-
-  setSelectedTime("")
-
-  await generateSlots()
-
-  setLoading(false)
+    alert("Booking confirmed!")
+    setSelectedTime("")
+    await generateSlots()
+    setLoading(false)
   }
 
   return (
-    <main className="min-h-screen bg-gray-100 p-10 text-black">
+    <main className="min-h-screen bg-gray-100 p-4 lg:p-10 text-black">
       <div className="mx-auto max-w-5xl">
-        <h1 className="mb-8 text-5xl font-bold">Book a Lesson</h1>
+        <h1 className="mb-6 text-center lg:text-left text-2xl lg:text-5xl font-bold">          Book a Lesson
+        </h1>
 
-        <div className="rounded-2xl bg-white p-8 shadow-lg">
-          <div className="grid gap-10 md:grid-cols-2">
-            {/* COACH */}
-
+        <div className="rounded-2xl bg-white p-4 lg:p-8 shadow-lg">
+          <div className="grid gap-6 lg:gap-10 md:grid-cols-2">
             <div>
               <label className="mb-2 block text-lg font-semibold">Select Coach</label>
-
               <select
                 value={selectedCoach ?? ""}
                 onChange={async (e) => {
                   const coachId = Number(e.target.value)
-
                   setSelectedCoach(coachId)
                   setSelectedTime("")
-
-                  const { data } = await supabase
-                    .from("coaches")
-                    .select("*")
-                    .eq("id", coachId)
-                    .single()
-
+                  const { data } = await supabase.from("coaches").select("*").eq("id", coachId).single()
                   setSelectedCoachData(data)
                 }}
                 className="w-full rounded-xl border p-4"
@@ -352,9 +288,7 @@ export default function BookPage() {
                   )}
 
                   {selectedCoachData.specializations && (
-                    <div className="mt-3 whitespace-pre-line">
-                      {selectedCoachData.specializations}
-                    </div>
+                    <div className="mt-3 whitespace-pre-line">{selectedCoachData.specializations}</div>
                   )}
                 </div>
               )}
@@ -367,6 +301,7 @@ export default function BookPage() {
 
               <div className="rounded-xl border p-4 h-fit flex flex-col items-center">
                 <DayPicker
+                  className="scale-90 lg:scale-100 origin-top"
                   mode="single"
                   selected={selectedDate}
                   onSelect={(date) => {
@@ -382,14 +317,10 @@ export default function BookPage() {
                 />
 
                 <div className="mt-6 border-t pt-4 min-h-[80px] w-full flex flex-col items-center">
-                  <h3 className="mb-3 text-lg font-semibold text-center">
-                    Available Time Slots
-                  </h3>
+                  <h3 className="mb-3 text-lg font-semibold text-center">Available Time Slots</h3>
 
                   {timeSlots.length === 0 ? (
-                    <p className="text-sm text-gray-500">
-                      No available slots.
-                    </p>
+                    <p className="text-sm text-gray-500">No available slots.</p>
                   ) : (
                     <div className="mx-auto max-w-[340px]">
                       <div className="flex flex-wrap justify-center gap-2">
@@ -419,11 +350,8 @@ export default function BookPage() {
           {selectedTime && (
             <div className="mt-10 rounded-2xl bg-gray-100 p-6">
               <h3 className="text-2xl font-bold">Selected Booking</h3>
-
               <p className="mt-4 text-lg">Coach: {coaches.find((coach) => coach.id === selectedCoach)?.name}</p>
-
               <p className="text-lg">Date: {selectedDate?.toLocaleDateString()}</p>
-
               <p className="text-lg">Time: {selectedTime}</p>
 
               <button

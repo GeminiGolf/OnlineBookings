@@ -245,7 +245,7 @@ export default function ClientNotificationsPage() {
             Notifications ({notifications.length})
           </h2>
 
-          <div className="space-y-4">
+          <div className="space-y-1">
             <div className="hidden lg:grid grid-cols-[60px_180px_220px_1fr_220px] gap-4 px-4 font-semibold">
               <div></div>
               <div>Type</div>
@@ -368,7 +368,7 @@ export default function ClientNotificationsPage() {
             </button>
 
             {showOlder && (
-              <div className="mt-4 space-y-4">
+              <div className="mt-4 space-y-1">
                 {paginatedOlderNotifications.map((notification) => (
                   <div key={notification.id}>
                     {/* Desktop */}
