@@ -1,7 +1,7 @@
 import CoachClientProfileClient from "@/components/clients/CoachClientProfileClient"
 import Link from "next/link"
 import { createClient } from "@/lib/supabaseServer"
-
+import CoachClientsSearch from "@/components/clients/CoachClientsSearch"
 export default async function CoachClientsPage() {
   const supabase = await createClient()
   const {
@@ -19,7 +19,9 @@ export default async function CoachClientsPage() {
     <main className="min-h-screen bg-gray-100 p-3 sm:p-10 text-black">
       <div className="mx-auto max-w-6xl">
         <h1 className="text-3xl font-bold sm:text-4xl">My Clients</h1>
-        <div className="mt-6 overflow-x-auto rounded-2xl border bg-white shadow">
+        <CoachClientsSearch clients={clients || []} />
+
+        <div className="mt-6 hidden overflow-x-auto rounded-2xl border bg-white shadow md:block">
           <table className="w-full">
             <thead>
               <tr className="border-b bg-gray-50">
@@ -34,10 +36,14 @@ export default async function CoachClientsPage() {
               {(clients || []).map((client) => (
                 <tr key={client.id} className="border-b hover:bg-gray-50">
                   <td className="p-4 font-medium">
-                    <Link href={`/coach/clients/${client.id}`} className="block w-full">
+                    <Link
+                      href={`/coach/clients/${client.id}`}
+                      className="block w-full"
+                    >
                       {client.name}
                     </Link>
                   </td>
+
                   <td className="p-4">{client.phone || "-"}</td>
                   <td className="p-4">{client.email || "-"}</td>
                   <td className="p-4">{client.lessons_remaining}</td>
