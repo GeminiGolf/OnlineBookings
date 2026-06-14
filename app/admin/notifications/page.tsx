@@ -250,7 +250,7 @@ export default function NotificationsPage() {
     setActiveNotifications(enrichedNotifications.filter((n) => !n.is_urgent && !n.is_read))
     setOlderNotifications(
       enrichedNotifications
-        .filter((n) => !n.is_urgent && n.is_read)
+        .filter((n) => n.is_read)
         .sort((a, b) => new Date(b.resolved_at || 0).getTime() - new Date(a.resolved_at || 0).getTime())
     )
     setLoading(false)

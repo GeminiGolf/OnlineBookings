@@ -128,6 +128,42 @@ export default function Navbar() {
         .eq("is_urgent", true)
       setUrgentCount(notifications?.length || 0)
       setNormalCount(0)
+
+      const urgentItems = notifications || []
+      const enrichedUrgent = await Promise.all(
+        urgentItems.map(async (notification) => {
+          let client_name = ""
+          let lesson_date = ""
+          let lesson_time = ""
+          if (notification.client_id) {
+            const { data: client } = await supabase
+              .from("clients")
+              .select("name")
+              .eq("id", notification.client_id)
+              .single()
+
+            client_name = client?.name || "Unknown Client"
+          }
+          if (notification.booking_id) {
+            const { data: booking } = await supabase
+              .from("bookings")
+              .select("lesson_date, lesson_time")
+              .eq("id", notification.booking_id)
+              .single()
+            lesson_date = booking?.lesson_date || ""
+            lesson_time = booking?.lesson_time || ""
+          }
+          return {
+            id: notification.id,
+            booking_id: notification.booking_id,
+            client_name,
+            lesson_date,
+            lesson_time,
+          }
+        })
+      )
+
+      setUrgentNotifications(enrichedUrgent)
     }
     setLoading(false)
   }
@@ -139,7 +175,7 @@ export default function Navbar() {
         is_read: true,
         is_urgent: false,
         resolved_at: new Date().toISOString(),
-        resolved_by: "coach",
+        resolved_by: role,
         rejection_reason: "Approved",
       })
       .eq("id", notificationId)
@@ -192,7 +228,7 @@ export default function Navbar() {
         is_read: true,
         is_urgent: false,
         resolved_at: new Date().toISOString(),
-        resolved_by: "coach",
+        resolved_by: role,
         rejection_reason: reason,
       })
       .eq("id", notificationId)

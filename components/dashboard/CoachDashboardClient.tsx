@@ -429,9 +429,9 @@ export default function CoachDashboardClient({
   }
 
   return (
-    <main className="min-h-screen bg-gray-100 p-6 text-black">
-      <div className="mx-auto max-w-7xl">
-        <h1 className="text-3xl font-bold">Schedule</h1>
+    <main className="min-h-screen bg-gray-100 p-4 text-black">
+      <div className="mx-auto max-w-6xl">
+        <h1 className="text-2xl font-bold">Schedule</h1>
         <div className="mb-2 mt-1">
           {headerContent ?? (
             <p className="text-gray-600">
@@ -542,10 +542,10 @@ export default function CoachDashboardClient({
 
             return (
               <div key={hour} className="grid grid-cols-[120px_1fr] border-b">
-                <div className="border-r bg-gray-50 p-4 font-semibold">{formatHour(hour)}</div>
+                <div className="flex items-center border-r bg-gray-50 p-3 font-semibold">{formatHour(hour)}</div>
                 <button
                   onClick={() => toggleSlot(hour)}
-                  className={`h-20 w-full px-4 text-left transition hover:brightness-95 ${bgClass}`}
+                  className={`h-14 w-full px-4 text-left transition hover:brightness-95 ${bgClass}`}
                 >
                   {booking ? (
                     <div>
