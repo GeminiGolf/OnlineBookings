@@ -67,11 +67,7 @@ export default function Navbar() {
           .select("*")
           .eq("coach_id", coach.id)
           .eq("is_read", false)
-          .in("type", [
-            "late_booking",
-            "client_cancelled",
-            "client_rescheduled",
-          ])
+          .in("type", ["late_booking", "client_cancelled", "client_rescheduled"])
 
         setUrgentCount(notifications?.filter((n) => n.is_urgent).length || 0)
         setNormalCount(notifications?.filter((n) => !n.is_urgent).length || 0)
@@ -113,30 +109,25 @@ export default function Navbar() {
     }
 
     if (currentRole === "client") {
-      const { data: client } = await supabase
-        .from("clients")
-        .select("id")
-        .eq("profile_id", session.user.id)
-        .single()
+      const { data: client } = await supabase.from("clients").select("id").eq("profile_id", session.user.id).single()
       if (client) {
         const { data: notifications } = await supabase
           .from("notifications")
           .select("id")
           .eq("client_id", client.id)
           .is("client_read_at", null)
-          .in("type", [
-            "coach_cancelled",
-            "coach_rescheduled",
-            "coach_booked",
-            "no_show",
-          ])
+          .in("type", ["coach_cancelled", "coach_rescheduled", "coach_booked", "no_show"])
         setClientNotificationCount(notifications?.length || 0)
       }
     }
     if (currentRole === "admin") {
-      const { data: notifications } = await supabase.from("notifications").select("*").eq("is_read", false)
-      setUrgentCount(notifications?.filter((n) => n.is_urgent).length || 0)
-      setNormalCount(notifications?.filter((n) => !n.is_urgent).length || 0)
+      const { data: notifications } = await supabase
+        .from("notifications")
+        .select("*")
+        .eq("is_read", false)
+        .eq("is_urgent", true)
+      setUrgentCount(notifications?.length || 0)
+      setNormalCount(0)
     }
     setLoading(false)
   }
@@ -171,7 +162,6 @@ export default function Navbar() {
       }
       reason = response.trim()
     }
-
     if (bookingId) {
       await supabase
         .from("bookings")
@@ -181,13 +171,11 @@ export default function Navbar() {
         })
         .eq("id", bookingId)
     }
-
     const { data: originalNotification } = await supabase
       .from("notifications")
       .select("client_id, booking_id, coach_id")
       .eq("id", notificationId)
       .single()
-
     if (originalNotification?.client_id) {
       await supabase.from("notifications").insert({
         coach_id: originalNotification.coach_id,
@@ -197,7 +185,7 @@ export default function Navbar() {
         message: `Late booking request rejected.\n\nReason:\n${reason}`,
       })
     }
-    
+
     const { error } = await supabase
       .from("notifications")
       .update({
@@ -220,10 +208,7 @@ export default function Navbar() {
 
   return (
     <nav className="flex flex-wrap items-center justify-between border-b border-gray-800 bg-black px-4 py-4 lg:px-8 lg:py-5 text-white">
-      <Link
-        href="/"
-        className="flex items-center justify-center text-white transition hover:text-gray-300"
-      >
+      <Link href="/" className="flex items-center justify-center text-white transition hover:text-gray-300">
         <Home size={24} strokeWidth={2.5} />
       </Link>
       <div className="flex items-center gap-2 text-sm lg:gap-6 lg:text-lg">
@@ -239,13 +224,13 @@ export default function Navbar() {
                     }`}
                   >
                     <>
-                    <Bell size={20} />
-                    {urgentCount > 0 && (
-                      <span className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-[10px] font-bold text-white">
-                        {urgentCount}
-                      </span>
-                    )}
-                  </>
+                      <Bell size={20} />
+                      {urgentCount > 0 && (
+                        <span className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-[10px] font-bold text-white">
+                          {urgentCount}
+                        </span>
+                      )}
+                    </>
                   </button>
 
                   {showUrgentDropdown && (
@@ -334,11 +319,9 @@ export default function Navbar() {
                               <div className="mb-2 text-sm font-bold text-black">
                                 Late Booking - {notification.client_name}
                               </div>
-
                               <div className="mb-3 text-xs text-gray-700">
                                 {notification.lesson_date} @ {notification.lesson_time}
                               </div>
-
                               <div className="flex gap-2">
                                 <button
                                   onClick={() => handleApprove(notification.id)}
@@ -361,11 +344,11 @@ export default function Navbar() {
                   )}
                 </div>
 
-                <Link href="/book" className="text-lg transition hover:text-yellow-400">
-                  Book
+                <Link href="/admin/schedule" className="text-lg transition hover:text-yellow-400">
+                  Schedule
                 </Link>
                 <Link href="/admin" className="text-lg transition hover:text-green-400">
-                  {normalCount > 0 ? `Dashboard (${normalCount})` : "Dashboard"}
+                  {urgentCount + normalCount > 0 ? `Dash (${urgentCount + normalCount})` : "Dash"}
                 </Link>
                 <button onClick={handleLogout} className="text-lg transition hover:text-red-400">
                   Logout
