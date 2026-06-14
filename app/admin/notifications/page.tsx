@@ -67,7 +67,7 @@ export default function NotificationsPage() {
       router.push("/client/notifications")
       return
     }
-    if (profile?.role !== "coach" && profile?.role !== "admin") {
+    if (profile?.role !== "admin") {
       alert("Please log in as coach.")
       router.push("/login")
       return
@@ -76,20 +76,14 @@ export default function NotificationsPage() {
     let data = null
     let error = null
 
-    if (profile?.role === "coach") {
-      const { data: coach } = await supabase.from("coaches").select("id").eq("profile_id", session.user.id).single()
-      const result = await supabase
-        .from("notifications")
-        .select("*")
-        .eq("coach_id", coach?.id)
-        .in("type", ["late_booking", "client_cancelled", "client_rescheduled"])
-        .order("created_at", { ascending: false })
-      data = result.data
-      error = result.error
-    } else {
-      setLoading(false)
-      return
-    }
+    const result = await supabase
+      .from("notifications")
+      .select("*")
+      .eq("is_urgent", true)
+      .order("created_at", { ascending: false })
+
+    data = result.data
+    error = result.error
 
     if (error || !data) {
       console.error(error)
@@ -294,7 +288,7 @@ export default function NotificationsPage() {
         is_read: true,
         is_urgent: false,
         resolved_at: new Date().toISOString(),
-        resolved_by: "coach",
+        resolved_by: "admin",
         rejection_reason: "Approved",
       })
       .eq("id", notification.id)
@@ -360,7 +354,7 @@ export default function NotificationsPage() {
         is_read: true,
         is_urgent: false,
         resolved_at: new Date().toISOString(),
-        resolved_by: "coach",
+        resolved_by: "admin",
         rejection_reason: reason,
       })
       .eq("id", notification.id)
