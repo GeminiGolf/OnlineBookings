@@ -392,10 +392,9 @@ export default function NotificationsPage() {
   return (
     <main className="min-h-screen bg-gray-100 p-8">
       <div className="mx-auto max-w-6xl">
-        <h1 className="mb-8 text-4xl font-bold text-black">Notifications</h1>
         {/* URGENT */}
         <div className="mb-10">
-          <h2 className="mb-4 text-3xl font-bold text-red-700">Urgent</h2>
+          <h2 className="mb-4 text-2xl font-bold text-red-700">Urgent</h2>
           {urgentNotifications.length === 0 ? (
             <div className="rounded-xl bg-white p-6 shadow">
               <p className="text-black">No urgent notifications.</p>
@@ -434,7 +433,7 @@ export default function NotificationsPage() {
         </div>
         {/* STANDARD */}
         <div>
-          <h2 className="mb-4 text-3xl font-bold text-black">Notifications ({activeNotifications.length})</h2>
+          <h2 className="mb-4 text-2xl font-bold text-black">Notifications ({activeNotifications.length})</h2>
           <div className="mb-3 ml-16 grid grid-cols-[140px_180px_180px_1fr_140px] gap-4 text-sm font-bold text-gray-600">
             <span>Type</span>
             <span>Original Date</span>
@@ -630,7 +629,7 @@ export default function NotificationsPage() {
                 ×
               </button>
             </div>
-            
+
             <div className="space-y-4">
               <div>
                 <p className="text-sm text-gray-500">Client</p>

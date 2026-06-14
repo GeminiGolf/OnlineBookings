@@ -247,7 +247,7 @@ export default function Navbar() {
       <Link href="/" className="flex items-center justify-center text-white transition hover:text-gray-300">
         <Home size={24} strokeWidth={2.5} />
       </Link>
-      <div className="flex items-center gap-2 text-sm lg:gap-6 lg:text-lg">
+      <div className="flex items-center gap-2 text-sm lg:gap-6 lg:text-base">
         {!loading && (
           <>
             {loggedIn && role === "coach" && (
@@ -313,13 +313,13 @@ export default function Navbar() {
                   )}
                 </div>
 
-                <Link href="/coach/schedule" className="text-lg transition hover:text-yellow-400">
+                <Link href="/coach/schedule" className="text-base transition hover:text-yellow-400">
                   Schedule
                 </Link>
-                <Link href="/coach/dashboard" className="text-lg transition hover:text-green-400">
+                <Link href="/coach/dashboard" className="text-base transition hover:text-green-400">
                   {normalCount > 0 ? `Dashboard (${normalCount})` : "Dashboard"}
                 </Link>
-                <button onClick={handleLogout} className="text-lg transition hover:text-red-400">
+                <button onClick={handleLogout} className="text-base transition hover:text-red-400">
                   Logout
                 </button>
               </>
@@ -380,13 +380,13 @@ export default function Navbar() {
                   )}
                 </div>
 
-                <Link href="/admin/schedule" className="text-lg transition hover:text-yellow-400">
+                <Link href="/admin/schedule" className="text-base transition hover:text-yellow-400">
                   Schedule
                 </Link>
-                <Link href="/admin" className="text-lg transition hover:text-green-400">
+                <Link href="/admin" className="text-base transition hover:text-green-400">
                   {urgentCount + normalCount > 0 ? `Dash (${urgentCount + normalCount})` : "Dash"}
                 </Link>
-                <button onClick={handleLogout} className="text-lg transition hover:text-red-400">
+                <button onClick={handleLogout} className="text-base transition hover:text-red-400">
                   Logout
                 </button>
               </>
@@ -396,7 +396,7 @@ export default function Navbar() {
               <>
                 <Link
                   href="/client/notifications"
-                  className="relative flex items-center justify-center text-lg transition hover:text-blue-400"
+                  className="relative flex items-center justify-center text-base transition hover:text-blue-400"
                 >
                   <Bell size={20} />
                   {clientNotificationCount > 0 && (
@@ -405,13 +405,13 @@ export default function Navbar() {
                     </span>
                   )}
                 </Link>
-                <Link href="/book" className="text-lg transition hover:text-yellow-400">
+                <Link href="/book" className="text-base transition hover:text-yellow-400">
                   Book
                 </Link>
-                <Link href="/client/dashboard" className="text-lg transition hover:text-green-400">
+                <Link href="/client/dashboard" className="text-base transition hover:text-green-400">
                   Dashboard
                 </Link>
-                <button onClick={handleLogout} className="text-lg transition hover:text-red-400">
+                <button onClick={handleLogout} className="text-base transition hover:text-red-400">
                   Logout
                 </button>
               </>
@@ -419,13 +419,13 @@ export default function Navbar() {
 
             {!loggedIn && (
               <>
-                <Link href="/book" className="text-lg transition hover:text-yellow-400">
+                <Link href="/book" className="text-base transition hover:text-yellow-400">
                   Book
                 </Link>
-                <Link href="/login" className="text-lg transition hover:text-blue-400">
+                <Link href="/login" className="text-base transition hover:text-blue-400">
                   Login
                 </Link>
-                <Link href="/signup" className="text-lg transition hover:text-green-400">
+                <Link href="/signup" className="text-base transition hover:text-green-400">
                   Sign Up
                 </Link>
               </>

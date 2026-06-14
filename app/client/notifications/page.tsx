@@ -241,8 +241,7 @@ export default function ClientNotificationsPage() {
       <div className="mx-auto max-w-7xl lg:p-10">
         <div className="w-full">
 
-          <h2 className="mb-4 text-[22px] lg:text-3xl font-bold text-left">
-            Notifications ({notifications.length})
+          <h2 className="mb-4 text-[20px] lg:text-2xl font-bold text-left">            Notifications ({notifications.length})
           </h2>
 
           <div className="space-y-1">
@@ -362,7 +361,7 @@ export default function ClientNotificationsPage() {
           <div className="mt-10">
             <button
               onClick={() => setShowOlder(!showOlder)}
-              className="text-[22px] lg:text-3xl font-bold text-left"
+              className="text-[20px] lg:text-2xl font-bold text-left"
             >
               Older Notifications {showOlder ? "▲" : "▼"}
             </button>
