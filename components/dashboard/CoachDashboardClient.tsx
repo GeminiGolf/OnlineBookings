@@ -54,8 +54,9 @@ type Props = {
   availability: Availability | null
   weeklyBreaks: WeeklyBreak[]
   dateOverrides: DateOverride[]
-
   rescheduleBooking?: Booking | null
+  basePath?: string
+  headerContent?: React.ReactNode
 }
 
 export default function CoachDashboardClient({
@@ -67,6 +68,8 @@ export default function CoachDashboardClient({
   weeklyBreaks,
   dateOverrides,
   rescheduleBooking: initialRescheduleBooking,
+  basePath = "/coach/schedule",
+  headerContent,
 }: Props) {
   const router = useRouter()
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null)
@@ -262,7 +265,12 @@ export default function CoachDashboardClient({
 
       setRescheduleBooking(null)
       setMoveBooking(null)
-      router.push(`/coach/schedule?date=${selectedDate}`)
+      const params = new URLSearchParams()
+      params.set("date", selectedDate)
+      if (coachId > 0 && basePath === "/admin/schedule") {
+        params.set("coach", String(coachId))
+      }
+      router.push(`${basePath}?${params.toString()}`)
       return
     }
 
@@ -313,11 +321,15 @@ export default function CoachDashboardClient({
   }
 
   function goToDate(date: string) {
-    let url = `/coach/schedule?date=${date}`
-    if (rescheduleBooking) {
-      url += `&reschedule=${rescheduleBooking.id}`
+    const params = new URLSearchParams()
+    params.set("date", date)
+    if (coachId > 0 && basePath === "/admin/schedule") {
+      params.set("coach", String(coachId))
     }
-    window.location.href = url
+    if (rescheduleBooking) {
+      params.set("reschedule", String(rescheduleBooking.id))
+    }
+    window.location.href = `${basePath}?${params.toString()}`
   }
 
   function previousDay() {
@@ -420,8 +432,12 @@ export default function CoachDashboardClient({
     <main className="min-h-screen bg-gray-100 p-6 text-black">
       <div className="mx-auto max-w-7xl">
         <h1 className="text-3xl font-bold">Schedule</h1>
-        <div className="mb-4">
-          <p className="mt-1 text-gray-600">Welcome back, {coachName}</p>
+        <div className="mb-2 mt-1">
+          {headerContent ?? (
+            <p className="text-gray-600">
+              Welcome back, {coachName}
+            </p>
+          )}
         </div>
         <div className="mb-3 sm:mb-6 flex flex-wrap items-center gap-3">
           <button

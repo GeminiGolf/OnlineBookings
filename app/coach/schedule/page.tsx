@@ -20,9 +20,7 @@ export default async function CoachSchedulePage({ searchParams }: Props) {
   if (!user) {
     return null
   }
-
   const { data: coach } = await supabase.from("coaches").select("*").eq("profile_id", user.id).single()
-
   if (!coach) {
     return null
   }

@@ -22,7 +22,6 @@ export default function AdminPage() {
     if (!data) return
 
     setTotalNotifications(data.length)
-
     setUrgentNotifications(
       data.filter(
         (notification) =>
@@ -38,7 +37,6 @@ export default function AdminPage() {
       </h1>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-
         <Link
           href="/admin/notifications"
           className="rounded-xl bg-white p-6 shadow transition hover:scale-[1.02]"
@@ -46,7 +44,6 @@ export default function AdminPage() {
           <h2 className="text-lg font-semibold text-black">
             Notifications
           </h2>
-
           <p className="mt-2 text-3xl font-bold text-black">
             {totalNotifications}
           </p>
@@ -56,7 +53,6 @@ export default function AdminPage() {
           <h2 className="text-lg font-semibold text-black">
             Profiles
           </h2>
-
           <p className="mt-2 text-3xl font-bold text-black">
             -
           </p>
@@ -66,7 +62,6 @@ export default function AdminPage() {
           <h2 className="text-lg font-semibold text-black">
             Transactions
           </h2>
-
           <p className="mt-2 text-3xl font-bold text-black">
             -
           </p>
