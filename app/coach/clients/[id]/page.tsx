@@ -2,7 +2,7 @@ import CoachClientProfileClient from "@/components/clients/CoachClientProfileCli
 import Link from "next/link"
 import { createClient } from "@/lib/supabaseServer"
 import PreviousLessonsTable from "@/components/clients/PreviousLessonsTable"
-
+import CoachClientPackages from "@/components/clients/CoachClientPackages"
 type Props = {
   params: Promise<{
     id: string
@@ -88,10 +88,6 @@ export default async function CoachClientProfilePage({ params }: Props) {
             <p className="text-sm sm:text-base">{client.notes || "No notes"}</p>
           </div>
           <div className="mt-8 flex flex-wrap gap-3">
-            <button className="rounded-lg bg-green-600 px-4 py-2 text-white">
-              Book Lesson
-            </button>
-
             <CoachClientProfileClient
               clientId={client.id}
               lessonsRemaining={client.lessons_remaining}
@@ -121,43 +117,12 @@ export default async function CoachClientProfilePage({ params }: Props) {
           <PreviousLessonsTable lessons={previousLessons || []} />
         </div>
 
-        <div className="mt-2 rounded-2xl bg-white p-8 shadow">
+        <div className="mt-2 rounded-2xl bg-white p-4 shadow">
           <h2 className="mb-4 text-[19px] font-bold">Lessons Remaining</h2>
-          <div className="overflow-hidden rounded-xl border">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b bg-gray-50">
-                  <th className="p-3 text-left">Balance</th>
-                  <th className="p-3 text-left">Purchase</th>
-                  <th className="p-3 text-left">Purchased On</th>
-                  <th className="p-3 text-left">Expiry</th>
-                  <th className="p-3 text-left">Method</th>
-                </tr>
-              </thead>
 
-              <tbody>
-                {(packages || [])
-                  .filter((pkg) => (pkg.lessons_added || 0) - (pkg.lessons_used || 0) > 0)
-                  .sort((a, b) => new Date(a.expiration_date).getTime() - new Date(b.expiration_date).getTime())
-                  .map((pkg) => (
-                    <tr key={pkg.id} className="border-b">
-                      <td className="p-3">{(pkg.lessons_added || 0) - (pkg.lessons_used || 0)}</td>
-                      <td className="p-3">{pkg.transaction_name}</td>
-                      <td className="p-3">{pkg.purchase_date}</td>
-                      <td className="p-3">{pkg.expiration_date}</td>
-                      <td className="p-3">{pkg.payment_method}</td>
-                    </tr>
-                  ))}
-              </tbody>
-            </table>
-
-            {(!packages ||
-              packages.filter((pkg) => (pkg.lessons_added || 0) - (pkg.lessons_used || 0) > 0).length === 0) && (
-              <div className="p-4 text-sm sm:text-base text-gray-500">
-                No active lessons remaining.
-              </div>
-            )}
-          </div>
+          <CoachClientPackages
+            packages={packages || []}
+          />
         </div>
       </div>
     </main>
