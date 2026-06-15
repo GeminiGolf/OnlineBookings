@@ -182,7 +182,10 @@ export default function CoachBookLessonCard({
   }
 
   return (
-    <div>
+    <div className="rounded-2xl bg-white p-3 lg:p-8 shadow">
+      <h2 className="mb-3 text-[18px] font-bold text-black">
+        Book A Lesson
+      </h2>
       <div className="mx-auto w-fit rounded-xl border px-3 pt-3 pb-0 text-sm overflow-hidden">
         <DayPicker
           className="mt-4 -mb-4 scale-90 lg:scale-90 origin-top"
