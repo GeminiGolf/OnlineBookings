@@ -216,6 +216,7 @@ export default function BookPage() {
         lesson_date: formattedDate,
         lesson_time: selectedTime,
         status: "booked",
+        booked_by: "client", 
       })
       .select()
       .single()

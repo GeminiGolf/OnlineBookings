@@ -151,13 +151,16 @@ export default function CoachBookLessonCard({ clientId, coachId }: Props) {
       await generateSlots()
       return
     }
-    const { error } = await supabase.from("bookings").insert({
-      client_id: clientId,
-      coach_id: coachId,
-      lesson_date: formattedDate,
-      lesson_time: selectedTime,
-      status: "booked",
-    })
+    const { error } = await supabase
+      .from("bookings")
+      .insert({
+        client_id: clientId,
+        coach_id: coachId,
+        lesson_date: formattedDate,
+        lesson_time: selectedTime,
+        status: "booked",
+        booked_by: "coach",
+      })
     if (error) {
       console.error(error)
       alert("Booking failed.")
