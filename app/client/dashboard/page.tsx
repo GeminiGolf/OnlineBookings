@@ -594,7 +594,7 @@ export default function ClientDashboard() {
     .slice((packagesPage - 1) * ITEMS_PER_PAGE, packagesPage * ITEMS_PER_PAGE)
   return (
     <main className="min-h-screen bg-gray-100 text-black">
-      <div className="mx-auto max-w-7xl p-4 lg:p-10">
+      <div className="mx-auto max-w-5xl p-4 lg:p-8">
         <div className="mt-8">
           {/* Mobile / Small Screen */}
           <div className="lg:hidden rounded-2xl bg-white shadow">
@@ -602,7 +602,7 @@ export default function ClientDashboard() {
               <div className="flex items-center justify-between">
                 <h2 className="text-[22px] font-bold text-black">Profile</h2>
 
-                <span className="text-2xl">{showClientInfo ? "▲" : "▼"}</span>
+                <span className="text-[2xl]">{showClientInfo ? "▲" : "▼"}</span>
               </div>
             </button>
 
@@ -641,7 +641,7 @@ export default function ClientDashboard() {
                   Profile
                 </h2>
 
-                <span className="text-2xl">
+                <span className="text-[18px]">
                   {showClientInfo ? "▲" : "▼"}
                 </span>
               </div>
@@ -677,7 +677,7 @@ export default function ClientDashboard() {
 
         <div className="mt-8 grid gap-8 lg:grid-cols-2">
           <div className="rounded-2xl bg-white p-3 lg:p-8 shadow">
-            <h2 className="mb-3 text-2xl font-bold text-black">Book A Lesson</h2>
+            <h2 className="mb-3 text-[18px] font-bold text-black">Book A Lesson</h2>
 
             {!client?.primary_coach_id && (
               <select
@@ -695,9 +695,9 @@ export default function ClientDashboard() {
               </select>
             )}
 
-            <div className="mx-auto w-fit rounded-xl border p-4">
+            <div className="mx-auto w-fit rounded-xl border px-3 pt-3 pb-0 text-sm overflow-hidden">
               <DayPicker
-                className="scale-90 lg:scale-100 origin-top"
+                className="mt-4 -mb-4 scale-90 lg:scale-90 origin-top"
                 mode="single"
                 selected={selectedDate}
                 onSelect={(date) => {
@@ -766,7 +766,7 @@ export default function ClientDashboard() {
             )}
           </div>
           <div className="rounded-2xl bg-white p-3 lg:p-8 shadow">
-            <h2 className="mb-3 text-2xl font-bold text-black">Upcoming Lessons</h2>
+            <h2 className="mb-3 text-[17px] font-bold text-black">Upcoming Lessons</h2>
 
             <div className="space-y-2">
               {paginatedUpcoming.map((lesson) => (
@@ -804,7 +804,7 @@ export default function ClientDashboard() {
                       </div>
                     )}
                   </div>
-                  <div className="hidden lg:flex items-center justify-between">
+                  <div className="hidden lg:flex items-center justify-between text-sm">
                     <div>
                       {formatDate(lesson.lesson_date)} - {formatLessonTime(lesson.lesson_time)}
                     </div>
@@ -812,12 +812,12 @@ export default function ClientDashboard() {
                     <div className="flex gap-2">
                       <button
                         onClick={() => openReschedule(lesson)}
-                        className="rounded bg-green-600 px-3 py-1 text-white"
+                        className="rounded bg-green-600 px-2 py-1 text-sm text-white"
                       >
                         Reschedule
                       </button>
 
-                      <button onClick={() => cancelLesson(lesson)} className="rounded bg-red-600 px-3 py-1 text-white">
+                      <button onClick={() => cancelLesson(lesson)} className="rounded bg-red-600 px-2 py-1 text-sm text-white">
                         Cancel
                       </button>
                     </div>
@@ -857,10 +857,10 @@ export default function ClientDashboard() {
 
         <div className="mt-8 grid gap-8 lg:grid-cols-2">
           <div className="rounded-2xl bg-white p-3 lg:p-8 shadow">
-            <h2 className="mb-3 text-2xl font-bold text-black">Previous Lessons</h2>
+            <h2 className="mb-3 text-[18px] font-bold text-black">Previous Lessons</h2>
 
             <div className="overflow-hidden rounded-xl border">
-              <table className="w-full border-collapse">
+              <table className="w-full border-collapse text-sm">
                 <thead>
                   <tr className="border-b bg-gray-50">
                     <th className="p-3 text-left">Date</th>
@@ -879,7 +879,7 @@ export default function ClientDashboard() {
                         ) : lesson.lesson_notes ? (
                           <button
                             onClick={() => setSelectedLessonNote(lesson)}
-                            className="rounded bg-blue-600 px-3 py-1 text-white"
+                            className="rounded bg-blue-600 px-2 py-1 text-sm text-white"
                           >
                             View Note
                           </button>
@@ -921,11 +921,11 @@ export default function ClientDashboard() {
             </div>
           </div>
           <div className="rounded-2xl bg-white p-3 lg:p-8 shadow">
-            <h2 className="mb-3 text-2xl font-bold text-black">Lessons Remaining</h2>
+            <h2 className="mb-3 text-[18px] font-bold text-black">Lessons Remaining</h2>
 
-            <div className="space-y-3">
+            <div className="mx-auto max-w-md space-y-3">
               {paginatedPackages.map((pkg) => (
-                <div key={pkg.id} className="rounded-xl border p-4">
+                <div key={pkg.id} className="rounded-xl border p-3 text-sm">
                   <button
                     onClick={() =>
                       setExpandedPackageId(
@@ -935,16 +935,16 @@ export default function ClientDashboard() {
                     className="flex w-full items-center justify-between"
                   >
                     <div>
-                      <div className="text-sm font-semibold text-gray-600">
+                      <div className="text-xs font-semibold text-gray-600">
                         Balance
                       </div>
 
-                      <div className="text-2xl font-bold">
+                      <div className="text-[18px] font-bold">
                         {(pkg.lessons_added || 0) - (pkg.lessons_used || 0)}
                       </div>
                     </div>
 
-                    <span className="text-2xl">
+                    <span className="text-[18px]">
                       {expandedPackageId === pkg.id ? "▲" : "▼"}
                     </span>
                   </button>
