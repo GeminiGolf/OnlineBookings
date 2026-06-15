@@ -37,7 +37,7 @@ export default async function CoachClientProfilePage({ params }: Props) {
   if (!client) {
     return (
       <main className="min-h-screen bg-gray-100 p-3 sm:p-10 text-black">
-        <h1 className="text-4xl font-bold">Client Not Found</h1>
+        <h1 className="text-2xl font-bold">Client Not Found</h1>
       </main>
     )
   }
@@ -60,32 +60,32 @@ export default async function CoachClientProfilePage({ params }: Props) {
     .order("purchase_date", { ascending: false })
   return (
     <main className="min-h-screen bg-gray-100 p-3 sm:p-10 text-black">
-      <div className="mx-auto w-full max-w-6xl">
+      <div className="mx-auto w-full max-w-5xl">
         <Link href="/coach/clients" className="mb-6 inline-block rounded-lg border bg-white px-4 py-2">
           ← Back to Clients
         </Link>
 
-        <div className="rounded-2xl bg-white p-5 sm:p-8 shadow">
-          <h1 className="text-3xl font-bold sm:text-4xl">{client.name}</h1>
-          <div className="mt-8 grid gap-4 md:grid-cols-2">
+        <div className="rounded-2xl bg-white p-5 sm:p-6 shadow">
+          <h1 className="text-[22px] font-bold sm:text-[22px]">{client.name}</h1>
+          <div className="mt-2 grid gap-4 md:grid-cols-2">
             <div>
               <p className="text-sm text-gray-500">Phone</p>
-              <p>{client.phone || "Not provided"}</p>
+              <p className="text-sm sm:text-base">{client.phone || "Not provided"}</p>
             </div>
             <div>
               <p className="text-sm text-gray-500">Email</p>
-              <p>{client.email || "Not provided"}</p>
+              <p className="text-sm sm:text-base">{client.email || "Not provided"}</p>
             </div>
             <div>
               <p className="text-sm text-gray-500">Lessons Remaining</p>
-              <p className="text-2xl font-bold">
+              <p className="text-lg font-bold">
                 {client.lessons_remaining}
               </p>
             </div>
           </div>
-          <div className="mt-6">
+          <div className="mt-2">
             <p className="text-sm text-gray-500">Notes</p>
-            <p>{client.notes || "No notes"}</p>
+            <p className="text-sm sm:text-base">{client.notes || "No notes"}</p>
           </div>
           <div className="mt-8 flex flex-wrap gap-3">
             <button className="rounded-lg bg-green-600 px-4 py-2 text-white">
@@ -99,27 +99,30 @@ export default async function CoachClientProfilePage({ params }: Props) {
           </div>
         </div>
 
-        <div className="mt-8 rounded-2xl bg-white p-8 shadow">
-          <h2 className="mb-4 text-3xl font-bold">Upcoming Lessons</h2>
+        <div className="mt-2 rounded-2xl bg-white p-4 shadow">
+          <h2 className="mb-4 text-[19px] font-bold">Upcoming Lessons</h2>
           <div className="space-y-2">
             {(upcomingLessons || []).map((lesson) => (
-              <div key={lesson.id} className="rounded-lg border p-3">
+              <div
+                key={lesson.id}
+                className="rounded-lg border p-3 text-sm sm:text-[15px]"
+              >
                 {lesson.lesson_date} - {lesson.lesson_time}
               </div>
             ))}
             {(!upcomingLessons || upcomingLessons.length === 0) && (
-              <p className="text-gray-500">No upcoming lessons.</p>
+              <p className="text-sm sm:text-base text-gray-500">No upcoming lessons.</p>
             )}
           </div>
         </div>
 
-        <div className="mt-8 rounded-2xl bg-white p-8 shadow">
-          <h2 className="mb-4 text-3xl font-bold">Previous Lessons</h2>
+        <div className="mt-2 rounded-2xl bg-white p-4 shadow">
+          <h2 className="mb-4 text-[19px] font-bold">Previous Lessons</h2>
           <PreviousLessonsTable lessons={previousLessons || []} />
         </div>
 
-        <div className="mt-8 rounded-2xl bg-white p-8 shadow">
-          <h2 className="mb-4 text-3xl font-bold">Lessons Remaining</h2>
+        <div className="mt-2 rounded-2xl bg-white p-8 shadow">
+          <h2 className="mb-4 text-[19px] font-bold">Lessons Remaining</h2>
           <div className="overflow-hidden rounded-xl border">
             <table className="w-full">
               <thead>
@@ -150,7 +153,9 @@ export default async function CoachClientProfilePage({ params }: Props) {
 
             {(!packages ||
               packages.filter((pkg) => (pkg.lessons_added || 0) - (pkg.lessons_used || 0) > 0).length === 0) && (
-              <div className="p-4 text-gray-500">No active lessons remaining.</div>
+              <div className="p-4 text-sm sm:text-base text-gray-500">
+                No active lessons remaining.
+              </div>
             )}
           </div>
         </div>

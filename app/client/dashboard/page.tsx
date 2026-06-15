@@ -600,8 +600,9 @@ export default function ClientDashboard() {
           <div className="lg:hidden rounded-2xl bg-white shadow">
             <button onClick={() => setShowClientInfo(!showClientInfo)} className="w-full p-4 lg:p-6 text-left">
               <div className="flex items-center justify-between">
-                <h2 className="text-[22px] font-bold text-black">Profile</h2>
-
+                <h2 className="text-[18px] lg:text-[22px] font-bold text-black">
+                  Profile
+                </h2>
                 <span className="text-[2xl]">{showClientInfo ? "▲" : "▼"}</span>
               </div>
             </button>
@@ -635,7 +636,7 @@ export default function ClientDashboard() {
 
           {/* Desktop */}
           <div className="order-1 lg:order-2 hidden lg:block rounded-2xl bg-white shadow">
-            <button onClick={() => setShowClientInfo(!showClientInfo)} className="w-full p-6 text-left">
+            <button onClick={() => setShowClientInfo(!showClientInfo)} className="w-full p-3 text-left">
               <div className="flex items-center justify-center gap-8">
                 <h2 className="text-[2xl] font-bold text-black">
                   Profile
@@ -728,7 +729,7 @@ export default function ClientDashboard() {
             </div>
 
             <div className="mt-6">
-              <h3 className="mb-3 text-lg font-bold text-black">Available Time Slots</h3>
+              <h3 className="mb-3 text-medium font-bold text-black">Available Time Slots</h3>
 
               {timeSlots.length === 0 ? (
                 <p className="text-black">No available slots.</p>
@@ -738,7 +739,7 @@ export default function ClientDashboard() {
                     <button
                       key={time}
                       onClick={() => setSelectedTime(time)}
-                      className={`rounded-lg px-4 py-2 text-white ${
+                      className={`rounded-lg px-3 py-1 text-sm font-medium text-white transition ${
                         selectedTime === time ? "bg-green-700" : "bg-green-600"
                       }`}
                     >

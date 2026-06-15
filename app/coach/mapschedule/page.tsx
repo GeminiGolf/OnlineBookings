@@ -132,11 +132,11 @@ export default function CoachPage() {
     <main className="min-h-screen bg-gray-100 p-2 sm:p-10 text-black">
       <div className="mx-auto max-w-4xl rounded-2xl bg-white p-4 sm:p-8 shadow-lg">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold">Coach Availability</h1>
+          <h1 className="text-3xl font-bold">Coach Availability</h1>
           <p className="mt-2 text-gray-500">Configure your weekly lesson schedule.</p>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-2">
           {days.map((day) => {
             const existing = getDayAvailability(day.value)
             return (
@@ -216,10 +216,10 @@ function DayAvailabilityRow({ dayLabel, dayValue, coachId, existing, weeklyBreak
   }
 
   return (
-    <div className="rounded-xl border border-black p-5">
+    <div className="rounded-xl border border-black py-4 px-5">
       {/* DESKTOP */}
       <div className="hidden min-[900px]:flex items-center justify-between">
-        <h3 className="min-w-[180px] text-2xl font-bold">
+        <h3 className="min-w-[180px] text-[16px] font-bold">
           {dayLabel}
         </h3>
         <div className="flex items-end gap-3">
@@ -233,7 +233,7 @@ function DayAvailabilityRow({ dayLabel, dayValue, coachId, existing, weeklyBreak
               step="3600"
               value={start}
               onChange={(e) => setStart(e.target.value)}
-              className="rounded-lg border border-black px-3 py-2"
+              className="rounded-lg border border-black px-3 py-1 text-sm"
             />
           </div>
 
@@ -247,7 +247,7 @@ function DayAvailabilityRow({ dayLabel, dayValue, coachId, existing, weeklyBreak
               step="3600"
               value={end}
               onChange={(e) => setEnd(e.target.value)}
-              className="rounded-lg border border-black px-3 py-2"
+              className="rounded-lg border border-black px-3 py-1 text-sm"
             />
           </div>
 
@@ -262,7 +262,7 @@ function DayAvailabilityRow({ dayLabel, dayValue, coachId, existing, weeklyBreak
                 setEnd("19:00")
                 onSave("08:00", "19:00")
               }}
-              className="rounded-lg bg-green-600 px-5 py-2 font-semibold text-white"
+              className="rounded-lg bg-green-600 px-4 py-2 text-sm font-semibold text-white"
             >
               Open
             </button>
@@ -277,7 +277,7 @@ function DayAvailabilityRow({ dayLabel, dayValue, coachId, existing, weeklyBreak
                 setEnd("")
                 onSave("", "")
               }}
-              className="rounded-lg bg-red-600 px-5 py-2 font-semibold text-white"
+              className="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white"
             >
               Close
             </button>
@@ -285,7 +285,7 @@ function DayAvailabilityRow({ dayLabel, dayValue, coachId, existing, weeklyBreak
 
           <button
             onClick={() => setShowBreaks(!showBreaks)}
-            className="shrink-0 rounded-lg bg-blue-600 px-5 py-2 font-semibold text-white"
+            className="shrink-0 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white"
           >
             Breaks ({selectedBreaks.length})
           </button>
@@ -299,8 +299,8 @@ function DayAvailabilityRow({ dayLabel, dayValue, coachId, existing, weeklyBreak
           onClick={() => setExpanded(!expanded)}
           className="flex w-full items-center justify-between"
         >
-          <h3 className="text-2xl font-bold">{dayLabel}</h3>
-          <span className="text-xl">
+          <h3 className="text-[18px] font-bold">{dayLabel}</h3>
+          <span className="text-lg">
             {expanded ? "▼" : "▶"}
           </span>
         </button>

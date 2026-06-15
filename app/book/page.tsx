@@ -1,5 +1,5 @@
 "use client"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { supabase } from "@/lib/supabaseClient"
 import { DayPicker } from "react-day-picker"
 import "react-day-picker/dist/style.css"
@@ -17,6 +17,8 @@ export default function BookPage() {
   const [selectedTime, setSelectedTime] = useState("")
   const [loading, setLoading] = useState(false)
   const [selectedCoachData, setSelectedCoachData] = useState<any>(null)
+  const bookingSummaryRef = useRef<HTMLDivElement>(null)
+  
 
   useEffect(() => {
     fetchCoaches()
@@ -33,6 +35,15 @@ export default function BookPage() {
   useEffect(() => {
     generateSlots()
   }, [selectedDate, selectedCoach])
+
+  useEffect(() => {
+    if (selectedTime && bookingSummaryRef.current) {
+      bookingSummaryRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      })
+    }
+  }, [selectedTime])
 
   function formatHour(hour: number) {
     const suffix = hour >= 12 ? "PM" : "AM"
@@ -250,7 +261,7 @@ export default function BookPage() {
   return (
     <main className="min-h-screen bg-gray-100 p-4 lg:p-10 text-black">
       <div className="mx-auto max-w-4xl">
-        <h1 className="mb-6 text-center lg:text-left text-2xl lg:text-4xl font-bold">          Book a Lesson
+        <h1 className="mb-6 text-center lg:text-left text-2xl lg:text-3xl font-bold">          Book a Lesson
         </h1>
 
         <div className="rounded-2xl bg-white p-4 lg:p-8 shadow-lg">
@@ -348,7 +359,10 @@ export default function BookPage() {
           {/* BOOKING SUMMARY */}
 
           {selectedTime && (
-            <div className="mt-10 rounded-2xl bg-gray-100 p-6">
+            <div
+              ref={bookingSummaryRef}
+              className="mt-10 rounded-2xl bg-gray-100 p-6"
+            >
               <h3 className="text-[16px] font-bold">Selected Booking</h3>
               <p className="mt-4 text-base">Coach: {coaches.find((coach) => coach.id === selectedCoach)?.name}</p>
               <p className="text-base">Date: {selectedDate?.toLocaleDateString()}</p>
