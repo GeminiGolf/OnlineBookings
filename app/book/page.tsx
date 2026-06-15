@@ -249,8 +249,8 @@ export default function BookPage() {
 
   return (
     <main className="min-h-screen bg-gray-100 p-4 lg:p-10 text-black">
-      <div className="mx-auto max-w-5xl">
-        <h1 className="mb-6 text-center lg:text-left text-2xl lg:text-5xl font-bold">          Book a Lesson
+      <div className="mx-auto max-w-4xl">
+        <h1 className="mb-6 text-center lg:text-left text-2xl lg:text-4xl font-bold">          Book a Lesson
         </h1>
 
         <div className="rounded-2xl bg-white p-4 lg:p-8 shadow-lg">
@@ -283,7 +283,7 @@ export default function BookPage() {
                     <img
                       src={selectedCoachData.photo_url}
                       alt={selectedCoachData.name}
-                      className="mb-4 w-full rounded-lg"
+                      className="mb-4 w-[75%] mx-auto rounded-lg"
                     />
                   )}
 
@@ -299,9 +299,9 @@ export default function BookPage() {
             <div>
               <label className="mb-4 block text-lg font-semibold">Select Date</label>
 
-              <div className="rounded-xl border p-4 h-fit flex flex-col items-center">
+              <div className="rounded-xl border pt-4 lg:pt-10 pb-4 px-5 h-fit flex flex-col items-center">
                 <DayPicker
-                  className="scale-90 lg:scale-100 origin-top"
+                  className="scale-90 lg:scale-90 origin-top -mb-6 lg:mb-0"
                   mode="single"
                   selected={selectedDate}
                   onSelect={(date) => {
@@ -316,8 +316,8 @@ export default function BookPage() {
                   ]}
                 />
 
-                <div className="mt-6 border-t pt-4 min-h-[80px] w-full flex flex-col items-center">
-                  <h3 className="mb-3 text-lg font-semibold text-center">Available Time Slots</h3>
+                <div className="mt-2 lg:mt-6 border-t pt-2 lg:pt-4 min-h-[60px] lg:min-h-[80px] w-full flex flex-col items-center">
+                  <h3 className="mb-3 text-base font-semibold text-center">Available Time Slots</h3>
 
                   {timeSlots.length === 0 ? (
                     <p className="text-sm text-gray-500">No available slots.</p>
@@ -349,15 +349,15 @@ export default function BookPage() {
 
           {selectedTime && (
             <div className="mt-10 rounded-2xl bg-gray-100 p-6">
-              <h3 className="text-2xl font-bold">Selected Booking</h3>
-              <p className="mt-4 text-lg">Coach: {coaches.find((coach) => coach.id === selectedCoach)?.name}</p>
-              <p className="text-lg">Date: {selectedDate?.toLocaleDateString()}</p>
-              <p className="text-lg">Time: {selectedTime}</p>
+              <h3 className="text-[16px] font-bold">Selected Booking</h3>
+              <p className="mt-4 text-base">Coach: {coaches.find((coach) => coach.id === selectedCoach)?.name}</p>
+              <p className="text-base">Date: {selectedDate?.toLocaleDateString()}</p>
+              <p className="text-base">Time: {selectedTime}</p>
 
               <button
                 onClick={confirmBooking}
                 disabled={loading}
-                className="mt-6 rounded-xl bg-black px-8 py-4 text-lg font-bold text-white transition hover:bg-gray-800 disabled:opacity-50"
+                className="mt-6 rounded-xl bg-black px-5 py-3 text-sm font-bold text-white transition hover:bg-gray-800 disabled:opacity-50"
               >
                 {loading ? "Booking..." : "Confirm Booking"}
               </button>
