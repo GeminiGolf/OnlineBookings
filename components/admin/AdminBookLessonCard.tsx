@@ -26,6 +26,7 @@ export default function CoachBookLessonCard({
   function formatHour(hour: number) {
     const suffix = hour >= 12 ? "PM" : "AM"
     const formattedHour = hour % 12 || 12
+
     return `${formattedHour}:00 ${suffix}`
   }
 
@@ -34,11 +35,13 @@ export default function CoachBookLessonCard({
       setTimeSlots([])
       return
     }
+
     const day = selectedDate.getDay()
     const year = selectedDate.getFullYear()
     const month = String(selectedDate.getMonth() + 1).padStart(2, "0")
     const dayOfMonth = String(selectedDate.getDate()).padStart(2, "0")
     const formattedDate = `${year}-${month}-${dayOfMonth}`
+
     const { data: availability } = await supabase
       .from("availability")
       .select("*")
@@ -65,6 +68,7 @@ export default function CoachBookLessonCard({
     dateOverrides?.forEach((override) => {
       const hour = parseInt(override.lesson_time.split(":")[0])
       const slot = formatHour(hour)
+
       if (override.is_available) {
         slotSet.add(slot)
       } else {
@@ -73,6 +77,7 @@ export default function CoachBookLessonCard({
     })
 
     let availableSlots = Array.from(slotSet)
+
     const { data: bookings } = await supabase
       .from("bookings")
       .select("lesson_time")
@@ -86,29 +91,37 @@ export default function CoachBookLessonCard({
     availableSlots = availableSlots.filter(
       (slot) => !bookedTimes.includes(slot.trim())
     )
+
     const { data: weeklyBreaks } = await supabase
       .from("weekly_breaks")
       .select("*")
       .eq("coach_id", coachId)
       .eq("day_of_week", day)
+
     const breakTimes =
       weeklyBreaks?.map((item) => formatHour(item.hour)) || []
 
     availableSlots = availableSlots.filter(
       (slot) => !breakTimes.includes(slot)
     )
+
     const today = new Date()
+
     if (selectedDate.toDateString() === today.toDateString()) {
       availableSlots = availableSlots.filter((slot) => {
         const hour = parseInt(slot.split(":")[0])
         const isPM = slot.includes("PM")
+
         let militaryHour = hour
+
         if (isPM && hour !== 12) {
           militaryHour += 12
         }
+
         if (!isPM && hour === 12) {
           militaryHour = 0
         }
+
         return militaryHour > today.getHours()
       })
     }
@@ -116,16 +129,21 @@ export default function CoachBookLessonCard({
     availableSlots.sort((a, b) => {
       const convert = (time: string) => {
         const hour = parseInt(time)
+
         if (time.includes("PM") && hour !== 12) {
           return hour + 12
         }
+
         if (time.includes("AM") && hour === 12) {
           return 0
         }
+
         return hour
       }
+
       return convert(a) - convert(b)
     })
+
     setTimeSlots(availableSlots)
   }
 
@@ -133,18 +151,22 @@ export default function CoachBookLessonCard({
     if (!selectedDate || !selectedTime) {
       return
     }
+
     const confirmed = window.confirm(
       `Book lesson?\n\nDate: ${selectedDate.toLocaleDateString()}\nTime: ${selectedTime}`
     )
+
     if (!confirmed) {
       return
     }
+
     setLoading(true)
 
     const year = selectedDate.getFullYear()
     const month = String(selectedDate.getMonth() + 1).padStart(2, "0")
     const day = String(selectedDate.getDate()).padStart(2, "0")
     const formattedDate = `${year}-${month}-${day}`
+
     const { data: existingBooking } = await supabase
       .from("bookings")
       .select("*")
@@ -153,12 +175,14 @@ export default function CoachBookLessonCard({
       .eq("lesson_time", selectedTime)
       .eq("status", "booked")
       .maybeSingle()
+
     if (existingBooking) {
       alert("This slot is already booked.")
       setLoading(false)
       await generateSlots()
       return
     }
+
     const { error } = await supabase
       .from("bookings")
       .insert({
@@ -167,17 +191,21 @@ export default function CoachBookLessonCard({
         lesson_date: formattedDate,
         lesson_time: selectedTime,
         status: "booked",
-        booked_by: "coach",
+        booked_by: "admin",
       })
+
     if (error) {
       console.error(error)
       alert("Booking failed.")
       setLoading(false)
       return
     }
+
     alert("Booking confirmed!")
+
     setSelectedTime("")
     await generateSlots()
+
     window.location.reload()
   }
 
@@ -233,9 +261,11 @@ export default function CoachBookLessonCard({
           <p className="font-bold">
             Date: {selectedDate?.toLocaleDateString()}
           </p>
+
           <p className="font-bold">
             Time: {selectedTime}
           </p>
+
           <button
             onClick={confirmBooking}
             disabled={loading}

@@ -19,19 +19,15 @@ export default function PreviousLessonsTable({ lessons }: Props) {
   const [page, setPage] = useState(1)
   const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null)
   const [noteText, setNoteText] = useState("")
-
   const lessonsPerPage = 5
-
   const totalPages = Math.max(
     1,
     Math.ceil(lessons.length / lessonsPerPage)
   )
-
   const paginatedLessons = lessons.slice(
     (page - 1) * lessonsPerPage,
     page * lessonsPerPage
   )
-
   async function saveNote(lessonId: number) {
     const { error } = await supabase
       .from("bookings")
@@ -51,9 +47,9 @@ export default function PreviousLessonsTable({ lessons }: Props) {
         <table className="w-full">
           <thead>
             <tr className="border-b bg-gray-50">
-              <th className="p-3 text-left">Date</th>
-              <th className="p-3 text-left">Method</th>
-              <th className="p-3 text-left">Notes</th>
+              <th className="p-3 text-left text-sm lg:text-[13px]">Date</th>
+              <th className="p-3 text-left text-sm lg:text-[13px]">Method</th>
+              <th className="p-3 text-left text-sm lg:text-[13px]">Notes</th>
             </tr>
           </thead>
 
@@ -74,17 +70,15 @@ export default function PreviousLessonsTable({ lessons }: Props) {
 
               return (
                 <tr key={lesson.id} className="border-b">
-                  <td className="p-3">{formattedDate}</td>
-
-                  <td className="p-3">{method}</td>
-
-                  <td className="p-3">
+                  <td className="p-3 text-sm lg:text-[14px]">{formattedDate}</td>
+                  <td className="p-3 text-sm lg:text-[14px]">{method}</td>
+                  <td className="p-3 text-sm lg:text-[14px]">
                     <button
                       onClick={() => {
                         setSelectedLesson(lesson)
                         setNoteText(lesson.lesson_notes || "")
                       }}
-                      className="rounded px-2 py-1 text-lg hover:bg-gray-100"
+                      className="rounded px-2 py-1 text-base hover:bg-gray-100"
                     >
                       ✏️
                     </button>

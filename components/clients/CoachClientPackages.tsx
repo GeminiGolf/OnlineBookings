@@ -8,13 +8,11 @@ type Props = {
 
 export default function CoachClientPackages({ packages }: Props) {
   const [expandedPackageId, setExpandedPackageId] = useState<number | null>(null)
-
   function formatDate(dateString: string) {
     const date = new Date(dateString)
     const day = String(date.getDate()).padStart(2, "0")
     const month = String(date.getMonth() + 1).padStart(2, "0")
     const year = String(date.getFullYear()).slice(-2)
-
     return `${day}/${month}/${year}`
   }
 
@@ -47,7 +45,6 @@ export default function CoachClientPackages({ packages }: Props) {
                 <div className="text-xs font-semibold text-gray-600">
                   Balance
                 </div>
-
                 <div className="text-[18px] font-bold">
                   {(pkg.lessons_added || 0) -
                     (pkg.lessons_used || 0)}
@@ -64,15 +61,12 @@ export default function CoachClientPackages({ packages }: Props) {
                 <div>
                   Purchase: {pkg.transaction_name}
                 </div>
-
                 <div>
                   Purchased: {formatDate(pkg.purchase_date)}
                 </div>
-
                 <div>
                   Expiry: {formatDate(pkg.expiration_date)}
                 </div>
-
                 <div>
                   Method: {pkg.payment_method}
                 </div>
@@ -93,35 +87,31 @@ export default function CoachClientPackages({ packages }: Props) {
         <table className="w-full">
           <thead>
             <tr className="border-b bg-gray-50">
-              <th className="p-3 text-left">Balance</th>
-              <th className="p-3 text-left">Purchase</th>
-              <th className="p-3 text-left">Purchased On</th>
-              <th className="p-3 text-left">Expiry</th>
-              <th className="p-3 text-left">Method</th>
+              <th className="p-3 text-left text-sm lg:text-[13px]">Balance</th>
+              <th className="p-3 text-left text-sm lg:text-[13px]">Purchase</th>
+              <th className="p-3 text-left text-sm lg:text-[13px]">Purchased On</th>
+              <th className="p-3 text-left text-sm lg:text-[13px]">Expiry</th>
+              <th className="p-3 text-left text-sm lg:text-[13px]">Method</th>
             </tr>
           </thead>
 
           <tbody>
             {activePackages.map((pkg) => (
               <tr key={pkg.id} className="border-b">
-                <td className="p-3">
+                <td className="p-3 text-sm lg:text-[14px]">
                   {(pkg.lessons_added || 0) -
                     (pkg.lessons_used || 0)}
                 </td>
-
-                <td className="p-3">
+                <td className="p-3 text-sm lg:text-[14px]">
                   {pkg.transaction_name}
                 </td>
-
-                <td className="p-3">
+                <td className="p-3 text-sm lg:text-[14px]">
                   {formatDate(pkg.purchase_date)}
                 </td>
-
-                <td className="p-3">
+                <td className="p-3 text-sm lg:text-[14px]">
                   {formatDate(pkg.expiration_date)}
                 </td>
-
-                <td className="p-3">
+                <td className="p-3 text-sm lg:text-[14px]">
                   {pkg.payment_method}
                 </td>
               </tr>
