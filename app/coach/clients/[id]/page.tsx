@@ -3,6 +3,7 @@ import Link from "next/link"
 import { createClient } from "@/lib/supabaseServer"
 import PreviousLessonsTable from "@/components/clients/PreviousLessonsTable"
 import CoachClientPackages from "@/components/clients/CoachClientPackages"
+import CoachBookLessonCard from "@/components/clients/CoachBookLessonCard"
 type Props = {
   params: Promise<{
     id: string
@@ -95,34 +96,53 @@ export default async function CoachClientProfilePage({ params }: Props) {
           </div>
         </div>
 
-        <div className="mt-2 rounded-2xl bg-white p-4 shadow">
-          <h2 className="mb-4 text-[19px] font-bold">Upcoming Lessons</h2>
-          <div className="space-y-2">
-            {(upcomingLessons || []).map((lesson) => (
-              <div
-                key={lesson.id}
-                className="rounded-lg border p-3 text-sm sm:text-[15px]"
-              >
-                {lesson.lesson_date} - {lesson.lesson_time}
-              </div>
-            ))}
-            {(!upcomingLessons || upcomingLessons.length === 0) && (
-              <p className="text-sm sm:text-base text-gray-500">No upcoming lessons.</p>
-            )}
+        <div className="mt-8 grid gap-4 lg:grid-cols-2">
+          <CoachBookLessonCard
+            clientId={client.id}
+            coachId={coach.id}
+          />
+
+          <div className="rounded-2xl bg-white p-4 shadow">
+            <h2 className="mb-4 text-[19px] font-bold">Upcoming Lessons</h2>
+
+            <div className="space-y-2">
+              {(upcomingLessons || []).map((lesson) => (
+                <div
+                  key={lesson.id}
+                  className="rounded-lg border p-3 text-sm sm:text-[15px]"
+                >
+                  {new Date(lesson.lesson_date).toLocaleDateString("en-GB", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "2-digit",
+                  })}{" "}
+                  - {lesson.lesson_time.replace(":00", "")}
+                </div>
+              ))}
+
+              {(!upcomingLessons || upcomingLessons.length === 0) && (
+                <p className="text-sm sm:text-base text-gray-500">
+                  No upcoming lessons.
+                </p>
+              )}
+            </div>
           </div>
         </div>
 
-        <div className="mt-2 rounded-2xl bg-white p-4 shadow">
-          <h2 className="mb-4 text-[19px] font-bold">Previous Lessons</h2>
-          <PreviousLessonsTable lessons={previousLessons || []} />
-        </div>
+        <div className="mt-4 grid gap-4 lg:grid-cols-2">
+          <div className="rounded-2xl bg-white p-4 shadow">
+            <h2 className="mb-4 text-[19px] font-bold">Previous Lessons</h2>
 
-        <div className="mt-2 rounded-2xl bg-white p-4 shadow">
-          <h2 className="mb-4 text-[19px] font-bold">Lessons Remaining</h2>
+            <PreviousLessonsTable lessons={previousLessons || []} />
+          </div>
 
-          <CoachClientPackages
-            packages={packages || []}
-          />
+          <div className="rounded-2xl bg-white p-4 shadow">
+            <h2 className="mb-4 text-[19px] font-bold">Lessons Remaining</h2>
+
+            <CoachClientPackages
+              packages={packages || []}
+            />
+          </div>
         </div>
       </div>
     </main>

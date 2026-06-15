@@ -29,11 +29,11 @@ export default function CoachClientPackages({ packages }: Props) {
   return (
     <>
       {/* Mobile */}
-      <div className="mx-auto max-w-md space-y-3 lg:hidden">
+      <div className="w-full space-y-3 lg:hidden">
         {activePackages.map((pkg) => (
           <div
             key={pkg.id}
-            className="rounded-xl border p-3 text-sm"
+            className="w-full rounded-xl border p-3 text-sm"
           >
             <button
               onClick={() =>
