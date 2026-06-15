@@ -777,6 +777,8 @@ export default function ClientDashboard() {
                     <div className="flex items-center justify-between">
                       <div>
                         {formatDate(lesson.lesson_date)} - {formatLessonTime(lesson.lesson_time)}
+                        {lesson.booked_by === "coach" && " [Coach]"}
+                        {lesson.booked_by === "admin" && " [Admin]"}
                       </div>
 
                       <button
@@ -808,6 +810,8 @@ export default function ClientDashboard() {
                   <div className="hidden lg:flex items-center justify-between text-sm">
                     <div>
                       {formatDate(lesson.lesson_date)} - {formatLessonTime(lesson.lesson_time)}
+                      {lesson.booked_by === "coach" && " [Coach]"}
+                      {lesson.booked_by === "admin" && " [Admin]"}
                     </div>
 
                     <div className="flex gap-2">

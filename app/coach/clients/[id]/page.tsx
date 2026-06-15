@@ -117,6 +117,8 @@ export default async function CoachClientProfilePage({ params }: Props) {
                     year: "2-digit",
                   })}{" "}
                   - {lesson.lesson_time.replace(":00", "")}
+                  {lesson.booked_by === "coach" && " [Coach]"}
+                  {lesson.booked_by === "admin" && " [Admin]"}
                 </div>
               ))}
 
