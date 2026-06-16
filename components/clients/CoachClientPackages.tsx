@@ -57,7 +57,22 @@ export default function CoachClientPackages({ packages }: Props) {
                 <div className="text-xs font-semibold text-gray-600">
                   Receipt
                 </div>
-                <div>-</div>
+                <div>
+                  {pkg.receipt_url ? (
+                    <button
+                      onClick={() =>
+                        window.open(
+                          `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/receipt-images/${pkg.receipt_url}`,
+                          "_blank"
+                        )
+                      }
+                    >
+                      📷
+                    </button>
+                  ) : (
+                    "-"
+                  )}
+                </div>
               </div>
             </div>
 
@@ -137,9 +152,21 @@ export default function CoachClientPackages({ packages }: Props) {
                   </td>
 
                   <td className="p-3 text-center text-sm lg:text-[14px]">
-                    -
+                    {pkg.receipt_url ? (
+                      <button
+                        onClick={() =>
+                          window.open(
+                            `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/receipt-images/${pkg.receipt_url}`,
+                            "_blank"
+                          )
+                        }
+                      >
+                        📷
+                      </button>
+                    ) : (
+                      "-"
+                    )}
                   </td>
-
                   <td className="p-3 text-center">
                     <button
                       onClick={() =>

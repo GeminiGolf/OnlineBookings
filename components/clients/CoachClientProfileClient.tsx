@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { supabase } from "@/lib/supabase"
+import { supabase } from "@/lib/supabaseClient"
 
 type Props = {
   clientId: number
@@ -16,11 +16,15 @@ export default function CoachClientProfileClient({ clientId, lessonsRemaining }:
   const [price, setPrice] = useState(0)
   const isOther = transactionType === "Other"
   const [paymentMethod, setPaymentMethod] = useState("")
+  const [receiptFile, setReceiptFile] = useState<File | null>(null)
   const [detailsOpen, setDetailsOpen] = useState(false)
   const today = new Date()
   const expiry = new Date()
   expiry.setFullYear(expiry.getFullYear() + 1)
   const [expirationDate, setExpirationDate] = useState(expiry.toISOString().split("T")[0])
+  const showReceiptUpload =
+  paymentMethod === "transfer" ||
+  paymentMethod === "e-wallet"
   function updateTransaction(type: string) {
     setTransactionType(type)
     const expiry = new Date()
@@ -60,17 +64,33 @@ export default function CoachClientProfileClient({ clientId, lessonsRemaining }:
       alert("Please select a payment method.")
       return
     }
+    let receiptUrl: string | null = null
+    if (receiptFile) {
+      const fileExt = receiptFile.name.split(".").pop()
+      const fileName = `${clientId}-${Date.now()}.${fileExt}`
+      const { error: uploadError } = await supabase.storage
+        .from("receipt-images")
+        .upload(fileName, receiptFile)
+      if (uploadError) {
+        console.error("UPLOAD ERROR", uploadError)
+        alert(uploadError.message)
+        return
+      }
+      receiptUrl = fileName
+    }
+
     const { data, error } = await supabase.from("lesson_packages").insert({
       client_id: clientId,
       transaction_name: transactionName,
       lessons_added: lessonsAdded,
       price,
       payment_method: paymentMethod,
+      receipt_url: receiptUrl,
       purchase_date: new Date().toISOString().split("T")[0],
       expiration_date: expirationDate,
     })
     if (error) {
-      console.error(error)
+      console.error("LESSON PACKAGE ERROR", error)
       alert(error.message)
       return
     }
@@ -157,6 +177,31 @@ export default function CoachClientProfileClient({ clientId, lessonsRemaining }:
                   <option value="free lesson">Free Lesson</option>
                 </select>
               </div>
+
+              {showReceiptUpload && (
+                <div>
+                  <label className="mb-1 block text-sm font-medium">
+                    Upload Receipt
+                  </label>
+
+                  <input
+                    id="receipt-upload"
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) =>
+                      setReceiptFile(e.target.files?.[0] || null)
+                    }
+                    className="hidden"
+                  />
+
+                  <label
+                    htmlFor="receipt-upload"
+                    className="block w-full cursor-pointer rounded border p-3"
+                  >
+                    {receiptFile ? receiptFile.name : "Choose File"}
+                  </label>
+                </div>
+              )}
 
               <div className="w-full">
                 <input
