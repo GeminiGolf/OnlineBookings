@@ -16,6 +16,7 @@ export default function CoachClientProfileClient({ clientId, lessonsRemaining }:
   const [price, setPrice] = useState(0)
   const isOther = transactionType === "Other"
   const [paymentMethod, setPaymentMethod] = useState("")
+  const [detailsOpen, setDetailsOpen] = useState(false)
   const today = new Date()
   const expiry = new Date()
   expiry.setFullYear(expiry.getFullYear() + 1)
@@ -85,7 +86,7 @@ export default function CoachClientProfileClient({ clientId, lessonsRemaining }:
 
   return (
     <>
-      <button onClick={() => setShowModal(true)} className="rounded-lg bg-blue-600 px-3 py-2 text-sm text-white sm:px-4 sm:text-base">
+      <button onClick={() => setShowModal(true)} className="rounded-lg bg-blue-600 px-3 py-2 text-sm text-white sm:px-4 sm:text-sm">
         Add Transaction
       </button>
 
