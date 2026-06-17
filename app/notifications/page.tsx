@@ -82,7 +82,7 @@ export default function NotificationsPage() {
         .from("notifications")
         .select("*")
         .eq("coach_id", coach?.id)
-        .in("type", ["late_booking", "client_cancelled", "client_rescheduled"])
+        .in("type", ["late_booking", "client_cancelled", "client_rescheduled", "missing_receipt"])
         .order("created_at", { ascending: false })
       data = result.data
       error = result.error
@@ -232,6 +232,27 @@ export default function NotificationsPage() {
           type_label = "No Show"
           original_datetime = `${formatDate(lesson_date)} @ ${lesson_time.replace(":00", "")}`
           notes = "Missed Lesson"
+        }
+
+        if (notification.type === "missing_receipt") {
+          let receiptData: any = {}
+
+          try {
+            receiptData = JSON.parse(notification.message)
+          } catch {}
+
+          type_label = "Missing Receipt"
+
+          notes = receiptData.transaction_name || "-"
+
+          if (receiptData.purchase_date) {
+            original_datetime = new Date(receiptData.purchase_date).toLocaleDateString("en-GB", {
+              day: "2-digit",
+              month: "2-digit",
+            })
+          }
+
+          display_message = notification.message
         }
 
         return {
@@ -473,7 +494,30 @@ export default function NotificationsPage() {
                           <span>{notification.type_label || "-"}</span>
                           <span>{notification.original_datetime || "-"}</span>
                           <span>{notification.new_datetime || "-"}</span>
-                          <span className="truncate">{notification.notes || "-"}</span>
+                          {notification.type === "missing_receipt" ? (
+                            <details>
+                              <summary className="cursor-pointer">{notification.notes || "-"}</summary>
+                              <div className="mt-2 space-y-1 text-xs">
+                                <div>
+                                  <strong>Client:</strong>{" "}
+                                  <a
+                                    href={`/coach/clients/${notification.client_id}`}
+                                    className="text-blue-600 underline"
+                                  >
+                                    {notification.client_name}
+                                  </a>
+                                </div>
+                                <div>
+                                  <strong>Purchase:</strong> {notification.notes}
+                                </div>
+                                <div>
+                                  <strong>Date:</strong> {notification.original_datetime}
+                                </div>
+                              </div>
+                            </details>
+                          ) : (
+                            <span className="truncate">{notification.notes || "-"}</span>
+                          )}
                         </div>
                       </div>
 

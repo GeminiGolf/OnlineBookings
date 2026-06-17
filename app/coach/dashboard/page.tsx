@@ -36,6 +36,7 @@ export default function CoachDashboardPage() {
         "late_booking",
         "client_cancelled",
         "client_rescheduled",
+        "missing_receipt"
       ])
 
     if (!notifications) return
