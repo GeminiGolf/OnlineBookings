@@ -10,20 +10,46 @@ type Props = {
 export default function CoachClientPackages({ packages }: Props) {
   const [expandedPackageId, setExpandedPackageId] = useState<number | null>(null)
   const [receiptImage, setReceiptImage] = useState<string | null>(null)
-
+  const [packageList, setPackageList] = useState(packages)
+  
   async function viewReceipt(path: string) {
-    const { data, error } = await supabase.storage
-      .from("receipt-images")
-      .createSignedUrl(path, 60)
-
+    const { data, error } = await supabase.storage.from("receipt-images").createSignedUrl(path, 60)
     if (error) {
       alert(error.message)
       return
     }
-
     if (data?.signedUrl) {
       setReceiptImage(data.signedUrl)
     }
+  }
+
+  async function uploadReceipt(pkgId: number, file: File) {
+    const extension = file.name.split(".").pop()
+    const path = `${pkgId}/${Date.now()}.${extension}`
+    const { error: uploadError } = await supabase.storage
+      .from("receipt-images")
+      .upload(path, file)
+    if (uploadError) {
+      alert(uploadError.message)
+      return
+    }
+    const { error: updateError } = await supabase
+      .from("lesson_packages")
+      .update({
+        receipt_url: path,
+      })
+      .eq("id", pkgId)
+    if (updateError) {
+      alert(updateError.message)
+      return
+    }
+    setPackageList((current) =>
+      current.map((pkg) =>
+        pkg.id === pkgId
+          ? { ...pkg, receipt_url: path }
+          : pkg
+      )
+    )
   }
 
   function formatDate(dateString: string) {
@@ -34,13 +60,9 @@ export default function CoachClientPackages({ packages }: Props) {
     return `${day}/${month}/${year}`
   }
 
-  const activePackages = packages
+  const activePackages = packageList
     .filter((pkg) => (pkg.lessons_added || 0) - (pkg.lessons_used || 0) > 0)
-    .sort(
-      (a, b) =>
-        new Date(a.expiration_date).getTime() -
-        new Date(b.expiration_date).getTime()
-    )
+    .sort((a, b) => new Date(a.expiration_date).getTime() - new Date(b.expiration_date).getTime())
 
   return (
     <>
@@ -53,16 +75,9 @@ export default function CoachClientPackages({ packages }: Props) {
             className="max-h-[90vh] max-w-[90vw] overflow-hidden rounded-xl bg-white p-2"
             onClick={(e) => e.stopPropagation()}
           >
-            <img
-              src={receiptImage}
-              alt="Receipt"
-              className="max-h-[85vh] max-w-[85vw] object-contain"
-            />
+            <img src={receiptImage} alt="Receipt" className="max-h-[85vh] max-w-[85vw] object-contain" />
 
-            <button
-              onClick={() => setReceiptImage(null)}
-              className="mt-3 w-full rounded border px-4 py-2"
-            >
+            <button onClick={() => setReceiptImage(null)} className="mt-3 w-full rounded border px-4 py-2">
               Close
             </button>
           </div>
@@ -72,33 +87,19 @@ export default function CoachClientPackages({ packages }: Props) {
       {/* Mobile */}
       <div className="w-full space-y-3 lg:hidden">
         {activePackages.map((pkg) => (
-          <div
-            key={pkg.id}
-            className="w-full rounded-xl border p-3 text-sm"
-          >
+          <div key={pkg.id} className="w-full rounded-xl border p-3 text-sm">
             <button
-              onClick={() =>
-                setExpandedPackageId(
-                  expandedPackageId === pkg.id ? null : pkg.id
-                )
-              }
+              onClick={() => setExpandedPackageId(expandedPackageId === pkg.id ? null : pkg.id)}
               className="flex w-full items-center justify-between"
             >
               <div className="flex flex-1 items-center justify-between">
                 <div>
-                  <div className="text-xs font-semibold text-gray-600">
-                    Balance
-                  </div>
-                  <div className="font-bold">
-                    {(pkg.lessons_added || 0) -
-                      (pkg.lessons_used || 0)}
-                  </div>
+                  <div className="text-xs font-semibold text-gray-600">Balance</div>
+                  <div className="font-bold">{(pkg.lessons_added || 0) - (pkg.lessons_used || 0)}</div>
                 </div>
 
                 <div className="text-center">
-                  <div className="text-xs font-semibold text-gray-600">
-                    Receipt
-                  </div>
+                  <div className="text-xs font-semibold text-gray-600">Receipt</div>
                   <div>
                     {pkg.receipt_url ? (
                       <button
@@ -110,46 +111,45 @@ export default function CoachClientPackages({ packages }: Props) {
                         📷
                       </button>
                     ) : (
-                      "-"
+                      <label
+                        onClick={(e) => e.stopPropagation()}
+                        className="cursor-pointer rounded border px-2 py-1 text-xs"
+                      >
+                        Upload
+
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0]
+                            if (file) {
+                              uploadReceipt(pkg.id, file)
+                            }
+                          }}
+                        />
+                      </label>
                     )}
                   </div>
                 </div>
               </div>
 
-              <span className="ml-3 text-[18px]">
-                {expandedPackageId === pkg.id ? "▲" : "▼"}
-              </span>
+              <span className="ml-3 text-[18px]">{expandedPackageId === pkg.id ? "▲" : "▼"}</span>
             </button>
 
             {expandedPackageId === pkg.id && (
               <div className="mt-4 space-y-2 border-t pt-4">
-                <div>
-                  Balance:{" "}
-                  {(pkg.lessons_added || 0) -
-                    (pkg.lessons_used || 0)}
-                </div>
-                <div>
-                  Purchase: {pkg.transaction_name}
-                </div>
-                <div>
-                  Purchased on: {formatDate(pkg.purchase_date)}
-                </div>
-                <div>
-                  Expiry: {formatDate(pkg.expiration_date)}
-                </div>
-                <div>
-                  Method: {pkg.payment_method}
-                </div>
+                <div>Balance: {(pkg.lessons_added || 0) - (pkg.lessons_used || 0)}</div>
+                <div>Purchase: {pkg.transaction_name}</div>
+                <div>Purchased on: {formatDate(pkg.purchase_date)}</div>
+                <div>Expiry: {formatDate(pkg.expiration_date)}</div>
+                <div>Method: {pkg.payment_method}</div>
               </div>
             )}
           </div>
         ))}
 
-        {activePackages.length === 0 && (
-          <div className="rounded-xl border p-4">
-            No active lessons remaining.
-          </div>
-        )}
+        {activePackages.length === 0 && <div className="rounded-xl border p-4">No active lessons remaining.</div>}
       </div>
 
       {/* Desktop */}
@@ -157,18 +157,10 @@ export default function CoachClientPackages({ packages }: Props) {
         <table className="w-full">
           <thead>
             <tr className="border-b bg-gray-50">
-              <th className="p-3 text-left text-sm lg:text-[13px]">
-                Balance
-              </th>
-              <th className="p-3 text-left text-sm lg:text-[13px]">
-                Expiry
-              </th>
-              <th className="p-3 text-left text-sm lg:text-[13px]">
-                Method
-              </th>
-              <th className="p-3 text-center text-sm lg:text-[13px]">
-                Receipt
-              </th>
+              <th className="p-3 text-left text-sm lg:text-[13px]">Balance</th>
+              <th className="p-3 text-left text-sm lg:text-[13px]">Expiry</th>
+              <th className="p-3 text-left text-sm lg:text-[13px]">Method</th>
+              <th className="p-3 text-center text-sm lg:text-[13px]">Receipt</th>
               <th className="p-3 text-center text-sm lg:text-[13px]"></th>
             </tr>
           </thead>
@@ -177,43 +169,35 @@ export default function CoachClientPackages({ packages }: Props) {
             {activePackages.map((pkg) => (
               <React.Fragment key={pkg.id}>
                 <tr className="border-b">
-                  <td className="p-3 text-sm lg:text-[14px]">
-                    {(pkg.lessons_added || 0) -
-                      (pkg.lessons_used || 0)}
-                  </td>
-
-                  <td className="p-3 text-sm lg:text-[14px]">
-                    {formatDate(pkg.expiration_date)}
-                  </td>
-
-                  <td className="p-3 text-sm lg:text-[14px]">
-                    {pkg.payment_method}
-                  </td>
-
+                  <td className="p-3 text-sm lg:text-[14px]">{(pkg.lessons_added || 0) - (pkg.lessons_used || 0)}</td>
+                  <td className="p-3 text-sm lg:text-[14px]">{formatDate(pkg.expiration_date)}</td>
+                  <td className="p-3 text-sm lg:text-[14px]">{pkg.payment_method}</td>
                   <td className="p-3 text-center text-sm lg:text-[14px]">
                     {pkg.receipt_url ? (
-                      <button
-                        onClick={() =>
-                          viewReceipt(pkg.receipt_url)
-                        }
-                      >
+                      <button onClick={() => viewReceipt(pkg.receipt_url)}>
                         📷
                       </button>
                     ) : (
-                      "-"
+                      <label className="cursor-pointer rounded border px-2 py-1 text-xs">
+                        Upload
+
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0]
+                            if (file) {
+                              uploadReceipt(pkg.id, file)
+                            }
+                          }}
+                        />
+                      </label>
                     )}
                   </td>
 
                   <td className="p-3 text-center">
-                    <button
-                      onClick={() =>
-                        setExpandedPackageId(
-                          expandedPackageId === pkg.id
-                            ? null
-                            : pkg.id
-                        )
-                      }
-                    >
+                    <button onClick={() => setExpandedPackageId(expandedPackageId === pkg.id ? null : pkg.id)}>
                       {expandedPackageId === pkg.id ? "▲" : "▼"}
                     </button>
                   </td>
@@ -223,25 +207,11 @@ export default function CoachClientPackages({ packages }: Props) {
                   <tr className="border-b bg-gray-50">
                     <td colSpan={5} className="p-4">
                       <div className="space-y-2 text-sm">
-                        <div>
-                          Balance:{" "}
-                          {(pkg.lessons_added || 0) -
-                            (pkg.lessons_used || 0)}
-                        </div>
-                        <div>
-                          Purchase: {pkg.transaction_name}
-                        </div>
-                        <div>
-                          Purchased on:{" "}
-                          {formatDate(pkg.purchase_date)}
-                        </div>
-                        <div>
-                          Expiry:{" "}
-                          {formatDate(pkg.expiration_date)}
-                        </div>
-                        <div>
-                          Method: {pkg.payment_method}
-                        </div>
+                        <div>Balance: {(pkg.lessons_added || 0) - (pkg.lessons_used || 0)}</div>
+                        <div>Purchase: {pkg.transaction_name}</div>
+                        <div>Purchased on: {formatDate(pkg.purchase_date)}</div>
+                        <div>Expiry: {formatDate(pkg.expiration_date)}</div>
+                        <div>Method: {pkg.payment_method}</div>
                       </div>
                     </td>
                   </tr>
@@ -251,11 +221,7 @@ export default function CoachClientPackages({ packages }: Props) {
           </tbody>
         </table>
 
-        {activePackages.length === 0 && (
-          <div className="p-4 text-gray-500">
-            No active lessons remaining.
-          </div>
-        )}
+        {activePackages.length === 0 && <div className="p-4 text-gray-500">No active lessons remaining.</div>}
       </div>
     </>
   )
