@@ -79,20 +79,40 @@ export default function CoachClientProfileClient({ clientId, lessonsRemaining }:
       receiptUrl = fileName
     }
 
-    const { data, error } = await supabase.from("lesson_packages").insert({
-      client_id: clientId,
-      transaction_name: transactionName,
-      lessons_added: lessonsAdded,
-      price,
-      payment_method: paymentMethod,
-      receipt_url: receiptUrl,
-      purchase_date: new Date().toISOString().split("T")[0],
-      expiration_date: expirationDate,
-    })
+    const purchaseDate = new Date().toISOString().split("T")[0]
+    const { data, error } = await supabase
+      .from("lesson_packages")
+      .insert({
+        client_id: clientId,
+        transaction_name: transactionName,
+        lessons_added: lessonsAdded,
+        price,
+        payment_method: paymentMethod,
+        receipt_url: receiptUrl,
+        purchase_date: purchaseDate,
+        expiration_date: expirationDate,
+      })
+      .select()
+      .single()
     if (error) {
       console.error("LESSON PACKAGE ERROR", error)
       alert(error.message)
       return
+    }
+    if (
+      (paymentMethod === "transfer" ||
+        paymentMethod === "e-wallet") &&
+      !receiptUrl
+    ) {
+      await supabase.from("notifications").insert({
+        client_id: clientId,
+        type: "missing_receipt",
+        message: JSON.stringify({
+          package_id: data.id,
+          transaction_name: transactionName,
+          purchase_date: purchaseDate,
+        }),
+      })
     }
     await supabase
       .from("clients")
