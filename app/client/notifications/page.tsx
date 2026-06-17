@@ -74,7 +74,9 @@ export default function ClientNotificationsPage() {
             if (notification.message?.toLowerCase().includes("late booking")) {
               details =
                 "Late booking rejected" +
-                (booking?.cancellation_reason (booking?.cancellation_reason ? `\nCoach: ${booking.cancellation_reason}` : "")? `\n\nCoach: ${booking.cancellation_reason}` : "")
+                (booking?.cancellation_reason
+                  ? `\n\nCoach: ${booking.cancellation_reason}`
+                  : "")
             } else {
               details = booking?.cancellation_reason
                 ? `Coach: ${booking.cancellation_reason}`

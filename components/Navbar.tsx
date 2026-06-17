@@ -67,7 +67,12 @@ export default function Navbar() {
           .select("*")
           .eq("coach_id", coach.id)
           .eq("is_read", false)
-          .in("type", ["late_booking", "client_cancelled", "client_rescheduled"])
+          .in("type", [
+            "late_booking",
+            "client_cancelled",
+            "client_rescheduled",
+            "missing_receipt",
+          ])
 
         setUrgentCount(notifications?.filter((n) => n.is_urgent).length || 0)
         setNormalCount(notifications?.filter((n) => !n.is_urgent).length || 0)
