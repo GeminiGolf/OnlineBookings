@@ -82,7 +82,19 @@ export default function ClientDashboard() {
     const sortedUpcoming = (upcoming || []).sort((a, b) => new Date(`${a.lesson_date} ${a.lesson_time}`).getTime() - new Date(`${b.lesson_date} ${b.lesson_time}`).getTime())
     setUpcomingLessons(sortedUpcoming)
 
-    const { data: previous } = await supabase.from("bookings").select("*").eq("client_id", clientRecord.id).in("status", ["completed", "no_show"]).order("lesson_date", { ascending: false })
+    const { data: previous } = await supabase
+      .from("bookings")
+      .select(`
+        *,
+        lesson_packages (
+          id,
+          transaction_name
+        )
+      `)
+      .eq("client_id", clientRecord.id)
+      .in("status", ["completed", "no_show"])
+      .order("lesson_date", { ascending: false })
+
     setPreviousLessons(previous || [])
 
     setCompletedDates((previous || []).filter((lesson) => lesson.status === "completed").map((lesson) => new Date(lesson.lesson_date)))
@@ -869,6 +881,7 @@ export default function ClientDashboard() {
                 <thead>
                   <tr className="border-b bg-gray-50">
                     <th className="p-3 text-left">Date</th>
+                    <th className="p-3 text-left">Method</th>
                     <th className="p-3 text-left">Notes</th>
                   </tr>
                 </thead>
@@ -877,6 +890,12 @@ export default function ClientDashboard() {
                   {paginatedPrevious.map((lesson) => (
                     <tr key={lesson.id} className="border-b">
                       <td className="p-3">{formatDate(lesson.lesson_date)}</td>
+
+                      <td className="p-3">
+                        {lesson.lesson_packages?.transaction_name ||
+                          lesson.payment_method ||
+                          "Other"}
+                      </td>
 
                       <td className="p-3">
                         {lesson.status === "no_show" ? (

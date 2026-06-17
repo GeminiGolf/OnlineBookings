@@ -9,6 +9,10 @@ type Lesson = {
   lesson_notes: string | null
   lesson_package_id: number | null
   payment_method: string | null
+  lesson_packages?: {
+    id: number
+    transaction_name: string | null
+  } | null
 }
 
 type Props = {
@@ -64,9 +68,9 @@ export default function PreviousLessonsTable({ lessons }: Props) {
               })
 
               const method =
-                lesson.lesson_package_id
-                  ? "Package"
-                  : lesson.payment_method || "Other"
+                lesson.lesson_packages?.transaction_name ||
+                lesson.payment_method ||
+                "Other"
 
               return (
                 <tr key={lesson.id} className="border-b">

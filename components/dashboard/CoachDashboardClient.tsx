@@ -824,6 +824,14 @@ export default function CoachDashboardClient({
                           lessons_used: (packageToUse.lessons_used || 0) + 1,
                         })
                         .eq("id", packageToUse.id)
+
+                      await supabase
+                        .from("bookings")
+                        .update({
+                          lesson_package_id: packageToUse.id,
+                        })
+                        .eq("id", selectedBooking.id)
+
                       const { data: updatedPackages } = await supabase
                         .from("lesson_packages")
                         .select("*")
