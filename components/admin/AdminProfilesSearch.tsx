@@ -54,39 +54,26 @@ export default function AdminProfilesSearch({
         className="w-full rounded-lg border bg-white p-3"
       />
 
-      {/* Mobile */}
-
       <div className="mt-4 space-y-3 md:hidden">
-        {paginatedProfiles.map((profile) =>
-          profile.type === "Client" ? (
-            <Link
-              key={`${profile.type}-${profile.id}`}
-              href={`/admin/clients/${profile.id}`}
-              className="block rounded-xl border bg-white p-4"
-            >
-              <div className="font-semibold">
-                {profile.name}
-              </div>
-
-              <div className="mt-1 text-sm text-gray-600">
-                {profile.type}
-              </div>
-            </Link>
-          ) : (
-            <div
-              key={`${profile.type}-${profile.id}`}
-              className="rounded-xl border bg-white p-4"
-            >
-              <div className="font-semibold">
-                {profile.name}
-              </div>
-
-              <div className="mt-1 text-sm text-gray-600">
-                {profile.type}
-              </div>
+        {paginatedProfiles.map((profile) => (
+          <Link
+            key={`${profile.type}-${profile.id}`}
+            href={
+              profile.type === "Coach"
+                ? `/admin/profiles/coach/${profile.id}`
+                : `/admin/clients/${profile.id}`
+            }
+            className="block rounded-xl border bg-white p-4"
+          >
+            <div className="font-semibold">
+              {profile.name}
             </div>
-          )
-        )}
+
+            <div className="mt-1 text-sm text-gray-600">
+              {profile.type}
+            </div>
+          </Link>
+        ))}
 
         {filteredProfiles.length === 0 && (
           <div className="rounded-xl border bg-white p-4 text-gray-500">
@@ -94,8 +81,6 @@ export default function AdminProfilesSearch({
           </div>
         )}
       </div>
-
-      {/* Desktop */}
 
       <div className="mt-6 hidden overflow-x-auto rounded-2xl border bg-white shadow md:block">
         <table className="w-full">
@@ -122,16 +107,16 @@ export default function AdminProfilesSearch({
                 </td>
 
                 <td className="p-4 font-medium">
-                  {profile.type === "Client" ? (
-                    <Link
-                      href={`/admin/clients/${profile.id}`}
-                      className="block w-full"
-                    >
-                      {profile.name}
-                    </Link>
-                  ) : (
-                    profile.name
-                  )}
+                  <Link
+                    href={
+                      profile.type === "Coach"
+                        ? `/admin/profiles/coach/${profile.id}`
+                        : `/admin/clients/${profile.id}`
+                    }
+                    className="block w-full"
+                  >
+                    {profile.name}
+                  </Link>
                 </td>
               </tr>
             ))}
