@@ -600,6 +600,13 @@ export default function ClientDashboard() {
   }
   const paginatedUpcoming = upcomingLessons.slice((upcomingPage - 1) * ITEMS_PER_PAGE, upcomingPage * ITEMS_PER_PAGE)
   const paginatedPrevious = previousLessons.slice((previousPage - 1) * ITEMS_PER_PAGE, previousPage * ITEMS_PER_PAGE)
+
+  const totalLessonsRemaining = packages.reduce(
+    (total, pkg) =>
+      total + ((pkg.lessons_added || 0) - (pkg.lessons_used || 0)),
+    0
+  )
+
   const paginatedPackages = packages
     .filter((pkg) => (pkg.lessons_added || 0) - (pkg.lessons_used || 0) > 0)
     .sort((a, b) => new Date(a.expiration_date).getTime() - new Date(b.expiration_date).getTime())
@@ -948,7 +955,9 @@ export default function ClientDashboard() {
             </div>
           </div>
           <div className="rounded-2xl bg-white p-3 lg:p-8 shadow">
-            <h2 className="mb-3 text-[18px] font-bold text-black">Lessons Remaining</h2>
+            <h2 className="mb-3 text-[18px] font-bold text-black">
+              Lessons Remaining ({totalLessonsRemaining})
+            </h2>
 
             <div className="mx-auto max-w-md space-y-3">
               {paginatedPackages.map((pkg) => (
