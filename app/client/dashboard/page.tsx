@@ -601,12 +601,6 @@ export default function ClientDashboard() {
   const paginatedUpcoming = upcomingLessons.slice((upcomingPage - 1) * ITEMS_PER_PAGE, upcomingPage * ITEMS_PER_PAGE)
   const paginatedPrevious = previousLessons.slice((previousPage - 1) * ITEMS_PER_PAGE, previousPage * ITEMS_PER_PAGE)
 
-  const totalLessonsRemaining = packages.reduce(
-    (total, pkg) =>
-      total + ((pkg.lessons_added || 0) - (pkg.lessons_used || 0)),
-    0
-  )
-
   const paginatedPackages = packages
     .filter((pkg) => (pkg.lessons_added || 0) - (pkg.lessons_used || 0) > 0)
     .sort((a, b) => new Date(a.expiration_date).getTime() - new Date(b.expiration_date).getTime())
@@ -648,7 +642,9 @@ export default function ClientDashboard() {
 
                   <div>
                     <p className="text-sm lg:text-base font-semibold">Lessons Remaining</p>
-                    <p className="text-2xl lg:text-3xl font-bold">{totalLessonsRemaining}</p>
+                    <p className="text-2xl lg:text-3xl font-bold">
+                      {client?.lessons_remaining ?? 0}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -690,7 +686,9 @@ export default function ClientDashboard() {
                   )}
                   <div>
                     <p className="font-semibold">Lessons Remaining</p>
-                    <p className="text-3xl font-bold">{totalLessonsRemaining}</p>
+                    <p className="text-3xl font-bold">
+                      {client?.lessons_remaining ?? 0}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -956,7 +954,7 @@ export default function ClientDashboard() {
           </div>
           <div className="rounded-2xl bg-white p-3 lg:p-8 shadow">
             <h2 className="mb-3 text-[18px] font-bold text-black">
-              Lessons Remaining ({totalLessonsRemaining})
+              Lessons Remaining ({client?.lessons_remaining ?? 0})
             </h2>
 
             <div className="mx-auto max-w-md space-y-3">

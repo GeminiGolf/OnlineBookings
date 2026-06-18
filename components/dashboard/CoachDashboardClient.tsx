@@ -861,6 +861,19 @@ export default function CoachDashboardClient({
                           selectedBooking.id
                         )
                     }
+
+                    await supabase
+                      .from("clients")
+                      .update({
+                        lessons_remaining: Math.max(
+                          0,
+                          (selectedBooking.clients?.lessons_remaining || 0) - 1
+                        ),
+                      })
+                      .eq(
+                        "id",
+                        selectedBooking.clients.id
+                      )                    
                   }
 
                   window.location.reload()
