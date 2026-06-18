@@ -11,7 +11,9 @@ export default function CoachClientPackages({ packages }: Props) {
   const [expandedPackageId, setExpandedPackageId] = useState<number | null>(null)
   const [receiptImage, setReceiptImage] = useState<string | null>(null)
   const [packageList, setPackageList] = useState(packages)
-  
+  const [page, setPage] = useState(1)
+  const ITEMS_PER_PAGE = 5
+
   async function viewReceipt(path: string) {
     const { data, error } = await supabase.storage.from("receipt-images").createSignedUrl(path, 60)
     if (error) {
@@ -26,9 +28,7 @@ export default function CoachClientPackages({ packages }: Props) {
   async function uploadReceipt(pkgId: number, file: File) {
     const extension = file.name.split(".").pop()
     const path = `${pkgId}/${Date.now()}.${extension}`
-    const { error: uploadError } = await supabase.storage
-      .from("receipt-images")
-      .upload(path, file)
+    const { error: uploadError } = await supabase.storage.from("receipt-images").upload(path, file)
     if (uploadError) {
       alert(uploadError.message)
       return
@@ -43,13 +43,7 @@ export default function CoachClientPackages({ packages }: Props) {
       alert(updateError.message)
       return
     }
-    setPackageList((current) =>
-      current.map((pkg) =>
-        pkg.id === pkgId
-          ? { ...pkg, receipt_url: path }
-          : pkg
-      )
-    )
+    setPackageList((current) => current.map((pkg) => (pkg.id === pkgId ? { ...pkg, receipt_url: path } : pkg)))
   }
 
   function formatDate(dateString: string) {
@@ -64,6 +58,9 @@ export default function CoachClientPackages({ packages }: Props) {
     .filter((pkg) => (pkg.lessons_added || 0) - (pkg.lessons_used || 0) > 0)
     .sort((a, b) => new Date(a.expiration_date).getTime() - new Date(b.expiration_date).getTime())
 
+  const totalPages = Math.max(1, Math.ceil(activePackages.length / ITEMS_PER_PAGE))
+
+  const paginatedPackages = activePackages.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE)
   return (
     <>
       {receiptImage && (
@@ -86,7 +83,7 @@ export default function CoachClientPackages({ packages }: Props) {
 
       {/* Mobile */}
       <div className="w-full space-y-3 lg:hidden">
-        {activePackages.map((pkg) => (
+        {paginatedPackages.map((pkg) => (
           <div key={pkg.id} className="w-full rounded-xl border p-3 text-sm">
             <button
               onClick={() => setExpandedPackageId(expandedPackageId === pkg.id ? null : pkg.id)}
@@ -116,7 +113,6 @@ export default function CoachClientPackages({ packages }: Props) {
                         className="cursor-pointer rounded border px-2 py-1 text-xs"
                       >
                         Upload
-
                         <input
                           type="file"
                           accept="image/*"
@@ -166,7 +162,7 @@ export default function CoachClientPackages({ packages }: Props) {
           </thead>
 
           <tbody>
-            {activePackages.map((pkg) => (
+            {paginatedPackages.map((pkg) => (
               <React.Fragment key={pkg.id}>
                 <tr className="border-b">
                   <td className="p-3 text-sm lg:text-[14px]">{(pkg.lessons_added || 0) - (pkg.lessons_used || 0)}</td>
@@ -174,13 +170,10 @@ export default function CoachClientPackages({ packages }: Props) {
                   <td className="p-3 text-sm lg:text-[14px]">{pkg.payment_method}</td>
                   <td className="p-3 text-center text-sm lg:text-[14px]">
                     {pkg.receipt_url ? (
-                      <button onClick={() => viewReceipt(pkg.receipt_url)}>
-                        📷
-                      </button>
+                      <button onClick={() => viewReceipt(pkg.receipt_url)}>📷</button>
                     ) : (
                       <label className="cursor-pointer rounded border px-2 py-1 text-xs">
                         Upload
-
                         <input
                           type="file"
                           accept="image/*"
@@ -222,6 +215,28 @@ export default function CoachClientPackages({ packages }: Props) {
         </table>
 
         {activePackages.length === 0 && <div className="p-4 text-gray-500">No active lessons remaining.</div>}
+
+        {activePackages.length > 0 && (
+          <div className="flex items-center justify-center gap-4 border-t p-4">
+            <button
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              disabled={page === 1}
+              className="rounded border px-4 py-2 disabled:opacity-50"
+            >
+              Previous
+            </button>
+            <span>
+              {page} of {totalPages}
+            </span>
+            <button
+              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+              disabled={page === totalPages}
+              className="rounded border px-4 py-2 disabled:opacity-50"
+            >
+              Next
+            </button>
+          </div>
+        )}
       </div>
     </>
   )

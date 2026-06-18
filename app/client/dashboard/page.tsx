@@ -989,6 +989,71 @@ export default function ClientDashboard() {
                   No active lessons remaining.
                 </div>
               )}
+
+              {packages.filter(
+                (pkg) =>
+                  (pkg.lessons_added || 0) -
+                    (pkg.lessons_used || 0) >
+                  0
+              ).length > ITEMS_PER_PAGE && (
+                <div className="flex h-16 items-center justify-center gap-4">
+                  <button
+                    onClick={() =>
+                      setPackagesPage((p) =>
+                        Math.max(1, p - 1)
+                      )
+                    }
+                    disabled={packagesPage === 1}
+                    className="rounded border px-3 py-1 disabled:opacity-50"
+                  >
+                    Previous
+                  </button>
+
+                  <span>
+                    {packagesPage} of{" "}
+                    {Math.ceil(
+                      packages.filter(
+                        (pkg) =>
+                          (pkg.lessons_added || 0) -
+                            (pkg.lessons_used || 0) >
+                          0
+                      ).length / ITEMS_PER_PAGE
+                    )}
+                  </span>
+
+                  <button
+                    onClick={() =>
+                      setPackagesPage((p) =>
+                        Math.min(
+                          Math.ceil(
+                            packages.filter(
+                              (pkg) =>
+                                (pkg.lessons_added || 0) -
+                                  (pkg.lessons_used || 0) >
+                                0
+                            ).length / ITEMS_PER_PAGE
+                          ),
+                          p + 1
+                        )
+                      )
+                    }
+                    disabled={
+                      packagesPage >=
+                      Math.ceil(
+                        packages.filter(
+                          (pkg) =>
+                            (pkg.lessons_added || 0) -
+                              (pkg.lessons_used || 0) >
+                            0
+                        ).length / ITEMS_PER_PAGE
+                      )
+                    }
+                    className="rounded border px-3 py-1 disabled:opacity-50"
+                  >
+                    Next
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>
