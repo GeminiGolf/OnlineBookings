@@ -126,15 +126,23 @@ export default function Navbar() {
       }
     }
     if (currentRole === "admin") {
-      const { data: notifications } = await supabase
+      const { data: urgentNotificationsData } = await supabase
         .from("notifications")
         .select("*")
-        .eq("is_read", false)
+        .eq("type", "late_booking")
         .eq("is_urgent", true)
-      setUrgentCount(notifications?.length || 0)
-      setNormalCount(0)
+        .eq("is_read", false)
 
-      const urgentItems = notifications || []
+      const { data: missingReceiptNotifications } = await supabase
+        .from("notifications")
+        .select("id")
+        .eq("type", "missing_receipt")
+        .eq("is_read", false)
+
+      setUrgentCount(urgentNotificationsData?.length || 0)
+      setNormalCount(missingReceiptNotifications?.length || 0)
+
+      const urgentItems = urgentNotificationsData || []
       const enrichedUrgent = await Promise.all(
         urgentItems.map(async (notification) => {
           let client_name = ""

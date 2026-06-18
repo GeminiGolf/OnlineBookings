@@ -79,9 +79,7 @@ export default function NotificationsPage() {
     const result = await supabase
       .from("notifications")
       .select("*")
-      .eq("is_urgent", true)
       .order("created_at", { ascending: false })
-
     data = result.data
     error = result.error
 
@@ -227,6 +225,28 @@ export default function NotificationsPage() {
           original_datetime = `${formatDate(lesson_date)} @ ${lesson_time.replace(":00", "")}`
           notes = "Missed Lesson"
         }
+        if (notification.type === "missing_receipt") {
+          let receiptData: {
+            transaction_name?: string
+            purchase_date?: string
+          } = {}
+
+          try {
+            receiptData = JSON.parse(notification.message)
+          } catch {}
+
+          type_label = "Missing Receipt"
+          notes = receiptData.transaction_name || "-"
+
+          if (receiptData.purchase_date) {
+            original_datetime = new Date(
+              receiptData.purchase_date
+            ).toLocaleDateString("en-GB", {
+              day: "2-digit",
+              month: "2-digit",
+            })
+          }
+        }
 
         return {
           ...notification,
@@ -246,9 +266,18 @@ export default function NotificationsPage() {
       })
     )
 
-    setUrgentNotifications(enrichedNotifications.filter((n) => n.is_urgent && !n.is_read))
-    setActiveNotifications(enrichedNotifications.filter((n) => !n.is_urgent && !n.is_read))
-    setOlderNotifications(
+    setUrgentNotifications(
+      enrichedNotifications.filter(
+        (n) => n.type === "late_booking" && n.is_urgent && !n.is_read
+      )
+    )
+
+    setActiveNotifications(
+      enrichedNotifications.filter(
+        (n) => n.type === "missing_receipt" && !n.is_read
+      )
+    )
+        setOlderNotifications(
       enrichedNotifications
         .filter((n) => n.is_read)
         .sort((a, b) => new Date(b.resolved_at || 0).getTime() - new Date(a.resolved_at || 0).getTime())
