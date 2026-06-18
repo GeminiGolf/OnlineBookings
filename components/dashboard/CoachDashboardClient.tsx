@@ -5,6 +5,7 @@ import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { supabase } from "@/lib/supabase"
 import CoachClientProfileClient from "@/components/clients/CoachClientProfileClient"
+import AddTransactionForm from "@/components/clients/AddTransactionForm"
 
 type Booking = {
   id: number
@@ -77,6 +78,7 @@ export default function CoachDashboardClient({
   const [showCancelModal, setShowCancelModal] = useState(false)
   const [showCompleteModal, setShowCompleteModal] = useState(false)
   const [showTransactionModal, setShowTransactionModal] = useState(false)
+  const [showTransactionForm, setShowTransactionForm] = useState(false)
   const [paymentMethod, setPaymentMethod] = useState("")
   const [rescheduleBooking, setRescheduleBooking] = useState<Booking | null>(initialRescheduleBooking || null)
   const [moveBooking, setMoveBooking] = useState<Booking | null>(null)
@@ -730,14 +732,26 @@ export default function CoachDashboardClient({
                       if (
                         selectedBooking.clients?.lessons_remaining === 0
                       ) {
-                        setShowTransactionModal(true)
-                      } else {
-                        setShowCompleteModal(true)
+                        alert(
+                          "No lessons remaining. Please add a transaction first."
+                        )
+                        return
                       }
+
+                      setShowCompleteModal(true)
                     }}
                     className="rounded-lg bg-sky-400 px-2 py-2 text-sm text-white hover:bg-sky-500"
                   >
                     Completed
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setShowTransactionForm(true)
+                    }}
+                    className="rounded-lg bg-blue-600 px-2 py-2 text-sm text-white hover:bg-blue-700"
+                  >
+                    Add Transaction
                   </button>
 
                   <button
@@ -757,6 +771,21 @@ export default function CoachDashboardClient({
                     Cancel Lesson
                   </button>
                 </div>
+              )}
+              {showTransactionForm && (
+                <AddTransactionForm
+                  clientId={selectedBooking.clients!.id}
+                  lessonsRemaining={
+                    selectedBooking.clients!.lessons_remaining
+                  }
+                  onSaved={() => {
+                    setShowTransactionForm(false)
+                    window.location.reload()
+                  }}
+                  onCancel={() => {
+                    setShowTransactionForm(false)
+                  }}
+                />
               )}
             </div>
           </div>
@@ -886,18 +915,6 @@ export default function CoachDashboardClient({
           </div>
         </div>
       )}
-
-      {showTransactionModal &&
-        selectedBooking && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-6">
-            <CoachClientProfileClient
-              clientId={
-                selectedBooking.clients!.id
-              }
-              lessonsRemaining={0}
-            />
-          </div>
-        )}
 
       {showCancelModal && selectedBooking && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-6">
