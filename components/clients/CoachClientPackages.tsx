@@ -99,14 +99,15 @@ export default function CoachClientPackages({ packages }: Props) {
                   <div className="text-xs font-semibold text-gray-600">Receipt</div>
                   <div>
                     {pkg.receipt_url ? (
-                      <button
+                      <span
                         onClick={(e) => {
                           e.stopPropagation()
                           viewReceipt(pkg.receipt_url)
                         }}
+                        className="cursor-pointer"
                       >
                         📷
-                      </button>
+                      </span>
                     ) : (
                       <label
                         onClick={(e) => e.stopPropagation()}
