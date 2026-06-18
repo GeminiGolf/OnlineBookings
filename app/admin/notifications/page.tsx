@@ -497,7 +497,35 @@ export default function NotificationsPage() {
                           <span>{notification.type_label || "-"}</span>
                           <span>{notification.original_datetime || "-"}</span>
                           <span>{notification.new_datetime || "-"}</span>
+                          {notification.type === "missing_receipt" ? (
+                          <details>
+                            <summary className="cursor-pointer">
+                              {notification.notes || "-"}
+                            </summary>
+
+                            <div className="mt-2 space-y-1 text-xs">
+                              <div>
+                                <strong>Client:</strong>{" "}
+                                <a
+                                  href={`/admin/clients/${notification.client_id}`}
+                                  className="text-blue-600 underline"
+                                >
+                                  {notification.client_name}
+                                </a>
+                              </div>
+
+                              <div>
+                                <strong>Purchase:</strong> {notification.notes}
+                              </div>
+
+                              <div>
+                                <strong>Date:</strong> {notification.original_datetime}
+                              </div>
+                            </div>
+                          </details>
+                        ) : (
                           <span className="truncate">{notification.notes || "-"}</span>
+                        )}
                         </div>
                       </div>
 

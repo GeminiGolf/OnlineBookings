@@ -13,21 +13,24 @@ export default function AdminPage() {
   }, [])
 
   async function loadNotifications() {
-  const { data } = await supabase
-    .from("notifications")
-    .select("is_urgent")
-    .eq("is_read", false)
-    .eq("is_urgent", true)
+    const { data: urgentNotifications } = await supabase
+      .from("notifications")
+      .select("id")
+      .eq("type", "late_booking")
+      .eq("is_urgent", true)
+      .eq("is_read", false)
 
-    if (!data) return
+    const { data: missingReceiptNotifications } = await supabase
+      .from("notifications")
+      .select("id")
+      .eq("type", "missing_receipt")
+      .eq("is_read", false)
 
-    setTotalNotifications(data.length)
-    setUrgentNotifications(
-      data.filter(
-        (notification) =>
-          notification.is_urgent
-      ).length
-    )
+    const urgentCount = urgentNotifications?.length || 0
+    const receiptCount = missingReceiptNotifications?.length || 0
+
+    setUrgentNotifications(urgentCount)
+    setTotalNotifications(urgentCount + receiptCount)
   }
 
   return (
