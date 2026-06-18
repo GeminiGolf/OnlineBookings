@@ -6,6 +6,7 @@ import CoachClientPackages from "@/components/clients/CoachClientPackages"
 import CoachBookLessonCard from "@/components/clients/CoachBookLessonCard"
 import AdminClientProfileClient from "@/components/admin/AdminClientProfileClient"
 import AdminCoachSelector from "@/components/admin/AdminCoachSelector"
+import AdminClientContactEditor from "@/components/admin/AdminClientContactEditor"
 
 type Props = {
   params: Promise<{
@@ -79,19 +80,11 @@ export default async function AdminClientProfilePage({ params }: Props) {
           </h1>
 
           <div className="mt-2 grid gap-4 md:grid-cols-2">
-            <div>
-              <p className="text-sm text-gray-500">Phone</p>
-              <p className="text-sm sm:text-base">
-                {client.phone || "Not provided"}
-              </p>
-            </div>
-
-            <div>
-              <p className="text-sm text-gray-500">Email</p>
-              <p className="text-sm sm:text-base">
-                {client.email || "Not provided"}
-              </p>
-            </div>
+            <AdminClientContactEditor
+              clientId={client.id}
+              initialPhone={client.phone}
+              initialEmail={client.email}
+            />
 
             <div>
               <p className="text-sm text-gray-500">
