@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { createClient } from "@/lib/supabaseServer"
 import AdminCoachDefaultsCard from "@/components/admin/AdminCoachDefaultsCard"
+import AdminCoachContactEditor from "@/components/admin/AdminCoachContactEditor"
 
 type Props = {
   params: Promise<{
@@ -75,6 +76,12 @@ export default async function AdminCoachProfilePage({
                     coach.name}
                 </p>
               </div>
+
+              <AdminCoachContactEditor
+                coachId={coach.id}
+                initialPhone={coach.phone}
+                initialEmail={coach.email}
+              />
 
               <div>
                 <p className="text-sm text-gray-500">
