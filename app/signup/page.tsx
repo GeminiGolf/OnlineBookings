@@ -12,21 +12,40 @@ export default function SignupPage() {
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
+
   const router = useRouter()
 
   async function handleSignup() {
-    if (!preferredName.trim() && !givenName.trim() && !familyName.trim()) {
-      alert("Please fill in your name")
-      return
-    }
-
-    if (!preferredName.trim() && !givenName.trim()) {
-      alert("Please fill in either a preferred name or given name")
+    if (!givenName.trim()) {
+      alert("Please fill in your given name")
       return
     }
 
     if (!familyName.trim()) {
-      alert("Please fill in your surname/family name")
+      alert("Please fill in your family name")
+      return
+    }
+
+    const invalidNames = [
+      "~",
+      "-",
+      ".",
+      "n/a",
+      "na",
+      "test",
+    ]
+
+    if (
+      invalidNames.includes(
+        givenName.trim().toLowerCase()
+      ) ||
+      invalidNames.includes(
+        familyName.trim().toLowerCase()
+      )
+    ) {
+      alert(
+        "Please enter a valid given name and family name"
+      )
       return
     }
 
@@ -45,15 +64,24 @@ export default function SignupPage() {
 
     if (error) {
       if (
-        error.message.toLowerCase().includes("already") ||
-        error.message.toLowerCase().includes("registered")
+        error.message
+          .toLowerCase()
+          .includes("already") ||
+        error.message
+          .toLowerCase()
+          .includes("registered")
       ) {
-        alert("Existing account found with this email. Please log in instead.")
+        alert(
+          "Existing account found with this email. Please log in instead."
+        )
+
         router.push("/login")
+
         return
       }
 
       alert(error.message)
+
       return
     }
 
@@ -64,15 +92,12 @@ export default function SignupPage() {
       return
     }
 
-    const displayName =
-      preferredName.trim() ||
-      `${givenName.trim()} ${familyName.trim()}`
-
     await supabase
       .from("clients")
       .update({
         name: `${givenName.trim()} ${familyName.trim()}`,
-        preferred_name: preferredName.trim() || null,
+        preferred_name:
+          preferredName.trim() || null,
       })
       .eq("profile_id", user.id)
 
@@ -97,23 +122,35 @@ export default function SignupPage() {
             type="text"
             placeholder="Preferred Name (Optional)"
             value={preferredName}
-            onChange={(e) => setPreferredName(e.target.value)}
+            onChange={(e) =>
+              setPreferredName(
+                e.target.value
+              )
+            }
             className="w-full rounded-xl border p-4 text-lg text-black"
           />
 
           <input
             type="text"
-            placeholder="Given Name"
+            placeholder="Given Name *"
             value={givenName}
-            onChange={(e) => setGivenName(e.target.value)}
+            onChange={(e) =>
+              setGivenName(
+                e.target.value
+              )
+            }
             className="w-full rounded-xl border p-4 text-lg text-black"
           />
 
           <input
             type="text"
-            placeholder="Family Name"
+            placeholder="Family Name *"
             value={familyName}
-            onChange={(e) => setFamilyName(e.target.value)}
+            onChange={(e) =>
+              setFamilyName(
+                e.target.value
+              )
+            }
             className="w-full rounded-xl border p-4 text-lg text-black"
           />
 
@@ -121,23 +158,41 @@ export default function SignupPage() {
             type="email"
             placeholder="Email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) =>
+              setEmail(e.target.value)
+            }
             className="w-full rounded-xl border p-4 text-lg text-black"
           />
 
           <input
-            type={showPassword ? "text" : "password"}
+            type={
+              showPassword
+                ? "text"
+                : "password"
+            }
             placeholder="Password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) =>
+              setPassword(
+                e.target.value
+              )
+            }
             className="w-full rounded-xl border p-4 text-lg text-black"
           />
 
           <input
-            type={showPassword ? "text" : "password"}
+            type={
+              showPassword
+                ? "text"
+                : "password"
+            }
             placeholder="Confirm Password"
             value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
+            onChange={(e) =>
+              setConfirmPassword(
+                e.target.value
+              )
+            }
             className="w-full rounded-xl border p-4 text-lg text-black"
           />
 
@@ -145,7 +200,11 @@ export default function SignupPage() {
             <input
               type="checkbox"
               checked={showPassword}
-              onChange={(e) => setShowPassword(e.target.checked)}
+              onChange={(e) =>
+                setShowPassword(
+                  e.target.checked
+                )
+              }
             />
             Show Password
           </label>

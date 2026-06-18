@@ -632,10 +632,12 @@ export default function ClientDashboard() {
                     <p>{client?.phone || "Not Provided"}</p>
                   </div>
 
-                  <div>
-                    <p className="text-sm lg:text-base font-semibold">Coach</p>
-                    <p>{coaches[0]?.preferred_name || coaches[0]?.name || "Unassigned"}</p>
-                  </div>
+                  {client?.primary_coach_id && (
+                    <div>
+                      <p className="text-sm lg:text-base font-semibold">Coach</p>
+                      <p>{coaches[0]?.preferred_name || coaches[0]?.name}</p>
+                    </div>
+                  )}
 
                   <div>
                     <p className="text-sm lg:text-base font-semibold">Lessons Remaining</p>
@@ -673,11 +675,12 @@ export default function ClientDashboard() {
                     <p>{client?.phone || "Not Provided"}</p>
                   </div>
 
-                  <div>
-                    <p className="font-semibold">Coach</p>
-                    <p>{coaches[0]?.preferred_name || coaches[0]?.name || "Unassigned"}</p>
-                  </div>
-
+                  {client?.primary_coach_id && (
+                    <div>
+                      <p className="font-semibold">Coach</p>
+                      <p>{coaches[0]?.preferred_name || coaches[0]?.name}</p>
+                    </div>
+                  )}
                   <div>
                     <p className="font-semibold">Lessons Remaining</p>
                     <p className="text-3xl font-bold">{client?.lessons_remaining ?? 0}</p>
