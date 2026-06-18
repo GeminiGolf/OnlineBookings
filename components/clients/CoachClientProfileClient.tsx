@@ -1,7 +1,16 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { supabase } from "@/lib/supabaseClient"
+
+type CoachDefaults = {
+  ppv_price: number | null
+  ppv_expiry_months: number | null
+  package_5_price: number | null
+  package_5_expiry_months: number | null
+  package_10_price: number | null
+  package_10_expiry_months: number | null
+}
 
 type Props = {
   clientId: number
@@ -14,6 +23,8 @@ export default function CoachClientProfileClient({ clientId, lessonsRemaining }:
   const [transactionName, setTransactionName] = useState("PPV")
   const [lessonsAdded, setLessonsAdded] = useState(1)
   const [price, setPrice] = useState(0)
+  const [coachDefaults, setCoachDefaults] =
+    useState<CoachDefaults | null>(null)
   const isOther = transactionType === "Other"
   const [paymentMethod, setPaymentMethod] = useState("")
   const [receiptFile, setReceiptFile] = useState<File | null>(null)
@@ -23,41 +34,101 @@ export default function CoachClientProfileClient({ clientId, lessonsRemaining }:
   expiry.setFullYear(expiry.getFullYear() + 1)
   const [expirationDate, setExpirationDate] = useState(expiry.toISOString().split("T")[0])
   const showReceiptUpload =
-  paymentMethod === "transfer" ||
-  paymentMethod === "e-wallet"
-  function updateTransaction(type: string) {
-    setTransactionType(type)
-    const expiry = new Date()
-    if (type === "PPV") {
-      expiry.setMonth(expiry.getMonth() + 6)
-      setTransactionName("PPV")
-      setLessonsAdded(1)
-      setPrice(0)
-      setExpirationDate(expiry.toISOString().split("T")[0])
-    }
-    if (type === "5 Lessons") {
-      expiry.setMonth(expiry.getMonth() + 6)
-      setTransactionName("5 Lessons")
-      setLessonsAdded(5)
-      setPrice(0)
-      setExpirationDate(expiry.toISOString().split("T")[0])
-    }
-    if (type === "10 Lessons") {
-      expiry.setFullYear(expiry.getFullYear() + 1)
-      setTransactionName("10 Lessons")
-      setLessonsAdded(10)
-      setPrice(0)
-      setExpirationDate(expiry.toISOString().split("T")[0])
-    }
-    if (type === "Other") {
-      setTransactionName("")
-      setLessonsAdded(1)
-      setPrice(0)
-      const expiry = new Date()
-      expiry.setMonth(expiry.getMonth() + 6)
-      setExpirationDate(expiry.toISOString().split("T")[0])
-    }
+    paymentMethod === "transfer" ||
+    paymentMethod === "e-wallet"
+
+  useEffect(() => {
+    loadCoachDefaults()
+  }, [])
+
+  async function loadCoachDefaults() {
+    const { data: clientData } = await supabase
+      .from("clients")
+      .select("primary_coach_id")
+      .eq("id", clientId)
+      .single()
+    if (!clientData?.primary_coach_id) return
+    const { data: coachData } = await supabase
+      .from("coaches")
+      .select(`
+        ppv_price,
+        ppv_expiry_months,
+        package_5_price,
+        package_5_expiry_months,
+        package_10_price,
+        package_10_expiry_months
+      `)
+      .eq("id", clientData.primary_coach_id)
+      .single()
+    setCoachDefaults(coachData)
   }
+
+    function updateTransaction(type: string) {
+      setTransactionType(type)
+      const expiry = new Date()
+
+      if (type === "PPV") {
+        const months =
+          coachDefaults?.ppv_expiry_months ?? 6
+        expiry.setMonth(
+          expiry.getMonth() + months
+        )
+        setTransactionName("PPV")
+        setLessonsAdded(1)
+        setPrice(
+          coachDefaults?.ppv_price ?? 0
+        )
+        setExpirationDate(
+          expiry.toISOString().split("T")[0]
+        )
+      }
+
+      if (type === "5 Lessons") {
+        const months =
+          coachDefaults?.package_5_expiry_months ??
+          6
+        expiry.setMonth(
+          expiry.getMonth() + months
+        )
+        setTransactionName("5 Lessons")
+        setLessonsAdded(5)
+        setPrice(
+          coachDefaults?.package_5_price ?? 0
+        )
+        setExpirationDate(
+          expiry.toISOString().split("T")[0]
+        )
+      }
+
+      if (type === "10 Lessons") {
+        const months =
+          coachDefaults?.package_10_expiry_months ??
+          12
+        expiry.setMonth(
+          expiry.getMonth() + months
+        )
+        setTransactionName("10 Lessons")
+        setLessonsAdded(10)
+        setPrice(
+          coachDefaults?.package_10_price ?? 0
+        )
+        setExpirationDate(
+          expiry.toISOString().split("T")[0]
+        )
+      }
+
+      if (type === "Other") {
+        setTransactionName("")
+        setLessonsAdded(1)
+        setPrice(0)
+        expiry.setMonth(
+          expiry.getMonth() + 6
+        )
+        setExpirationDate(
+          expiry.toISOString().split("T")[0]
+        )
+      }
+    }
 
   async function saveTransaction() {
     if (!paymentMethod) {
@@ -138,7 +209,13 @@ export default function CoachClientProfileClient({ clientId, lessonsRemaining }:
 
   return (
     <>
-      <button onClick={() => setShowModal(true)} className="rounded-lg bg-blue-600 px-3 py-2 text-sm text-white sm:px-4 sm:text-sm">
+      <button
+        onClick={() => {
+          setShowModal(true)
+          updateTransaction("PPV")
+        }}
+        className="rounded-lg bg-blue-600 px-3 py-2 text-sm text-white sm:px-4 sm:text-sm"
+      >
         Add Transaction
       </button>
 
