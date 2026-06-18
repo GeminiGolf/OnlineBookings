@@ -1,5 +1,5 @@
 "use client"
-
+import Link from "next/link"
 import { useEffect, useState } from "react"
 import { supabase } from "@/lib/supabaseClient"
 import { useRouter } from "next/navigation"
@@ -413,6 +413,12 @@ export default function NotificationsPage() {
   return (
     <main className="min-h-screen bg-gray-100 p-8">
       <div className="mx-auto max-w-6xl">
+        <Link
+          href="/coach/dashboard"
+          className="mb-6 inline-block rounded-lg border border-black bg-white px-4 py-2 text-black hover:bg-gray-100"
+        >
+          ← Back to Dashboard
+        </Link>
         {/* URGENT */}
         <div className="mb-10">
           <h2 className="mb-4 text-2xl font-bold text-red-700">Urgent</h2>

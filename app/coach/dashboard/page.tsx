@@ -124,6 +124,19 @@ export default function CoachDashboardPage() {
               View unread notifications.
             </p>
           </Link>
+
+          <Link
+            href="/coach/profile"
+            className="rounded-3xl bg-white p-5 sm:p-8 shadow-lg transition hover:scale-[1.02]"
+          >
+            <h2 className="text-[20px] font-bold text-black">
+              My Profile
+            </h2>
+
+            <p className="mt-2 text-base text-gray-600">
+              View details
+            </p>
+          </Link>
         </div>
       </div>
     </main>

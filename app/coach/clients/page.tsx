@@ -18,6 +18,12 @@ export default async function CoachClientsPage() {
   return (
     <main className="min-h-screen bg-gray-100 p-3 sm:p-10 text-black">
       <div className="mx-auto max-w-6xl">
+                <Link
+                  href="/coach/dashboard"
+                  className="mb-6 inline-block rounded-lg border bg-white px-4 py-2"
+                >
+                  ← Back to Dashboard
+                </Link>
         <h1 className="text-3xl font-bold sm:text-4xl">My Clients</h1>
         <CoachClientsSearch clients={clients || []} />
 
@@ -25,3 +31,4 @@ export default async function CoachClientsPage() {
     </main>
   )
 }
+

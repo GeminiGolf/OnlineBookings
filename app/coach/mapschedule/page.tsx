@@ -1,5 +1,5 @@
 "use client"
-
+import Link from "next/link"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { supabase } from "@/lib/supabaseClient"
@@ -131,6 +131,12 @@ export default function CoachPage() {
   return (
     <main className="min-h-screen bg-gray-100 p-2 sm:p-10 text-black">
       <div className="mx-auto max-w-4xl rounded-2xl bg-white p-4 sm:p-8 shadow-lg">
+        <Link
+          href="/coach/dashboard"
+          className="mb-6 inline-block rounded-lg border bg-white px-4 py-2"
+        >
+          ← Back to Dashboard
+        </Link>
         <div className="mb-8">
           <h1 className="text-3xl font-bold">Coach Availability</h1>
           <p className="mt-2 text-gray-500">Configure your weekly lesson schedule.</p>
