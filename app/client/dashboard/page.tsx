@@ -648,7 +648,7 @@ export default function ClientDashboard() {
 
                   <div>
                     <p className="text-sm lg:text-base font-semibold">Lessons Remaining</p>
-                    <p className="text-2xl lg:text-3xl font-bold">{client?.lessons_remaining ?? 0}</p>
+                    <p className="text-2xl lg:text-3xl font-bold">{totalLessonsRemaining}</p>
                   </div>
                 </div>
               </div>
@@ -690,7 +690,7 @@ export default function ClientDashboard() {
                   )}
                   <div>
                     <p className="font-semibold">Lessons Remaining</p>
-                    <p className="text-3xl font-bold">{client?.lessons_remaining ?? 0}</p>
+                    <p className="text-3xl font-bold">{totalLessonsRemaining}</p>
                   </div>
                 </div>
               </div>
