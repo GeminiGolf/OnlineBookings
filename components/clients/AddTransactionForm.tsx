@@ -254,7 +254,7 @@ export default function AddTransactionForm({
   }
 
   return (
-    <div className="mt-4 rounded-xl border bg-gray-50 p-4">
+    <>
       <h3 className="mb-4 text-xl font-bold">
         Add Transaction
       </h3>
@@ -429,6 +429,6 @@ export default function AddTransactionForm({
           </button>
         </div>
       </div>
-    </div>
+    </>
   )
 }

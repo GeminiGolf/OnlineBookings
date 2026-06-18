@@ -773,19 +773,23 @@ export default function CoachDashboardClient({
                 </div>
               )}
               {showTransactionForm && (
-                <AddTransactionForm
-                  clientId={selectedBooking.clients!.id}
-                  lessonsRemaining={
-                    selectedBooking.clients!.lessons_remaining
-                  }
-                  onSaved={() => {
-                    setShowTransactionForm(false)
-                    window.location.reload()
-                  }}
-                  onCancel={() => {
-                    setShowTransactionForm(false)
-                  }}
-                />
+                <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/30 p-6">
+                  <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl">
+                    <AddTransactionForm
+                      clientId={selectedBooking.clients!.id}
+                      lessonsRemaining={
+                        selectedBooking.clients!.lessons_remaining
+                      }
+                      onSaved={() => {
+                        setShowTransactionForm(false)
+                        window.location.reload()
+                      }}
+                      onCancel={() => {
+                        setShowTransactionForm(false)
+                      }}
+                    />
+                  </div>
+                </div>
               )}
             </div>
           </div>
