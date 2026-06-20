@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabaseServer"
 import PreviousLessonsTable from "@/components/clients/PreviousLessonsTable"
 import CoachClientPackages from "@/components/clients/CoachClientPackages"
 import CoachBookLessonCard from "@/components/clients/CoachBookLessonCard"
-
+import ClientNotesCard from "@/components/clients/ClientNotesCard"
 type Props = {
   params: Promise<{
     id: string
@@ -133,12 +133,10 @@ export default async function CoachClientProfilePage({ params }: Props) {
                 </div>
               </div>
 
-              <div className="mt-2">
-                <p className="text-sm text-gray-500">Notes</p>
-                <p className="text-sm sm:text-base">
-                  {client.notes || "No notes"}
-                </p>
-              </div>
+              <ClientNotesCard
+                clientId={client.id}
+                initialNotes={client.notes}
+              />
             </div>
           </details>
         </div>

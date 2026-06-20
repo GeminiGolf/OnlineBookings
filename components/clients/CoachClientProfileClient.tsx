@@ -312,12 +312,20 @@ export default function CoachClientProfileClient({ clientId, lessonsRemaining }:
                 </div>
               )}
 
-              <div className="w-full">
+              <div>
+                <label className="mb-1 block text-sm font-medium">
+                  Package Expiration Date
+                </label>
+
                 <input
                   type="date"
                   value={expirationDate}
-                  onChange={(e) => setExpirationDate(e.target.value)}
-                  className="w-[98%] sm:w-full rounded border p-3"
+                  onChange={(e) =>
+                    setExpirationDate(
+                      e.target.value
+                    )
+                  }
+                  className="w-full rounded border p-3"
                 />
               </div>
 

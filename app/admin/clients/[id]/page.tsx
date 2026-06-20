@@ -7,6 +7,7 @@ import CoachBookLessonCard from "@/components/clients/CoachBookLessonCard"
 import AdminClientProfileClient from "@/components/admin/AdminClientProfileClient"
 import AdminCoachSelector from "@/components/admin/AdminCoachSelector"
 import AdminClientContactEditor from "@/components/admin/AdminClientContactEditor"
+import ClientNotesCard from "@/components/clients/ClientNotesCard"
 
 type Props = {
   params: Promise<{
@@ -96,12 +97,10 @@ export default async function AdminClientProfilePage({ params }: Props) {
             </div>
           </div>
 
-          <div className="mt-2">
-            <p className="text-sm text-gray-500">Notes</p>
-            <p className="text-sm sm:text-base">
-              {client.notes || "No notes"}
-            </p>
-          </div>
+          <ClientNotesCard
+            clientId={client.id}
+            initialNotes={client.notes}
+          />
 
           <div className="mt-8 flex flex-wrap gap-3">
             <CoachClientProfileClient

@@ -401,6 +401,10 @@ export default function AddTransactionForm({
         )}
 
         <div>
+          <label className="mb-1 block text-sm font-medium">
+            Package Expiration Date
+          </label>
+
           <input
             type="date"
             value={expirationDate}
