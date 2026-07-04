@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { DayPicker } from "react-day-picker"
 import "react-day-picker/dist/style.css"
 import { supabase } from "@/lib/supabaseClient"
-
+import Link from "next/link"
 type Coach = {
   id: number
   name: string
@@ -645,6 +645,13 @@ export default function ClientDashboard() {
                     <p className="text-xl lg:text-xl font-bold">
                       {client?.lessons_remaining ?? 0}
                     </p>
+
+                    <Link
+                      href="/client/changepassword"
+                      className="mt-3 inline-block font-semibold text-black underline decoration-blue-600 decoration-2 underline-offset-2"
+                    >
+                      Change Password
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -689,6 +696,13 @@ export default function ClientDashboard() {
                     <p className="text-xl font-bold">
                       {client?.lessons_remaining ?? 0}
                     </p>
+
+                    <Link
+                      href="/client/changepassword"
+                      className="mt-3 inline-block font-semibold text-black underline decoration-blue-600 decoration-2 underline-offset-2"
+                    >
+                      Change Password
+                    </Link>
                   </div>
                 </div>
               </div>

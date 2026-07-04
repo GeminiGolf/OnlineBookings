@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { supabase } from "@/lib/supabaseClient"
+import Link from "next/link"
 
 type Coach = {
   id: number
@@ -84,9 +85,18 @@ export default function CoachProfilePage() {
   return (
     <main className="min-h-screen bg-gray-100 text-black">
       <div className="mx-auto max-w-5xl p-4 lg:p-8">
-        <h1 className="mb-8 text-4xl font-bold">
-          My Profile
-        </h1>
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold">
+            My Profile
+          </h1>
+
+          <Link
+            href="/coach/changepassword"
+            className="mt-3 inline-block font-semibold text-black underline decoration-blue-600 decoration-2 underline-offset-2"
+          >
+            Change Password
+          </Link>
+        </div>
 
         <div className="grid gap-8 lg:grid-cols-2">
           <div className="rounded-2xl bg-white p-6 shadow">
