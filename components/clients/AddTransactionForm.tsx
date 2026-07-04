@@ -190,11 +190,16 @@ export default function AddTransactionForm({
       data: { user },
     } = await supabase.auth.getUser()
 
-    const { data: coach } = await supabase
+    console.log("Auth user:", user)
+
+    const { data: coach, error: coachError } = await supabase
       .from("coaches")
       .select("id")
       .eq("profile_id", user?.id)
       .single()
+
+    console.log("Coach:", coach)
+    console.log("Coach error:", coachError)
 
     const { data, error } = await supabase
       .from("lesson_packages")

@@ -30,9 +30,10 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
   const transactionsPerPage = 5
   const filteredTransactions = useMemo(() => {
     return transactions.filter((transaction) => {
-      const matchesSearch =
-        transaction.client_name.toLowerCase().includes(search.toLowerCase()) ||
-        (transaction.transaction_name ?? "").toLowerCase().includes(search.toLowerCase())
+			const matchesSearch =
+				transaction.client_name.toLowerCase().includes(search.toLowerCase()) ||
+				transaction.coach_name.toLowerCase().includes(search.toLowerCase()) ||
+				(transaction.transaction_name ?? "").toLowerCase().includes(search.toLowerCase())
       const purchaseDate = transaction.purchase_date ?? ""
       const matchesStart = !startDate || purchaseDate >= startDate
       const matchesEnd = !endDate || purchaseDate <= endDate
