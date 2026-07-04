@@ -41,38 +41,51 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
     })
   }, [transactions, search, startDate, endDate])
 
-	const groupedTransactions = useMemo(() => {
-		const groups = new Map<
-			string,
-			{
-				date: string
-				total: number
-				transactions: TransactionRow[]
-			}
-		>()
+		const groupedTransactions = useMemo(() => {
+			const groups = new Map<
+				string,
+				{
+					date: string
+					total: number
+					coaches: {
+						[name: string]: {
+							total: number
+							transactions: TransactionRow[]
+						}
+					}
+				}
+			>()
 
-		filteredTransactions.forEach((transaction) => {
-			const date = transaction.purchase_date ?? "Unknown"
+			filteredTransactions.forEach((transaction) => {
+				const date = transaction.purchase_date ?? "Unknown"
 
-			if (!groups.has(date)) {
-				groups.set(date, {
-					date,
-					total: 0,
-					transactions: [],
-				})
-			}
+				if (!groups.has(date)) {
+					groups.set(date, {
+						date,
+						total: 0,
+						coaches: {},
+					})
+				}
 
-			const group = groups.get(date)!
+				const group = groups.get(date)!
 
-			group.transactions.push(transaction)
-			group.total += transaction.price ?? 0
-		})
+				group.total += transaction.price ?? 0
 
-		return Array.from(groups.values()).sort((a, b) =>
-			b.date.localeCompare(a.date)
-		)
-	}, [filteredTransactions])
+				if (!group.coaches[transaction.coach_name]) {
+					group.coaches[transaction.coach_name] = {
+						total: 0,
+						transactions: [],
+					}
+				}
 
+				group.coaches[transaction.coach_name].transactions.push(transaction)
+				group.coaches[transaction.coach_name].total += transaction.price ?? 0
+			})
+
+			return Array.from(groups.values()).sort((a, b) =>
+				b.date.localeCompare(a.date)
+			)
+		}, [filteredTransactions])
 	const totalPages = Math.max(
 		1,
 		Math.ceil(groupedTransactions.length / transactionsPerPage)
@@ -83,7 +96,7 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 		page * transactionsPerPage
 	)
   const hasDateFilter = startDate !== "" || endDate !== ""
-	const totalAmount = (hasDateFilter ? filteredTransactions : groupedTransactions.flatMap((g) => g.transactions)).reduce(
+	const totalAmount = filteredTransactions.reduce(
 		(sum, transaction) => sum + (transaction.price ?? 0),
 		0
 	)
@@ -246,8 +259,22 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 													</thead>
 
 													<tbody>
-														{group.transactions.map((transaction) => (
-															<tr key={transaction.id} className="border-b last:border-0">
+														{Object.entries(group.coaches).map(([coachName, coach]) => (
+															<Fragment key={coachName}>
+																<tr>
+																	<td
+																		colSpan={3}
+																		className="px-4 py-3 font-semibold bg-gray-100"
+																	>
+																		<div className="flex justify-between">
+																			<span>Coach: {coachName}</span>
+																			<span>Total: ${coach.total.toFixed(0)}</span>
+																		</div>
+																	</td>
+																</tr>
+
+																{coach.transactions.map((transaction) => (
+																	<tr key={transaction.id} className="border-b last:border-0">
 																<td className="px-4 py-2">
 																	${(transaction.price ?? 0).toFixed(0)}
 																</td>
@@ -261,7 +288,9 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 																</td>
 															</tr>
 														))}
-													</tbody>
+																</Fragment>
+															))}
+														</tbody>
 												</table>
 											</div>
 										</td>
@@ -324,8 +353,22 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 												</thead>
 
 												<tbody>
-													{group.transactions.map((transaction) => (
-														<tr key={transaction.id} className="border-b last:border-0">
+													{Object.entries(group.coaches).map(([coachName, coach]) => (
+														<Fragment key={coachName}>
+															<tr>
+																<td
+																	colSpan={3}
+																	className="px-4 py-3 font-semibold bg-gray-100"
+																>
+																	<div className="flex justify-between">
+																		<span>Coach: {coachName}</span>
+																		<span>Total: ${coach.total.toFixed(0)}</span>
+																	</div>
+																</td>
+															</tr>
+
+															{coach.transactions.map((transaction) => (
+																<tr key={transaction.id} className="border-b last:border-0">
 															<td className="px-4 py-2">
 																${(transaction.price ?? 0).toFixed(0)}
 															</td>
@@ -339,7 +382,9 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 															</td>
 														</tr>
 													))}
-												</tbody>
+															</Fragment>
+														))}
+													</tbody>
 											</table>
 										</div>
 									</div>
