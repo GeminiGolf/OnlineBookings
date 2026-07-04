@@ -9,6 +9,7 @@ export default function LoginPage() {
 
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [showPassword, setShowPassword] = useState(false)
 
   async function handleLogin() {
     const {
@@ -104,7 +105,7 @@ export default function LoginPage() {
           />
 
           <input
-            type="password"
+            type={showPassword ? "text" : "password"}
             placeholder="Password"
             value={password}
             onChange={(e) =>
@@ -112,6 +113,17 @@ export default function LoginPage() {
             }
             className="w-full rounded-xl border p-4 text-lg text-black"
           />
+
+          <label className="flex items-center gap-2 text-black">
+            <input
+              type="checkbox"
+              checked={showPassword}
+              onChange={(e) =>
+                setShowPassword(e.target.checked)
+              }
+            />
+            Show Password
+          </label>
 
           <button
             onClick={handleLogin}

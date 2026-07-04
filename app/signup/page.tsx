@@ -217,7 +217,7 @@ export default function SignupPage() {
           </button>
 
           <p className="text-center text-gray-500">
-            Already have an account?{" "}
+            Already a client?{" "}
             <a
               href="/login"
               className="font-semibold text-blue-500 hover:text-blue-400"
