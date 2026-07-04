@@ -6,24 +6,19 @@ import { supabase } from "@/lib/supabaseClient"
 
 export default function LoginPage() {
   const router = useRouter()
-
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
-
   async function handleLogin() {
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     })
-
     if (error) {
       alert("Invalid email or password.")
       return
     }
-
     const user = data.user
-
     if (!user) {
       alert("No user found.")
       return
@@ -34,17 +29,14 @@ export default function LoginPage() {
       .select("*")
       .eq("id", user.id)
       .maybeSingle()
-
     if (profileError) {
       alert("Could not load profile.")
       return
     }
-
     if (!profile) {
       alert("Account exists but no profile was found.")
       return
     }
-
     if (profile.role === "admin") {
       router.push("/admin")
     } else if (profile.role === "coach") {
@@ -56,7 +48,6 @@ export default function LoginPage() {
 
   async function handleForgotPassword() {
     const emailAddress = prompt("Enter your email address:")
-
     if (!emailAddress) {
       return
     }
@@ -64,22 +55,18 @@ export default function LoginPage() {
     const { error } = await supabase.auth.resetPasswordForEmail(emailAddress, {
       redirectTo: `${window.location.origin}/reset-password`,
     })
-
     if (error) {
       alert(error.message)
       return
     }
-
     alert("Password reset email sent.")
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-gray-100 p-10">
+    <main className="flex min-h-screen items-start justify-center bg-gray-100 px-4 pt-10 sm:items-center sm:p-10">
       <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-lg">
-        <h1 className="mb-2 text-4xl font-bold text-black">Login</h1>
-
+        <h1 className="mb-2 text-3xl font-bold text-black sm:text-4xl">Login</h1>
         <p className="mb-6 text-gray-600">Sign into your account.</p>
-
         <div className="space-y-4">
           <input
             type="email"
@@ -104,7 +91,7 @@ export default function LoginPage() {
 
           <button
             onClick={handleLogin}
-            className="w-full rounded-xl bg-blue-600 p-4 text-xl font-bold text-white transition hover:bg-blue-700"
+            className="mx-auto block w-4/5 rounded-xl bg-blue-600 p-3 text-[16px] font-bold text-white transition hover:bg-blue-700 sm:w-64 sm:text-lg"
           >
             Login
           </button>

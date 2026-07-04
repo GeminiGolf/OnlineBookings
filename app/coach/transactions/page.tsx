@@ -69,7 +69,7 @@ export default async function CoachTransactionsPage() {
       <div className="mx-auto max-w-6xl">
         <Link
           href="/coach/dashboard"
-          className="mb-6 inline-block rounded-lg border bg-white px-4 py-2"
+          className="mb-3 inline-block rounded-lg border bg-white px-4 py-2 sm:mb-6"
         >
           ← Back to Dashboard
         </Link>
