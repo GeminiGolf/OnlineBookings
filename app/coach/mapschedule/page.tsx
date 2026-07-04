@@ -290,7 +290,10 @@ function DayAvailabilityRow({ dayLabel, dayValue, coachId, existing, weeklyBreak
           )}
 
           <button
-            onClick={() => onSave(start, end)}
+            onClick={async () => {
+              await onSave(start, end)
+              alert("Times saved")
+            }}
             disabled={!start || !end}
             className="shrink-0 rounded-lg bg-green-600 px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
           >
@@ -384,7 +387,10 @@ function DayAvailabilityRow({ dayLabel, dayValue, coachId, existing, weeklyBreak
                 </button>
               )}
               <button
-                onClick={() => onSave(start, end)}
+                onClick={async () => {
+                  await onSave(start, end)
+                  alert("Times saved")
+                }}
                 disabled={!start || !end}
                 className="rounded-lg bg-green-600 px-3 py-2 text-sm font-semibold text-white disabled:opacity-50"
               >
