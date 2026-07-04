@@ -74,7 +74,7 @@ export default async function CoachTransactionsPage() {
           ← Back to Dashboard
         </Link>
 
-        <div className="rounded-2xl bg-white p-5 shadow">
+        <div className="rounded-2xl bg-white p-4 shadow">
           <TransactionsTable transactions={transactions} />
         </div>
       </div>

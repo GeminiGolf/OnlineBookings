@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { Fragment, useMemo, useState } from "react"
 import { ChevronDown, ChevronUp } from "lucide-react"
 import { DayPicker } from "react-day-picker"
 import { format } from "date-fns"
@@ -24,7 +24,7 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
   const [endDate, setEndDate] = useState("")
   const [showStartCalendar, setShowStartCalendar] = useState(false)
   const [showEndCalendar, setShowEndCalendar] = useState(false)
-  const [expandedRows, setExpandedRows] = useState<number[]>([])
+  const [expandedDates, setExpandedDates] = useState<string[]>([])
   const [page, setPage] = useState(1)
   const transactionsPerPage = 5
   const filteredTransactions = useMemo(() => {
@@ -39,24 +39,64 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
     })
   }, [transactions, search, startDate, endDate])
 
-  const totalPages = Math.max(1, Math.ceil(filteredTransactions.length / transactionsPerPage))
+	const groupedTransactions = useMemo(() => {
+		const groups = new Map<
+			string,
+			{
+				date: string
+				total: number
+				transactions: TransactionRow[]
+			}
+		>()
 
-  const paginatedTransactions = filteredTransactions.slice((page - 1) * transactionsPerPage, page * transactionsPerPage)
+		filteredTransactions.forEach((transaction) => {
+			const date = transaction.purchase_date ?? "Unknown"
 
+			if (!groups.has(date)) {
+				groups.set(date, {
+					date,
+					total: 0,
+					transactions: [],
+				})
+			}
+
+			const group = groups.get(date)!
+
+			group.transactions.push(transaction)
+			group.total += transaction.price ?? 0
+		})
+
+		return Array.from(groups.values()).sort((a, b) =>
+			b.date.localeCompare(a.date)
+		)
+	}, [filteredTransactions])
+
+	const totalPages = Math.max(
+		1,
+		Math.ceil(groupedTransactions.length / transactionsPerPage)
+	)
+
+	const paginatedGroups = groupedTransactions.slice(
+		(page - 1) * transactionsPerPage,
+		page * transactionsPerPage
+	)
   const hasDateFilter = startDate !== "" || endDate !== ""
+	const totalAmount = (hasDateFilter ? filteredTransactions : groupedTransactions.flatMap((g) => g.transactions)).reduce(
+		(sum, transaction) => sum + (transaction.price ?? 0),
+		0
+	)
 
-  const totalAmount = (hasDateFilter ? filteredTransactions : paginatedTransactions).reduce(
-    (sum, transaction) => sum + (transaction.price ?? 0),
-    0
-  )
-
-  function toggleRow(id: number) {
-    setExpandedRows((prev) => (prev.includes(id) ? prev.filter((rowId) => rowId !== id) : [...prev, id]))
-  }
+	function toggleRow(date: string) {
+		setExpandedDates((prev) =>
+			prev.includes(date)
+				? prev.filter((d) => d !== date)
+				: [...prev, date]
+		)
+	}
 
   return (
     <div className="mx-auto max-w-5xl">
-      <h1 className="mb-6 text-[22px] font-bold">Transactions</h1>
+      <h1 className="mb-3 text-[22px] font-bold">Transactions</h1>
       <div className="mb-4 flex items-center gap-3">
         <input
           type="text"
@@ -161,45 +201,81 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
       <div className="overflow-hidden rounded-2xl border bg-white">
         {/* Desktop */}
         <table className="hidden w-full md:table">
-          <thead>
-            <tr className="border-b text-left">
-              <th className="p-4">Date</th>
-              <th className="p-4">Price</th>
-              <th className="p-4">Purchase</th>
-              <th className="p-4">Client Name</th>
-            </tr>
-          </thead>
+					<thead>
+						<tr className="border-b text-left">
+							<th className="p-4">Date</th>
+							<th className="p-4">Price</th>
+							<th className="p-4 text-center">Details</th>
+						</tr>
+					</thead>
 
-          <tbody>
-            {paginatedTransactions.map((transaction) => (
-              <tr key={transaction.id} className="border-b last:border-0">
-                <td className="p-4">
-                  {transaction.purchase_date
-                    ? new Date(transaction.purchase_date).toLocaleDateString("en-GB", {
-                        day: "2-digit",
-                        month: "2-digit",
-                        year: "2-digit",
-                      })
-                    : "-"}
-                </td>
+					<tbody>
+						{paginatedGroups.map((group) => (
+							<Fragment key={group.date}>
+								<tr className="border-b last:border-0">
+									<td className="p-4">
+										{new Date(group.date).toLocaleDateString("en-GB", {
+											day: "2-digit",
+											month: "2-digit",
+											year: "2-digit",
+										})}
+									</td>
 
-                <td className="p-4">${(transaction.price ?? 0).toFixed(2)}</td>
+									<td className="p-4">${group.total.toFixed(0)}</td>
 
-                <td className="p-4">{transaction.transaction_name}</td>
+									<td className="p-4 text-center">
+										<button onClick={() => toggleRow(group.date)}>
+											{expandedDates.includes(group.date) ? "▲" : "▼"}
+										</button>
+									</td>
+								</tr>
 
-                <td className="p-4">{transaction.client_name}</td>
-              </tr>
-            ))}
-          </tbody>
+								{expandedDates.includes(group.date) && (
+									<tr>
+										<td colSpan={3} className="border-t bg-white px-4 py-4">
+											<div className="mx-auto w-fit rounded-lg border border-gray-300 bg-gray-50 p-4">
+												<table className="w-auto text-sm">
+													<thead>
+														<tr className="border-b">
+															<th className="px-4 py-2 text-left">Price</th>
+															<th className="px-4 py-2 text-left">Purchase</th>
+															<th className="px-4 py-2 text-left">Client</th>
+														</tr>
+													</thead>
 
-          <tfoot>
-            <tr className="border-t text-sm font-bold">
-              <td className="p-4" />
-              <td className="p-4 font-bold">Total: ${totalAmount.toFixed(2)}</td>
-              <td className="p-4" />
-              <td className="p-4" />
-            </tr>
-          </tfoot>
+													<tbody>
+														{group.transactions.map((transaction) => (
+															<tr key={transaction.id} className="border-b last:border-0">
+																<td className="px-4 py-2">
+																	${(transaction.price ?? 0).toFixed(0)}
+																</td>
+
+																<td className="px-4 py-2">
+																	{transaction.transaction_name}
+																</td>
+
+																<td className="px-4 py-2">
+																	{transaction.client_name}
+																</td>
+															</tr>
+														))}
+													</tbody>
+												</table>
+											</div>
+										</td>
+									</tr>
+								)}
+							</Fragment>
+						))}
+					</tbody>
+
+					<tfoot>
+						<tr className="border-t text-sm font-bold">
+							<td className="p-4" />
+							<td className="p-4 font-bold">Total: ${totalAmount.toFixed(0)}</td>
+							<td className="p-4" />
+						</tr>
+					</tfoot>
         </table>
 
         {/* Mobile */}
@@ -209,52 +285,70 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
             <div>Price</div>
             <div />
           </div>
-          {paginatedTransactions.map((transaction) => {
-            const expanded = expandedRows.includes(transaction.id)
+					{paginatedGroups.map((group) => {
+						const expanded = expandedDates.includes(group.date)
 
-            return (
-              <div key={transaction.id} className="border-b last:border-0">
-                <button
-                  onClick={() => toggleRow(transaction.id)}
-                  className="grid w-full grid-cols-[120px_1fr_24px] items-center gap-3 p-4 text-left"
-                >
-                  <span className="font-medium">
-                    {transaction.purchase_date
-                      ? new Date(transaction.purchase_date).toLocaleDateString("en-GB", {
-                          day: "2-digit",
-                          month: "2-digit",
-                          year: "2-digit",
-                        })
-                      : "-"}
-                  </span>
+						return (
+							<div key={group.date} className="border-b last:border-0">
+								<button
+									onClick={() => toggleRow(group.date)}
+									className="grid w-full grid-cols-[120px_1fr_24px] items-center gap-3 p-4 text-left"
+								>
+									<span className="font-medium">
+										{new Date(group.date).toLocaleDateString("en-GB", {
+											day: "2-digit",
+											month: "2-digit",
+											year: "2-digit",
+										})}
+									</span>
 
-                  <span className="text-sm text-gray-600">${(transaction.price ?? 0).toFixed(2)}</span>
+									<span className="text-sm text-gray-600">
+										${group.total.toFixed(0)}
+									</span>
 
-                  <span>{expanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}</span>
-                </button>
+									<span>{expanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}</span>
+								</button>
 
-                {expanded && (
-                  <div className="space-y-3 border-t bg-gray-50 p-4">
-                    <div>
-                      <div className="text-xs font-semibold uppercase text-gray-500">Client</div>
+								{expanded && (
+									<div className="border-t bg-white px-3 py-3">
+										<div className="mx-auto w-fit rounded-lg border border-gray-300 bg-gray-50 p-2">
+											<table className="w-auto text-sm">
+												<thead>
+													<tr className="border-b">
+														<th className="px-4 py-1 text-left">Price</th>
+														<th className="px-4 py-1 text-left">Purchase</th>
+														<th className="px-4 py-1 text-left">Client</th>
+													</tr>
+												</thead>
 
-                      <div>{transaction.client_name}</div>
-                    </div>
+												<tbody>
+													{group.transactions.map((transaction) => (
+														<tr key={transaction.id} className="border-b last:border-0">
+															<td className="px-4 py-2">
+																${(transaction.price ?? 0).toFixed(0)}
+															</td>
 
-                    <div>
-                      <div className="text-xs font-semibold uppercase text-gray-500">Purchase</div>
+															<td className="px-4 py-2">
+																{transaction.transaction_name}
+															</td>
 
-                      <div>{transaction.transaction_name}</div>
-                    </div>
-                  </div>
-                )}
-              </div>
-            )
-          })}
+															<td className="px-4 py-2">
+																{transaction.client_name}
+															</td>
+														</tr>
+													))}
+												</tbody>
+											</table>
+										</div>
+									</div>
+								)}
+							</div>
+						)
+					})}
 
           <div className="grid grid-cols-[120px_1fr_24px] border-t bg-gray-100 p-4 text-[13px] font-bold">
             <div />
-            <div>Total: ${totalAmount.toFixed(2)}</div>
+            <div>Total: ${totalAmount.toFixed(0)}</div>
             <div />
           </div>
         </div>
