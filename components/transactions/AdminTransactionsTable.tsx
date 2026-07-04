@@ -248,50 +248,45 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 								{expandedDates.includes(group.date) && (
 									<tr>
 										<td colSpan={3} className="border-t bg-white px-4 py-4">
-											<div className="mx-auto w-fit rounded-lg border border-gray-300 bg-gray-50 p-4">
-												<table className="w-auto text-sm">
-													<thead>
-														<tr className="border-b">
-															<th className="px-4 py-2 text-left">Price</th>
-															<th className="px-4 py-2 text-left">Purchase</th>
-															<th className="px-4 py-2 text-left">Client</th>
-														</tr>
-													</thead>
+											<div className="space-y-6">
+												{Object.entries(group.coaches).map(([coachName, coach]) => (
+													<div key={coachName}>
+														<div className="mb-2 flex items-center justify-between font-semibold">
+															<span>Coach: {coachName}</span>
+															<span>Total: ${coach.total.toFixed(0)}</span>
+														</div>
 
-													<tbody>
-														{Object.entries(group.coaches).map(([coachName, coach]) => (
-															<Fragment key={coachName}>
-																<tr>
-																	<td
-																		colSpan={3}
-																		className="px-4 py-3 font-semibold bg-gray-100"
-																	>
-																		<div className="flex justify-between">
-																			<span>Coach: {coachName}</span>
-																			<span>Total: ${coach.total.toFixed(0)}</span>
-																		</div>
-																	</td>
-																</tr>
+														<div className="mx-auto w-fit rounded-lg border border-gray-300 bg-gray-50 p-4">
+															<table className="w-auto text-sm">
+																<thead>
+																	<tr className="border-b">
+																		<th className="px-4 py-2 text-left">Price</th>
+																		<th className="px-4 py-2 text-left">Purchase</th>
+																		<th className="px-4 py-2 text-left">Client</th>
+																	</tr>
+																</thead>
 
-																{coach.transactions.map((transaction) => (
-																	<tr key={transaction.id} className="border-b last:border-0">
-																<td className="px-4 py-2">
-																	${(transaction.price ?? 0).toFixed(0)}
-																</td>
+																<tbody>
+																	{coach.transactions.map((transaction) => (
+																		<tr key={transaction.id} className="border-b last:border-0">
+																			<td className="px-4 py-2">
+																				${(transaction.price ?? 0).toFixed(0)}
+																			</td>
 
-																<td className="px-4 py-2">
-																	{transaction.transaction_name}
-																</td>
+																			<td className="px-4 py-2">
+																				{transaction.transaction_name}
+																			</td>
 
-																<td className="px-4 py-2">
-																	{transaction.client_name}
-																</td>
-															</tr>
-														))}
-																</Fragment>
-															))}
-														</tbody>
-												</table>
+																			<td className="px-4 py-2">
+																				{transaction.client_name}
+																			</td>
+																		</tr>
+																	))}
+																</tbody>
+															</table>
+														</div>
+													</div>
+												))}
 											</div>
 										</td>
 									</tr>
@@ -342,50 +337,45 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 
 								{expanded && (
 									<div className="border-t bg-white px-3 py-3">
-										<div className="mx-auto w-fit rounded-lg border border-gray-300 bg-gray-50 p-2">
-											<table className="w-auto text-sm">
-												<thead>
-													<tr className="border-b">
-														<th className="px-4 py-1 text-left">Price</th>
-														<th className="px-4 py-1 text-left">Purchase</th>
-														<th className="px-4 py-1 text-left">Client</th>
-													</tr>
-												</thead>
+										<div className="space-y-4">
+											{Object.entries(group.coaches).map(([coachName, coach]) => (
+												<div key={coachName}>
+													<div className="mb-2 flex items-center justify-between font-semibold">
+														<span>Coach: {coachName}</span>
+														<span>Total: ${coach.total.toFixed(0)}</span>
+													</div>
 
-												<tbody>
-													{Object.entries(group.coaches).map(([coachName, coach]) => (
-														<Fragment key={coachName}>
-															<tr>
-																<td
-																	colSpan={3}
-																	className="px-4 py-3 font-semibold bg-gray-100"
-																>
-																	<div className="flex justify-between">
-																		<span>Coach: {coachName}</span>
-																		<span>Total: ${coach.total.toFixed(0)}</span>
-																	</div>
-																</td>
-															</tr>
+													<div className="mx-auto w-fit rounded-lg border border-gray-300 bg-gray-50 p-2">
+														<table className="w-auto text-sm">
+															<thead>
+																<tr className="border-b">
+																	<th className="px-4 py-1 text-left">Price</th>
+																	<th className="px-4 py-1 text-left">Purchase</th>
+																	<th className="px-4 py-1 text-left">Client</th>
+																</tr>
+															</thead>
 
-															{coach.transactions.map((transaction) => (
-																<tr key={transaction.id} className="border-b last:border-0">
-															<td className="px-4 py-2">
-																${(transaction.price ?? 0).toFixed(0)}
-															</td>
+															<tbody>
+																{coach.transactions.map((transaction) => (
+																	<tr key={transaction.id} className="border-b last:border-0">
+																		<td className="px-4 py-2">
+																			${(transaction.price ?? 0).toFixed(0)}
+																		</td>
 
-															<td className="px-4 py-2">
-																{transaction.transaction_name}
-															</td>
+																		<td className="px-4 py-2">
+																			{transaction.transaction_name}
+																		</td>
 
-															<td className="px-4 py-2">
-																{transaction.client_name}
-															</td>
-														</tr>
-													))}
-															</Fragment>
-														))}
-													</tbody>
-											</table>
+																		<td className="px-4 py-2">
+																			{transaction.client_name}
+																		</td>
+																	</tr>
+																))}
+															</tbody>
+														</table>
+													</div>
+												</div>
+											))}
 										</div>
 									</div>
 								)}
