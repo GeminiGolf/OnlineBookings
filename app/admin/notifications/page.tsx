@@ -43,6 +43,7 @@ export default function NotificationsPage() {
   const [currentRole, setCurrentRole] = useState("")
   const [selectedClient, setSelectedClient] = useState<Notification | null>(null)
   const [olderFilter, setOlderFilter] = useState("all")
+  const [expandedNotifications, setExpandedNotifications] = useState<number[]>([])
   const router = useRouter()
 
   useEffect(() => {
@@ -76,10 +77,7 @@ export default function NotificationsPage() {
     let data = null
     let error = null
 
-    const result = await supabase
-      .from("notifications")
-      .select("*")
-      .order("created_at", { ascending: false })
+    const result = await supabase.from("notifications").select("*").order("created_at", { ascending: false })
     data = result.data
     error = result.error
 
@@ -239,9 +237,7 @@ export default function NotificationsPage() {
           notes = receiptData.transaction_name || "-"
 
           if (receiptData.purchase_date) {
-            original_datetime = new Date(
-              receiptData.purchase_date
-            ).toLocaleDateString("en-GB", {
+            original_datetime = new Date(receiptData.purchase_date).toLocaleDateString("en-GB", {
               day: "2-digit",
               month: "2-digit",
             })
@@ -266,18 +262,10 @@ export default function NotificationsPage() {
       })
     )
 
-    setUrgentNotifications(
-      enrichedNotifications.filter(
-        (n) => n.type === "late_booking" && n.is_urgent && !n.is_read
-      )
-    )
+    setUrgentNotifications(enrichedNotifications.filter((n) => n.type === "late_booking" && n.is_urgent && !n.is_read))
 
-    setActiveNotifications(
-      enrichedNotifications.filter(
-        (n) => n.type === "missing_receipt" && !n.is_read
-      )
-    )
-        setOlderNotifications(
+    setActiveNotifications(enrichedNotifications.filter((n) => n.type === "missing_receipt" && !n.is_read))
+    setOlderNotifications(
       enrichedNotifications
         .filter((n) => n.is_read)
         .sort((a, b) => new Date(b.resolved_at || 0).getTime() - new Date(a.resolved_at || 0).getTime())
@@ -392,6 +380,10 @@ export default function NotificationsPage() {
     }
   }
 
+  function toggleExpanded(id: number) {
+    setExpandedNotifications((prev) => (prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]))
+  }
+
   const activeStart = (activePage - 1) * PAGE_SIZE
   const activeEnd = activeStart + PAGE_SIZE
   const olderStart = (olderPage - 1) * PAGE_SIZE
@@ -458,7 +450,7 @@ export default function NotificationsPage() {
         {/* STANDARD */}
         <div>
           <h2 className="mb-4 text-3xl font-bold text-black">Notifications ({activeNotifications.length})</h2>
-          <div className="mb-3 ml-16 grid grid-cols-[140px_180px_180px_1fr_140px] gap-4 text-sm font-bold text-gray-600">
+          <div className="hidden lg:grid mb-3 ml-16 grid-cols-[140px_180px_180px_1fr_140px] gap-4 text-sm font-bold text-gray-600">
             <span>Type</span>
             <span>Original Date</span>
             <span>New Date</span>
@@ -473,11 +465,77 @@ export default function NotificationsPage() {
             <>
               <div className="space-y-4">
                 {paginatedActiveNotifications.map((notification) => (
-                  <div
-                    key={notification.id}
-                    className={`rounded-xl p-4 shadow ${notification.is_read ? "bg-gray-200" : "bg-white"}`}
-                  >
-                    <div className="flex items-center justify-between gap-4">
+                  <div key={notification.id}>
+                    <div
+                      className={`hidden lg:block rounded-xl p-4 shadow ${
+                        notification.is_read ? "bg-gray-200" : "bg-white"
+                      }`}
+                    >
+                      <div className="flex items-center justify-between gap-4">
+                        <div className="flex items-center gap-3">
+                          <input
+                            type="checkbox"
+                            checked={notification.is_read}
+                            onChange={(e) => toggleNotification(notification.id, e.target.checked)}
+                            className="h-5 w-5"
+                          />
+
+                          <button
+                            onClick={() => setSelectedClient(notification)}
+                            className="rounded-md px-2 py-1 text-lg transition hover:bg-sky-200 hover:scale-110 cursor-pointer"
+                          >
+                            👤
+                          </button>
+
+                          <div className="grid grid-cols-[120px_180px_180px_1fr] gap-4 text-sm text-black">
+                            <span>{notification.type_label || "-"}</span>
+                            <span>{notification.original_datetime || "-"}</span>
+                            <span>{notification.new_datetime || "-"}</span>
+                            {notification.type === "missing_receipt" ? (
+                              <details>
+                                <summary className="cursor-pointer">{notification.notes || "-"}</summary>
+
+                                <div className="mt-2 space-y-1 text-xs">
+                                  <div>
+                                    <strong>Client:</strong>{" "}
+                                    <a
+                                      href={`/admin/clients/${notification.client_id}`}
+                                      className="text-blue-600 underline"
+                                    >
+                                      {notification.client_name}
+                                    </a>
+                                  </div>
+
+                                  <div>
+                                    <strong>Purchase:</strong> {notification.notes}
+                                  </div>
+
+                                  <div>
+                                    <strong>Date:</strong> {notification.original_datetime}
+                                  </div>
+                                </div>
+                              </details>
+                            ) : (
+                              <span className="truncate">{notification.notes || "-"}</span>
+                            )}
+                          </div>
+                        </div>
+
+                        <span className="text-sm text-gray-600 whitespace-nowrap">
+                          {new Date(notification.created_at).toLocaleDateString("en-GB", {
+                            day: "2-digit",
+                            month: "2-digit",
+                          })}
+                          {" | "}
+                          {new Date(notification.created_at).toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="lg:hidden rounded-xl bg-white p-4 shadow mb-3 text-black">
                       <div className="flex items-center gap-3">
                         <input
                           type="checkbox"
@@ -488,58 +546,56 @@ export default function NotificationsPage() {
 
                         <button
                           onClick={() => setSelectedClient(notification)}
-                          className="rounded-md px-2 py-1 text-lg transition hover:bg-sky-200 hover:scale-110 cursor-pointer"
+                          className="rounded-md px-2 py-1 text-lg hover:bg-sky-200"
                         >
                           👤
                         </button>
 
-                        <div className="grid grid-cols-[120px_180px_180px_1fr] gap-4 text-sm text-black">
-                          <span>{notification.type_label || "-"}</span>
-                          <span>{notification.original_datetime || "-"}</span>
-                          <span>{notification.new_datetime || "-"}</span>
-                          {notification.type === "missing_receipt" ? (
-                          <details>
-                            <summary className="cursor-pointer">
-                              {notification.notes || "-"}
-                            </summary>
+                        <button onClick={() => toggleExpanded(notification.id)} className="flex-1 text-left">
+                          <div className="font-semibold">
+                            {notification.type_label || "-"}{" "}
+                            {expandedNotifications.includes(notification.id) ? "▲" : "▼"}
+                          </div>
 
-                            <div className="mt-2 space-y-1 text-xs">
-                              <div>
-                                <strong>Client:</strong>{" "}
-                                <a
-                                  href={`/admin/clients/${notification.client_id}`}
-                                  className="text-blue-600 underline"
-                                >
-                                  {notification.client_name}
-                                </a>
-                              </div>
-
-                              <div>
-                                <strong>Purchase:</strong> {notification.notes}
-                              </div>
-
-                              <div>
-                                <strong>Date:</strong> {notification.original_datetime}
-                              </div>
-                            </div>
-                          </details>
-                        ) : (
-                          <span className="truncate">{notification.notes || "-"}</span>
-                        )}
-                        </div>
+                          <div className="text-sm text-black">{notification.original_datetime || "-"}</div>
+                        </button>
                       </div>
 
-                      <span className="text-sm text-gray-600 whitespace-nowrap">
-                        {new Date(notification.created_at).toLocaleDateString("en-GB", {
-                          day: "2-digit",
-                          month: "2-digit",
-                        })}
-                        {" | "}
-                        {new Date(notification.created_at).toLocaleTimeString([], {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
-                      </span>
+                      {expandedNotifications.includes(notification.id) && (
+                        <div className="mt-4 space-y-3 text-sm">
+                          <div>
+                            <p className="font-semibold">Original Date</p>
+                            <p>{notification.original_datetime || "-"}</p>
+                          </div>
+
+                          {notification.new_datetime && (
+                            <div>
+                              <p className="font-semibold">New Date</p>
+                              <p>{notification.new_datetime}</p>
+                            </div>
+                          )}
+
+                          <div>
+                            <p className="font-semibold">Notes</p>
+                            <p className="whitespace-pre-wrap">{notification.notes || "-"}</p>
+                          </div>
+
+                          <div>
+                            <p className="font-semibold">Created</p>
+                            <p>
+                              {new Date(notification.created_at).toLocaleDateString("en-GB", {
+                                day: "2-digit",
+                                month: "2-digit",
+                              })}{" "}
+                              |{" "}
+                              {new Date(notification.created_at).toLocaleTimeString([], {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}
+                            </p>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
                 ))}
@@ -583,7 +639,7 @@ export default function NotificationsPage() {
                   <option value="No Show">No Show</option>
                 </select>
               </div>
-              <div className="mb-3 ml-16 grid grid-cols-[140px_180px_180px_1fr_140px_140px] gap-4 text-sm font-bold text-gray-600">
+              <div className="hidden lg:grid mb-3 ml-16 grid grid-cols-[140px_180px_180px_1fr_140px_140px] gap-4 text-sm font-bold text-gray-600">
                 <span>Type</span>
                 <span>Original Date</span>
                 <span>New Date</span>
@@ -600,54 +656,136 @@ export default function NotificationsPage() {
                 <>
                   <div className="overflow-hidden rounded-xl border border-gray-300 bg-white">
                     {paginatedOlderNotifications.map((notification) => (
-                      <div key={notification.id} className="border-b border-gray-300 bg-white">
-                        <div className="grid grid-cols-[40px_40px_140px_180px_180px_1fr_140px_140px] items-center">
-                          <input
-                            type="checkbox"
-                            checked={notification.is_read}
-                            onChange={(e) => toggleNotification(notification.id, e.target.checked)}
-                            className="h-5 w-5"
-                          />
+                      <div key={notification.id}>
+                        <div className="hidden lg:block border-b border-gray-300 bg-white">
+                          <div className="grid grid-cols-[40px_40px_140px_180px_180px_1fr_140px_140px] items-center">
+                            <input
+                              type="checkbox"
+                              checked={notification.is_read}
+                              onChange={(e) => toggleNotification(notification.id, e.target.checked)}
+                              className="h-5 w-5"
+                            />
 
-                          <button
-                            onClick={() => setSelectedClient(notification)}
-                            className="rounded-md px-2 py-1 text-lg transition hover:bg-sky-200 hover:scale-110 cursor-pointer"
-                          >
-                            👤
-                          </button>
+                            <button
+                              onClick={() => setSelectedClient(notification)}
+                              className="rounded-md px-2 py-1 text-lg transition hover:bg-sky-200 hover:scale-110 cursor-pointer"
+                            >
+                              👤
+                            </button>
 
-                          <div className="contents text-sm text-black">
-                            <span className="border-l border-gray-300 px-3 py-3">{notification.type_label || "-"}</span>
-                            <span className="border-l border-gray-300 px-3 py-3">
-                              {notification.original_datetime || "-"}
-                            </span>
-                            <span className="border-l border-gray-300 px-3 py-3">
-                              {notification.new_datetime || "-"}
-                            </span>
-                            <span className="border-l border-gray-300 px-3 py-3">{notification.notes || "-"}</span>
-                            <span className="border-l border-gray-300 px-3 py-3">
-                              {notification.resolved_at
-                                ? `${new Date(notification.resolved_at).toLocaleDateString("en-GB", {
+                            <div className="contents text-sm text-black">
+                              <span className="border-l border-gray-300 px-3 py-3">
+                                {notification.type_label || "-"}
+                              </span>
+                              <span className="border-l border-gray-300 px-3 py-3">
+                                {notification.original_datetime || "-"}
+                              </span>
+                              <span className="border-l border-gray-300 px-3 py-3">
+                                {notification.new_datetime || "-"}
+                              </span>
+                              <span className="border-l border-gray-300 px-3 py-3">{notification.notes || "-"}</span>
+                              <span className="border-l border-gray-300 px-3 py-3">
+                                {notification.resolved_at
+                                  ? `${new Date(notification.resolved_at).toLocaleDateString("en-GB", {
+                                      day: "2-digit",
+                                      month: "2-digit",
+                                    })} | ${new Date(notification.resolved_at).toLocaleTimeString([], {
+                                      hour: "2-digit",
+                                      minute: "2-digit",
+                                    })}`
+                                  : "-"}
+                              </span>
+                              <span className="border-l border-gray-300 px-3 py-3">
+                                {new Date(notification.created_at).toLocaleDateString("en-GB", {
+                                  day: "2-digit",
+                                  month: "2-digit",
+                                })}
+                                {" | "}
+                                {new Date(notification.created_at).toLocaleTimeString([], {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                })}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="lg:hidden rounded-xl bg-white p-4 shadow mb-3 text-black">
+                          <div className="flex items-center gap-3">
+                            <input
+                              type="checkbox"
+                              checked={notification.is_read}
+                              onChange={(e) => toggleNotification(notification.id, e.target.checked)}
+                              className="h-5 w-5"
+                            />
+
+                            <button
+                              onClick={() => setSelectedClient(notification)}
+                              className="rounded-md px-2 py-1 text-lg hover:bg-sky-200"
+                            >
+                              👤
+                            </button>
+
+                            <button onClick={() => toggleExpanded(notification.id)} className="flex-1 text-left">
+                              <div className="font-semibold">
+                                {notification.type_label || "-"}{" "}
+                                {expandedNotifications.includes(notification.id) ? "▲" : "▼"}
+                              </div>
+
+                              <div className="text-sm text-black">{notification.original_datetime || "-"}</div>
+                            </button>
+                          </div>
+
+                          {expandedNotifications.includes(notification.id) && (
+                            <div className="mt-4 space-y-3 text-sm">
+                              <div>
+                                <p className="font-semibold">Original Date</p>
+                                <p>{notification.original_datetime || "-"}</p>
+                              </div>
+
+                              {notification.new_datetime && (
+                                <div>
+                                  <p className="font-semibold">New Date</p>
+                                  <p>{notification.new_datetime}</p>
+                                </div>
+                              )}
+
+                              <div>
+                                <p className="font-semibold">Notes</p>
+                                <p className="whitespace-pre-wrap">{notification.notes || "-"}</p>
+                              </div>
+
+                              <div>
+                                <p className="font-semibold">Done At</p>
+                                <p>
+                                  {notification.resolved_at
+                                    ? `${new Date(notification.resolved_at).toLocaleDateString("en-GB", {
+                                        day: "2-digit",
+                                        month: "2-digit",
+                                      })} | ${new Date(notification.resolved_at).toLocaleTimeString([], {
+                                        hour: "2-digit",
+                                        minute: "2-digit",
+                                      })}`
+                                    : "-"}
+                                </p>
+                              </div>
+
+                              <div>
+                                <p className="font-semibold">Created</p>
+                                <p>
+                                  {new Date(notification.created_at).toLocaleDateString("en-GB", {
                                     day: "2-digit",
                                     month: "2-digit",
-                                  })} | ${new Date(notification.resolved_at).toLocaleTimeString([], {
+                                  })}{" "}
+                                  |{" "}
+                                  {new Date(notification.created_at).toLocaleTimeString([], {
                                     hour: "2-digit",
                                     minute: "2-digit",
-                                  })}`
-                                : "-"}
-                            </span>
-                            <span className="border-l border-gray-300 px-3 py-3">
-                              {new Date(notification.created_at).toLocaleDateString("en-GB", {
-                                day: "2-digit",
-                                month: "2-digit",
-                              })}
-                              {" | "}
-                              {new Date(notification.created_at).toLocaleTimeString([], {
-                                hour: "2-digit",
-                                minute: "2-digit",
-                              })}
-                            </span>
-                          </div>
+                                  })}
+                                </p>
+                              </div>
+                            </div>
+                          )}
                         </div>
                       </div>
                     ))}
@@ -681,7 +819,7 @@ export default function NotificationsPage() {
                 ×
               </button>
             </div>
-            
+
             <div className="space-y-4">
               <div>
                 <p className="text-sm text-gray-500">Client</p>
