@@ -186,6 +186,16 @@ export default function AddTransactionForm({
     const purchaseDate =
       new Date().toISOString().split("T")[0]
 
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
+
+    const { data: coach } = await supabase
+      .from("coaches")
+      .select("id")
+      .eq("profile_id", user?.id)
+      .single()
+
     const { data, error } = await supabase
       .from("lesson_packages")
       .insert({
@@ -197,6 +207,7 @@ export default function AddTransactionForm({
         receipt_url: receiptUrl,
         purchase_date: purchaseDate,
         expiration_date: expirationDate,
+        added_by: coach?.id ?? null,
       })
       .select()
       .single()

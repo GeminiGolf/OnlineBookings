@@ -65,14 +65,18 @@ export default function AdminPage() {
           </p>
         </Link>
 
-        <div className="rounded-xl bg-white p-6 shadow">
+        <Link
+          href="/admin/transactions"
+          className="rounded-xl bg-white p-6 shadow transition hover:scale-[1.02]"
+        >
           <h2 className="text-lg font-semibold text-black">
             Transactions
           </h2>
+
           <p className="mt-2 text-3xl font-bold text-black">
-            -
+            →
           </p>
-        </div>
+        </Link>
       </div>
       
     </main>
