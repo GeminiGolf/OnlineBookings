@@ -2,6 +2,9 @@
 
 import { useMemo, useState } from "react"
 import { ChevronDown, ChevronUp } from "lucide-react"
+import { DayPicker } from "react-day-picker"
+import { format } from "date-fns"
+import "react-day-picker/dist/style.css"
 
 export type TransactionRow = {
   id: number
@@ -15,77 +18,131 @@ type TransactionsTableProps = {
   transactions: TransactionRow[]
 }
 
-export default function TransactionsTable({
-  transactions,
-}: TransactionsTableProps) {
+export default function TransactionsTable({ transactions }: TransactionsTableProps) {
   const [search, setSearch] = useState("")
   const [startDate, setStartDate] = useState("")
   const [endDate, setEndDate] = useState("")
+  const [showStartCalendar, setShowStartCalendar] = useState(false)
+  const [showEndCalendar, setShowEndCalendar] = useState(false)
   const [expandedRows, setExpandedRows] = useState<number[]>([])
 
   const filteredTransactions = useMemo(() => {
     return transactions.filter((transaction) => {
       const matchesSearch =
-        transaction.client_name
-          .toLowerCase()
-          .includes(search.toLowerCase()) ||
-        (transaction.transaction_name ?? "")
-          .toLowerCase()
-          .includes(search.toLowerCase())
+        transaction.client_name.toLowerCase().includes(search.toLowerCase()) ||
+        (transaction.transaction_name ?? "").toLowerCase().includes(search.toLowerCase())
 
       const purchaseDate = transaction.purchase_date ?? ""
 
-      const matchesStart =
-        !startDate || purchaseDate >= startDate
+      const matchesStart = !startDate || purchaseDate >= startDate
 
-      const matchesEnd =
-        !endDate || purchaseDate <= endDate
+      const matchesEnd = !endDate || purchaseDate <= endDate
 
       return matchesSearch && matchesStart && matchesEnd
     })
   }, [transactions, search, startDate, endDate])
 
-  const totalAmount = filteredTransactions.reduce(
-    (sum, transaction) => sum + (transaction.price ?? 0),
-    0
-  )
+  const totalAmount = filteredTransactions.reduce((sum, transaction) => sum + (transaction.price ?? 0), 0)
 
   function toggleRow(id: number) {
-    setExpandedRows((prev) =>
-      prev.includes(id)
-        ? prev.filter((rowId) => rowId !== id)
-        : [...prev, id]
-    )
+    setExpandedRows((prev) => (prev.includes(id) ? prev.filter((rowId) => rowId !== id) : [...prev, id]))
   }
 
   return (
-    <div>
-      <h2 className="mb-6 text-3xl font-bold">
-        Transactions
-      </h2>
-
-      <div className="mb-6 flex flex-wrap gap-4">
+    <div className="mx-auto max-w-5xl">
+      <h1 className="mb-6 text-[22px] font-bold">Transactions</h1>
+      <div className="mb-4 flex items-center gap-3">
         <input
           type="text"
           placeholder="Search..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="rounded-lg border px-4 py-3"
+          className="w-[105px] md:w-[110px] rounded-lg border p-2"
         />
 
-        <input
-          type="date"
-          value={startDate}
-          onChange={(e) => setStartDate(e.target.value)}
-          className="rounded-lg border bg-green-100 px-4 py-3"
-        />
+        <div className="relative">
+          <button
+            type="button"
+            onClick={() => {
+              setShowStartCalendar(!showStartCalendar)
+              setShowEndCalendar(false)
+            }}
+            className="rounded-lg border border-black bg-green-100 px-4 py-2 hover:bg-green-200"
+          >
+            {startDate ? format(new Date(startDate), "dd/MM/yy") : "Start Date"}
+          </button>
 
-        <input
-          type="date"
-          value={endDate}
-          onChange={(e) => setEndDate(e.target.value)}
-          className="rounded-lg border bg-red-100 px-4 py-3"
-        />
+          {showStartCalendar && (
+            <div className="absolute z-50 mt-2 rounded-lg border bg-white p-2 shadow-lg">
+              <div className="overflow-hidden">
+                <DayPicker
+                  className="-mb-4 scale-90 origin-top"
+                  mode="single"
+                  selected={startDate ? new Date(startDate) : undefined}
+                  footer={
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setStartDate("")
+                        setShowStartCalendar(false)
+                      }}
+                      className="mt-2 w-full rounded border px-3 py-2 text-sm"
+                    >
+                      Clear Date
+                    </button>
+                  }
+                  onSelect={(date) => {
+                    if (!date) return
+                    setStartDate(date.toISOString().split("T")[0])
+                    setShowStartCalendar(false)
+                  }}
+                />
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="relative">
+          <button
+            type="button"
+            onClick={() => {
+              setShowEndCalendar(!showEndCalendar)
+              setShowStartCalendar(false)
+            }}
+            className="rounded-lg border border-black bg-red-100 px-4 py-2 hover:bg-red-200"
+          >
+            {endDate ? format(new Date(endDate), "dd/MM/yy") : "End Date"}
+          </button>
+
+          {showEndCalendar && (
+            <div className="absolute z-50 mt-2 rounded-lg border bg-white p-2 shadow-lg">
+              <div className="overflow-hidden">
+                <DayPicker
+                  className="-mb-4 scale-90 origin-top"
+                  mode="single"
+                  selected={endDate ? new Date(endDate) : undefined}
+                  footer={
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setEndDate("")
+                        setShowEndCalendar(false)
+                      }}
+                      className="mt-2 w-full rounded border px-3 py-2 text-sm"
+                    >
+                      Clear Date
+                    </button>
+                  }
+                  onSelect={(date) => {
+                    if (!date) return
+                    setEndDate(date.toISOString().split("T")[0])
+                    setShowEndCalendar(false)
+                  }}
+                />
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
       <div className="overflow-hidden rounded-2xl border bg-white">
@@ -102,104 +159,83 @@ export default function TransactionsTable({
 
           <tbody>
             {filteredTransactions.map((transaction) => (
-              <tr
-                key={transaction.id}
-                className="border-b last:border-0"
-              >
+              <tr key={transaction.id} className="border-b last:border-0">
                 <td className="p-4">
-                  {transaction.purchase_date}
+                  {transaction.purchase_date
+                    ? new Date(transaction.purchase_date).toLocaleDateString("en-GB", {
+                        day: "2-digit",
+                        month: "2-digit",
+                        year: "2-digit",
+                      })
+                    : "-"}
                 </td>
 
-                <td className="p-4">
-                  $
-                  {(transaction.price ?? 0).toFixed(2)}
-                </td>
+                <td className="p-4">${(transaction.price ?? 0).toFixed(2)}</td>
 
-                <td className="p-4">
-                  {transaction.transaction_name}
-                </td>
+                <td className="p-4">{transaction.transaction_name}</td>
 
-                <td className="p-4">
-                  {transaction.client_name}
-                </td>
+                <td className="p-4">{transaction.client_name}</td>
               </tr>
             ))}
           </tbody>
 
-          <tfoot>
-            <tr className="border-t font-bold">
-              <td
-                className="p-4 text-right"
-                colSpan={3}
-              >
-                Total
-              </td>
-
-              <td className="p-4">
-                ${totalAmount.toFixed(2)}
-              </td>
+					<tfoot>
+						<tr className="border-t text-sm font-bold">
+							<td className="p-4" />
+							<td className="p-4 font-bold">
+								Total: ${totalAmount.toFixed(2)}
+							</td>
+							<td className="p-4" />
+							<td className="p-4" />
             </tr>
           </tfoot>
         </table>
 
         {/* Mobile */}
         <div className="md:hidden">
+					<div className="grid grid-cols-[120px_1fr_24px] border-b px-4 py-3 text-sm font-semibold">
+						<div>Date</div>
+						<div>Price</div>
+						<div />
+					</div>
           {filteredTransactions.map((transaction) => {
-            const expanded = expandedRows.includes(
-              transaction.id
-            )
+            const expanded = expandedRows.includes(transaction.id)
 
             return (
-              <div
-                key={transaction.id}
-                className="border-b last:border-0"
-              >
-                <button
-                  onClick={() =>
-                    toggleRow(transaction.id)
-                  }
-                  className="flex w-full items-center justify-between p-4 text-left"
-                >
-                  <div>
-                    <div className="font-medium">
-                      {transaction.purchase_date}
-                    </div>
+              <div key={transaction.id} className="border-b last:border-0">
+								<button
+									onClick={() => toggleRow(transaction.id)}
+									className="grid w-full grid-cols-[120px_1fr_24px] items-center gap-3 p-4 text-left"
+								>
+									<span className="font-medium">
+										{transaction.purchase_date
+											? new Date(transaction.purchase_date).toLocaleDateString("en-GB", {
+													day: "2-digit",
+													month: "2-digit",
+													year: "2-digit",
+												})
+											: "-"}
+									</span>
 
-                    <div className="text-sm text-gray-600">
-                      $
-                      {(transaction.price ?? 0).toFixed(
-                        2
-                      )}
-                    </div>
-                  </div>
+									<span className="text-sm text-gray-600">
+										${(transaction.price ?? 0).toFixed(2)}
+									</span>
 
-                  {expanded ? (
-                    <ChevronUp size={20} />
-                  ) : (
-                    <ChevronDown size={20} />
-                  )}
-                </button>
+									<span>{expanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}</span>
+								</button>
 
                 {expanded && (
                   <div className="space-y-3 border-t bg-gray-50 p-4">
                     <div>
-                      <div className="text-xs font-semibold uppercase text-gray-500">
-                        Client
-                      </div>
+                      <div className="text-xs font-semibold uppercase text-gray-500">Client</div>
 
-                      <div>
-                        {transaction.client_name}
-                      </div>
+                      <div>{transaction.client_name}</div>
                     </div>
 
                     <div>
-                      <div className="text-xs font-semibold uppercase text-gray-500">
-                        Purchase
-                      </div>
+                      <div className="text-xs font-semibold uppercase text-gray-500">Purchase</div>
 
-                      <div>
-                        {transaction.transaction_name}
-                      </div>
+                      <div>{transaction.transaction_name}</div>
                     </div>
                   </div>
                 )}
@@ -207,9 +243,11 @@ export default function TransactionsTable({
             )
           })}
 
-          <div className="border-t bg-gray-100 p-4 text-right font-bold">
-            Total: ${totalAmount.toFixed(2)}
-          </div>
+					<div className="grid grid-cols-[120px_1fr_24px] border-t bg-gray-100 p-4 text-[13px] font-bold">
+						<div />
+						<div>Total: ${totalAmount.toFixed(2)}</div>
+						<div />
+					</div>
         </div>
       </div>
     </div>
