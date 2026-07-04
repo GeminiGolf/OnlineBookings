@@ -15,6 +15,7 @@ type Booking = {
   payment_method: string | null
   payment_date: string | null
   completion_date: string | null
+  is_new: boolean
 
   clients: {
     id: number
@@ -539,6 +540,8 @@ export default function CoachDashboardClient({
                 bgClass = "bg-sky-200"
               } else if (booking.status === "no_show") {
                 bgClass = "bg-red-200"
+              } else if (booking.is_new) {
+                bgClass = "bg-purple-200"
               } else {
                 bgClass = booking.clients?.lessons_remaining === 0 ? "bg-yellow-200" : "bg-green-200"
               }
@@ -663,7 +666,33 @@ export default function CoachDashboardClient({
 
             <div className="space-y-4">
               <div>
-                <p className="text-sm text-gray-500">Client</p>
+                <div className="flex items-center gap-4">
+                  <p className="text-sm text-gray-500">Client</p>
+
+                  <label className="flex items-center gap-2 text-sm cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={selectedBooking.is_new}
+                      onChange={async (e) => {
+                        const checked = e.target.checked
+
+                        await supabase
+                          .from("bookings")
+                          .update({ is_new: checked })
+                          .eq("id", selectedBooking.id)
+
+                        setSelectedBooking({
+                          ...selectedBooking,
+                          is_new: checked,
+                        })
+
+                        router.refresh()
+                      }}
+                    />
+                    New
+                  </label>
+                </div>
+
                 <Link
                   href={`/coach/clients/${selectedBooking.clients?.id}`}
                   className="text-xl font-semibold underline text-blue-600 hover:text-blue-800"
