@@ -107,6 +107,19 @@ export default function CoachDashboardPage() {
           </Link>
 
           <Link
+            href="/coach/transactions"
+            className="rounded-3xl bg-white p-5 sm:p-8 shadow-lg transition hover:scale-[1.02]"
+          >
+            <h2 className="text-[20px] font-bold text-black sm:text-[20px]">
+              Transactions
+            </h2>
+
+            <p className="mt-2 text-base text-gray-600 sm:mt-3 sm:text-base">
+              View transactions
+            </p>
+          </Link>
+
+          <Link
             href="/notifications"
             className="rounded-3xl bg-white p-5 sm:p-8 shadow-lg transition hover:scale-[1.02]"
           >
