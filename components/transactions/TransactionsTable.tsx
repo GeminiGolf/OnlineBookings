@@ -25,24 +25,30 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
   const [showStartCalendar, setShowStartCalendar] = useState(false)
   const [showEndCalendar, setShowEndCalendar] = useState(false)
   const [expandedRows, setExpandedRows] = useState<number[]>([])
-
+  const [page, setPage] = useState(1)
+  const transactionsPerPage = 5
   const filteredTransactions = useMemo(() => {
     return transactions.filter((transaction) => {
       const matchesSearch =
         transaction.client_name.toLowerCase().includes(search.toLowerCase()) ||
         (transaction.transaction_name ?? "").toLowerCase().includes(search.toLowerCase())
-
       const purchaseDate = transaction.purchase_date ?? ""
-
       const matchesStart = !startDate || purchaseDate >= startDate
-
       const matchesEnd = !endDate || purchaseDate <= endDate
-
       return matchesSearch && matchesStart && matchesEnd
     })
   }, [transactions, search, startDate, endDate])
 
-  const totalAmount = filteredTransactions.reduce((sum, transaction) => sum + (transaction.price ?? 0), 0)
+  const totalPages = Math.max(1, Math.ceil(filteredTransactions.length / transactionsPerPage))
+
+  const paginatedTransactions = filteredTransactions.slice((page - 1) * transactionsPerPage, page * transactionsPerPage)
+
+  const hasDateFilter = startDate !== "" || endDate !== ""
+
+  const totalAmount = (hasDateFilter ? filteredTransactions : paginatedTransactions).reduce(
+    (sum, transaction) => sum + (transaction.price ?? 0),
+    0
+  )
 
   function toggleRow(id: number) {
     setExpandedRows((prev) => (prev.includes(id) ? prev.filter((rowId) => rowId !== id) : [...prev, id]))
@@ -56,7 +62,10 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
           type="text"
           placeholder="Search..."
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={(e) => {
+            setSearch(e.target.value)
+            setPage(1)
+          }}
           className="w-[105px] md:w-[110px] rounded-lg border p-2"
         />
 
@@ -84,6 +93,7 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
                       type="button"
                       onClick={() => {
                         setStartDate("")
+                        setPage(1)
                         setShowStartCalendar(false)
                       }}
                       className="mt-2 w-full rounded border px-3 py-2 text-sm"
@@ -94,6 +104,7 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
                   onSelect={(date) => {
                     if (!date) return
                     setStartDate(date.toISOString().split("T")[0])
+                    setPage(1)
                     setShowStartCalendar(false)
                   }}
                 />
@@ -126,6 +137,7 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
                       type="button"
                       onClick={() => {
                         setEndDate("")
+                        setPage(1)
                         setShowEndCalendar(false)
                       }}
                       className="mt-2 w-full rounded border px-3 py-2 text-sm"
@@ -136,6 +148,7 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
                   onSelect={(date) => {
                     if (!date) return
                     setEndDate(date.toISOString().split("T")[0])
+                    setPage(1)
                     setShowEndCalendar(false)
                   }}
                 />
@@ -158,7 +171,7 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
           </thead>
 
           <tbody>
-            {filteredTransactions.map((transaction) => (
+            {paginatedTransactions.map((transaction) => (
               <tr key={transaction.id} className="border-b last:border-0">
                 <td className="p-4">
                   {transaction.purchase_date
@@ -179,50 +192,46 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
             ))}
           </tbody>
 
-					<tfoot>
-						<tr className="border-t text-sm font-bold">
-							<td className="p-4" />
-							<td className="p-4 font-bold">
-								Total: ${totalAmount.toFixed(2)}
-							</td>
-							<td className="p-4" />
-							<td className="p-4" />
+          <tfoot>
+            <tr className="border-t text-sm font-bold">
+              <td className="p-4" />
+              <td className="p-4 font-bold">Total: ${totalAmount.toFixed(2)}</td>
+              <td className="p-4" />
+              <td className="p-4" />
             </tr>
           </tfoot>
         </table>
 
         {/* Mobile */}
         <div className="md:hidden">
-					<div className="grid grid-cols-[120px_1fr_24px] border-b px-4 py-3 text-sm font-semibold">
-						<div>Date</div>
-						<div>Price</div>
-						<div />
-					</div>
-          {filteredTransactions.map((transaction) => {
+          <div className="grid grid-cols-[120px_1fr_24px] border-b px-4 py-3 text-sm font-semibold">
+            <div>Date</div>
+            <div>Price</div>
+            <div />
+          </div>
+          {paginatedTransactions.map((transaction) => {
             const expanded = expandedRows.includes(transaction.id)
 
             return (
               <div key={transaction.id} className="border-b last:border-0">
-								<button
-									onClick={() => toggleRow(transaction.id)}
-									className="grid w-full grid-cols-[120px_1fr_24px] items-center gap-3 p-4 text-left"
-								>
-									<span className="font-medium">
-										{transaction.purchase_date
-											? new Date(transaction.purchase_date).toLocaleDateString("en-GB", {
-													day: "2-digit",
-													month: "2-digit",
-													year: "2-digit",
-												})
-											: "-"}
-									</span>
+                <button
+                  onClick={() => toggleRow(transaction.id)}
+                  className="grid w-full grid-cols-[120px_1fr_24px] items-center gap-3 p-4 text-left"
+                >
+                  <span className="font-medium">
+                    {transaction.purchase_date
+                      ? new Date(transaction.purchase_date).toLocaleDateString("en-GB", {
+                          day: "2-digit",
+                          month: "2-digit",
+                          year: "2-digit",
+                        })
+                      : "-"}
+                  </span>
 
-									<span className="text-sm text-gray-600">
-										${(transaction.price ?? 0).toFixed(2)}
-									</span>
+                  <span className="text-sm text-gray-600">${(transaction.price ?? 0).toFixed(2)}</span>
 
-									<span>{expanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}</span>
-								</button>
+                  <span>{expanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}</span>
+                </button>
 
                 {expanded && (
                   <div className="space-y-3 border-t bg-gray-50 p-4">
@@ -243,12 +252,34 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
             )
           })}
 
-					<div className="grid grid-cols-[120px_1fr_24px] border-t bg-gray-100 p-4 text-[13px] font-bold">
-						<div />
-						<div>Total: ${totalAmount.toFixed(2)}</div>
-						<div />
-					</div>
+          <div className="grid grid-cols-[120px_1fr_24px] border-t bg-gray-100 p-4 text-[13px] font-bold">
+            <div />
+            <div>Total: ${totalAmount.toFixed(2)}</div>
+            <div />
+          </div>
         </div>
+      </div>
+
+      <div className="mt-4 flex items-center justify-center gap-3">
+        <button
+          onClick={() => setPage((p) => Math.max(1, p - 1))}
+          disabled={page === 1}
+          className="rounded border px-3 py-1 disabled:opacity-50"
+        >
+          Previous
+        </button>
+
+        <span>
+          Page {page} of {totalPages}
+        </span>
+
+        <button
+          onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+          disabled={page === totalPages}
+          className="rounded border px-3 py-1 disabled:opacity-50"
+        >
+          Next
+        </button>
       </div>
     </div>
   )
