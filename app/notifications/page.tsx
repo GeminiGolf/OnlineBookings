@@ -589,8 +589,31 @@ export default function NotificationsPage() {
                           )}
 
                           <div>
-                            <p className="font-semibold">Notes</p>
-                            <p className="whitespace-pre-wrap">{notification.notes || "-"}</p>
+                            {notification.type === "missing_receipt" ? (
+                              <details className="group mt-1">
+                                <div className="mt-2 space-y-1 text-sm">
+                                  <div>
+                                    <strong>Client:</strong>{" "}
+                                    <Link
+                                      href={`/coach/clients/${notification.client_id}`}
+                                      className="text-blue-600 underline"
+                                    >
+                                      {notification.client_name}
+                                    </Link>
+                                  </div>
+
+                                  <div>
+                                    <strong>Purchase:</strong> {notification.notes}
+                                  </div>
+
+                                  <div>
+                                    <strong>Date:</strong> {notification.original_datetime}
+                                  </div>
+                                </div>
+                              </details>
+                            ) : (
+                              <p className="whitespace-pre-wrap">{notification.notes || "-"}</p>
+                            )}
                           </div>
 
                           <div>

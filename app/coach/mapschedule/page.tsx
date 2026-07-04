@@ -290,6 +290,14 @@ function DayAvailabilityRow({ dayLabel, dayValue, coachId, existing, weeklyBreak
           )}
 
           <button
+            onClick={() => onSave(start, end)}
+            disabled={!start || !end}
+            className="shrink-0 rounded-lg bg-green-600 px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
+          >
+            Save
+          </button>
+
+          <button
             onClick={() => setShowBreaks(!showBreaks)}
             className="shrink-0 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white"
           >
@@ -313,7 +321,7 @@ function DayAvailabilityRow({ dayLabel, dayValue, coachId, existing, weeklyBreak
 
         {expanded && (
           <div className="mt-4 space-y-4">
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-3 gap-3">
               <div>
                 <label className="mb-1 block text-sm font-semibold">
                   Start Time
@@ -342,7 +350,7 @@ function DayAvailabilityRow({ dayLabel, dayValue, coachId, existing, weeklyBreak
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-3 gap-3">
               {!start || !end ? (
                 <button
                   onClick={() => {
@@ -370,14 +378,22 @@ function DayAvailabilityRow({ dayLabel, dayValue, coachId, existing, weeklyBreak
                     setEnd("")
                     onSave("", "")
                   }}
-                  className="rounded-lg bg-red-600 px-5 py-2 font-semibold text-white"
+                  className="rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white"
                 >
                   Close
                 </button>
               )}
               <button
+                onClick={() => onSave(start, end)}
+                disabled={!start || !end}
+                className="rounded-lg bg-green-600 px-3 py-2 text-sm font-semibold text-white disabled:opacity-50"
+              >
+                Save
+              </button>
+
+              <button
                 onClick={() => setShowBreaks(!showBreaks)}
-                className="rounded-lg bg-blue-600 px-5 py-2 font-semibold text-white"
+                className="rounded-lg bg-blue-600 px-3 py-2 text-sm font-semibold text-white"
               >
                 Breaks ({selectedBreaks.length})
               </button>
