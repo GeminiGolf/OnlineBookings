@@ -31,7 +31,6 @@ export default function CoachProfilePage() {
     const {
       data: { session },
     } = await supabase.auth.getSession()
-
     if (!session) {
       setLoading(false)
       return
@@ -42,7 +41,6 @@ export default function CoachProfilePage() {
       .select("*")
       .eq("profile_id", session.user.id)
       .single()
-
     if (!coachData) {
       setLoading(false)
       return
@@ -54,7 +52,6 @@ export default function CoachProfilePage() {
       .from("clients")
       .select("id")
       .eq("primary_coach_id", coachData.id)
-
     setTotalClients(clients?.length || 0)
 
     const { data: completedBookings } = await supabase
@@ -68,9 +65,7 @@ export default function CoachProfilePage() {
         (booking) => booking.client_id
       )
     )
-
     setTotalActiveClients(activeClients.size)
-
     setLoading(false)
   }
 
@@ -85,14 +80,14 @@ export default function CoachProfilePage() {
   return (
     <main className="min-h-screen bg-gray-100 text-black">
       <div className="mx-auto max-w-5xl p-4 lg:p-8">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold">
+        <div className="mb-4">
+          <h1 className="text-[24px] lg:text-[24px] font-bold">
             My Profile
           </h1>
 
           <Link
             href="/coach/changepassword"
-            className="mt-3 inline-block font-semibold text-black underline decoration-blue-600 decoration-2 underline-offset-2"
+            className="mt-0 inline-block text-black underline decoration-blue-600 decoration-2 underline-offset-2"
           >
             Change Password
           </Link>
@@ -100,7 +95,7 @@ export default function CoachProfilePage() {
 
         <div className="grid gap-8 lg:grid-cols-2">
           <div className="rounded-2xl bg-white p-6 shadow">
-            <h2 className="mb-4 text-2xl font-bold">
+            <h2 className="mb-4 text-[20px] lg:text-[20px] font-bold">
               Client Summary
             </h2>
 
@@ -110,7 +105,7 @@ export default function CoachProfilePage() {
                   Total Clients
                 </p>
 
-                <p className="text-3xl font-bold">
+                <p className="text-xl font-bold">
                   {totalClients}
                 </p>
               </div>
@@ -120,7 +115,7 @@ export default function CoachProfilePage() {
                   Active Clients
                 </p>
 
-                <p className="text-3xl font-bold">
+                <p className="text-xl font-bold">
                   {totalActiveClients}
                 </p>
               </div>
@@ -128,12 +123,12 @@ export default function CoachProfilePage() {
           </div>
 
           <div className="rounded-2xl bg-white p-6 shadow">
-            <h2 className="mb-4 text-2xl font-bold">
+            <h2 className="mb-4 text-[20px] lg:text-[20px] font-bold">
               Lesson Defaults
             </h2>
 
             <div className="overflow-x-auto">
-              <table className="w-full border-collapse overflow-hidden rounded-xl border">
+              <table className="w-full border-separate border-spacing-0 overflow-hidden rounded-xl border border-black">
                 <thead>
                   <tr className="border-b bg-gray-50">
                     <th className="p-3 text-left">
@@ -199,7 +194,7 @@ export default function CoachProfilePage() {
         </div>
 
         <div className="mt-8 rounded-2xl bg-white p-6 shadow">
-          <h2 className="mb-4 text-2xl font-bold">
+          <h2 className="mb-4 text-[20px] lg:text-[20px] font-bold">
             Specializations
           </h2>
 
