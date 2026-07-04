@@ -26,26 +26,13 @@ export default function SignupPage() {
       return
     }
 
-    const invalidNames = [
-      "~",
-      "-",
-      ".",
-      "n/a",
-      "na",
-      "test",
-    ]
+    const invalidNames = ["~", "-", ".", "n/a", "na", "test"]
 
     if (
-      invalidNames.includes(
-        givenName.trim().toLowerCase()
-      ) ||
-      invalidNames.includes(
-        familyName.trim().toLowerCase()
-      )
+      invalidNames.includes(givenName.trim().toLowerCase()) ||
+      invalidNames.includes(familyName.trim().toLowerCase())
     ) {
-      alert(
-        "Please enter a valid given name and family name"
-      )
+      alert("Please enter a valid given name and family name")
       return
     }
 
@@ -63,17 +50,8 @@ export default function SignupPage() {
     })
 
     if (error) {
-      if (
-        error.message
-          .toLowerCase()
-          .includes("already") ||
-        error.message
-          .toLowerCase()
-          .includes("registered")
-      ) {
-        alert(
-          "Existing account found with this email. Please log in instead."
-        )
+      if (error.message.toLowerCase().includes("already") || error.message.toLowerCase().includes("registered")) {
+        alert("Existing account found with this email. Please log in instead.")
 
         router.push("/login")
 
@@ -96,37 +74,26 @@ export default function SignupPage() {
       .from("clients")
       .update({
         name: `${givenName.trim()} ${familyName.trim()}`,
-        preferred_name:
-          preferredName.trim() || null,
+        preferred_name: preferredName.trim() || null,
       })
       .eq("profile_id", user.id)
 
-    alert(
-      "Account created successfully! Please check your email to verify your account, then log in."
-    )
+    alert("Account created successfully! Please check your email to verify your account, then log in.")
   }
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-gray-100 p-10">
       <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-lg">
-        <h1 className="mb-2 text-4xl font-bold text-black">
-          Client Signup
-        </h1>
+        <h1 className="mb-2 text-4xl font-bold text-black">Client Signup</h1>
 
-        <p className="mb-6 text-gray-600">
-          Create your account to book lessons.
-        </p>
+        <p className="mb-6 text-gray-600">Create your account to book lessons.</p>
 
         <div className="space-y-4">
           <input
             type="text"
             placeholder="Preferred Name (Optional)"
             value={preferredName}
-            onChange={(e) =>
-              setPreferredName(
-                e.target.value
-              )
-            }
+            onChange={(e) => setPreferredName(e.target.value)}
             className="w-full rounded-xl border p-4 text-lg text-black"
           />
 
@@ -134,11 +101,7 @@ export default function SignupPage() {
             type="text"
             placeholder="Given Name *"
             value={givenName}
-            onChange={(e) =>
-              setGivenName(
-                e.target.value
-              )
-            }
+            onChange={(e) => setGivenName(e.target.value)}
             className="w-full rounded-xl border p-4 text-lg text-black"
           />
 
@@ -146,11 +109,7 @@ export default function SignupPage() {
             type="text"
             placeholder="Family Name *"
             value={familyName}
-            onChange={(e) =>
-              setFamilyName(
-                e.target.value
-              )
-            }
+            onChange={(e) => setFamilyName(e.target.value)}
             className="w-full rounded-xl border p-4 text-lg text-black"
           />
 
@@ -158,54 +117,28 @@ export default function SignupPage() {
             type="email"
             placeholder="Email"
             value={email}
-            onChange={(e) =>
-              setEmail(e.target.value)
-            }
+            onChange={(e) => setEmail(e.target.value)}
             className="w-full rounded-xl border p-4 text-lg text-black"
           />
 
           <input
-            type={
-              showPassword
-                ? "text"
-                : "password"
-            }
+            type={showPassword ? "text" : "password"}
             placeholder="Password"
             value={password}
-            onChange={(e) =>
-              setPassword(
-                e.target.value
-              )
-            }
+            onChange={(e) => setPassword(e.target.value)}
             className="w-full rounded-xl border p-4 text-lg text-black"
           />
 
           <input
-            type={
-              showPassword
-                ? "text"
-                : "password"
-            }
+            type={showPassword ? "text" : "password"}
             placeholder="Confirm Password"
             value={confirmPassword}
-            onChange={(e) =>
-              setConfirmPassword(
-                e.target.value
-              )
-            }
+            onChange={(e) => setConfirmPassword(e.target.value)}
             className="w-full rounded-xl border p-4 text-lg text-black"
           />
 
           <label className="flex items-center gap-2 text-black">
-            <input
-              type="checkbox"
-              checked={showPassword}
-              onChange={(e) =>
-                setShowPassword(
-                  e.target.checked
-                )
-              }
-            />
+            <input type="checkbox" checked={showPassword} onChange={(e) => setShowPassword(e.target.checked)} />
             Show Password
           </label>
 
@@ -218,10 +151,7 @@ export default function SignupPage() {
 
           <p className="text-center text-gray-500">
             Already a client?{" "}
-            <a
-              href="/login"
-              className="font-semibold text-blue-500 hover:text-blue-400"
-            >
+            <a href="/login" className="font-semibold text-blue-500 hover:text-blue-400">
               Login here
             </a>
           </p>

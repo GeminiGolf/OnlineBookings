@@ -63,9 +63,7 @@ export default function CoachPreviousLessonsTable({ lessons }: Props) {
   const paginatedLessons = filteredLessons.slice((page - 1) * lessonsPerPage, page * lessonsPerPage)
   return (
     <div className="mx-auto max-w-5xl">
-      <h1 className="mb-6 text-[22px] font-bold">
-        Previous Lessons
-      </h1>
+      <h1 className="mb-6 text-[22px] font-bold">Previous Lessons</h1>
       <div className="mb-4 flex items-center gap-3">
         <input
           type="text"
@@ -80,100 +78,96 @@ export default function CoachPreviousLessonsTable({ lessons }: Props) {
 
         <div className="flex gap-3">
           <div className="relative">
-          <button
-            type="button"
-            onClick={() => {
-              setShowStartCalendar(!showStartCalendar)
-              setShowEndCalendar(false)
-            }}
-            className="rounded-lg border border-black bg-green-100 px-4 py-2 text-black hover:bg-green-200"
-          >
-            {fromDate
-              ? format(new Date(fromDate), "dd MMM yyyy")
-              : "Start Date"}
-          </button>
+            <button
+              type="button"
+              onClick={() => {
+                setShowStartCalendar(!showStartCalendar)
+                setShowEndCalendar(false)
+              }}
+              className="rounded-lg border border-black bg-green-100 px-4 py-2 text-black hover:bg-green-200"
+            >
+              {fromDate ? format(new Date(fromDate), "dd MMM yyyy") : "Start Date"}
+            </button>
 
-          {showStartCalendar && (
-            <div className="absolute z-50 mt-2 rounded-lg border bg-white p-2 shadow-lg">
-              <div className="overflow-hidden">
-                <DayPicker
-                  className="-mb-4 scale-90 origin-top"
-                  mode="single"
-                  selected={fromDate ? new Date(fromDate) : undefined}
-                  footer={
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setFromDate("")
-                        setPage(1)
-                        setShowStartCalendar(false)
-                      }}
-                      className="mt-2 w-full rounded border px-3 py-2 text-sm"
-                    >
-                      Clear Date
-                    </button>
-                  }
-                  onSelect={(date) => {
-                    if (!date) return
+            {showStartCalendar && (
+              <div className="absolute z-50 mt-2 rounded-lg border bg-white p-2 shadow-lg">
+                <div className="overflow-hidden">
+                  <DayPicker
+                    className="-mb-4 scale-90 origin-top"
+                    mode="single"
+                    selected={fromDate ? new Date(fromDate) : undefined}
+                    footer={
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setFromDate("")
+                          setPage(1)
+                          setShowStartCalendar(false)
+                        }}
+                        className="mt-2 w-full rounded border px-3 py-2 text-sm"
+                      >
+                        Clear Date
+                      </button>
+                    }
+                    onSelect={(date) => {
+                      if (!date) return
 
-                    setFromDate(date.toISOString().split("T")[0])
-                    setPage(1)
-                    setShowStartCalendar(false)
-                  }}
-                />
+                      setFromDate(date.toISOString().split("T")[0])
+                      setPage(1)
+                      setShowStartCalendar(false)
+                    }}
+                  />
+                </div>
               </div>
-            </div>
-          )}
-        </div>
+            )}
+          </div>
 
-        <div className="relative">
-          <button
-            type="button"
-            onClick={() => {
-              setShowEndCalendar(!showEndCalendar)
-              setShowStartCalendar(false)
-            }}
-            className="rounded-lg border border-black bg-red-100 px-4 py-2 text-black hover:bg-red-200"
-          >
-            {toDate
-              ? format(new Date(toDate), "dd MMM yyyy")
-              : "End Date"}
-          </button>
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => {
+                setShowEndCalendar(!showEndCalendar)
+                setShowStartCalendar(false)
+              }}
+              className="rounded-lg border border-black bg-red-100 px-4 py-2 text-black hover:bg-red-200"
+            >
+              {toDate ? format(new Date(toDate), "dd MMM yyyy") : "End Date"}
+            </button>
 
-          {showEndCalendar && (
-          <div className="absolute z-50 mt-2 rounded-lg border bg-white p-2 shadow-lg">
-            <div className="overflow-hidden">
-              <DayPicker
-                className="-mb-4 scale-90 origin-top"
-                mode="single"
-                selected={toDate ? new Date(toDate) : undefined}
-                footer={
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setToDate("")
+            {showEndCalendar && (
+              <div className="absolute z-50 mt-2 rounded-lg border bg-white p-2 shadow-lg">
+                <div className="overflow-hidden">
+                  <DayPicker
+                    className="-mb-4 scale-90 origin-top"
+                    mode="single"
+                    selected={toDate ? new Date(toDate) : undefined}
+                    footer={
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setToDate("")
+                          setPage(1)
+                          setShowEndCalendar(false)
+                        }}
+                        className="mt-2 w-full rounded border px-3 py-2 text-sm"
+                      >
+                        Clear Date
+                      </button>
+                    }
+                    onSelect={(date) => {
+                      if (!date) return
+
+                      setToDate(date.toISOString().split("T")[0])
                       setPage(1)
                       setShowEndCalendar(false)
                     }}
-                    className="mt-2 w-full rounded border px-3 py-2 text-sm"
-                  >
-                    Clear Date
-                  </button>
-                }
-                onSelect={(date) => {
-                  if (!date) return
-
-                  setToDate(date.toISOString().split("T")[0])
-                  setPage(1)
-                  setShowEndCalendar(false)
-                }}
-              />
-            </div>
+                  />
+                </div>
+              </div>
+            )}
           </div>
-          )}
         </div>
-    </div>
-</div>
+      </div>
 
       <div className="hidden md:block overflow-hidden rounded-xl border">
         <table className="w-full">
@@ -236,9 +230,7 @@ export default function CoachPreviousLessonsTable({ lessons }: Props) {
                     year: "2-digit",
                   })}
                 </span>
-                <span className="text-left">
-                  {lesson.clients?.name}
-                </span>
+                <span className="text-left">{lesson.clients?.name}</span>
                 <span>{expandedId === lesson.id ? "▲" : "▼"}</span>
               </button>
 
@@ -247,9 +239,22 @@ export default function CoachPreviousLessonsTable({ lessons }: Props) {
                   <p>
                     <strong>Time:</strong> {lesson.lesson_time}
                   </p>
-                  <p className="mt-2">
-                    <strong>Notes:</strong> {lesson.lesson_notes || "No notes"}
-                  </p>
+
+                  <div className="mt-2 flex items-center justify-between">
+                    <strong>Notes</strong>
+
+                    <button
+                      onClick={() => {
+                        setSelectedLesson(lesson)
+                        setNoteText(lesson.lesson_notes || "")
+                      }}
+                      className="rounded px-2 py-1 text-base hover:bg-gray-100"
+                    >
+                      ✏️
+                    </button>
+                  </div>
+
+                  <p className="mt-2">{lesson.lesson_notes || "No notes"}</p>
                 </div>
               )}
             </div>
@@ -289,17 +294,11 @@ export default function CoachPreviousLessonsTable({ lessons }: Props) {
               placeholder="Lesson notes..."
             />
             <div className="mt-4 flex justify-end gap-2">
-              <button
-                onClick={() => setSelectedLesson(null)}
-                className="rounded border px-4 py-2"
-              >
+              <button onClick={() => setSelectedLesson(null)} className="rounded border px-4 py-2">
                 Close
               </button>
 
-              <button
-                onClick={() => saveNote(selectedLesson.id)}
-                className="rounded bg-green-600 px-4 py-2 text-white"
-              >
+              <button onClick={() => saveNote(selectedLesson.id)} className="rounded bg-green-600 px-4 py-2 text-white">
                 Save
               </button>
             </div>

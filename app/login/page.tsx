@@ -12,10 +12,7 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
 
   async function handleLogin() {
-    const {
-      data,
-      error,
-    } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     })
@@ -32,10 +29,7 @@ export default function LoginPage() {
       return
     }
 
-    const {
-      data: profile,
-      error: profileError,
-    } = await supabase
+    const { data: profile, error: profileError } = await supabase
       .from("profiles")
       .select("*")
       .eq("id", user.id)
@@ -67,12 +61,9 @@ export default function LoginPage() {
       return
     }
 
-    const { error } = await supabase.auth.resetPasswordForEmail(
-      emailAddress,
-      {
-        redirectTo: `${window.location.origin}/reset-password`,
-      }
-    )
+    const { error } = await supabase.auth.resetPasswordForEmail(emailAddress, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    })
 
     if (error) {
       alert(error.message)
@@ -85,22 +76,16 @@ export default function LoginPage() {
   return (
     <main className="flex min-h-screen items-center justify-center bg-gray-100 p-10">
       <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-lg">
-        <h1 className="mb-2 text-4xl font-bold text-black">
-          Login
-        </h1>
+        <h1 className="mb-2 text-4xl font-bold text-black">Login</h1>
 
-        <p className="mb-6 text-gray-600">
-          Sign into your account.
-        </p>
+        <p className="mb-6 text-gray-600">Sign into your account.</p>
 
         <div className="space-y-4">
           <input
             type="email"
             placeholder="Email"
             value={email}
-            onChange={(e) =>
-              setEmail(e.target.value)
-            }
+            onChange={(e) => setEmail(e.target.value)}
             className="w-full rounded-xl border p-4 text-lg text-black"
           />
 
@@ -108,20 +93,12 @@ export default function LoginPage() {
             type={showPassword ? "text" : "password"}
             placeholder="Password"
             value={password}
-            onChange={(e) =>
-              setPassword(e.target.value)
-            }
+            onChange={(e) => setPassword(e.target.value)}
             className="w-full rounded-xl border p-4 text-lg text-black"
           />
 
           <label className="flex items-center gap-2 text-black">
-            <input
-              type="checkbox"
-              checked={showPassword}
-              onChange={(e) =>
-                setShowPassword(e.target.checked)
-              }
-            />
+            <input type="checkbox" checked={showPassword} onChange={(e) => setShowPassword(e.target.checked)} />
             Show Password
           </label>
 
@@ -133,21 +110,13 @@ export default function LoginPage() {
           </button>
 
           <div className="space-y-2 text-center">
-            <button
-              type="button"
-              onClick={handleForgotPassword}
-              className="text-sm text-blue-600 hover:underline"
-            >
+            <button type="button" onClick={handleForgotPassword} className="text-sm text-blue-600 hover:underline">
               Forgot Password?
             </button>
 
             <p className="text-gray-500">
               Not a client yet?{" "}
-
-              <a
-                href="/signup"
-                className="font-semibold text-blue-500 hover:text-blue-400"
-              >
+              <a href="/signup" className="font-semibold text-blue-500 hover:text-blue-400">
                 Sign up here
               </a>
             </p>
