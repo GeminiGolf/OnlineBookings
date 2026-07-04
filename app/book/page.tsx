@@ -18,6 +18,7 @@ export default function BookPage() {
   const [loading, setLoading] = useState(false)
   const [selectedCoachData, setSelectedCoachData] = useState<any>(null)
   const bookingSummaryRef = useRef<HTMLDivElement>(null)
+  const coachSectionRef = useRef<HTMLDivElement>(null)
   
 
   useEffect(() => {
@@ -267,16 +268,32 @@ export default function BookPage() {
 
         <div className="rounded-2xl bg-white p-4 lg:p-8 shadow-lg">
           <div className="grid gap-6 lg:gap-10 md:grid-cols-2">
-            <div>
+            <div ref={coachSectionRef}>
               <label className="mb-2 block text-lg font-semibold">Select Coach</label>
               <select
                 value={selectedCoach ?? ""}
                 onChange={async (e) => {
                   const coachId = Number(e.target.value)
+
                   setSelectedCoach(coachId)
                   setSelectedTime("")
-                  const { data } = await supabase.from("coaches").select("*").eq("id", coachId).single()
+
+                  const { data } = await supabase
+                    .from("coaches")
+                    .select("*")
+                    .eq("id", coachId)
+                    .single()
+
                   setSelectedCoachData(data)
+
+                  if (window.innerWidth < 1024) {
+                    requestAnimationFrame(() => {
+                      coachSectionRef.current?.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                      })
+                    })
+                  }
                 }}
                 className="w-full rounded-xl border p-4"
               >
