@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react"
 import { DayPicker } from "react-day-picker"
 import { format } from "date-fns"
+import { supabase } from "@/lib/supabase"
 import "react-day-picker/dist/style.css"
 
 type Lesson = {
@@ -31,6 +32,7 @@ export default function CoachPreviousLessonsTable({ lessons }: Props) {
   const [expandedId, setExpandedId] = useState<number | null>(null)
   const lessonsPerPage = 10
   const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null)
+  const [noteText, setNoteText] = useState("")
   const filteredLessons = useMemo(() => {
     return lessons.filter((lesson) => {
       const clientName = lesson.clients?.name?.toLowerCase() || ""
@@ -43,6 +45,19 @@ export default function CoachPreviousLessonsTable({ lessons }: Props) {
       return matchesSearch && matchesFrom && matchesTo
     })
   }, [lessons, search, fromDate, toDate])
+
+  async function saveNote(lessonId: number) {
+    const { error } = await supabase
+      .from("bookings")
+      .update({
+        lesson_notes: noteText,
+      })
+      .eq("id", lessonId)
+
+    if (!error) {
+      setSelectedLesson(null)
+    }
+  }
 
   const totalPages = Math.max(1, Math.ceil(filteredLessons.length / lessonsPerPage))
   const paginatedLessons = filteredLessons.slice((page - 1) * lessonsPerPage, page * lessonsPerPage)
@@ -182,18 +197,17 @@ export default function CoachPreviousLessonsTable({ lessons }: Props) {
                 </td>
                 <td className="p-3">{lesson.clients?.name || "-"}</td>
                 <td className="p-3">
-                  {lesson.lesson_notes ? (
+                  <td className="p-3">
                     <button
                       onClick={() => {
                         setSelectedLesson(lesson)
+                        setNoteText(lesson.lesson_notes || "")
                       }}
                       className="rounded px-2 py-1 text-base hover:bg-gray-100"
                     >
                       ✏️
                     </button>
-                  ) : (
-                    "-"
-                  )}
+                  </td>
                 </td>
               </tr>
             ))}
@@ -268,14 +282,25 @@ export default function CoachPreviousLessonsTable({ lessons }: Props) {
           <div className="w-full max-w-4xl rounded-2xl bg-white p-6 shadow-xl">
             <h3 className="mb-4 text-2xl font-bold">Lesson Notes</h3>
             <textarea
-              value={selectedLesson.lesson_notes || ""}
-              readOnly
+              value={noteText}
+              onChange={(e) => setNoteText(e.target.value)}
               rows={10}
               className="w-full rounded-lg border p-3"
+              placeholder="Lesson notes..."
             />
-            <div className="mt-4 flex justify-end">
-              <button onClick={() => setSelectedLesson(null)} className="rounded border px-4 py-2">
+            <div className="mt-4 flex justify-end gap-2">
+              <button
+                onClick={() => setSelectedLesson(null)}
+                className="rounded border px-4 py-2"
+              >
                 Close
+              </button>
+
+              <button
+                onClick={() => saveNote(selectedLesson.id)}
+                className="rounded bg-green-600 px-4 py-2 text-white"
+              >
+                Save
               </button>
             </div>
           </div>
