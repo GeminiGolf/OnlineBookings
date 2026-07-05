@@ -8,6 +8,7 @@ export default function SignupPage() {
   const [preferredName, setPreferredName] = useState("")
   const [givenName, setGivenName] = useState("")
   const [familyName, setFamilyName] = useState("")
+  const [phone, setPhone] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
@@ -32,17 +33,19 @@ export default function SignupPage() {
       alert("Please enter a valid given name and family name")
       return
     }
+    if (!phone.trim()) {
+      alert("Please fill in your phone number")
+      return
+    }
+
     if (password !== confirmPassword) {
       alert("Passwords don't match")
       return
     }
 
     const { data, error } = await supabase.auth.signUp({
-      email,
+      phone,
       password,
-      options: {
-        emailRedirectTo: "http://localhost:3000/login",
-      },
     })
 
     if (error) {
@@ -65,6 +68,7 @@ export default function SignupPage() {
       .update({
         name: `${givenName.trim()} ${familyName.trim()}`,
         preferred_name: preferredName.trim() || null,
+        phone: phone.trim() || null,
       })
       .eq("profile_id", user.id)
     alert("Account created successfully! Please check your email to verify your account, then log in.")
@@ -107,8 +111,16 @@ export default function SignupPage() {
           />
 
           <input
+            type="tel"
+            placeholder="Phone Number *"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            className="w-full rounded-xl border p-3 text-base text-black sm:p-4 sm:text-lg"
+          />
+
+          <input
             type="email"
-            placeholder="Email"
+            placeholder="Email (Optional)"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="w-full rounded-xl border p-3 text-base text-black sm:p-4 sm:text-lg"
