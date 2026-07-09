@@ -52,6 +52,12 @@ export default function AddTransactionForm({
     loadCoachDefaults()
   }, [])
 
+  useEffect(() => {
+    if (coachDefaults) {
+      updateTransaction(transactionType)
+    }
+  }, [coachDefaults])
+
   async function loadCoachDefaults() {
     const { data: clientData } = await supabase
       .from("clients")
