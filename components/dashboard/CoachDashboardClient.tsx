@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import { supabase } from "@/lib/supabase"
+import { supabase } from "@/lib/supabaseClient"
 import CoachClientProfileClient from "@/components/clients/CoachClientProfileClient"
 import AddTransactionForm from "@/components/clients/AddTransactionForm"
 
@@ -676,10 +676,15 @@ export default function CoachDashboardClient({
                       onChange={async (e) => {
                         const checked = e.target.checked
 
-                        await supabase
+                        const { error } = await supabase
                           .from("bookings")
                           .update({ is_new: checked })
                           .eq("id", selectedBooking.id)
+
+                        if (error) {
+                          alert(error.message)
+                          return
+                        }
 
                         setSelectedBooking({
                           ...selectedBooking,

@@ -3,8 +3,7 @@
 import { useEffect, useState } from "react"
 import Calendar from "react-calendar"
 import "react-calendar/dist/Calendar.css"
-
-import { supabase } from "@/lib/supabase"
+import { supabase } from "@/lib/supabaseClient"
 import { getAvailability } from "@/lib/getAvailability"
 import { generateTimeSlots } from "@/lib/generateTimeSlots"
 
