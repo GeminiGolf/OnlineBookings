@@ -53,7 +53,7 @@ export default async function AdminTransactionsPage() {
     <main className="min-h-screen bg-gray-100 p-3 sm:p-10 text-black">
       <div className="mx-auto max-w-6xl">
         <Link
-          href="/admin/dashboard"
+          href="/admin/"
           className="mb-6 inline-block rounded-lg border bg-white px-4 py-2"
         >
           ← Back to Dashboard
