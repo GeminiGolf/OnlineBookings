@@ -25,53 +25,35 @@ type Availability = {
 
 export default function ClientPage() {
   const [coaches, setCoaches] = useState<Coach[]>([])
-
   const [bookings, setBookings] = useState<Booking[]>([])
-
   const [times, setTimes] = useState<string[]>([])
-
   const [availability, setAvailability] = useState<Availability[]>([])
-
   const [selectedCoach, setSelectedCoach] = useState<Coach | null>(null)
-
   const [selectedDate, setSelectedDate] = useState<Date | null>(null)
-
   const [selectedTime, setSelectedTime] = useState("")
-
   function formatTime(time: string) {
     const [hourString] = time.split(":")
-
     const hour = parseInt(hourString)
-
     const suffix = hour >= 12 ? "PM" : "AM"
-
     const formattedHour = hour % 12 === 0 ? 12 : hour % 12
-
     return `${formattedHour}:00 ${suffix}`
   }
 
   function isPastTime(time: string) {
     if (!selectedDate) return false
-
     const now = new Date()
-
     const selected = new Date(selectedDate)
-
     const isToday = now.toDateString() === selected.toDateString()
 
     if (!isToday) return false
-
     const currentHour = now.getHours()
-
     const slotHour = parseInt(time.split(":")[0])
-
     return slotHour <= currentHour
   }
 
   useEffect(() => {
     async function fetchCoaches() {
       const { data, error } = await supabase.from("coaches").select("*")
-
       if (error) {
         console.error(error)
       } else {
@@ -81,7 +63,6 @@ export default function ClientPage() {
 
     async function fetchBookings() {
       const { data, error } = await supabase.from("bookings").select("*")
-
       if (error) {
         console.error(error)
       } else {
@@ -95,14 +76,11 @@ export default function ClientPage() {
 
   useEffect(() => {
     if (!selectedCoach || !selectedDate) return
-
     const selectedDay = selectedDate.getDay()
-
     const matchingAvailability = availability.filter((item) => item.day_of_week === selectedDay)
 
     if (matchingAvailability.length === 0) {
       setTimes([])
-
       return
     }
 
@@ -115,31 +93,22 @@ export default function ClientPage() {
     })
 
     const uniqueSlots = [...new Set(allSlots)]
-
     uniqueSlots.sort()
-
     setTimes(uniqueSlots)
   }, [selectedDate, selectedCoach, availability])
 
   async function loadAvailability(coachId: number) {
     const data = await getAvailability(coachId)
-
     setAvailability(data)
-
     setTimes([])
   }
 
   async function createBooking(coachId: number) {
     if (!selectedDate) return
-
     const year = selectedDate.getFullYear()
-
     const month = String(selectedDate.getMonth() + 1).padStart(2, "0")
-
     const day = String(selectedDate.getDate()).padStart(2, "0")
-
     const formattedDate = `${year}-${month}-${day}`
-
     const { error } = await supabase.from("bookings").insert([
       {
         client_id: 1,
@@ -152,7 +121,6 @@ export default function ClientPage() {
 
     if (error) {
       console.error(error)
-
       alert("Booking failed")
     } else {
       alert("Booking successful!")

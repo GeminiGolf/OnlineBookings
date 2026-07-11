@@ -432,7 +432,10 @@ export default function Navbar() {
 
             {!loggedIn && (
               <>
-                <Link href="/book" className="text-base transition hover:text-yellow-400">
+                <Link
+                  href="/CoachAvailability"
+                  className="text-base transition hover:text-yellow-400"
+                >
                   Book
                 </Link>
                 <Link href="/login" className="text-base transition hover:text-blue-400">
