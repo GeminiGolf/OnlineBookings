@@ -5,6 +5,7 @@ import { DayPicker } from "react-day-picker"
 import "react-day-picker/dist/style.css"
 import { supabase } from "@/lib/supabaseClient"
 import Link from "next/link"
+import { generateSlots } from "@/lib/scheduling/generateSlots"
 type Coach = {
   id: number
   name: string
@@ -53,9 +54,24 @@ export default function ClientDashboard() {
   }, [])
 
   useEffect(() => {
-    generateSlots()
-  }, [selectedDate, selectedCoach])
+    async function loadSlots() {
+      if (!selectedDate || !selectedCoach) {
+        setTimeSlots([])
+        return
+      }
 
+      const slots = await generateSlots(
+        supabase,
+        selectedCoach,
+        selectedDate
+      )
+
+      setTimeSlots(slots)
+    }
+
+    loadSlots()
+  }, [selectedDate, selectedCoach])
+  
   async function loadDashboardData() {
     const { data: { session } } = await supabase.auth.getSession()
     if (!session) return
@@ -152,215 +168,18 @@ export default function ClientDashboard() {
     return new Date() <= cutoff
   }
 
-  function formatHour(hour: number) {
-    const suffix = hour >= 12 ? "PM" : "AM"
-    const formattedHour = hour % 12 || 12
-
-    return `${formattedHour}:00 ${suffix}`
-  }
-
-  async function generateSlots() {
-    if (!selectedDate || !selectedCoach) {
-      setTimeSlots([])
-      return
-    }
-
-    const day = selectedDate.getDay()
-
-    const year = selectedDate.getFullYear()
-    const month = String(selectedDate.getMonth() + 1).padStart(2, "0")
-    const dayOfMonth = String(selectedDate.getDate()).padStart(2, "0")
-
-    const formattedDate = `${year}-${month}-${dayOfMonth}`
-
-    const { data: availability } = await supabase
-      .from("availability")
-      .select("*")
-      .eq("coach_id", selectedCoach)
-      .eq("day_of_week", day)
-
-    const slotSet = new Set<string>()
-
-    availability?.forEach((row) => {
-      const start = parseInt(row.start_time.split(":")[0])
-      const end = parseInt(row.end_time.split(":")[0])
-
-      for (let hour = start; hour < end; hour++) {
-        slotSet.add(formatHour(hour))
-      }
-    })
-
-    const { data: dateOverrides } = await supabase
-      .from("date_overrides")
-      .select("*")
-      .eq("coach_id", selectedCoach)
-      .eq("lesson_date", formattedDate)
-
-    dateOverrides?.forEach((override) => {
-      const hour = parseInt(override.lesson_time.split(":")[0])
-
-      const slot = formatHour(hour)
-
-      if (override.is_available) {
-        slotSet.add(slot)
-      } else {
-        slotSet.delete(slot)
-      }
-    })
-
-    let availableSlots = Array.from(slotSet)
-
-    const { data: bookings } = await supabase
-      .from("bookings")
-      .select("lesson_time")
-      .eq("coach_id", selectedCoach)
-      .eq("lesson_date", formattedDate)
-      .in("status", ["booked", "completed"])
-
-    const bookedTimes = bookings?.map((booking) => booking.lesson_time.trim()) || []
-
-    availableSlots = availableSlots.filter((slot) => !bookedTimes.includes(slot.trim()))
-
-    const { data: weeklyBreaks } = await supabase
-      .from("weekly_breaks")
-      .select("*")
-      .eq("coach_id", selectedCoach)
-      .eq("day_of_week", day)
-
-    const breakTimes = weeklyBreaks?.map((item) => formatHour(item.hour)) || []
-
-    availableSlots = availableSlots.filter((slot) => !breakTimes.includes(slot))
-
-    const today = new Date()
-
-    if (selectedDate.toDateString() === today.toDateString()) {
-      availableSlots = availableSlots.filter((slot) => {
-        const hour = parseInt(slot.split(":")[0])
-
-        const isPM = slot.includes("PM")
-
-        let militaryHour = hour
-
-        if (isPM && hour !== 12) {
-          militaryHour += 12
-        }
-
-        if (!isPM && hour === 12) {
-          militaryHour = 0
-        }
-
-        return militaryHour > today.getHours()
-      })
-    }
-
-    setTimeSlots(availableSlots)
-  }
-
   async function generateRescheduleSlots(date: Date) {
     if (!rescheduleLesson) {
       return
     }
 
-    const coachId = rescheduleLesson.coach_id
-    const day = date.getDay()
-    const year = date.getFullYear()
-    const month = String(date.getMonth() + 1).padStart(2, "0")
-    const dayOfMonth = String(date.getDate()).padStart(2, "0")
-    const formattedDate = `${year}-${month}-${dayOfMonth}`
-    const { data: availability } = await supabase
-      .from("availability")
-      .select("*")
-      .eq("coach_id", coachId)
-      .eq("day_of_week", day)
+    const slots = await generateSlots(
+      supabase,
+      rescheduleLesson.coach_id,
+      date,
+      rescheduleLesson.id
+    )
 
-    const slotSet = new Set<string>()
-
-    availability?.forEach((row) => {
-      const start = parseInt(row.start_time.split(":")[0])
-      const end = parseInt(row.end_time.split(":")[0])
-
-      for (let hour = start; hour < end; hour++) {
-        slotSet.add(formatHour(hour))
-      }
-    })
-
-    const { data: bookings } = await supabase
-      .from("bookings")
-      .select("id, lesson_time")
-      .eq("coach_id", coachId)
-      .eq("lesson_date", formattedDate)
-      .eq("status", "booked")
-
-    const bookedTimes =
-      bookings?.filter((booking) => booking.id !== rescheduleLesson.id).map((booking) => booking.lesson_time.trim()) ||
-      []
-
-    let slots = Array.from(slotSet).filter((slot) => !bookedTimes.includes(slot.trim()))
-
-    const { data: dateOverrides } = await supabase
-      .from("date_overrides")
-      .select("*")
-      .eq("coach_id", coachId)
-      .eq("lesson_date", formattedDate)
-
-    dateOverrides?.forEach((override) => {
-      const hour = parseInt(override.lesson_time.split(":")[0])
-
-      const slot = formatHour(hour)
-
-      if (override.is_available) {
-        if (!slots.includes(slot)) {
-          slots.push(slot)
-        }
-      } else {
-        slots = slots.filter((s) => s !== slot)
-      }
-    })
-
-    const { data: weeklyBreaks } = await supabase
-      .from("weekly_breaks")
-      .select("*")
-      .eq("coach_id", coachId)
-      .eq("day_of_week", day)
-
-    const breakTimes = weeklyBreaks?.map((item) => formatHour(item.hour)) || []
-
-    slots = slots.filter((slot) => !breakTimes.includes(slot))
-
-    const today = new Date()
-
-    if (date.toDateString() === today.toDateString()) {
-      slots = slots.filter((slot) => {
-        const hour = parseInt(slot.split(":")[0])
-        const isPM = slot.includes("PM")
-
-        let militaryHour = hour
-
-        if (isPM && hour !== 12) {
-          militaryHour += 12
-        }
-
-        if (!isPM && hour === 12) {
-          militaryHour = 0
-        }
-
-        return militaryHour > today.getHours()
-      })
-    }
-
-    slots.sort((a, b) => {
-      const convert = (time: string) => {
-        const hour = parseInt(time)
-        if (time.includes("PM") && hour !== 12) {
-          return hour + 12
-        }
-        if (time.includes("AM") && hour === 12) {
-          return 0
-        }
-        return hour
-      }
-      return convert(a) - convert(b)
-    })
     setRescheduleSlots(slots)
   }
 
@@ -517,7 +336,15 @@ export default function ClientDashboard() {
     if (existingBooking) {
       alert("This slot is already booked.")
       setLoading(false)
-      generateSlots()
+      if (selectedDate && selectedCoach) {
+        const slots = await generateSlots(
+          supabase,
+          selectedCoach,
+          selectedDate
+        )
+
+        setTimeSlots(slots)
+      }
       return
     }
 
@@ -594,7 +421,15 @@ export default function ClientDashboard() {
 
     alert("Booking confirmed!")
     setSelectedTime("")
-    await generateSlots()
+    if (selectedDate && selectedCoach) {
+      const slots = await generateSlots(
+        supabase,
+        selectedCoach,
+        selectedDate
+      )
+
+      setTimeSlots(slots)
+    }
     await loadDashboardData()
     setLoading(false)
   }

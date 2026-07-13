@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from "react"
 import { supabase } from "@/lib/supabaseClient"
 import { DayPicker } from "react-day-picker"
+import { generateSlots } from "@/lib/scheduling/generateSlots"
 import "react-day-picker/dist/style.css"
 
 type Coach = {
@@ -34,7 +35,22 @@ export default function BookPage() {
   }
 
   useEffect(() => {
-    generateSlots()
+    async function loadSlots() {
+      if (!selectedDate || !selectedCoach) {
+        setTimeSlots([])
+        return
+      }
+
+      const slots = await generateSlots(
+        supabase,
+        selectedCoach,
+        selectedDate
+      )
+
+      setTimeSlots(slots)
+    }
+
+    loadSlots()
   }, [selectedDate, selectedCoach])
 
   useEffect(() => {
@@ -45,114 +61,6 @@ export default function BookPage() {
       })
     }
   }, [selectedTime])
-
-  function formatHour(hour: number) {
-    const suffix = hour >= 12 ? "PM" : "AM"
-    const formattedHour = hour % 12 || 12
-    return `${formattedHour}:00 ${suffix}`
-  }
-
-  async function generateSlots() {
-    if (!selectedDate || !selectedCoach) {
-      setTimeSlots([])
-      return
-    }
-
-    const day = selectedDate.getDay()
-    const year = selectedDate.getFullYear()
-    const month = String(selectedDate.getMonth() + 1).padStart(2, "0")
-    const dayOfMonth = String(selectedDate.getDate()).padStart(2, "0")
-    const formattedDate = `${year}-${month}-${dayOfMonth}`
-    const { data: availability } = await supabase
-      .from("availability")
-      .select("*")
-      .eq("coach_id", selectedCoach)
-      .eq("day_of_week", day)
-      .maybeSingle()
-
-    const { data: dateOverrides } = await supabase
-      .from("date_overrides")
-      .select("*")
-      .eq("coach_id", selectedCoach)
-      .eq("lesson_date", formattedDate)
-
-    const slotSet = new Set<string>()
-
-    if (availability) {
-      const start = parseInt(availability.start_time.split(":")[0])
-      const end = parseInt(availability.end_time.split(":")[0])
-      for (let hour = start; hour < end; hour++) {
-        slotSet.add(formatHour(hour))
-      }
-    }
-
-    dateOverrides?.forEach((override) => {
-      const hour = parseInt(override.lesson_time.split(":")[0])
-
-      const slot = formatHour(hour)
-
-      if (override.is_available) {
-        slotSet.add(slot)
-      } else {
-        slotSet.delete(slot)
-      }
-    })
-
-    let availableSlots = Array.from(slotSet)
-
-    const { data: existingBookings } = await supabase
-      .from("bookings")
-      .select("lesson_time")
-      .eq("coach_id", selectedCoach)
-      .eq("lesson_date", formattedDate)
-      .in("status", ["booked", "completed"])
-
-    const bookedTimes = existingBookings?.map((booking) => booking.lesson_time.trim()) || []
-    availableSlots = availableSlots.filter((slot) => !bookedTimes.includes(slot.trim()))
-    const { data: weeklyBreaks } = await supabase
-      .from("weekly_breaks")
-      .select("*")
-      .eq("coach_id", selectedCoach)
-      .eq("day_of_week", day)
-
-    const breakTimes = weeklyBreaks?.map((item) => formatHour(item.hour)) || []
-    availableSlots = availableSlots.filter((slot) => !breakTimes.includes(slot))
-    const today = new Date()
-    const isToday = selectedDate.toDateString() === today.toDateString()
-
-    if (isToday) {
-      availableSlots = availableSlots.filter((slot) => {
-        const hour = parseInt(slot.split(":")[0])
-        const isPM = slot.includes("PM")
-
-        let militaryHour = hour
-        if (isPM && hour !== 12) {
-          militaryHour += 12
-        }
-        if (!isPM && hour === 12) {
-          militaryHour = 0
-        }
-
-        return militaryHour > today.getHours()
-      })
-    }
-
-    availableSlots.sort((a, b) => {
-      const convert = (time: string) => {
-        const hour = parseInt(time)
-
-        if (time.includes("PM") && hour !== 12) {
-          return hour + 12
-        }
-        if (time.includes("AM") && hour === 12) {
-          return 0
-        }
-        return hour
-      }
-      return convert(a) - convert(b)
-    })
-    setTimeSlots(availableSlots)
-  }
 
   async function confirmBooking() {
     if (!selectedCoach || !selectedDate || !selectedTime) {
@@ -256,7 +164,15 @@ export default function BookPage() {
 
     alert("Booking confirmed!")
     setSelectedTime("")
-    await generateSlots()
+    if (selectedDate && selectedCoach) {
+      const slots = await generateSlots(
+        supabase,
+        selectedCoach,
+        selectedDate
+      )
+
+      setTimeSlots(slots)
+    }
     setLoading(false)
   }
 
