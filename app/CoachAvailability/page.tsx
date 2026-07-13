@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import { useEffect, useState } from "react"
 import { DayPicker } from "react-day-picker"
 import "react-day-picker/dist/style.css"
@@ -155,24 +156,41 @@ export default function CoachAvailabilityPage() {
                     Available Time Slots
                   </h3>
 
-                  {timeSlots.length === 0 ? (
-                    <p className="text-sm text-gray-500">
-                      Select a coach and date.
-                    </p>
-                  ) : (
-                    <div className="mx-auto max-w-[340px]">
-                      <div className="flex flex-wrap justify-center gap-2">
-                        {timeSlots.map((time) => (
-                          <div
-                            key={time}
-                            className="rounded-lg bg-green-600 px-4 py-2 text-sm font-semibold text-white"
-                          >
-                            {time}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
+									{timeSlots.length === 0 ? (
+										<p className="text-sm text-gray-500">
+											Select a coach and date.
+										</p>
+									) : (
+										<div className="mx-auto max-w-[340px]">
+											<div className="flex flex-wrap justify-center gap-2">
+												{timeSlots.map((time) => (
+													<div
+														key={time}
+														className="rounded-lg bg-green-600 px-4 py-2 text-sm font-semibold text-white"
+													>
+														{time}
+													</div>
+												))}
+											</div>
+
+											<p className="mt-5 text-center text-sm text-gray-600">
+												<Link
+													href="/login"
+													className="font-semibold text-blue-700 hover:underline"
+												>
+													Log in
+												</Link>{" "}
+												/{" "}
+												<Link
+													href="/signup"
+													className="font-semibold text-blue-700 hover:underline"
+												>
+													Sign up
+												</Link>{" "}
+												to book a lesson.
+											</p>
+										</div>
+									)}
 
                 </div>
 
