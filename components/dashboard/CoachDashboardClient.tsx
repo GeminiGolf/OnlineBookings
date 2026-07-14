@@ -334,7 +334,7 @@ export default function CoachDashboardClient({
     if (rescheduleBooking) {
       params.set("reschedule", String(rescheduleBooking.id))
     }
-    window.location.href = `${basePath}?${params.toString()}`
+    router.push(`${basePath}?${params.toString()}`)
   }
 
   function previousDay() {
