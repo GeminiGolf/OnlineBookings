@@ -1,5 +1,6 @@
 "use client"
-
+import PdfPreviewModal from "@/components/pdf/PdfPreviewModal"
+import jsPDF from "jspdf"
 import { Fragment, useEffect, useMemo, useState } from "react"
 import {
   ChevronDown,
@@ -36,6 +37,9 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
   const [expandedDates, setExpandedDates] = useState<string[]>([])
   const [page, setPage] = useState(1)
   const [receiptUrl, setReceiptUrl] = useState<string | null>(null)
+	const [previewOpen, setPreviewOpen] = useState(false)
+	const [pdfDoc, setPdfDoc] = useState<jsPDF | null>(null)
+	const [pdfFilename, setPdfFilename] = useState("")
   const transactionsPerPage = 5
   const filteredTransactions = useMemo(() => {
     return transactions.filter((transaction) => {
@@ -137,13 +141,17 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 
 				<button
 					type="button"
-					onClick={() =>
-						generateTransactionsPdf({
+					onClick={() => {
+						const { doc, filename } = generateTransactionsPdf({
 							transactions: filteredTransactions,
 							startDate,
 							endDate,
 						})
-					}
+
+						setPdfDoc(doc)
+						setPdfFilename(filename)
+						setPreviewOpen(true)
+					}}
 					className="rounded-lg border p-2 hover:bg-gray-100"
 					title="Export PDF"
 				>
@@ -512,6 +520,13 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
           </div>
         </div>
       )}
+
+			<PdfPreviewModal
+				isOpen={previewOpen}
+				onClose={() => setPreviewOpen(false)}
+				doc={pdfDoc}
+				filename={pdfFilename}
+			/>
     </div>
   )
 }

@@ -230,6 +230,8 @@ export function generateTransactionsPdf({
     }
   }
 
-	const blobUrl = doc.output("bloburl")
-	window.open(blobUrl, "_blank")
+	return {
+		doc,
+		filename,
+	}
 }
