@@ -38,13 +38,18 @@ export default function SignupPage() {
       return
     }
 
+    if (!email.trim()) {
+      alert("Please fill in your email address")
+      return
+    }
+
     if (password !== confirmPassword) {
       alert("Passwords don't match")
       return
     }
 
     const { data, error } = await supabase.auth.signUp({
-      phone,
+      email,
       password,
     })
 
@@ -120,7 +125,7 @@ export default function SignupPage() {
 
           <input
             type="email"
-            placeholder="Email (Optional)"
+            placeholder="Email *"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="w-full rounded-xl border p-3 text-base text-black sm:p-4 sm:text-lg"
