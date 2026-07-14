@@ -1,7 +1,7 @@
 "use client"
 
-import { Fragment, useMemo, useState } from "react"
-import { ChevronDown, ChevronUp } from "lucide-react"
+import { Fragment, useEffect, useMemo, useState } from "react"
+import { ChevronDown, ChevronUp, Image as ImageIcon } from "lucide-react"
 import { DayPicker } from "react-day-picker"
 import { format } from "date-fns"
 import "react-day-picker/dist/style.css"
@@ -12,6 +12,7 @@ export type TransactionRow = {
   price: number | null
   transaction_name: string | null
   payment_method: string | null
+  receipt_url: string | null
   client_name: string
   coach_name: string
 }
@@ -28,6 +29,7 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
   const [showEndCalendar, setShowEndCalendar] = useState(false)
   const [expandedDates, setExpandedDates] = useState<string[]>([])
   const [page, setPage] = useState(1)
+  const [receiptUrl, setReceiptUrl] = useState<string | null>(null)
   const transactionsPerPage = 5
   const filteredTransactions = useMemo(() => {
     return transactions.filter((transaction) => {
@@ -97,6 +99,17 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 		page * transactionsPerPage
 	)
   const hasDateFilter = startDate !== "" || endDate !== ""
+
+  useEffect(() => {
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setReceiptUrl(null)
+      }
+    }
+    window.addEventListener("keydown", handleKeyDown)
+    return () => window.removeEventListener("keydown", handleKeyDown)
+  }, [])
+	
 	const totalAmount = filteredTransactions.reduce(
 		(sum, transaction) => sum + (transaction.price ?? 0),
 		0
@@ -280,7 +293,20 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 																			</td>
 
 																			<td className="px-4 py-2">
-																				{transaction.payment_method ?? "-"}
+																				<div className="flex items-center gap-2">
+																					{transaction.receipt_url && (
+																						<button
+																							type="button"
+																							onClick={() => setReceiptUrl(transaction.receipt_url)}
+																							className="text-blue-600 hover:text-blue-800"
+																							title="View Receipt"
+																						>
+																							<ImageIcon size={16} />
+																						</button>
+																					)}
+
+																					<span>{transaction.payment_method ?? "-"}</span>
+																				</div>
 																			</td>
 
 																			<td className="px-4 py-2">
@@ -374,7 +400,20 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 																		</td>
 
 																		<td className="px-4 py-2">
-																			{transaction.payment_method ?? "-"}
+																			<div className="flex items-center gap-2">
+																				{transaction.receipt_url && (
+																					<button
+																						type="button"
+																						onClick={() => setReceiptUrl(transaction.receipt_url)}
+																						className="text-blue-600 hover:text-blue-800"
+																						title="View Receipt"
+																					>
+																						<ImageIcon size={16} />
+																					</button>
+																				)}
+
+																				<span>{transaction.payment_method ?? "-"}</span>
+																			</div>
 																		</td>
 
 																		<td className="px-4 py-2">
@@ -423,6 +462,32 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
           Next
         </button>
       </div>
+
+      {receiptUrl && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
+          onClick={() => setReceiptUrl(null)}
+        >
+          <div
+            className="relative max-h-[90vh] max-w-4xl overflow-auto rounded-lg bg-white p-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              onClick={() => setReceiptUrl(null)}
+              className="absolute right-3 top-3 rounded border bg-white px-2 py-1 text-lg"
+            >
+              ×
+            </button>
+
+            <img
+              src={receiptUrl}
+              alt="Payment receipt"
+              className="max-h-[80vh] max-w-full object-contain"
+            />
+          </div>
+        </div>
+      )}
     </div>
   )
 }

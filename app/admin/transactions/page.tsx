@@ -16,7 +16,8 @@ export default async function AdminTransactionsPage() {
       purchase_date,
       price,
       transaction_name,
-      payment_method
+      payment_method,
+      receipt_url
     `)
     .gt("price", 0)
     .order("purchase_date", { ascending: false })
@@ -47,6 +48,7 @@ export default async function AdminTransactionsPage() {
       price: pkg.price,
       transaction_name: pkg.transaction_name,
       payment_method: pkg.payment_method,
+      receipt_url: pkg.receipt_url,
       client_name: clientMap.get(pkg.client_id) ?? "Unknown Client",
       coach_name: coachMap.get(Number(pkg.added_by)) ?? "Unknown Coach",
     })) ?? []
