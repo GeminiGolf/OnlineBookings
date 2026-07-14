@@ -1,3 +1,4 @@
+import logo from "@/public/images/gemini-logo.png"
 import jsPDF from "jspdf"
 import autoTable from "jspdf-autotable"
 import { format } from "date-fns"
@@ -24,8 +25,6 @@ export function generateTransactionsPdf({
     unit: "pt",
     format: "a4",
   })
-
-	const generatedAt = format(new Date(), "dd MMM yyyy HH:mm")
 
 	const formatAmount = (amount: number) =>
 		`RM ${amount.toLocaleString("en-MY", {
@@ -103,24 +102,43 @@ export function generateTransactionsPdf({
     (sum, transaction) => sum + (transaction.price ?? 0),
     0
   )
-	const logo = new Image()
-	logo.src = "/images/gemini-logo.png"
 
-	logo.onload = () => {
-		// generate the PDF here
-	}
-  doc.setFontSize(18)
-  doc.text("Gemini Golf Academy", 40, 40)
+	const image = new Image()
+	image.src = logo.src
 
-  doc.setFontSize(14)
-  doc.text("Transactions Report", 40, 65)
 
-  doc.setFontSize(10)
-  doc.text(`Generated: ${generatedAt}`, 40, 85)
-  doc.text(`Date Range: ${dateRange}`, 40, 100)
+
+	doc.setFontSize(9)
+	doc.setTextColor(40, 40, 40)
+
+	doc.text(
+		[
+			"Attention: Rebecca Eng",
+			"Flagstick Venture",
+			"Block A Boulevard 51",
+			"Jalan SS9A/18, Seksyen 51a",
+			"Petaling Jaya",
+			"Selangor, Malaysia",
+			"",
+			"Golf lessons",
+		],
+		400,
+		70
+	)
+	
+	doc.text(`Date: ${dateRange}`, 80, 160)
 
   autoTable(doc, {
-    startY: 120,
+    startY: 170,
+
+		margin: {
+			top: 170,
+			left: 80,
+			right: 80,
+			bottom: 100,
+		},
+
+		tableWidth: "auto",
 
     head: [["Date", "Coach", "Amount"]],
 
@@ -147,10 +165,11 @@ export function generateTransactionsPdf({
 
     theme: "grid",
 
-    headStyles: {
-      fillColor: [33, 150, 83],
-      halign: "left",
-    },
+		headStyles: {
+			fillColor: [54, 125, 162],
+			textColor: [255, 255, 255],
+			halign: "left",
+		},
 
     columnStyles: {
       2: {
@@ -162,23 +181,34 @@ export function generateTransactionsPdf({
       fontStyle: "bold",
     },
 
-    didDrawPage: (data) => {
-      const pageSize = doc.internal.pageSize
+		didDrawPage: () => {
+			const pageWidth = doc.internal.pageSize.getWidth()
+			const pageHeight = doc.internal.pageSize.getHeight()
 
-      const width = pageSize.getWidth()
-      const height = pageSize.getHeight()
+			// Logo
+			doc.addImage(image, "PNG", 70, 65, 120, 65)
 
-      doc.setFontSize(9)
+			// Brand blue
+			doc.setDrawColor(54, 125, 162)
+			doc.setLineWidth(1)
 
-      doc.text(
-        `Page ${doc.getCurrentPageInfo().pageNumber}`,
-        width / 2,
-        height - 20,
-        {
-          align: "center",
-        }
-      )
-    },
+			// Top line
+			doc.line(40, 30, pageWidth - 40, 30)
+
+			// Bottom line
+			doc.line(40, pageHeight - 40, pageWidth - 40, pageHeight - 40)
+
+			// Page number
+			doc.setFontSize(9)
+			doc.text(
+				`${doc.getCurrentPageInfo().pageNumber}`,
+				pageWidth - 40,
+				pageHeight - 15,
+				{
+					align: "right",
+				}
+			)
+		},
   })
 
   let filename = "Transactions.pdf"
