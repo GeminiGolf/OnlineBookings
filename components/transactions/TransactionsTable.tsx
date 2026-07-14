@@ -1,7 +1,7 @@
 "use client"
 
-import { Fragment, useMemo, useState } from "react"
-import { ChevronDown, ChevronUp } from "lucide-react"
+import { Fragment, useEffect, useMemo, useState } from "react"
+import { ChevronDown, ChevronUp, Image as ImageIcon } from "lucide-react"
 import { DayPicker } from "react-day-picker"
 import { format } from "date-fns"
 import "react-day-picker/dist/style.css"
@@ -11,6 +11,8 @@ export type TransactionRow = {
   purchase_date: string | null
   price: number | null
   transaction_name: string | null
+  payment_method: string | null
+  receipt_url: string | null
   client_name: string
 }
 
@@ -26,12 +28,14 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
   const [showEndCalendar, setShowEndCalendar] = useState(false)
   const [expandedDates, setExpandedDates] = useState<string[]>([])
   const [page, setPage] = useState(1)
+	const [receiptUrl, setReceiptUrl] = useState<string | null>(null)
   const transactionsPerPage = 5
   const filteredTransactions = useMemo(() => {
     return transactions.filter((transaction) => {
-      const matchesSearch =
-        transaction.client_name.toLowerCase().includes(search.toLowerCase()) ||
-        (transaction.transaction_name ?? "").toLowerCase().includes(search.toLowerCase())
+			const matchesSearch =
+				transaction.client_name.toLowerCase().includes(search.toLowerCase()) ||
+				(transaction.transaction_name ?? "").toLowerCase().includes(search.toLowerCase()) ||
+				(transaction.payment_method ?? "").toLowerCase().includes(search.toLowerCase())
       const purchaseDate = transaction.purchase_date ?? ""
       const matchesStart = !startDate || purchaseDate >= startDate
       const matchesEnd = !endDate || purchaseDate <= endDate
@@ -81,6 +85,19 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 		page * transactionsPerPage
 	)
   const hasDateFilter = startDate !== "" || endDate !== ""
+
+	useEffect(() => {
+		function handleKeyDown(event: KeyboardEvent) {
+			if (event.key === "Escape") {
+				setReceiptUrl(null)
+			}
+		}
+
+		window.addEventListener("keydown", handleKeyDown)
+
+		return () => window.removeEventListener("keydown", handleKeyDown)
+	}, [])
+	
 	const totalAmount = (hasDateFilter ? filteredTransactions : groupedTransactions.flatMap((g) => g.transactions)).reduce(
 		(sum, transaction) => sum + (transaction.price ?? 0),
 		0
@@ -239,6 +256,7 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 														<tr className="border-b">
 															<th className="px-4 py-2 text-left">Price</th>
 															<th className="px-4 py-2 text-left">Purchase</th>
+															<th className="px-4 py-2 text-left">Method</th>
 															<th className="px-4 py-2 text-left">Client</th>
 														</tr>
 													</thead>
@@ -252,6 +270,23 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 
 																<td className="px-4 py-2">
 																	{transaction.transaction_name}
+																</td>
+
+																<td className="px-4 py-2">
+																	<div className="flex items-center gap-2">
+																		{transaction.receipt_url && (
+																			<button
+																				type="button"
+																				onClick={() => setReceiptUrl(transaction.receipt_url)}
+																				className="text-blue-600 hover:text-blue-800"
+																				title="View Receipt"
+																			>
+																				<ImageIcon size={16} />
+																			</button>
+																		)}
+
+																		<span>{transaction.payment_method ?? "-"}</span>
+																	</div>
 																</td>
 
 																<td className="px-4 py-2">
@@ -315,24 +350,42 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 											<table className="w-auto text-sm">
 												<thead>
 													<tr className="border-b">
-														<th className="px-4 py-1 text-left">Price</th>
-														<th className="px-4 py-1 text-left">Purchase</th>
-														<th className="px-4 py-1 text-left">Client</th>
+														<th className="px-1 py-1 text-left">Price</th>
+														<th className="px-2 py-1 text-left">Purchase</th>
+														<th className="px-2 py-1 text-left">Method</th>
+														<th className="px-2 py-1 text-left">Client</th>
 													</tr>
 												</thead>
 
 												<tbody>
 													{group.transactions.map((transaction) => (
 														<tr key={transaction.id} className="border-b last:border-0">
-															<td className="px-4 py-2">
+															<td className="px-1 py-2">
 																${(transaction.price ?? 0).toFixed(0)}
 															</td>
 
-															<td className="px-4 py-2">
+															<td className="px-2 py-2">
 																{transaction.transaction_name}
 															</td>
 
-															<td className="px-4 py-2">
+															<td className="px-2 py-2">
+																<div className="flex items-center gap-2">
+																	{transaction.receipt_url && (
+																		<button
+																			type="button"
+																			onClick={() => setReceiptUrl(transaction.receipt_url)}
+																			className="text-blue-600 hover:text-blue-800"
+																			title="View Receipt"
+																		>
+																			<ImageIcon size={16} />
+																		</button>
+																	)}
+
+																	<span>{transaction.payment_method ?? "-"}</span>
+																</div>
+															</td>
+
+															<td className="px-2 py-2">
 																{transaction.client_name}
 															</td>
 														</tr>
@@ -375,6 +428,32 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
           Next
         </button>
       </div>
+
+      {receiptUrl && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
+          onClick={() => setReceiptUrl(null)}
+        >
+          <div
+            className="relative max-h-[90vh] max-w-4xl overflow-auto rounded-lg bg-white p-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              onClick={() => setReceiptUrl(null)}
+              className="absolute right-3 top-3 rounded border bg-white px-2 py-1 text-lg"
+            >
+              ×
+            </button>
+
+            <img
+              src={receiptUrl}
+              alt="Payment receipt"
+              className="max-h-[80vh] max-w-full object-contain"
+            />
+          </div>
+        </div>
+      )}
     </div>
   )
 }

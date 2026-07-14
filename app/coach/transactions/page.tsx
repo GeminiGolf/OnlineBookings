@@ -48,20 +48,37 @@ export default async function CoachTransactionsPage() {
         purchase_date,
         price,
         transaction_name,
+        payment_method,
+        receipt_url,
         client_id
       `)
       .in("client_id", clientIds)
       .gt("price", 0)
       .order("purchase_date", { ascending: false })
 
-    transactions =
-      packages?.map((pkg) => ({
-        id: pkg.id,
-        purchase_date: pkg.purchase_date,
-        price: pkg.price,
-        transaction_name: pkg.transaction_name,
-        client_name: clientMap.get(pkg.client_id) ?? "Unknown",
-      })) ?? []
+    transactions = await Promise.all(
+      (packages ?? []).map(async (pkg) => {
+        let receiptUrl: string | null = null
+
+        if (pkg.receipt_url) {
+          const { data } = await supabase.storage
+            .from("receipt-images")
+            .createSignedUrl(pkg.receipt_url, 60 * 60)
+
+          receiptUrl = data?.signedUrl ?? null
+        }
+
+        return {
+          id: pkg.id,
+          purchase_date: pkg.purchase_date,
+          price: pkg.price,
+          transaction_name: pkg.transaction_name,
+          payment_method: pkg.payment_method,
+          receipt_url: receiptUrl,
+          client_name: clientMap.get(pkg.client_id) ?? "Unknown",
+        }
+      })
+    )
   }
 
   return (
