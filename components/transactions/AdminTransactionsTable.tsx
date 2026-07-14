@@ -36,7 +36,8 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 			const matchesSearch =
 				transaction.client_name.toLowerCase().includes(search.toLowerCase()) ||
 				transaction.coach_name.toLowerCase().includes(search.toLowerCase()) ||
-				(transaction.transaction_name ?? "").toLowerCase().includes(search.toLowerCase())
+				(transaction.transaction_name ?? "").toLowerCase().includes(search.toLowerCase()) ||
+				(transaction.payment_method ?? "").toLowerCase().includes(search.toLowerCase())
       const purchaseDate = transaction.purchase_date ?? ""
       const matchesStart = !startDate || purchaseDate >= startDate
       const matchesEnd = !endDate || purchaseDate <= endDate
@@ -381,25 +382,25 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 														<table className="w-auto text-sm">
 															<thead>
 																<tr className="border-b">
-																	<th className="px-4 py-1 text-left">Price</th>
-																	<th className="px-4 py-1 text-left">Purchase</th>
-																	<th className="px-4 py-1 text-left">Method</th>
-																	<th className="px-4 py-1 text-left">Client</th>
+																	<th className="px-3 py-1 text-left">Price</th>
+																	<th className="px-2 py-1 text-left">Purchase</th>
+																	<th className="px-2 py-1 text-left">Method</th>
+																	<th className="px-2 py-1 text-left">Client</th>
 																</tr>
 															</thead>
 
 															<tbody>
 																{coach.transactions.map((transaction) => (
 																	<tr key={transaction.id} className="border-b last:border-0">
-																		<td className="px-4 py-2">
+																		<td className="px-3 py-2">
 																			${(transaction.price ?? 0).toFixed(0)}
 																		</td>
 
-																		<td className="px-4 py-2">
+																		<td className="px-2 py-2">
 																			{transaction.transaction_name}
 																		</td>
 
-																		<td className="px-4 py-2">
+																		<td className="px-2 py-2">
 																			<div className="flex items-center gap-2">
 																				{transaction.receipt_url && (
 																					<button
@@ -416,7 +417,7 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 																			</div>
 																		</td>
 
-																		<td className="px-4 py-2">
+																		<td className="px-2 py-2">
 																			{transaction.client_name}
 																		</td>
 																	</tr>
