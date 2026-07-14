@@ -132,7 +132,7 @@ export function generateTransactionsPdf({
     startY: 170,
 
 		margin: {
-			top: 170,
+			top: 180,
 			left: 80,
 			right: 80,
 			bottom: 100,

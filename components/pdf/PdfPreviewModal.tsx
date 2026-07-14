@@ -1,5 +1,4 @@
 "use client"
-
 import { useEffect, useMemo } from "react"
 import jsPDF from "jspdf"
 
@@ -16,22 +15,23 @@ export default function PdfPreviewModal({
   doc,
   filename,
 }: PdfPreviewModalProps) {
-  const pdfUrl = useMemo(() => {
-    if (!doc) return null
+	const pdfUrl = useMemo(() => {
+		if (!doc) return null
 
-    const blob = doc.output("blob")
-    return URL.createObjectURL(blob)
-  }, [doc])
+		const blob = doc.output("blob")
+		return URL.createObjectURL(blob)
+	}, [doc])
 
-  useEffect(() => {
-    return () => {
-      if (pdfUrl) {
-        URL.revokeObjectURL(pdfUrl)
-      }
-    }
-  }, [pdfUrl])
 
-  if (!isOpen || !pdfUrl) return null
+	useEffect(() => {
+		return () => {
+			if (pdfUrl) {
+				URL.revokeObjectURL(pdfUrl)
+			}
+		}
+	}, [pdfUrl])
+
+	if (!isOpen || !pdfUrl) return null
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 p-4">
@@ -48,11 +48,13 @@ export default function PdfPreviewModal({
           </button>
         </div>
 
-				<iframe
-					src={pdfUrl}
-					className="h-full w-full flex-1"
-					title="PDF Preview"
-				/>
+				<div className="flex-1 bg-gray-200">
+					<embed
+						src={pdfUrl}
+						type="application/pdf"
+						className="h-full w-full"
+					/>
+				</div>
 
         <div className="flex justify-end gap-3 border-t p-4">
 
