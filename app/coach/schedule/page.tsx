@@ -26,42 +26,48 @@ export default async function CoachSchedulePage({ searchParams }: Props) {
   }
 
   const dayOfWeek = new Date(selectedDate).getDay()
-  const { data: bookings } = await supabase
-    .from("bookings")
-    .select(
-      `
-      *,
-      clients (
-        id,
-        name,
-        phone,
-        email,
-        notes,
-        lessons_remaining
-      )
-    `
-    )
-    .eq("coach_id", coach.id)
-    .eq("lesson_date", selectedDate)
 
-  const { data: availability } = await supabase
-    .from("availability")
-    .select("*")
-    .eq("coach_id", coach.id)
-    .eq("day_of_week", dayOfWeek)
-    .single()
+  const [
+    { data: bookings },
+    { data: availability },
+    { data: weeklyBreaks },
+    { data: dateOverrides },
+  ] = await Promise.all([
+    supabase
+      .from("bookings")
+      .select(`
+        *,
+        clients (
+          id,
+          name,
+          phone,
+          email,
+          notes,
+          lessons_remaining
+        )
+      `)
+      .eq("coach_id", coach.id)
+      .eq("lesson_date", selectedDate),
 
-  const { data: weeklyBreaks } = await supabase
-    .from("weekly_breaks")
-    .select("*")
-    .eq("coach_id", coach.id)
-    .eq("day_of_week", dayOfWeek)
+    supabase
+      .from("availability")
+      .select("*")
+      .eq("coach_id", coach.id)
+      .eq("day_of_week", dayOfWeek)
+      .single(),
 
-  const { data: dateOverrides } = await supabase
-    .from("date_overrides")
-    .select("*")
-    .eq("coach_id", coach.id)
-    .eq("lesson_date", selectedDate)
+    supabase
+      .from("weekly_breaks")
+      .select("*")
+      .eq("coach_id", coach.id)
+      .eq("day_of_week", dayOfWeek),
+
+    supabase
+      .from("date_overrides")
+      .select("*")
+      .eq("coach_id", coach.id)
+      .eq("lesson_date", selectedDate),
+  ])
 
   let rescheduleBooking = null
 
