@@ -41,17 +41,30 @@ export default async function AdminTransactionsPage() {
     coachMap.set(Number(coach.id), coach.name)
   })
 
-  const transactions: TransactionRow[] =
-    packages?.map((pkg) => ({
-      id: pkg.id,
-      purchase_date: pkg.purchase_date,
-      price: pkg.price,
-      transaction_name: pkg.transaction_name,
-      payment_method: pkg.payment_method,
-      receipt_url: pkg.receipt_url,
-      client_name: clientMap.get(pkg.client_id) ?? "Unknown Client",
-      coach_name: coachMap.get(Number(pkg.added_by)) ?? "Unknown Coach",
-    })) ?? []
+  const transactions: TransactionRow[] = await Promise.all(
+    (packages ?? []).map(async (pkg) => {
+      let receiptUrl: string | null = null
+
+      if (pkg.receipt_url) {
+        const { data } = await supabase.storage
+          .from("receipt-images")
+          .createSignedUrl(pkg.receipt_url, 60 * 60)
+
+        receiptUrl = data?.signedUrl ?? null
+      }
+
+      return {
+        id: pkg.id,
+        purchase_date: pkg.purchase_date,
+        price: pkg.price,
+        transaction_name: pkg.transaction_name,
+        payment_method: pkg.payment_method,
+        receipt_url: receiptUrl,
+        client_name: clientMap.get(pkg.client_id) ?? "Unknown Client",
+        coach_name: coachMap.get(Number(pkg.added_by)) ?? "Unknown Coach",
+      }
+    })
+  )
 
   return (
     <main className="min-h-screen bg-gray-100 p-3 sm:p-10 text-black">
