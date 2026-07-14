@@ -1,7 +1,13 @@
 "use client"
 
 import { Fragment, useEffect, useMemo, useState } from "react"
-import { ChevronDown, ChevronUp, Image as ImageIcon } from "lucide-react"
+import {
+  ChevronDown,
+  ChevronUp,
+  Image as ImageIcon,
+  Printer,
+} from "lucide-react"
+import { generateTransactionsPdf } from "@/lib/reports/transactionsPdf"
 import { DayPicker } from "react-day-picker"
 import { format } from "date-fns"
 import "react-day-picker/dist/style.css"
@@ -126,7 +132,24 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 
   return (
     <div className="mx-auto max-w-5xl">
-      <h1 className="mb-3 text-[22px] font-bold">Transactions</h1>
+			<div className="mb-3 flex items-center justify-between">
+				<h1 className="text-[22px] font-bold">Transactions</h1>
+
+				<button
+					type="button"
+					onClick={() =>
+						generateTransactionsPdf({
+							transactions: filteredTransactions,
+							startDate,
+							endDate,
+						})
+					}
+					className="rounded-lg border p-2 hover:bg-gray-100"
+					title="Export PDF"
+				>
+					<Printer size={20} />
+				</button>
+			</div>
       <div className="mb-4 flex items-center gap-3">
         <input
           type="text"
@@ -173,7 +196,7 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
                   }
                   onSelect={(date) => {
                     if (!date) return
-                    setStartDate(date.toISOString().split("T")[0])
+                    setStartDate(format(date, "yyyy-MM-dd"))
                     setPage(1)
                     setShowStartCalendar(false)
                   }}
@@ -217,7 +240,7 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
                   }
                   onSelect={(date) => {
                     if (!date) return
-                    setEndDate(date.toISOString().split("T")[0])
+                    setEndDate(format(date, "yyyy-MM-dd"))
                     setPage(1)
                     setShowEndCalendar(false)
                   }}

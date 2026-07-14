@@ -160,7 +160,7 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
                   }
                   onSelect={(date) => {
                     if (!date) return
-                    setStartDate(date.toISOString().split("T")[0])
+                    setStartDate(format(date, "yyyy-MM-dd"))
                     setPage(1)
                     setShowStartCalendar(false)
                   }}
@@ -204,7 +204,7 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
                   }
                   onSelect={(date) => {
                     if (!date) return
-                    setEndDate(date.toISOString().split("T")[0])
+                    setEndDate(format(date, "yyyy-MM-dd"))
                     setPage(1)
                     setShowEndCalendar(false)
                   }}
