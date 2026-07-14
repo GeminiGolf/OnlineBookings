@@ -434,9 +434,9 @@ export default function NotificationsPage() {
           ) : (
             <div className="space-y-4">
               {urgentNotifications.map((notification) => (
-                <div key={notification.id} className="rounded-xl border border-red-300 bg-red-100 p-6 shadow">
-                  <h3 className="text-xl font-bold text-red-700">LATE BOOKING</h3>
-                  <p className="mt-3 text-black">
+                <div key={notification.id} className="rounded-xl border border-red-300 bg-red-100 p-2 shadow">
+                  <h3 className="text-lg font-bold text-red-700">LATE BOOKING</h3>
+                  <p className="mt-1 text-black">
                     <strong>Client:</strong> {notification.client_name}
                   </p>
                   <p className="mt-1 text-black">
@@ -444,10 +444,10 @@ export default function NotificationsPage() {
                     @ {(notification.lesson_time ?? "").replace(":00", "").toLowerCase()}
                   </p>
 
-                  <div className="mt-4 flex gap-3">
+                  <div className="mt-1 flex gap-1">
                     <button
                       onClick={() => handleApprove(notification)}
-                      className="rounded bg-green-600 px-4 py-2 text-white"
+                      className="rounded bg-green-600 px-2 py-2 text-white"
                     >
                       Approve
                     </button>

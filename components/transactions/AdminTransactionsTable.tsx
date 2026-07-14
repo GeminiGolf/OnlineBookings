@@ -11,6 +11,7 @@ export type TransactionRow = {
   purchase_date: string | null
   price: number | null
   transaction_name: string | null
+  payment_method: string | null
   client_name: string
   coach_name: string
 }
@@ -262,6 +263,7 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 																	<tr className="border-b">
 																		<th className="px-4 py-2 text-left">Price</th>
 																		<th className="px-4 py-2 text-left">Purchase</th>
+																		<th className="px-4 py-2 text-left">Method</th>
 																		<th className="px-4 py-2 text-left">Client</th>
 																	</tr>
 																</thead>
@@ -275,6 +277,10 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 
 																			<td className="px-4 py-2">
 																				{transaction.transaction_name}
+																			</td>
+
+																			<td className="px-4 py-2">
+																				{transaction.payment_method ?? "-"}
 																			</td>
 
 																			<td className="px-4 py-2">
@@ -351,6 +357,7 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 																<tr className="border-b">
 																	<th className="px-4 py-1 text-left">Price</th>
 																	<th className="px-4 py-1 text-left">Purchase</th>
+																	<th className="px-4 py-1 text-left">Method</th>
 																	<th className="px-4 py-1 text-left">Client</th>
 																</tr>
 															</thead>
@@ -364,6 +371,10 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 
 																		<td className="px-4 py-2">
 																			{transaction.transaction_name}
+																		</td>
+
+																		<td className="px-4 py-2">
+																			{transaction.payment_method ?? "-"}
 																		</td>
 
 																		<td className="px-4 py-2">

@@ -407,10 +407,9 @@ export default function NotificationsPage() {
   return (
     <main className="min-h-screen bg-gray-100 p-8">
       <div className="mx-auto max-w-6xl">
-        <h1 className="mb-8 text-4xl font-bold text-black">Notifications</h1>
         {/* URGENT */}
         <div className="mb-10">
-          <h2 className="mb-4 text-3xl font-bold text-red-700">Urgent</h2>
+          <h2 className="mb-4 text-2xl font-bold text-red-700">Urgent</h2>
           {urgentNotifications.length === 0 ? (
             <div className="rounded-xl bg-white p-6 shadow">
               <p className="text-black">No urgent notifications.</p>
@@ -418,9 +417,9 @@ export default function NotificationsPage() {
           ) : (
             <div className="space-y-4">
               {urgentNotifications.map((notification) => (
-                <div key={notification.id} className="rounded-xl border border-red-300 bg-red-100 p-6 shadow">
-                  <h3 className="text-xl font-bold text-red-700">LATE BOOKING</h3>
-                  <p className="mt-3 text-black">
+                <div key={notification.id} className="rounded-xl border border-red-300 bg-red-100 p-4 shadow">
+                  <h3 className="text-lg font-bold text-red-700">LATE BOOKING</h3>
+                  <p className="mt-1 text-black">
                     <strong>Client:</strong> {notification.client_name}
                   </p>
                   <p className="mt-1 text-black">
@@ -428,10 +427,10 @@ export default function NotificationsPage() {
                     @ {(notification.lesson_time ?? "").replace(":00", "").toLowerCase()}
                   </p>
 
-                  <div className="mt-4 flex gap-3">
+                  <div className="mt-2 flex gap-1">
                     <button
                       onClick={() => handleApprove(notification)}
-                      className="rounded bg-green-600 px-4 py-2 text-white"
+                      className="rounded bg-green-600 px-2 py-2 text-white"
                     >
                       Approve
                     </button>
@@ -449,7 +448,7 @@ export default function NotificationsPage() {
         </div>
         {/* STANDARD */}
         <div>
-          <h2 className="mb-4 text-3xl font-bold text-black">Notifications ({activeNotifications.length})</h2>
+          <h2 className="mb-4 text-2xl font-bold text-black">Notifications ({activeNotifications.length})</h2>
           <div className="hidden lg:grid mb-3 ml-16 grid-cols-[140px_180px_180px_1fr_140px] gap-4 text-sm font-bold text-gray-600">
             <span>Type</span>
             <span>Original Date</span>
@@ -619,7 +618,7 @@ export default function NotificationsPage() {
         </div>
 
         <div className="mt-10">
-          <button onClick={() => setShowOlder(!showOlder)} className="mb-4 text-2xl font-bold text-black">
+          <button onClick={() => setShowOlder(!showOlder)} className="mb-4 text-xl font-bold text-black">
             Older Notifications {showOlder ? " ▲" : " ▼"}
           </button>
 
