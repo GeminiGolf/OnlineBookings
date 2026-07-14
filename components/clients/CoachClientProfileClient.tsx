@@ -168,7 +168,10 @@ export default function CoachClientProfileClient({ clientId, lessonsRemaining }:
         client_id: clientId,
         transaction_name: transactionName,
         lessons_added: lessonsAdded,
-        price,
+        price:
+          paymentMethod === "free lesson"
+            ? 0
+            : price,
         payment_method: paymentMethod,
         receipt_url: receiptUrl,
         purchase_date: purchaseDate,
@@ -277,7 +280,11 @@ export default function CoachClientProfileClient({ clientId, lessonsRemaining }:
                 <label className="mb-1 block text-sm font-medium">Price</label>
                 <input
                   type="number"
-                  value={price}
+                  value={
+                    paymentMethod === "free lesson"
+                      ? 0
+                      : price
+                  }
                   disabled={!isOther}
                   onChange={(e) => setPrice(Number(e.target.value))}
                   className="w-full rounded border p-3 disabled:bg-gray-100"
