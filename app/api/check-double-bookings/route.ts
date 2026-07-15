@@ -98,11 +98,12 @@ export async function GET() {
       `Date: ${lessonDate}\n` +
       `Time: ${lessonTime}\n\n`
 
-    duplicate.forEach((booking, index) => {
-      message +=
-        `${clientMap.get(booking.client_id) || "Unknown Client"}\n` +
-        `Booked by: ${booking.booked_by}\n\n`
-    })
+		duplicate.forEach((booking) => {
+			message +=
+				`${clientMap.get(booking.client_id) || "Unknown Client"}|${booking.client_id}\n`
+		})
+
+		message += "\n"
 
     message += "Please resolve immediately."
 

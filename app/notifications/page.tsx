@@ -475,9 +475,29 @@ export default function NotificationsPage() {
                     <>
                       <h3 className="text-lg font-bold text-red-700">DOUBLE BOOKING</h3>
 
-                      <pre className="mt-3 whitespace-pre-wrap font-sans text-black">
-                        {notification.message}
-                      </pre>
+                      <div className="mt-3 space-y-1 text-black">
+                        {notification.message.split("\n").map((line, index) => {
+                          if (line.includes("|")) {
+                            const [name, clientId] = line.split("|")
+
+                            return (
+                              <Link
+                                key={index}
+                                href={`/coach/clients/${clientId}`}
+                                className="block text-blue-600 hover:underline font-medium"
+                              >
+                                {name}
+                              </Link>
+                            )
+                          }
+
+                          return (
+                            <p key={index} className="whitespace-pre-wrap">
+                              {line}
+                            </p>
+                          )
+                        })}
+                      </div>
 
                       <div className="mt-3">
                         <button

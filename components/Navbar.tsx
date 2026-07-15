@@ -318,8 +318,28 @@ export default function Navbar() {
                                     DOUBLE BOOKING
                                   </div>
 
-                                  <div className="mb-3 whitespace-pre-line text-sm text-black">
-                                    {notification.message}
+                                  <div className="mb-3 space-y-1 text-sm text-black">
+                                    {notification.message.split("\n").map((line, index) => {
+                                      if (line.includes("|")) {
+                                        const [name, clientId] = line.split("|")
+
+                                        return (
+                                          <Link
+                                            key={index}
+                                            href={`/coach/clients/${clientId}`}
+                                            className="block text-blue-600 hover:underline font-medium"
+                                          >
+                                            {name}
+                                          </Link>
+                                        )
+                                      }
+
+                                      return (
+                                        <p key={index} className="whitespace-pre-wrap">
+                                          {line}
+                                        </p>
+                                      )
+                                    })}
                                   </div>
 
                                   <button
@@ -414,8 +434,28 @@ export default function Navbar() {
                                     DOUBLE BOOKING
                                   </div>
 
-                                  <div className="mb-3 whitespace-pre-line text-sm text-black">
-                                    {notification.message}
+                                  <div className="mb-3 space-y-1 text-sm text-black">
+                                    {notification.message.split("\n").map((line, index) => {
+                                      if (line.includes("|")) {
+                                        const [name, clientId] = line.split("|")
+
+                                        return (
+                                          <Link
+                                            key={index}
+                                            href={`/admin/clients/${clientId}`}
+                                            className="block text-blue-600 hover:underline font-medium"
+                                          >
+                                            {name}
+                                          </Link>
+                                        )
+                                      }
+
+                                      return (
+                                        <p key={index} className="whitespace-pre-wrap">
+                                          {line}
+                                        </p>
+                                      )
+                                    })}
                                   </div>
 
                                   <button
