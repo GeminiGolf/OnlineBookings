@@ -51,6 +51,14 @@ export default function SignupPage() {
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
+      options: {
+        data: {
+          given_name: givenName.trim(),
+          family_name: familyName.trim(),
+          preferred_name: preferredName.trim() || null,
+          phone: phone.trim(),
+        },
+      },
     })
 
     if (error) {
@@ -68,14 +76,7 @@ export default function SignupPage() {
       alert("User creation failed")
       return
     }
-    await supabase
-      .from("clients")
-      .update({
-        name: `${givenName.trim()} ${familyName.trim()}`,
-        preferred_name: preferredName.trim() || null,
-        phone: phone.trim() || null,
-      })
-      .eq("profile_id", user.id)
+
     alert("Account created successfully! Please check your email to verify your account, then log in.")
   }
 

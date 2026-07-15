@@ -462,7 +462,11 @@ export default function ClientDashboard() {
                 <div className="space-y-3 text-sm lg:text-base text-black">
                   <div>
                     <p className="text-sm lg:text-base font-semibold">Name</p>
-                    <p>{client?.preferred_name || client?.name || "-"}</p>
+                    <p>
+                      {client?.preferred_name
+                        ? `${client.preferred_name} ${client.name?.split(" ").slice(1).join(" ")}`
+                        : client?.name || "-"}
+                    </p>
                   </div>
 
                   <div>
@@ -514,7 +518,11 @@ export default function ClientDashboard() {
                 <div className="space-y-4 text-black">
                   <div>
                     <p className="font-semibold">Name</p>
-                    <p>{client?.preferred_name || client?.name || "-"}</p>
+                    <p>
+                      {client?.preferred_name
+                        ? `${client.preferred_name} ${client.name?.split(" ").slice(1).join(" ")}`
+                        : client?.name || "-"}
+                    </p>
                   </div>
 
                   <div>
