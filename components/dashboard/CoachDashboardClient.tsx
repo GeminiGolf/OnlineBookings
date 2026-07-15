@@ -699,7 +699,11 @@ export default function CoachDashboardClient({
                 </div>
 
                 <Link
-                  href={`/coach/clients/${selectedBooking.clients?.id}`}
+                  href={`${
+                    basePath === "/admin/schedule"
+                      ? "/admin/clients"
+                      : "/coach/clients"
+                  }/${selectedBooking.clients?.id}`}
                   className="text-xl font-semibold underline text-blue-600 hover:text-blue-800"
                 >
                   {selectedBooking.clients?.name}
