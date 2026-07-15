@@ -15,7 +15,8 @@ import "react-day-picker/dist/style.css"
 
 export type TransactionRow = {
   id: number
-  purchase_date: string | null
+  client_id: number
+  purchase_date: string |null
   price: number | null
   transaction_name: string | null
   payment_method: string | null
@@ -306,6 +307,7 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 															<table className="w-auto text-sm">
 																<thead>
 																	<tr className="border-b">
+																		<th className="px-4 py-2 text-left">ID</th>
 																		<th className="px-4 py-2 text-left">Price</th>
 																		<th className="px-4 py-2 text-left">Purchase</th>
 																		<th className="px-4 py-2 text-left">Method</th>
@@ -316,6 +318,10 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 																<tbody>
 																	{coach.transactions.map((transaction) => (
 																		<tr key={transaction.id} className="border-b last:border-0">
+																			<td className="px-4 py-2">
+																				[{transaction.id}]
+																			</td>
+
 																			<td className="px-4 py-2">
 																				${(transaction.price ?? 0).toFixed(0)}
 																			</td>
@@ -342,7 +348,7 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 																			</td>
 
 																			<td className="px-4 py-2">
-																				{transaction.client_name}
+																				[{transaction.client_id}] {transaction.client_name}
 																			</td>
 																		</tr>
 																	))}
@@ -413,6 +419,7 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 														<table className="w-auto text-sm">
 															<thead>
 																<tr className="border-b">
+																	<th className="px-2 py-1 text-left">ID</th>
 																	<th className="px-3 py-1 text-left">Price</th>
 																	<th className="px-2 py-1 text-left">Purchase</th>
 																	<th className="px-2 py-1 text-left">Method</th>
@@ -423,6 +430,10 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 															<tbody>
 																{coach.transactions.map((transaction) => (
 																	<tr key={transaction.id} className="border-b last:border-0">
+																		<td className="px-2 py-2">
+																			[{transaction.id}]
+																		</td>
+
 																		<td className="px-3 py-2">
 																			${(transaction.price ?? 0).toFixed(0)}
 																		</td>
@@ -449,7 +460,7 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 																		</td>
 
 																		<td className="px-2 py-2">
-																			{transaction.client_name}
+																			[{transaction.client_id}] {transaction.client_name}
 																		</td>
 																	</tr>
 																))}

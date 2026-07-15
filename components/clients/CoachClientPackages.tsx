@@ -89,10 +89,15 @@ export default function CoachClientPackages({ packages }: Props) {
               onClick={() => setExpandedPackageId(expandedPackageId === pkg.id ? null : pkg.id)}
               className="flex w-full items-center justify-between"
             >
-              <div className="flex flex-1 items-center justify-between">
+              <div className="flex flex-1 items-center justify-between gap-6">
                 <div>
                   <div className="text-xs font-semibold text-gray-600">Balance</div>
                   <div className="font-bold">{(pkg.lessons_added || 0) - (pkg.lessons_used || 0)}</div>
+                </div>
+
+                <div className="text-center">
+                  <div className="text-xs font-semibold text-gray-600">ID</div>
+                  <div className="font-normal">[{pkg.id}]</div>
                 </div>
 
                 <div className="text-center">
@@ -183,6 +188,7 @@ export default function CoachClientPackages({ packages }: Props) {
           <thead>
             <tr className="border-b bg-gray-50">
               <th className="p-3 text-left text-sm lg:text-[13px]">Balance</th>
+              <th className="p-3 text-center text-sm lg:text-[13px]">ID</th>
               <th className="p-3 text-left text-sm lg:text-[13px]">Expiry</th>
               <th className="p-3 text-left text-sm lg:text-[13px]">Method</th>
               <th className="p-3 text-center text-sm lg:text-[13px]">Receipt</th>
@@ -194,9 +200,21 @@ export default function CoachClientPackages({ packages }: Props) {
             {paginatedPackages.map((pkg) => (
               <React.Fragment key={pkg.id}>
                 <tr className="border-b">
-                  <td className="p-3 text-sm lg:text-[14px]">{(pkg.lessons_added || 0) - (pkg.lessons_used || 0)}</td>
-                  <td className="p-3 text-sm lg:text-[14px]">{formatDate(pkg.expiration_date)}</td>
-                  <td className="p-3 text-sm lg:text-[14px]">{pkg.payment_method}</td>
+                  <td className="p-3 text-sm lg:text-[14px]">
+                    {(pkg.lessons_added || 0) - (pkg.lessons_used || 0)}
+                  </td>
+
+                  <td className="p-3 text-center text-sm lg:text-[14px]">
+                    [{pkg.id}]
+                  </td>
+
+                  <td className="p-3 text-sm lg:text-[14px]">
+                    {formatDate(pkg.expiration_date)}
+                  </td>
+
+                  <td className="p-3 text-sm lg:text-[14px]">
+                    {pkg.payment_method}
+                  </td>
                   <td className="p-3 text-center text-sm lg:text-[14px]">
                     {pkg.receipt_url ? (
                       <button onClick={() => viewReceipt(pkg.receipt_url)}>📷</button>
@@ -227,7 +245,7 @@ export default function CoachClientPackages({ packages }: Props) {
 
                 {expandedPackageId === pkg.id && (
                   <tr className="border-b bg-gray-50">
-                    <td colSpan={5} className="p-4">
+                    <td colSpan={6} className="p-4">
                       <div className="space-y-2 text-sm">
                         <div>Balance: {(pkg.lessons_added || 0) - (pkg.lessons_used || 0)}</div>
                         <div>Purchase: {pkg.transaction_name}</div>
