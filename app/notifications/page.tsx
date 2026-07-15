@@ -81,7 +81,13 @@ export default function NotificationsPage() {
         .from("notifications")
         .select("*")
         .eq("coach_id", coach?.id)
-        .in("type", ["late_booking", "client_cancelled", "client_rescheduled", "missing_receipt"])
+        .in("type", [
+          "late_booking",
+          "double_booking",
+          "client_cancelled",
+          "client_rescheduled",
+          "missing_receipt",
+        ])
         .order("created_at", { ascending: false })
       data = result.data
       error = result.error
@@ -272,7 +278,9 @@ export default function NotificationsPage() {
       })
     )
 
-    setUrgentNotifications(enrichedNotifications.filter((n) => n.is_urgent && !n.is_read))
+    setUrgentNotifications(
+      enrichedNotifications.filter((n) => n.is_urgent && !n.is_read)
+    )
     setActiveNotifications(enrichedNotifications.filter((n) => !n.is_urgent && !n.is_read))
     setOlderNotifications(
       enrichedNotifications
@@ -433,29 +441,54 @@ export default function NotificationsPage() {
             <div className="space-y-4">
               {urgentNotifications.map((notification) => (
                 <div key={notification.id} className="rounded-xl border border-red-300 bg-red-100 p-2 shadow">
-                  <h3 className="text-lg font-bold text-red-700">LATE BOOKING</h3>
-                  <p className="mt-1 text-black">
-                    <strong>Client:</strong> {notification.client_name}
-                  </p>
-                  <p className="mt-1 text-black">
-                    <strong>Time:</strong> {(notification.lesson_date ?? "").split("-").reverse().slice(0, 2).join("/")}{" "}
-                    @ {(notification.lesson_time ?? "").replace(":00", "").toLowerCase()}
-                  </p>
+                  {notification.type === "late_booking" ? (
+                    <>
+                      <h3 className="text-lg font-bold text-red-700">LATE BOOKING</h3>
 
-                  <div className="mt-1 flex gap-1">
-                    <button
-                      onClick={() => handleApprove(notification)}
-                      className="rounded bg-green-600 px-2 py-2 text-white"
-                    >
-                      Approve
-                    </button>
-                    <button
-                      onClick={() => handleReject(notification)}
-                      className="rounded bg-red-600 px-4 py-2 text-white"
-                    >
-                      Reject
-                    </button>
-                  </div>
+                      <p className="mt-1 text-black">
+                        <strong>Client:</strong> {notification.client_name}
+                      </p>
+
+                      <p className="mt-1 text-black">
+                        <strong>Time:</strong>{" "}
+                        {(notification.lesson_date ?? "").split("-").reverse().slice(0, 2).join("/")} @{" "}
+                        {(notification.lesson_time ?? "").replace(":00", "").toLowerCase()}
+                      </p>
+
+                      <div className="mt-1 flex gap-1">
+                        <button
+                          onClick={() => handleApprove(notification)}
+                          className="rounded bg-green-600 px-2 py-2 text-white"
+                        >
+                          Approve
+                        </button>
+
+                        <button
+                          onClick={() => handleReject(notification)}
+                          className="rounded bg-red-600 px-4 py-2 text-white"
+                        >
+                          Reject
+                        </button>
+                      </div>
+                    </>
+                  ) : notification.type === "double_booking" ? (
+                    <>
+                      <h3 className="text-lg font-bold text-red-700">DOUBLE BOOKING</h3>
+
+                      <pre className="mt-3 whitespace-pre-wrap font-sans text-black">
+                        {notification.message}
+                      </pre>
+
+                      <div className="mt-3">
+                        <button
+                          onClick={() => toggleNotification(notification.id, true)}
+                          className="rounded bg-blue-600 px-4 py-2 text-white"
+                        >
+                          Mark as Read
+                        </button>
+                      </div>
+                    </>
+                  ) : null}
                 </div>
               ))}
             </div>

@@ -16,7 +16,9 @@ export default function Navbar() {
   const [urgentNotifications, setUrgentNotifications] = useState<
     {
       id: number
-      booking_id: number | null
+      booking_id: number |null
+      type: string
+      message: string
       client_name: string
       lesson_date: string
       lesson_time: string
@@ -69,6 +71,7 @@ export default function Navbar() {
           .eq("is_read", false)
           .in("type", [
             "late_booking",
+            "double_booking",
             "client_cancelled",
             "client_rescheduled",
             "missing_receipt",
@@ -103,6 +106,8 @@ export default function Navbar() {
             return {
               id: notification.id,
               booking_id: notification.booking_id,
+              type: notification.type,
+              message: notification.message,
               client_name,
               lesson_date,
               lesson_time,
@@ -129,7 +134,7 @@ export default function Navbar() {
       const { data: urgentNotificationsData } = await supabase
         .from("notifications")
         .select("*")
-        .eq("type", "late_booking")
+        .in("type", ["late_booking", "double_booking"])
         .eq("is_urgent", true)
         .eq("is_read", false)
 
@@ -169,6 +174,8 @@ export default function Navbar() {
           return {
             id: notification.id,
             booking_id: notification.booking_id,
+            type: notification.type,
+            message: notification.message,
             client_name,
             lesson_date,
             lesson_time,
@@ -190,6 +197,21 @@ export default function Navbar() {
         resolved_at: new Date().toISOString(),
         resolved_by: role,
         rejection_reason: "Approved",
+      })
+      .eq("id", notificationId)
+
+    if (!error) {
+      checkSession()
+    }
+  }
+
+  async function markNotificationRead(notificationId: number) {
+    const { error } = await supabase
+      .from("notifications")
+      .update({
+        is_read: true,
+        is_urgent: false,
+        resolved_at: new Date().toISOString(),
       })
       .eq("id", notificationId)
 
@@ -290,34 +312,55 @@ export default function Navbar() {
                         <div className="space-y-3">
                           {urgentNotifications.map((notification) => (
                             <div key={notification.id} className="rounded-lg border border-red-200 bg-red-50 p-3">
-                              <div className="mb-2 text-sm font-bold text-black">
-                                Late Booking - {notification.client_name}
-                              </div>
+                              {notification.type === "double_booking" ? (
+                                <>
+                                  <div className="mb-2 text-sm font-bold text-red-700">
+                                    DOUBLE BOOKING
+                                  </div>
 
-                              <div className="mb-3 text-xs text-gray-700">
-                                {new Date(notification.lesson_date).toLocaleDateString("en-GB", {
-                                  day: "2-digit",
-                                  month: "2-digit",
-                                })}
-                                {" @ "}
-                                {notification.lesson_time.replace(":00", "").toLowerCase()}
-                              </div>
+                                  <div className="mb-3 whitespace-pre-line text-sm text-black">
+                                    {notification.message}
+                                  </div>
 
-                              <div className="flex gap-2">
-                                <button
-                                  onClick={() => handleApprove(notification.id)}
-                                  className="rounded bg-green-600 px-3 py-1 text-sm text-white"
-                                >
-                                  Approve
-                                </button>
+                                  <button
+                                    onClick={() => markNotificationRead(notification.id)}
+                                    className="rounded bg-blue-600 px-3 py-1 text-sm text-white"
+                                  >
+                                    Mark as Read
+                                  </button>
+                                </>
+                              ) : (
+                                <>
+                                  <div className="mb-2 text-sm font-bold text-black">
+                                    Late Booking - {notification.client_name}
+                                  </div>
 
-                                <button
-                                  onClick={() => handleReject(notification.id, notification.booking_id)}
-                                  className="rounded bg-red-600 px-3 py-1 text-sm text-white"
-                                >
-                                  Reject
-                                </button>
-                              </div>
+                                  <div className="mb-3 text-xs text-gray-700">
+                                    {new Date(notification.lesson_date).toLocaleDateString("en-GB", {
+                                      day: "2-digit",
+                                      month: "2-digit",
+                                    })}
+                                    {" @ "}
+                                    {notification.lesson_time.replace(":00", "").toLowerCase()}
+                                  </div>
+
+                                  <div className="flex gap-2">
+                                    <button
+                                      onClick={() => handleApprove(notification.id)}
+                                      className="rounded bg-green-600 px-3 py-1 text-sm text-white"
+                                    >
+                                      Approve
+                                    </button>
+
+                                    <button
+                                      onClick={() => handleReject(notification.id, notification.booking_id)}
+                                      className="rounded bg-red-600 px-3 py-1 text-sm text-white"
+                                    >
+                                      Reject
+                                    </button>
+                                  </div>
+                                </>
+                              )}
                             </div>
                           ))}
                         </div>
@@ -365,26 +408,55 @@ export default function Navbar() {
                         <div className="space-y-3">
                           {urgentNotifications.map((notification) => (
                             <div key={notification.id} className="rounded-lg border border-red-200 bg-red-50 p-3">
-                              <div className="mb-2 text-sm font-bold text-black">
-                                Late Booking - {notification.client_name}
-                              </div>
-                              <div className="mb-3 text-xs text-gray-700">
-                                {notification.lesson_date} @ {notification.lesson_time}
-                              </div>
-                              <div className="flex gap-2">
-                                <button
-                                  onClick={() => handleApprove(notification.id)}
-                                  className="rounded bg-green-600 px-3 py-1 text-sm text-white"
-                                >
-                                  Approve
-                                </button>
-                                <button
-                                  onClick={() => handleReject(notification.id, notification.booking_id)}
-                                  className="rounded bg-red-600 px-3 py-1 text-sm text-white"
-                                >
-                                  Reject
-                                </button>
-                              </div>
+                              {notification.type === "double_booking" ? (
+                                <>
+                                  <div className="mb-2 text-sm font-bold text-red-700">
+                                    DOUBLE BOOKING
+                                  </div>
+
+                                  <div className="mb-3 whitespace-pre-line text-sm text-black">
+                                    {notification.message}
+                                  </div>
+
+                                  <button
+                                    onClick={() => markNotificationRead(notification.id)}
+                                    className="rounded bg-blue-600 px-3 py-1 text-sm text-white"
+                                  >
+                                    Mark as Read
+                                  </button>
+                                </>
+                              ) : (
+                                <>
+                                  <div className="mb-2 text-sm font-bold text-black">
+                                    Late Booking - {notification.client_name}
+                                  </div>
+
+                                  <div className="mb-3 text-xs text-gray-700">
+                                    {new Date(notification.lesson_date).toLocaleDateString("en-GB", {
+                                      day: "2-digit",
+                                      month: "2-digit",
+                                    })}
+                                    {" @ "}
+                                    {notification.lesson_time.replace(":00", "").toLowerCase()}
+                                  </div>
+
+                                  <div className="flex gap-2">
+                                    <button
+                                      onClick={() => handleApprove(notification.id)}
+                                      className="rounded bg-green-600 px-3 py-1 text-sm text-white"
+                                    >
+                                      Approve
+                                    </button>
+
+                                    <button
+                                      onClick={() => handleReject(notification.id, notification.booking_id)}
+                                      className="rounded bg-red-600 px-3 py-1 text-sm text-white"
+                                    >
+                                      Reject
+                                    </button>
+                                  </div>
+                                </>
+                              )}
                             </div>
                           ))}
                         </div>

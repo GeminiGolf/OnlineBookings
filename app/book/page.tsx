@@ -109,7 +109,21 @@ export default function BookPage() {
       return
     }
 
-    const { data: client } = await supabase.from("clients").select("id").eq("profile_id", profile.id).single()
+    const {
+      data: client,
+      error: clientError,
+    } = await supabase
+      .from("clients")
+      .select("id, primary_coach_id")
+      .eq("profile_id", profile.id)
+      .single()
+
+    if (clientError) {
+      console.error(clientError)
+      alert(clientError.message)
+      setLoading(false)
+      return
+    }
 
     if (!client) {
       alert("Client record not found.")
@@ -135,6 +149,25 @@ export default function BookPage() {
       alert("Booking failed.")
       setLoading(false)
       return
+    }
+
+    if (!client.primary_coach_id) {
+      const response = await fetch("/api/assign-primary-coach", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          clientId: client.id,
+          coachId: selectedCoach,
+        }),
+      })
+
+      const result = await response.json()
+
+      if (!response.ok) {
+        console.error("Coach assignment failed:", result)
+      }
     }
 
     const todayString = new Date().toISOString().split("T")[0]

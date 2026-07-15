@@ -371,6 +371,29 @@ export default function ClientDashboard() {
       return
     }
 
+    if (!client.primary_coach_id) {
+      const response = await fetch("/api/assign-primary-coach", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          clientId: client.id,
+          coachId: selectedCoach,
+        }),
+      })
+
+      if (!response.ok) {
+        const result = await response.json()
+        console.error("Coach assignment failed:", result)
+      } else {
+        setClient({
+          ...client,
+          primary_coach_id: selectedCoach,
+        })
+      }
+    }
+    
     let isLateBooking = false
 
     const today = new Date()
