@@ -67,15 +67,10 @@ export default function AdminClientsPage() {
           <thead className="border-b bg-gray-100">
             <tr>
               <th className="p-4 text-left text-black">Name</th>
-
               <th className="p-4 text-left text-black">Gov ID</th>
-
               <th className="p-4 text-left text-black">Phone</th>
-
               <th className="p-4 text-left text-black">Email</th>
-
               <th className="p-4 text-left text-black">Lessons</th>
-
               <th className="p-4 text-left text-black">Open</th>
             </tr>
           </thead>
@@ -97,15 +92,10 @@ export default function AdminClientsPage() {
               filteredClients.map((client) => (
                 <tr key={client.id} className="border-b">
                   <td className="p-4 text-black">{client.name}</td>
-
                   <td className="p-4 text-black">{client.gov_id || "-"}</td>
-
                   <td className="p-4 text-black">{client.phone || "-"}</td>
-
                   <td className="p-4 text-black">{client.email || "-"}</td>
-
                   <td className="p-4 text-black">{client.lessons_remaining ?? 0}</td>
-
                   <td className="p-4">
                     <Link href={`/admin/clients/${client.id}`} className="rounded-lg bg-blue-600 px-4 py-2 text-white">
                       Open

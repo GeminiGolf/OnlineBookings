@@ -1,4 +1,3 @@
-import CoachClientProfileClient from "@/components/clients/CoachClientProfileClient"
 import Link from "next/link"
 import { createClient } from "@/lib/supabaseServer"
 import CoachClientsSearch from "@/components/clients/CoachClientsSearch"
