@@ -194,7 +194,17 @@ export default function BookPage() {
         alert("NOTIFICATION FAILED:\n\n" + JSON.stringify(error, null, 2))
       }
     }
-
+    await fetch("/api/check-double-bookings", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        coachId: selectedCoach,
+        lessonDate: formattedDate,
+        lessonTime: selectedTime,
+      }),
+    })
     alert("Booking confirmed!")
     setSelectedTime("")
     if (selectedDate && selectedCoach) {

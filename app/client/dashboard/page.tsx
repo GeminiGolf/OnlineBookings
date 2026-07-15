@@ -393,7 +393,7 @@ export default function ClientDashboard() {
         })
       }
     }
-    
+
     let isLateBooking = false
 
     const today = new Date()
@@ -445,7 +445,17 @@ export default function ClientDashboard() {
         message: `Late booking requires review.\n\nDate: ${formattedDate}\nTime: ${selectedTime}`,
       })
     }
-
+    await fetch("/api/check-double-bookings", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        coachId: selectedCoach,
+        lessonDate: formattedDate,
+        lessonTime: selectedTime,
+      }),
+    })
     alert("Booking confirmed!")
     setSelectedTime("")
     if (selectedDate && selectedCoach) {

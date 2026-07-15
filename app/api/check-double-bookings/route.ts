@@ -6,62 +6,46 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 )
 
-export async function GET() {
-  const today = new Date()
-  today.setDate(today.getDate() - 1)
+export async function POST(req: Request) {
+  try {
+    const { coachId, lessonDate, lessonTime } = await req.json()
 
-  const formattedToday = today.toISOString().split("T")[0]
+    const { data: bookings, error } = await supabase
+      .from("bookings")
+      .select(`
+        id,
+        coach_id,
+        client_id,
+        lesson_date,
+        lesson_time,
+        status
+      `)
+      .eq("coach_id", coachId)
+      .eq("lesson_date", lessonDate)
+      .eq("lesson_time", lessonTime)
+      .in("status", ["booked", "completed", "no_show"])
 
-  const { data: bookings, error } = await supabase
-    .from("bookings")
-    .select(`
-      id,
-      coach_id,
-      client_id,
-      lesson_date,
-      lesson_time,
-      status,
-      booked_by
-    `)
-    .gte("lesson_date", formattedToday)
-    .in("status", ["booked", "completed", "no_show"])
-
-  if (error) {
-    return NextResponse.json(
-      {
-        success: false,
-        error: error.message,
-      },
-      { status: 500 }
-    )
-  }
-
-  const grouped = new Map<string, typeof bookings>()
-
-  for (const booking of bookings ?? []) {
-    const key = `${booking.coach_id}-${booking.lesson_date}-${booking.lesson_time}`
-
-    if (!grouped.has(key)) {
-      grouped.set(key, [])
+    if (error) {
+      return NextResponse.json(
+        { success: false, error: error.message },
+        { status: 500 }
+      )
     }
 
-    grouped.get(key)!.push(booking)
-  }
+    // No conflict (or conflict resolved)
+    if (!bookings || bookings.length <= 1) {
+      await supabase
+        .from("double_booking_alerts")
+        .delete()
+        .eq("coach_id", coachId)
+        .eq("lesson_date", lessonDate)
+        .eq("lesson_time", lessonTime)
 
-  const duplicates = Array.from(grouped.values()).filter(
-    (group) => group.length > 1
-  )
-
-  const activeKeys = new Set<string>()
-
-  for (const duplicate of duplicates) {
-    const coachId = duplicate[0].coach_id
-    const lessonDate = duplicate[0].lesson_date
-    const lessonTime = duplicate[0].lesson_time
-
-    const key = `${coachId}-${lessonDate}-${lessonTime}`
-
-    activeKeys.add(key)
+      return NextResponse.json({
+        success: true,
+        duplicate: false,
+      })
+    }
 
     const { data: existingAlert } = await supabase
       .from("double_booking_alerts")
@@ -72,7 +56,10 @@ export async function GET() {
       .maybeSingle()
 
     if (existingAlert) {
-      continue
+      return NextResponse.json({
+        success: true,
+        duplicate: true,
+      })
     }
 
     const { data: coach } = await supabase
@@ -81,7 +68,7 @@ export async function GET() {
       .eq("id", coachId)
       .single()
 
-    const clientIds = duplicate.map((b) => b.client_id)
+    const clientIds = bookings.map((b) => b.client_id)
 
     const { data: clients } = await supabase
       .from("clients")
@@ -98,14 +85,11 @@ export async function GET() {
       `Date: ${lessonDate}\n` +
       `Time: ${lessonTime}\n\n`
 
-		duplicate.forEach((booking) => {
-			message +=
-				`${clientMap.get(booking.client_id) || "Unknown Client"}|${booking.client_id}\n`
-		})
+    bookings.forEach((booking) => {
+      message += `${clientMap.get(booking.client_id) || "Unknown Client"}|${booking.client_id}\n`
+    })
 
-		message += "\n"
-
-    message += "Please resolve immediately."
+    message += "\nPlease resolve immediately."
 
     await supabase.from("notifications").insert({
       coach_id: coachId,
@@ -122,25 +106,15 @@ export async function GET() {
       lesson_date: lessonDate,
       lesson_time: lessonTime,
     })
+
+    return NextResponse.json({
+      success: true,
+      duplicate: true,
+    })
+  } catch (err) {
+    return NextResponse.json(
+      { success: false, error: "Server error", details: err },
+      { status: 500 }
+    )
   }
-
-  const { data: alerts } = await supabase
-    .from("double_booking_alerts")
-    .select("*")
-
-  for (const alert of alerts ?? []) {
-    const key = `${alert.coach_id}-${alert.lesson_date}-${alert.lesson_time}`
-
-    if (!activeKeys.has(key)) {
-      await supabase
-        .from("double_booking_alerts")
-        .delete()
-        .eq("id", alert.id)
-    }
-  }
-
-  return NextResponse.json({
-    success: true,
-    duplicates: duplicates.length,
-  })
 }
