@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import { supabase } from "@/lib/supabaseClient"
 import { useRouter } from "next/navigation"
+import RequireClient from "@/components/auth/RequireClient"
 
 export default function ClientNotificationsPage() {
   const [notifications, setNotifications] = useState<any[]>([])
@@ -22,8 +23,7 @@ export default function ClientNotificationsPage() {
       data: { session },
     } = await supabase.auth.getSession()
     if (!session) {
-      alert("Please log in as client.")
-      router.push("/login")
+      router.replace("/login")
       return
     }
 
@@ -34,8 +34,7 @@ export default function ClientNotificationsPage() {
       return
     }
     if (profile?.role !== "client" && profile?.role !== "admin") {
-      alert("Please log in as client.")
-      router.push("/login")
+      router.replace("/login")
       return
     }
     if (!client) return
@@ -173,7 +172,8 @@ export default function ClientNotificationsPage() {
     setExpandedNotifications((prev) => (prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]))
   }
   return (
-    <main className="min-h-screen bg-gray-100 p-4 lg:p-8 text-black">
+    <RequireClient>
+      <main className="min-h-screen bg-gray-100 p-4 lg:p-8 text-black">
       <div className="mx-auto max-w-6xl lg:p-10">
         <div className="w-full">
           <h2 className="mb-4 text-[20px] lg:text-2xl font-bold text-left"> Notifications ({notifications.length})</h2>
@@ -336,5 +336,6 @@ export default function ClientNotificationsPage() {
         </div>
       </div>
     </main>
+  </RequireClient>
   )
 }

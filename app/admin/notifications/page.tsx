@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import { supabase } from "@/lib/supabaseClient"
 import { useRouter } from "next/navigation"
+import RequireAdmin from "@/components/auth/RequireAdmin"
 
 type Notification = {
   id: number
@@ -56,11 +57,9 @@ export default function NotificationsPage() {
       data: { session },
     } = await supabase.auth.getSession()
     if (!session) {
-      alert("Please log in as coach.")
-      router.push("/login")
+      router.replace("/login")
       return
     }
-
     const { data: profile } = await supabase.from("profiles").select("role").eq("id", session.user.id).single()
     setCurrentRole(profile?.role || "")
 
@@ -69,8 +68,7 @@ export default function NotificationsPage() {
       return
     }
     if (profile?.role !== "admin") {
-      alert("Please log in as coach.")
-      router.push("/login")
+      router.replace("/login")
       return
     }
 
@@ -405,7 +403,8 @@ export default function NotificationsPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-100 p-8">
+    <RequireAdmin>
+      <main className="min-h-screen bg-gray-100 p-8">
       <div className="mx-auto max-w-6xl">
         {/* URGENT */}
         <div className="mb-10">
@@ -845,5 +844,6 @@ export default function NotificationsPage() {
         </div>
       )}
     </main>
+  </RequireAdmin>
   )
 }

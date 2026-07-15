@@ -1,11 +1,30 @@
 import Link from "next/link"
 import { createClient } from "@/lib/supabaseServer"
+import { redirect } from "next/navigation"
 import AdminTransactionsTable, {
   TransactionRow,
 } from "@/components/transactions/AdminTransactionsTable"
 
 export default async function AdminTransactionsPage() {
   const supabase = await createClient()
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (!user) {
+    redirect("/login")
+  }
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", user.id)
+    .single()
+
+  if (!profile || profile.role !== "admin") {
+    redirect("/login")
+  }
 
   const { data: packages } = await supabase
     .from("lesson_packages")

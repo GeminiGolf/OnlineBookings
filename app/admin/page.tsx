@@ -3,6 +3,7 @@
 import Link from "next/link"
 import { useEffect, useState } from "react"
 import { supabase } from "@/lib/supabaseClient"
+import RequireAdmin from "@/components/auth/RequireAdmin"
 
 export default function AdminPage() {
   const [totalNotifications, setTotalNotifications] = useState(0)
@@ -34,7 +35,8 @@ export default function AdminPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-100 p-8">
+    <RequireAdmin>
+      <main className="min-h-screen bg-gray-100 p-8">
       <h1 className="mb-6 text-4xl font-bold text-black">
         Admin Dashboard
       </h1>
@@ -80,5 +82,6 @@ export default function AdminPage() {
       </div>
       
     </main>
+  </RequireAdmin>
   )
 }

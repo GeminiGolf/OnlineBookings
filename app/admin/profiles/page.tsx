@@ -1,8 +1,27 @@
 import { createClient } from "@/lib/supabaseServer"
+import { redirect } from "next/navigation"
 import AdminProfilesSearch from "@/components/admin/AdminProfilesSearch"
 
 export default async function AdminProfilesPage() {
   const supabase = await createClient()
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (!user) {
+    redirect("/login")
+  }
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", user.id)
+    .single()
+
+  if (!profile || profile.role !== "admin") {
+    redirect("/login")
+  }
   const { data: coaches } = await supabase
     .from("coaches")
     .select("id, name, preferred_name")

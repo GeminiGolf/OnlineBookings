@@ -1,6 +1,7 @@
 import CoachClientProfileClient from "@/components/clients/CoachClientProfileClient"
 import Link from "next/link"
 import { createClient } from "@/lib/supabaseServer"
+import { redirect } from "next/navigation"
 import PreviousLessonsTable from "@/components/clients/PreviousLessonsTable"
 import CoachClientPackages from "@/components/clients/CoachClientPackages"
 import CoachBookLessonCard from "@/components/clients/CoachBookLessonCard"
@@ -20,7 +21,7 @@ export default async function CoachClientProfilePage({ params }: Props) {
   } = await supabase.auth.getUser()
 
   if (!user) {
-    return null
+    redirect("/login")
   }
 
   const { data: coach } = await supabase
@@ -30,7 +31,7 @@ export default async function CoachClientProfilePage({ params }: Props) {
     .single()
 
   if (!coach) {
-    return null
+    redirect("/login")
   }
 
   const { data: client } = await supabase

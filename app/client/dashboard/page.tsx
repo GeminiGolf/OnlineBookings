@@ -5,6 +5,7 @@ import { DayPicker } from "react-day-picker"
 import "react-day-picker/dist/style.css"
 import { supabase } from "@/lib/supabaseClient"
 import Link from "next/link"
+import RequireClient from "@/components/auth/RequireClient"
 import { generateSlots } from "@/lib/scheduling/generateSlots"
 type Coach = {
   id: number
@@ -441,7 +442,8 @@ export default function ClientDashboard() {
     .sort((a, b) => new Date(a.expiration_date).getTime() - new Date(b.expiration_date).getTime())
     .slice((packagesPage - 1) * ITEMS_PER_PAGE, packagesPage * ITEMS_PER_PAGE)
   return (
-    <main className="min-h-screen bg-gray-100 text-black">
+    <RequireClient>
+      <main className="min-h-screen bg-gray-100 text-black">
       <div className="mx-auto max-w-5xl p-4 lg:p-8">
         <div className="mt-8">
           {/* Mobile / Small Screen */}
@@ -1001,5 +1003,6 @@ export default function ClientDashboard() {
         )}
       </div>
     </main>
+  </RequireClient>
   )
 }

@@ -1,6 +1,7 @@
 import CoachClientProfileClient from "@/components/clients/CoachClientProfileClient"
 import Link from "next/link"
 import { createClient } from "@/lib/supabaseServer"
+import { redirect } from "next/navigation"
 import PreviousLessonsTable from "@/components/clients/PreviousLessonsTable"
 import CoachClientPackages from "@/components/clients/CoachClientPackages"
 import CoachBookLessonCard from "@/components/clients/CoachBookLessonCard"
@@ -19,6 +20,24 @@ export default async function AdminClientProfilePage({ params }: Props) {
   const { id } = await params
 
   const supabase = await createClient()
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (!user) {
+    redirect("/login")
+  }
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", user.id)
+    .single()
+
+  if (!profile || profile.role !== "admin") {
+    redirect("/login")
+  }
 
   const { data: client } = await supabase
     .from("clients")
