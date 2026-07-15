@@ -29,15 +29,17 @@ export default async function AdminTransactionsPage() {
   const { data: packages } = await supabase
     .from("lesson_packages")
     .select(`
-      id,
-      client_id,
-      added_by,
-      purchase_date,
-      price,
-      transaction_name,
-      payment_method,
-      receipt_url
-    `)
+          id,
+          client_id,
+          added_by,
+          purchase_date,
+          expiration_date,
+          lessons_added,
+          price,
+          transaction_name,
+          payment_method,
+          receipt_url
+        `)
     .gt("price", 0)
     .order("purchase_date", { ascending: false })
 
@@ -76,6 +78,8 @@ export default async function AdminTransactionsPage() {
         id: pkg.id,
         client_id: pkg.client_id,
         purchase_date: pkg.purchase_date,
+        expiration_date: pkg.expiration_date,
+        lessons_added: pkg.lessons_added,
         price: pkg.price,
         transaction_name: pkg.transaction_name,
         payment_method: pkg.payment_method,

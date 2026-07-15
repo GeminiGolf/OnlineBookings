@@ -1,5 +1,6 @@
 "use client"
 import PdfPreviewModal from "@/components/pdf/PdfPreviewModal"
+import { supabase } from "@/lib/supabaseClient"
 import jsPDF from "jspdf"
 import { Fragment, useEffect, useMemo, useState } from "react"
 import {
@@ -17,7 +18,9 @@ import "react-day-picker/dist/style.css"
 export type TransactionRow = {
   id: number
   client_id: number
-  purchase_date: string |null
+  purchase_date: string | null
+  expiration_date: string | null
+  lessons_added: number | null
   price: number | null
   transaction_name: string | null
   payment_method: string | null
@@ -39,7 +42,16 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
   const [expandedDates, setExpandedDates] = useState<string[]>([])
   const [page, setPage] = useState(1)
   const [receiptUrl, setReceiptUrl] = useState<string | null>(null)
-const [editingTransaction, setEditingTransaction] = useState<TransactionRow | null>(null)
+	const [editingTransaction, setEditingTransaction] = useState<TransactionRow | null>(null)
+
+	const [editForm, setEditForm] = useState({
+		transaction_name: "",
+		lessons_added: 0,
+		price: 0,
+		payment_method: "",
+		purchase_date: "",
+		expiration_date: "",
+	})
 	const [previewOpen, setPreviewOpen] = useState(false)
 	const [pdfDoc, setPdfDoc] = useState<jsPDF | null>(null)
 	const [pdfFilename, setPdfFilename] = useState("")
@@ -128,6 +140,31 @@ const [editingTransaction, setEditingTransaction] = useState<TransactionRow | nu
 		(sum, transaction) => sum + (transaction.price ?? 0),
 		0
 	)
+
+	async function saveTransaction() {
+		if (!editingTransaction) return
+
+		const { error } = await supabase
+			.from("lesson_packages")
+			.update({
+				transaction_name: editForm.transaction_name,
+				lessons_added: editForm.lessons_added,
+				price: editForm.price,
+				payment_method: editForm.payment_method,
+				purchase_date: editForm.purchase_date,
+				expiration_date: editForm.expiration_date,
+			})
+			.eq("id", editingTransaction.id)
+
+		if (error) {
+			alert(error.message)
+			return
+		}
+
+		alert("Transaction updated.")
+
+		window.location.reload()
+	}
 
 	function toggleRow(date: string) {
 		setExpandedDates((prev) =>
@@ -326,7 +363,18 @@ const [editingTransaction, setEditingTransaction] = useState<TransactionRow | nu
 																			<td className="px-2 py-2 text-center">
 																				<button
 																					type="button"
-																					onClick={() => setEditingTransaction(transaction)}
+																					onClick={() => {
+																						setEditingTransaction(transaction)
+
+																						setEditForm({
+																							transaction_name: transaction.transaction_name ?? "",
+																							lessons_added: transaction.lessons_added ?? 0,
+																							price: transaction.price ?? 0,
+																							payment_method: transaction.payment_method ?? "",
+																							purchase_date: transaction.purchase_date ?? "",
+																							expiration_date: transaction.expiration_date ?? "",
+																						})
+																					}}
 																					className="text-blue-600 hover:text-blue-800"
 																					title="Edit Transaction"
 																				>
@@ -454,7 +502,18 @@ const [editingTransaction, setEditingTransaction] = useState<TransactionRow | nu
 																		<td className="px-2 py-2 text-center">
 																			<button
 																				type="button"
-																				onClick={() => setEditingTransaction(transaction)}
+																				onClick={() => {
+																					setEditingTransaction(transaction)
+
+																					setEditForm({
+																						transaction_name: transaction.transaction_name ?? "",
+																						lessons_added: transaction.lessons_added ?? 0,
+																						price: transaction.price ?? 0,
+																						payment_method: transaction.payment_method ?? "",
+																						purchase_date: transaction.purchase_date ?? "",
+																						expiration_date: transaction.expiration_date ?? "",
+																					})
+																				}}
 																				className="text-blue-600 hover:text-blue-800"
 																				title="Edit Transaction"
 																			>
@@ -564,6 +623,149 @@ const [editingTransaction, setEditingTransaction] = useState<TransactionRow | nu
           </div>
         </div>
       )}
+
+			{editingTransaction && (
+				<div
+					className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+					onClick={() => setEditingTransaction(null)}
+				>
+					<div
+						className="w-full max-w-xl rounded-xl bg-white p-6 shadow-xl"
+						onClick={(e) => e.stopPropagation()}
+					>
+						<div className="mb-6 flex items-center justify-between">
+							<h2 className="text-2xl font-bold">Edit Transaction</h2>
+
+							<button
+								onClick={() => setEditingTransaction(null)}
+								className="text-2xl font-bold text-gray-500 hover:text-black"
+							>
+								×
+							</button>
+						</div>
+
+						<div className="space-y-4">
+
+							<div className="flex items-center justify-between">
+								<label className="font-semibold">Transaction Name:</label>
+
+								<input
+									type="text"
+									value={editForm.transaction_name}
+									onChange={(e) =>
+										setEditForm({
+											...editForm,
+											transaction_name: e.target.value,
+										})
+									}
+									className="w-64 rounded border px-3 py-2"
+								/>
+							</div>
+
+							<div className="flex items-center justify-between">
+								<label className="font-semibold">Lessons Added:</label>
+
+								<input
+									type="number"
+									value={editForm.lessons_added}
+									onChange={(e) =>
+										setEditForm({
+											...editForm,
+											lessons_added: Number(e.target.value),
+										})
+									}
+									className="w-24 rounded border px-3 py-2"
+								/>
+							</div>
+
+							<div className="flex items-center justify-between">
+								<label className="font-semibold">Price:</label>
+
+								<input
+									type="number"
+									value={editForm.price}
+									onChange={(e) =>
+										setEditForm({
+											...editForm,
+											price: Number(e.target.value),
+										})
+									}
+									className="w-24 rounded border px-3 py-2"
+								/>
+							</div>
+
+							<div className="flex items-center justify-between">
+								<label className="font-semibold">Payment Method:</label>
+
+								<select
+									value={editForm.payment_method}
+									onChange={(e) =>
+										setEditForm({
+											...editForm,
+											payment_method: e.target.value,
+										})
+									}
+									className="w-40 rounded border px-3 py-2"
+								>
+									<option>Cash</option>
+									<option>Card</option>
+									<option>Bank Transfer</option>
+									<option>Other</option>
+								</select>
+							</div>
+
+							<div className="flex items-center justify-between">
+								<label className="font-semibold">Purchase Date:</label>
+
+								<input
+									type="date"
+									value={editForm.purchase_date}
+									onChange={(e) =>
+										setEditForm({
+											...editForm,
+											purchase_date: e.target.value,
+										})
+									}
+									className="rounded border px-3 py-2"
+								/>
+							</div>
+
+							<div className="flex items-center justify-between">
+								<label className="font-semibold">Expiration Date:</label>
+
+								<input
+									type="date"
+									value={editForm.expiration_date}
+									onChange={(e) =>
+										setEditForm({
+											...editForm,
+											expiration_date: e.target.value,
+										})
+									}
+									className="rounded border px-3 py-2"
+								/>
+							</div>
+
+						</div>
+
+						<div className="mt-8 flex justify-end gap-3">
+							<button
+								onClick={() => setEditingTransaction(null)}
+								className="rounded-lg border px-4 py-2"
+							>
+								Cancel
+							</button>
+
+							<button
+								onClick={saveTransaction}
+								className="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+							>
+								Save
+							</button>
+						</div>
+					</div>
+				</div>
+			)}
 
 			<PdfPreviewModal
 				isOpen={previewOpen}
