@@ -146,7 +146,35 @@ export default function CoachClientPackages({ packages }: Props) {
           </div>
         ))}
 
-        {activePackages.length === 0 && <div className="rounded-xl border p-4">No active lessons remaining.</div>}
+        {activePackages.length === 0 && (
+          <div className="rounded-xl border p-4">
+            No active lessons remaining.
+          </div>
+        )}
+
+        {activePackages.length > 0 && (
+          <div className="flex items-center justify-center gap-4 pt-2">
+            <button
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              disabled={page === 1}
+              className="rounded border px-4 py-2 disabled:opacity-50"
+            >
+              Previous
+            </button>
+
+            <span>
+              {page} of {totalPages}
+            </span>
+
+            <button
+              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+              disabled={page === totalPages}
+              className="rounded border px-4 py-2 disabled:opacity-50"
+            >
+              Next
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Desktop */}

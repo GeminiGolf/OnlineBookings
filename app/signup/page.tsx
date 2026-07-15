@@ -82,21 +82,21 @@ export default function SignupPage() {
   return (
     <main className="flex min-h-screen items-start justify-center bg-gray-100 px-4 pt-10 sm:items-center sm:p-10">
       <div className="w-full max-w-md rounded-2xl bg-white p-4 shadow-lg sm:p-8">
-        <h1 className="mb-1 text-3xl font-bold text-black sm:text-4xl">
+        <h1 className="mb-1 text-3xl font-bold text-black sm:text-3xl">
           Client Signup
         </h1>
 
-        <p className="mb-3 text-sm text-gray-600 sm:text-base">
+        <p className="mb-2 text-sm text-gray-600 sm:text-base">
           Create an account to book lessons.
         </p>
 
-        <div className="space-y-4">
+        <div className="space-y-3">
           <input
             type="text"
             placeholder="Preferred Name (Optional)"
             value={preferredName}
             onChange={(e) => setPreferredName(e.target.value)}
-            className="w-full rounded-xl border p-3 text-base text-black sm:p-4 sm:text-lg"
+            className="w-full rounded-xl border p-3 text-base text-black sm:p-3 sm:text-lg"
           />
 
           <input
@@ -104,7 +104,7 @@ export default function SignupPage() {
             placeholder="Given Name *"
             value={givenName}
             onChange={(e) => setGivenName(e.target.value)}
-            className="w-full rounded-xl border p-3 text-base text-black sm:p-4 sm:text-lg"
+            className="w-full rounded-xl border p-3 text-base text-black sm:p-3 sm:text-lg"
           />
 
           <input
@@ -112,7 +112,7 @@ export default function SignupPage() {
             placeholder="Family Name *"
             value={familyName}
             onChange={(e) => setFamilyName(e.target.value)}
-            className="w-full rounded-xl border p-3 text-base text-black sm:p-4 sm:text-lg"
+            className="w-full rounded-xl border p-3 text-base text-black sm:p-3 sm:text-lg"
           />
 
           <input
@@ -120,7 +120,7 @@ export default function SignupPage() {
             placeholder="Phone Number *"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
-            className="w-full rounded-xl border p-3 text-base text-black sm:p-4 sm:text-lg"
+            className="w-full rounded-xl border p-3 text-base text-black sm:p-3 sm:text-lg"
           />
 
           <input
@@ -128,7 +128,7 @@ export default function SignupPage() {
             placeholder="Email *"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full rounded-xl border p-3 text-base text-black sm:p-4 sm:text-lg"
+            className="w-full rounded-xl border p-3 text-base text-black sm:p-3 sm:text-lg"
           />
 
           <input
@@ -136,7 +136,7 @@ export default function SignupPage() {
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full rounded-xl border p-3 text-base text-black sm:p-4 sm:text-lg"
+            className="w-full rounded-xl border p-3 text-base text-black sm:p-3 sm:text-lg"
           />
 
           <input
@@ -144,7 +144,7 @@ export default function SignupPage() {
             placeholder="Confirm Password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
-            className="w-full rounded-xl border p-3 text-base text-black sm:p-4 sm:text-lg"
+            className="w-full rounded-xl border p-3 text-base text-black sm:p-3 sm:text-lg"
           />
 
           <label className="flex items-center gap-2 text-black">
@@ -158,7 +158,7 @@ export default function SignupPage() {
 
           <button
             onClick={handleSignup}
-            className="mx-auto block w-64 rounded-xl bg-green-600 p-3 text-[16px] font-bold text-white transition hover:bg-green-700 sm:w-60 sm:p-3 sm:text-lg"
+            className="mx-auto block w-64 rounded-xl bg-green-600 p-3 text-[16px] font-bold text-white transition hover:bg-green-700 sm:w-60 sm:p-2 sm:text-lg"
           >
             Create Account
           </button>
