@@ -128,7 +128,10 @@ export default function ClientDashboard() {
     }
 
     const { data: allCoaches } = await supabase.from("coaches").select("*")
-    if (allCoaches) setCoaches(allCoaches)
+
+    if (allCoaches) {
+      setCoaches(allCoaches.filter((coach) => coach.id !== 3))
+    }
   }
 
   function timeTo24Hour(time: string) {

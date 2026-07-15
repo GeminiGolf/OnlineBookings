@@ -32,7 +32,7 @@ export default function CoachAvailabilityPage() {
       .order("name")
 
     if (data) {
-      setCoaches(data)
+      setCoaches(data.filter((coach) => coach.id !== 3))
     }
   }
 
