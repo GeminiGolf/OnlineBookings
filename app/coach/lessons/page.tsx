@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { createClient } from "@/lib/supabaseServer"
 import CoachPreviousLessonsTable from "@/components/coach/CoachPreviousLessonsTable"
-
+import { redirect } from "next/navigation"
 export default async function CoachLessonsPage() {
   const supabase = await createClient()
 
@@ -10,7 +10,7 @@ export default async function CoachLessonsPage() {
   } = await supabase.auth.getUser()
 
   if (!user) {
-    return null
+    redirect("/login")
   }
 
   const { data: coach } = await supabase
@@ -20,7 +20,7 @@ export default async function CoachLessonsPage() {
     .single()
 
   if (!coach) {
-    return null
+    redirect("/login")
   }
 
   const { data: lessons } = await supabase

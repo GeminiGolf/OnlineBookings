@@ -2,17 +2,18 @@ import CoachClientProfileClient from "@/components/clients/CoachClientProfileCli
 import Link from "next/link"
 import { createClient } from "@/lib/supabaseServer"
 import CoachClientsSearch from "@/components/clients/CoachClientsSearch"
+import { redirect } from "next/navigation"
 export default async function CoachClientsPage() {
   const supabase = await createClient()
   const {
     data: { user },
   } = await supabase.auth.getUser()
   if (!user) {
-    return null
+    redirect("/login")
   }
   const { data: coach } = await supabase.from("coaches").select("*").eq("profile_id", user.id).single()
   if (!coach) {
-    return null
+    redirect("/login")
   }
   const { data: clients } = await supabase.from("clients").select("*").eq("primary_coach_id", coach.id).order("name")
   return (

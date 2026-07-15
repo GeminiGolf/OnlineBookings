@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import { supabase } from "@/lib/supabaseClient"
 import Link from "next/link"
+import RequireCoach from "@/components/auth/RequireCoach"
 
 type Coach = {
   id: number
@@ -78,7 +79,8 @@ export default function CoachProfilePage() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-100 text-black">
+    <RequireCoach>
+      <main className="min-h-screen bg-gray-100 text-black">
       <div className="mx-auto max-w-5xl p-4 lg:p-8">
         <div className="mb-4">
           <h1 className="text-[24px] lg:text-[24px] font-bold">
@@ -204,5 +206,6 @@ export default function CoachProfilePage() {
         </div>
       </div>
     </main>
+  </RequireCoach>
   )
 }

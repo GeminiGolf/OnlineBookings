@@ -56,8 +56,7 @@ export default function NotificationsPage() {
       data: { session },
     } = await supabase.auth.getSession()
     if (!session) {
-      alert("Please log in as coach.")
-      router.push("/login")
+      router.replace("/login")
       return
     }
 
@@ -69,8 +68,7 @@ export default function NotificationsPage() {
       return
     }
     if (profile?.role !== "coach" && profile?.role !== "admin") {
-      alert("Please log in as coach.")
-      router.push("/login")
+      router.replace("/login")
       return
     }
 

@@ -3,7 +3,7 @@ import { createClient } from "@/lib/supabaseServer"
 import TransactionsTable, {
   TransactionRow,
 } from "@/components/transactions/TransactionsTable"
-
+import { redirect } from "next/navigation"
 export default async function CoachTransactionsPage() {
   const supabase = await createClient()
 
@@ -12,7 +12,7 @@ export default async function CoachTransactionsPage() {
   } = await supabase.auth.getUser()
 
   if (!user) {
-    return null
+    redirect("/login")
   }
 
   const { data: coach } = await supabase
@@ -22,7 +22,7 @@ export default async function CoachTransactionsPage() {
     .single()
 
   if (!coach) {
-    return null
+    redirect("/login")
   }
 
   const { data: clients } = await supabase
