@@ -7,6 +7,7 @@ import {
   ChevronUp,
   Image as ImageIcon,
   Printer,
+  Pencil,
 } from "lucide-react"
 import { generateTransactionsPdf } from "@/lib/reports/transactionsPdf"
 import { DayPicker } from "react-day-picker"
@@ -38,6 +39,7 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
   const [expandedDates, setExpandedDates] = useState<string[]>([])
   const [page, setPage] = useState(1)
   const [receiptUrl, setReceiptUrl] = useState<string | null>(null)
+const [editingTransaction, setEditingTransaction] = useState<TransactionRow | null>(null)
 	const [previewOpen, setPreviewOpen] = useState(false)
 	const [pdfDoc, setPdfDoc] = useState<jsPDF | null>(null)
 	const [pdfFilename, setPdfFilename] = useState("")
@@ -307,6 +309,9 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 															<table className="w-auto text-sm">
 																<thead>
 																	<tr className="border-b">
+																		<th className="px-2 py-2 text-center">
+																			<Pencil size={16} className="mx-auto" />
+																		</th>
 																		<th className="px-4 py-2 text-left">ID</th>
 																		<th className="px-4 py-2 text-left">Price</th>
 																		<th className="px-4 py-2 text-left">Purchase</th>
@@ -318,6 +323,17 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 																<tbody>
 																	{coach.transactions.map((transaction) => (
 																		<tr key={transaction.id} className="border-b last:border-0">
+																			<td className="px-2 py-2 text-center">
+																				<button
+																					type="button"
+																					onClick={() => setEditingTransaction(transaction)}
+																					className="text-blue-600 hover:text-blue-800"
+																					title="Edit Transaction"
+																				>
+																					<Pencil size={14} />
+																				</button>
+																			</td>
+
 																			<td className="px-4 py-2">
 																				[{transaction.id}]
 																			</td>
@@ -350,6 +366,8 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 																			<td className="px-4 py-2">
 																				[{transaction.client_id}] {transaction.client_name}
 																			</td>
+
+
 																		</tr>
 																	))}
 																</tbody>
@@ -419,6 +437,9 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 														<table className="w-auto text-sm">
 															<thead>
 																<tr className="border-b">
+																	<th className="px-2 py-1 text-center">
+																		<Pencil size={14} className="mx-auto" />
+																	</th>
 																	<th className="px-2 py-1 text-left">ID</th>
 																	<th className="px-3 py-1 text-left">Price</th>
 																	<th className="px-2 py-1 text-left">Purchase</th>
@@ -430,6 +451,17 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 															<tbody>
 																{coach.transactions.map((transaction) => (
 																	<tr key={transaction.id} className="border-b last:border-0">
+																		<td className="px-2 py-2 text-center">
+																			<button
+																				type="button"
+																				onClick={() => setEditingTransaction(transaction)}
+																				className="text-blue-600 hover:text-blue-800"
+																				title="Edit Transaction"
+																			>
+																				<Pencil size={14} />
+																			</button>
+																		</td>
+
 																		<td className="px-2 py-2">
 																			[{transaction.id}]
 																		</td>
@@ -462,6 +494,7 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 																		<td className="px-2 py-2">
 																			[{transaction.client_id}] {transaction.client_name}
 																		</td>
+
 																	</tr>
 																))}
 															</tbody>
