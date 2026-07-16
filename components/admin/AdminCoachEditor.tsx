@@ -69,11 +69,17 @@ export default function AdminCoachEditor({
 
       <select
         value={coachId ?? ""}
-        onChange={(e) =>
-          setCoachId(Number(e.target.value))
-        }
+        onChange={(e) => {
+          setCoachId(
+            e.target.value
+              ? Number(e.target.value)
+              : null
+          )
+        }}
         className="mt-1 rounded border px-2 py-1"
       >
+        <option value="">Select a coach</option>
+
         {coaches.map((coach) => (
           <option key={coach.id} value={coach.id}>
             {coach.name}
