@@ -20,6 +20,9 @@ type Booking = {
   clients: {
     id: number
     name: string
+    preferred_name: string | null
+    first_name: string | null
+    last_name: string | null
     phone: string | null
     email: string | null
     notes: string | null
@@ -556,7 +559,11 @@ export default function CoachDashboardClient({
                 >
                   {booking ? (
                     <div>
-                      <p className="font-bold">{booking.clients?.name}</p>
+                      <p className="font-bold">
+                        {booking.clients?.preferred_name
+                          ? `(${booking.clients.preferred_name}) ${booking.clients.first_name} ${booking.clients.last_name}`
+                          : `${booking.clients?.first_name} ${booking.clients?.last_name}`}
+                      </p>
                       <p className="text-sm text-gray-700">
                         {booking.status === "completed"
                           ? "Completed Lesson"
@@ -706,7 +713,9 @@ export default function CoachDashboardClient({
                   }/${selectedBooking.clients?.id}`}
                   className="text-xl font-semibold underline text-blue-600 hover:text-blue-800"
                 >
-                  {selectedBooking.clients?.name}
+                  {selectedBooking.clients?.preferred_name
+                    ? `(${selectedBooking.clients.preferred_name}) ${selectedBooking.clients.first_name} ${selectedBooking.clients.last_name}`
+                    : `${selectedBooking.clients?.first_name} ${selectedBooking.clients?.last_name}`}
                 </Link>
               </div>
 

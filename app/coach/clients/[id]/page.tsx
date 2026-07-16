@@ -96,7 +96,9 @@ export default async function CoachClientProfilePage({ params }: Props) {
             <summary className="relative flex cursor-pointer items-center justify-center list-none">
               <div className="flex items-center gap-4">
                 <h1 className="text-[18px] font-bold sm:text-[18px]">
-                  {client.name}
+                  {client.preferred_name
+                    ? `(${client.preferred_name}) ${client.first_name} ${client.last_name}`
+                    : `${client.first_name} ${client.last_name}`}
                 </h1>
 
                 <CoachClientProfileClient

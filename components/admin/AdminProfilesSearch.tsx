@@ -7,6 +7,9 @@ type Profile = {
   id: number
   type: "Coach" | "Client"
   name: string
+  preferred_name?: string | null
+  first_name?: string | null
+  last_name?: string | null
 }
 
 type Props = {
@@ -66,7 +69,11 @@ export default function AdminProfilesSearch({
             className="block rounded-xl border bg-white p-4"
           >
             <div className="font-semibold">
-              {profile.name}
+              {profile.type === "Client"
+                ? profile.preferred_name
+                  ? `(${profile.preferred_name}) ${profile.last_name}`
+                  : `${profile.first_name} ${profile.last_name}`
+                : profile.name}
             </div>
 
             <div className="mt-1 text-sm text-gray-600">
@@ -115,7 +122,11 @@ export default function AdminProfilesSearch({
                     }
                     className="block w-full"
                   >
-                    {profile.name}
+                    {profile.type === "Client"
+                      ? profile.preferred_name
+                        ? `(${profile.preferred_name}) ${profile.last_name}`
+                        : `${profile.first_name} ${profile.last_name}`
+                      : profile.name}
                   </Link>
                 </td>
               </tr>

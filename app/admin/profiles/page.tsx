@@ -27,11 +27,16 @@ export default async function AdminProfilesPage() {
     .select("id, name, preferred_name")
   const { data: clients } = await supabase
     .from("clients")
-    .select("id, name")
+    .select("id, name, preferred_name, first_name, last_name, phone, email")
   const profiles: {
     id: number
     type: "Coach" | "Client"
     name: string
+    preferred_name?: string | null
+    first_name?: string | null
+    last_name?: string | null
+    phone?: string | null
+    email?: string | null
   }[] = [
     ...(coaches || []).map((coach) => ({
       id: coach.id,
@@ -42,6 +47,11 @@ export default async function AdminProfilesPage() {
       id: client.id,
       type: "Client" as const,
       name: client.name,
+      preferred_name: client.preferred_name,
+      first_name: client.first_name,
+      last_name: client.last_name,
+      phone: client.phone,
+      email: client.email,
     })),
   ].sort((a, b) => {
     if (a.type !== b.type) {

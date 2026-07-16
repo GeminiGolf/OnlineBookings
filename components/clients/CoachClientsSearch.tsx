@@ -5,6 +5,9 @@ import Link from "next/link"
 type Client = {
   id: number
   name: string
+  preferred_name: string | null
+  first_name: string | null
+  last_name: string | null
   phone: string | null
   email: string | null
   lessons_remaining: number
@@ -24,6 +27,9 @@ export default function CoachClientsSearch({ clients }: Props) {
         : clients.filter((client) => {
             return (
               client.name?.toLowerCase().includes(term) ||
+              client.preferred_name?.toLowerCase().includes(term) ||
+              client.first_name?.toLowerCase().includes(term) ||
+              client.last_name?.toLowerCase().includes(term) ||
               client.phone?.toLowerCase().includes(term) ||
               client.email?.toLowerCase().includes(term)
             )
@@ -61,7 +67,9 @@ export default function CoachClientsSearch({ clients }: Props) {
             className="overflow-hidden rounded-xl border bg-white"
           >
             <summary className="cursor-pointer list-none p-4 font-semibold">
-              {client.name}
+              {client.preferred_name
+                ? `(${client.preferred_name}) ${client.last_name}`
+                : `${client.first_name} ${client.last_name}`}
             </summary>
 
             <div className="border-t p-4">
@@ -114,7 +122,9 @@ export default function CoachClientsSearch({ clients }: Props) {
                     href={`/coach/clients/${client.id}`}
                     className="block w-full"
                   >
-                    {client.name}
+                    {client.preferred_name
+                      ? `(${client.preferred_name}) ${client.last_name}`
+                      : `${client.first_name} ${client.last_name}`}
                   </Link>
                 </td>
                 <td className="p-4">{client.phone || "-"}</td>

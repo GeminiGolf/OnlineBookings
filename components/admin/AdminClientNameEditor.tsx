@@ -54,45 +54,25 @@ export default function AdminClientNameEditor({
 
   if (!editing) {
     return (
-      <div className="space-y-3">
-        <div>
-          <div className="flex items-center gap-2">
-            <span className="text-gray-600">
-              Preferred Name
-            </span>
-
-            <button
-              onClick={() => setEditing(true)}
-              className="text-sm"
-            >
-              ✏️
-            </button>
-          </div>
-
-          <p className="font-semibold">
-            {preferredName || "—"}
-          </p>
-        </div>
-
-        <div>
+      <div>
+        <div className="flex items-center gap-2">
           <span className="text-gray-600">
-            First Name
+            Change Name
           </span>
 
-          <p className="font-semibold">
-            {firstName || "—"}
-          </p>
+          <button
+            onClick={() => setEditing(true)}
+            className="text-sm"
+          >
+            ✏️
+          </button>
         </div>
 
-        <div>
-          <span className="text-gray-600">
-            Last Name
-          </span>
-
-          <p className="font-semibold">
-            {lastName || "—"}
-          </p>
-        </div>
+        <p className="font-semibold">
+          {preferredName
+            ? `(${preferredName}) ${firstName} ${lastName}`
+            : `${firstName} ${lastName}`}
+        </p>
       </div>
     )
   }

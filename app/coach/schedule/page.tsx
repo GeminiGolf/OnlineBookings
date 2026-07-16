@@ -40,6 +40,9 @@ export default async function CoachSchedulePage({ searchParams }: Props) {
         clients (
           id,
           name,
+          preferred_name,
+          first_name,
+          last_name,
           phone,
           email,
           notes,
@@ -80,6 +83,9 @@ export default async function CoachSchedulePage({ searchParams }: Props) {
         clients (
           id,
           name,
+          preferred_name,
+          first_name,
+          last_name,
           phone,
           email,
           notes,

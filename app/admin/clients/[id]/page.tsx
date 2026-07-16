@@ -103,7 +103,9 @@ export default async function AdminClientProfilePage({ params }: Props) {
 
         <div className="rounded-2xl bg-white p-5 sm:p-6 shadow">
           <h1 className="text-[22px] font-bold">
-            {client.name}
+            {client.preferred_name
+              ? `(${client.preferred_name}) ${client.last_name}`
+              : client.name}
           </h1>
 
           <div className="mt-2 grid gap-4 md:grid-cols-2">
