@@ -9,6 +9,7 @@ export default function ChangePassword() {
   const [confirmPassword, setConfirmPassword] = useState("")
   const [loading, setLoading] = useState(false)
   const [logoutOtherDevices, setLogoutOtherDevices] = useState(false)
+  const [showPasswords, setShowPasswords] = useState(false)
 
   async function handleChangePassword(e: React.FormEvent) {
     e.preventDefault()
@@ -82,7 +83,7 @@ export default function ChangePassword() {
           </label>
 
           <input
-            type="password"
+            type={showPasswords ? "text" : "password"}
             value={currentPassword}
             onChange={(e) => setCurrentPassword(e.target.value)}
             className="w-full rounded-lg border p-3"
@@ -96,7 +97,7 @@ export default function ChangePassword() {
           </label>
 
           <input
-            type="password"
+            type={showPasswords ? "text" : "password"}
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
             className="w-full rounded-lg border p-3"
@@ -110,7 +111,7 @@ export default function ChangePassword() {
           </label>
 
           <input
-            type="password"
+            type={showPasswords ? "text" : "password"}
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             className="w-full rounded-lg border p-3"
@@ -118,7 +119,24 @@ export default function ChangePassword() {
           />
         </div>
 				
-				<div className="flex items-center gap-3">
+        <div className="flex items-center gap-3">
+          <input
+            id="show-passwords"
+            type="checkbox"
+            checked={showPasswords}
+            onChange={(e) => setShowPasswords(e.target.checked)}
+            className="h-4 w-4"
+          />
+
+          <label
+            htmlFor="show-passwords"
+            className="cursor-pointer select-none"
+          >
+            Show passwords
+          </label>
+        </div>
+
+        <div className="flex items-center gap-3">
 					<input
 						id="logout-other-devices"
 						type="checkbox"
