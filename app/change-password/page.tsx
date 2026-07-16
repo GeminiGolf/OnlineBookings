@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
 
-export default function ResetPasswordPage() {
+export default function ChangePasswordPage() {
   const router = useRouter();
 
   const [password, setPassword] = useState("");
@@ -15,7 +15,7 @@ export default function ResetPasswordPage() {
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleResetPassword = async (
+  const handleChangePassword = async (
     e: React.FormEvent<HTMLFormElement>
   ) => {
     e.preventDefault();
@@ -61,7 +61,7 @@ export default function ResetPasswordPage() {
           Reset Password
         </h1>
 
-        <form onSubmit={handleResetPassword} className="space-y-4">
+        <form onSubmit={handleChangePassword} className="space-y-4">
           <div>
             <label className="block mb-1 font-medium text-black">
               New Password
