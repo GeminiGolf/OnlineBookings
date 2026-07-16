@@ -7,6 +7,8 @@ import CoachClientPackages from "@/components/clients/CoachClientPackages"
 import AdminClientProfileClient from "@/components/admin/AdminClientProfileClient"
 import AdminClientContactEditor from "@/components/admin/AdminClientContactEditor"
 import ClientNotesCard from "@/components/clients/ClientNotesCard"
+import AdminLessonsRemainingEditor from "@/components/admin/AdminLessonsRemainingEditor"
+import AdminCoachEditor from "@/components/admin/AdminCoachEditor"
 
 type Props = {
   params: Promise<{
@@ -110,14 +112,16 @@ export default async function AdminClientProfilePage({ params }: Props) {
               initialEmail={client.email}
             />
 
-            <div>
-              <p className="text-sm text-gray-500">
-                Lessons Remaining
-              </p>
-              <p className="text-lg font-bold">
-                {client.lessons_remaining}
-              </p>
-            </div>
+            <AdminLessonsRemainingEditor
+              clientId={client.id}
+              initialLessonsRemaining={client.lessons_remaining}
+            />
+
+            <AdminCoachEditor
+              clientId={client.id}
+              coaches={coaches || []}
+              initialCoachId={primaryCoach?.id ?? null}
+            />
           </div>
 
           <ClientNotesCard
