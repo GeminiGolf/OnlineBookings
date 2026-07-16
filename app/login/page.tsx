@@ -6,19 +6,23 @@ import { supabase } from "@/lib/supabaseClient"
 
 export default function LoginPage() {
   const router = useRouter()
+
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [keepLoggedIn, setKeepLoggedIn] = useState(false)
+
   async function handleLogin() {
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     })
+
     if (error) {
       alert("Invalid email or password.")
       return
     }
+
     const user = data.user
 
     localStorage.setItem(
@@ -27,6 +31,7 @@ export default function LoginPage() {
         ? "never"
         : (Date.now() + 6 * 60 * 60 * 1000).toString()
     )
+
     if (!user) {
       alert("No user found.")
       return
@@ -37,14 +42,17 @@ export default function LoginPage() {
       .select("*")
       .eq("id", user.id)
       .maybeSingle()
+
     if (profileError) {
       alert("Could not load profile.")
       return
     }
+
     if (!profile) {
       alert("Account exists but no profile was found.")
       return
     }
+
     if (profile.role === "admin") {
       router.push("/admin")
     } else if (profile.role === "coach") {
@@ -54,20 +62,8 @@ export default function LoginPage() {
     }
   }
 
-  async function handleForgotPassword() {
-    const emailAddress = prompt("Enter your email address:")
-    if (!emailAddress) {
-      return
-    }
-
-    const { error } = await supabase.auth.resetPasswordForEmail(emailAddress, {
-      redirectTo: `${window.location.origin}/reset-password`,
-    })
-    if (error) {
-      alert(error.message)
-      return
-    }
-    alert("Password reset email sent.")
+  function handleForgotPassword() {
+    router.push("/forgot-password")
   }
 
   return (
@@ -80,6 +76,7 @@ export default function LoginPage() {
         <p className="mb-4 text-center text-gray-600">
           Welcome back!
         </p>
+
         <div className="space-y-4">
           <input
             type="email"
@@ -125,13 +122,20 @@ export default function LoginPage() {
           </button>
 
           <div className="space-y-2 text-center">
-            <button type="button" onClick={handleForgotPassword} className="text-sm text-blue-600 hover:underline">
+            <button
+              type="button"
+              onClick={handleForgotPassword}
+              className="text-sm text-blue-600 hover:underline"
+            >
               Forgot Password?
             </button>
 
             <p className="text-gray-500">
               Not a client yet?{" "}
-              <a href="/signup" className="font-semibold text-blue-500 hover:text-blue-400">
+              <a
+                href="/signup"
+                className="font-semibold text-blue-500 hover:text-blue-400"
+              >
                 Sign up here
               </a>
             </p>
