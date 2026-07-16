@@ -71,7 +71,13 @@ export default async function AdminClientProfilePage({ params }: Props) {
 
   const { data: previousLessons } = await supabase
     .from("bookings")
-    .select("*")
+    .select(`
+      *,
+      lesson_packages (
+        id,
+        transaction_name
+      )
+    `)
     .eq("client_id", client.id)
     .eq("status", "completed")
     .order("lesson_date", { ascending: false })

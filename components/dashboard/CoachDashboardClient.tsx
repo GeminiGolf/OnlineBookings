@@ -745,9 +745,13 @@ export default function CoachDashboardClient({
                   <button
                     onClick={() => {
                       const today = new Date()
-                      const todayString = today.toISOString().split("T")[0]
-                      if (selectedBooking.lesson_date !== todayString) {
-                        alert("Please reschedule the appointment to today before completing.")
+                      today.setHours(0, 0, 0, 0)
+
+                      const lessonDate = new Date(selectedBooking.lesson_date)
+                      lessonDate.setHours(0, 0, 0, 0)
+
+                      if (lessonDate > today) {
+                        alert("Future lessons cannot be marked as completed.")
                         return
                       }
                       const lessonTime = selectedBooking.lesson_time.trim().toUpperCase()
