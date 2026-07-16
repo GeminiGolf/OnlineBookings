@@ -2,22 +2,38 @@
 
 import Link from "next/link"
 import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
 import { supabase } from "@/lib/supabaseClient"
 
 export default function CoachDashboardPage() {
+  const router = useRouter()
   const [totalNotifications, setTotalNotifications] = useState(0)
   const [urgentNotifications, setUrgentNotifications] = useState(0)
 
   useEffect(() => {
     loadNotifications()
-  }, [])
+  }, [router])
 
   async function loadNotifications() {
     const {
       data: { session },
     } = await supabase.auth.getSession()
 
-    if (!session) return
+    if (!session) {
+      router.replace("/login")
+      return
+    }
+
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", session.user.id)
+      .single()
+
+    if (!profile || profile.role !== "coach") {
+      router.replace("/login")
+      return
+    }
 
     const { data: coach } = await supabase
       .from("coaches")

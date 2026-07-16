@@ -5,6 +5,7 @@ import { redirect } from "next/navigation"
 import PreviousLessonsTable from "@/components/clients/PreviousLessonsTable"
 import CoachClientPackages from "@/components/clients/CoachClientPackages"
 import AdminClientProfileClient from "@/components/admin/AdminClientProfileClient"
+import AdminClientNameEditor from "@/components/admin/AdminClientNameEditor"
 import AdminClientContactEditor from "@/components/admin/AdminClientContactEditor"
 import ClientNotesCard from "@/components/clients/ClientNotesCard"
 import AdminLessonsRemainingEditor from "@/components/admin/AdminLessonsRemainingEditor"
@@ -106,6 +107,13 @@ export default async function AdminClientProfilePage({ params }: Props) {
           </h1>
 
           <div className="mt-2 grid gap-4 md:grid-cols-2">
+            <AdminClientNameEditor
+              clientId={client.id}
+              initialPreferredName={client.preferred_name}
+              initialFirstName={client.first_name}
+              initialLastName={client.last_name}
+            />
+            
             <AdminClientContactEditor
               clientId={client.id}
               initialPhone={client.phone}
