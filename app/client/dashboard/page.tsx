@@ -387,6 +387,13 @@ export default function ClientDashboard() {
       return
     }
 
+    const response = await fetch(
+      `/api/public-last-booked?coachId=${selectedCoach}&date=${formattedDate}&before=${selectedTime}`
+    )
+
+    const lastBooking = response.ok ? await response.json() : null
+    console.log("lastBooking:", lastBooking)
+    console.log("selectedTime:", selectedTime)
     const { data: newBooking, error } = await supabase
       .from("bookings")
       .insert({
@@ -429,44 +436,31 @@ export default function ClientDashboard() {
       }
     }
 
+    // bookedTimes was already fetched before creating the booking
+
     let isLateBooking = false
 
     const today = new Date()
-    const bookingDate = new Date(formattedDate)
-    const diffDays = Math.floor(
-      (bookingDate.getTime() - new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime()) /
+
+    const bookingDate = new Date(formattedDate + "T00:00:00")
+
+    const daysDifference = Math.floor(
+      (bookingDate.getTime() -
+        new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime()) /
         (1000 * 60 * 60 * 24)
     )
 
-    if (diffDays === 0) {
-      const { data: todayBookings } = await supabase
-        .from("bookings")
-        .select("lesson_time")
-        .eq("coach_id", selectedCoach)
-        .eq("lesson_date", formattedDate)
-        .eq("status", "booked")
+    if (daysDifference >= 0 && daysDifference <= 1) {
+      const newHour = timeTo24Hour(selectedTime)
 
-      if (todayBookings && todayBookings.length > 1) {
-        const hours = todayBookings.map((b) => timeTo24Hour(b.lesson_time)).sort((a, b) => a - b)
-        const lastHour = hours[hours.length - 2]
-        const newHour = timeTo24Hour(selectedTime)
+      if (!lastBooking) {
+        isLateBooking = true
+      } else {
+        const previousHour = timeTo24Hour(lastBooking.lesson_time)
 
-        if (newHour >= lastHour + 2) {
+        if (newHour >= previousHour + 2) {
           isLateBooking = true
         }
-      }
-    }
-
-    if (!isLateBooking && diffDays >= 0 && diffDays <= 2) {
-      const { data: dayBookings } = await supabase
-        .from("bookings")
-        .select("id")
-        .eq("coach_id", selectedCoach)
-        .eq("lesson_date", formattedDate)
-        .eq("status", "booked")
-
-      if ((dayBookings?.length || 0) <= 1) {
-        isLateBooking = true
       }
     }
 

@@ -139,6 +139,13 @@ export default function BookPage() {
       return
     }
 
+    const response = await fetch(
+      `/api/public-last-booked?coachId=${selectedCoach}&date=${formattedDate}&before=${selectedTime}`
+    )
+
+    const lastBooking = response.ok ? await response.json() : null
+    console.log("lastBooking:", lastBooking)
+    console.log("selectedTime:", selectedTime)
     const { data: booking, error } = await supabase
       .from("bookings")
       .insert({
@@ -147,7 +154,7 @@ export default function BookPage() {
         lesson_date: formattedDate,
         lesson_time: selectedTime,
         status: "booked",
-        booked_by: "client", 
+        booked_by: "client",
       })
       .select()
       .single()
@@ -178,13 +185,47 @@ export default function BookPage() {
       }
     }
 
-    const todayString = new Date().toISOString().split("T")[0]
+    const today = new Date()
+
+    const bookingDate = new Date(formattedDate + "T00:00:00")
+
     const daysDifference = Math.floor(
-      (new Date(formattedDate + "T00:00:00").getTime() - new Date(todayString + "T00:00:00").getTime()) /
+      (bookingDate.getTime() -
+        new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime()) /
         (1000 * 60 * 60 * 24)
     )
 
-    if (daysDifference <= 1 && booking) {
+    let isLateBooking = false
+
+    if (daysDifference >= 0 && daysDifference <= 1) {
+      const toHour = (time: string) => {
+        let hour = parseInt(time)
+
+        if (time.includes("PM") && hour !== 12) {
+          hour += 12
+        }
+
+        if (time.includes("AM") && hour === 12) {
+          hour = 0
+        }
+
+        return hour
+      }
+
+      const newHour = toHour(selectedTime)
+
+      if (!lastBooking) {
+        isLateBooking = true
+      } else {
+        const previousHour = toHour(lastBooking.lesson_time)
+
+        if (newHour >= previousHour + 2) {
+          isLateBooking = true
+        }
+      }
+    }
+
+    if (isLateBooking && booking) {
       const { data, error } = await supabase
         .from("notifications")
         .insert({
@@ -202,6 +243,7 @@ export default function BookPage() {
         alert("NOTIFICATION FAILED:\n\n" + JSON.stringify(error, null, 2))
       }
     }
+    // We'll add the new late-booking logic here next.
     await fetch("/api/check-double-bookings", {
       method: "POST",
       headers: {
