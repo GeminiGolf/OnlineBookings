@@ -68,6 +68,19 @@ export default function AdminPage() {
         </Link>
 
         <Link
+          href="/admin/bookings"
+          className="rounded-xl bg-white p-6 shadow transition hover:scale-[1.02]"
+        >
+          <h2 className="text-lg font-semibold text-black">
+            All Bookings
+          </h2>
+
+          <p className="mt-2 text-3xl font-bold text-black">
+            →
+          </p>
+        </Link>
+
+        <Link
           href="/admin/transactions"
           className="rounded-xl bg-white p-6 shadow transition hover:scale-[1.02]"
         >
