@@ -83,6 +83,8 @@ export default function BookingsTable({
   const [editStatus, setEditStatus] = useState("")
   const [editReschedules, setEditReschedules] = useState(0)
 
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+
   const [currentMonth, setCurrentMonth] = useState(() => {
     const today = new Date()
 
@@ -170,6 +172,25 @@ const formatLessonTime = (time: string) => {
     .replace(":00", "")
     .replace(/\s+/g, " ")
     .trim()
+}
+
+const deleteBooking = async () => {
+  if (!editingBooking) return
+
+  const { error } = await supabase
+    .from("bookings")
+    .delete()
+    .eq("id", editingBooking.id)
+
+  if (error) {
+    console.error(error)
+    alert(error.message)
+    return
+  }
+
+  setShowDeleteConfirm(false)
+  setEditingBooking(null)
+  router.refresh()
 }
 
 const saveBooking = async () => {
@@ -513,14 +534,64 @@ const saveBooking = async () => {
         </div>
       )}
 
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50">
+
+          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
+
+            <h2 className="mb-3 text-2xl font-bold">
+              Delete this booking?
+            </h2>
+
+            <p className="mb-6 text-gray-600">
+              This action cannot be undone.
+            </p>
+
+            <div className="flex justify-end gap-3">
+
+              <button
+                type="button"
+                onClick={() => setShowDeleteConfirm(false)}
+                className="rounded-lg border px-5 py-2"
+              >
+                Cancel
+              </button>
+
+              <button
+                type="button"
+                onClick={deleteBooking}
+                className="rounded-lg bg-red-600 px-5 py-2 text-white hover:bg-red-700"
+              >
+                Delete
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+      )}
+
       {editingBooking && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
 
           <div className="w-full max-w-xl rounded-2xl bg-white p-6 shadow-xl">
 
-            <h2 className="mb-6 text-2xl font-bold">
-              Edit Booking
-            </h2>
+            <div className="mb-6 flex items-start justify-between">
+
+              <h2 className="text-2xl font-bold">
+                Edit Booking
+              </h2>
+
+              <button
+                type="button"
+                onClick={() => setEditingBooking(null)}
+                className="flex h-10 w-10 items-center justify-center rounded-lg border hover:bg-gray-100"
+              >
+                ✕
+              </button>
+
+            </div>
 
             <div className="space-y-5">
 
@@ -690,15 +761,17 @@ const saveBooking = async () => {
               <div className="flex justify-end gap-3">
 
                 <button
-                  onClick={() => setEditingBooking(null)}
-                  className="rounded-lg border px-5 py-2"
+                  type="button"
+                  onClick={() => setShowDeleteConfirm(true)}
+                  className="rounded-lg bg-red-600 px-5 py-2 text-white hover:bg-red-700"
                 >
-                  Cancel
+                  Delete
                 </button>
 
                 <button
+                  type="button"
                   onClick={saveBooking}
-                  className="rounded-lg bg-black px-5 py-2 text-white"
+                  className="rounded-lg bg-green-600 px-5 py-2 text-white hover:bg-green-700"
                 >
                   Save
                 </button>
