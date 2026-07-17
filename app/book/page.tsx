@@ -2,7 +2,6 @@
 import { useEffect, useRef, useState } from "react"
 import { supabase } from "@/lib/supabaseClient"
 import { DayPicker } from "react-day-picker"
-import { generateSlots } from "@/lib/scheduling/generateSlots"
 import "react-day-picker/dist/style.css"
 
 type Coach = {
@@ -41,13 +40,22 @@ export default function BookPage() {
         return
       }
 
-      const slots = await generateSlots(
-        supabase,
-        selectedCoach,
-        selectedDate
+      const year = selectedDate.getFullYear()
+      const month = String(selectedDate.getMonth() + 1).padStart(2, "0")
+      const day = String(selectedDate.getDate()).padStart(2, "0")
+
+      const formattedDate = `${year}-${month}-${day}`
+
+      const response = await fetch(
+        `/api/public-availability?coachId=${selectedCoach}&date=${formattedDate}`
       )
 
-      setTimeSlots(slots)
+      if (!response.ok) {
+        setTimeSlots([])
+        return
+      }
+
+      setTimeSlots(await response.json())
     }
 
     loadSlots()
@@ -208,13 +216,19 @@ export default function BookPage() {
     alert("Booking confirmed!")
     setSelectedTime("")
     if (selectedDate && selectedCoach) {
-      const slots = await generateSlots(
-        supabase,
-        selectedCoach,
-        selectedDate
+      const year = selectedDate.getFullYear()
+      const month = String(selectedDate.getMonth() + 1).padStart(2, "0")
+      const day = String(selectedDate.getDate()).padStart(2, "0")
+
+      const formattedDate = `${year}-${month}-${day}`
+
+      const response = await fetch(
+        `/api/public-availability?coachId=${selectedCoach}&date=${formattedDate}`
       )
 
-      setTimeSlots(slots)
+      if (response.ok) {
+        setTimeSlots(await response.json())
+      }
     }
     setLoading(false)
   }

@@ -6,7 +6,6 @@ import "react-day-picker/dist/style.css"
 import { supabase } from "@/lib/supabaseClient"
 import Link from "next/link"
 import RequireClient from "@/components/auth/RequireClient"
-import { generateSlots } from "@/lib/scheduling/generateSlots"
 type Coach = {
   id: number
   name: string
@@ -61,11 +60,22 @@ export default function ClientDashboard() {
         return
       }
 
-      const slots = await generateSlots(
-        supabase,
-        selectedCoach,
-        selectedDate
+      const year = selectedDate.getFullYear()
+      const month = String(selectedDate.getMonth() + 1).padStart(2, "0")
+      const day = String(selectedDate.getDate()).padStart(2, "0")
+
+      const formattedDate = `${year}-${month}-${day}`
+
+      const response = await fetch(
+        `/api/public-availability?coachId=${selectedCoach}&date=${formattedDate}`
       )
+
+      if (!response.ok) {
+        setTimeSlots([])
+        return
+      }
+
+      const slots = await response.json()
 
       setTimeSlots(slots)
     }
@@ -177,12 +187,31 @@ export default function ClientDashboard() {
       return
     }
 
-    const slots = await generateSlots(
-      supabase,
-      rescheduleLesson.coach_id,
-      date,
-      rescheduleLesson.id
+    const year = date.getFullYear()
+    const month = String(date.getMonth() + 1).padStart(2, "0")
+    const day = String(date.getDate()).padStart(2, "0")
+
+    const formattedDate = `${year}-${month}-${day}`
+
+    const response = await fetch(
+      `/api/public-availability?coachId=${rescheduleLesson.coach_id}&date=${formattedDate}`
     )
+
+    if (!response.ok) {
+      setRescheduleSlots([])
+      return
+    }
+
+    let slots = await response.json()
+
+    // Allow the lesson's current time when rescheduling
+    if (
+      formattedDate === rescheduleLesson.lesson_date &&
+      !slots.includes(rescheduleLesson.lesson_time)
+    ) {
+      slots.push(rescheduleLesson.lesson_time)
+      slots.sort()
+    }
 
     setRescheduleSlots(slots)
   }
@@ -341,13 +370,19 @@ export default function ClientDashboard() {
       alert("This slot is already booked.")
       setLoading(false)
       if (selectedDate && selectedCoach) {
-        const slots = await generateSlots(
-          supabase,
-          selectedCoach,
-          selectedDate
+        const year = selectedDate.getFullYear()
+        const month = String(selectedDate.getMonth() + 1).padStart(2, "0")
+        const day = String(selectedDate.getDate()).padStart(2, "0")
+
+        const formattedDate = `${year}-${month}-${day}`
+
+        const response = await fetch(
+          `/api/public-availability?coachId=${selectedCoach}&date=${formattedDate}`
         )
 
-        setTimeSlots(slots)
+        if (response.ok) {
+          setTimeSlots(await response.json())
+        }
       }
       return
     }
@@ -459,13 +494,19 @@ export default function ClientDashboard() {
     alert("Booking confirmed!")
     setSelectedTime("")
     if (selectedDate && selectedCoach) {
-      const slots = await generateSlots(
-        supabase,
-        selectedCoach,
-        selectedDate
+      const year = selectedDate.getFullYear()
+      const month = String(selectedDate.getMonth() + 1).padStart(2, "0")
+      const day = String(selectedDate.getDate()).padStart(2, "0")
+
+      const formattedDate = `${year}-${month}-${day}`
+
+      const response = await fetch(
+        `/api/public-availability?coachId=${selectedCoach}&date=${formattedDate}`
       )
 
-      setTimeSlots(slots)
+      if (response.ok) {
+        setTimeSlots(await response.json())
+      }
     }
     await loadDashboardData()
     setLoading(false)

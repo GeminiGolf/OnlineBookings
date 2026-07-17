@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { supabase } from "@/lib/supabaseClient"
 import { useRouter } from "next/navigation"
 
@@ -13,9 +13,32 @@ export default function SignupPage() {
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
+  const [coaches, setCoaches] = useState<
+    { id: number; name: string; preferred_name: string | null }[]
+  >([])
+  const [selectedCoach, setSelectedCoach] = useState<number | null>(null)
   const router = useRouter()
 
+  useEffect(() => {
+    async function loadCoaches() {
+      const { data } = await supabase
+        .from("coaches")
+        .select("id, name, preferred_name")
+        .order("name")
+
+      if (data) {
+        setCoaches(data.filter((coach) => coach.id !== 3))
+      }
+    }
+
+    loadCoaches()
+  }, [])
+
   async function handleSignup() {
+    if (!selectedCoach) {
+      alert("Please choose a coach")
+      return
+    }
     if (!givenName.trim()) {
       alert("Please fill in your given name")
       return
@@ -57,6 +80,7 @@ export default function SignupPage() {
           family_name: familyName.trim(),
           preferred_name: preferredName.trim() || null,
           phone: phone.trim(),
+          primary_coach_id: selectedCoach,
         },
       },
     })
@@ -92,6 +116,24 @@ export default function SignupPage() {
         </p>
 
         <div className="space-y-3">
+          <select
+            value={selectedCoach ?? ""}
+            onChange={(e) =>
+              setSelectedCoach(
+                e.target.value ? Number(e.target.value) : null
+              )
+            }
+            className="w-full rounded-xl border p-3 text-base text-black sm:p-3 sm:text-lg"
+          >
+            <option value="">Choose Coach *</option>
+
+            {coaches.map((coach) => (
+              <option key={coach.id} value={coach.id}>
+                {coach.preferred_name || coach.name}
+              </option>
+            ))}
+          </select>
+
           <input
             type="text"
             placeholder="Preferred Name (Optional)"

@@ -56,12 +56,18 @@ export async function generateSlots(
 
   let availableSlots = Array.from(slotSet)
 
-  const { data: existingBookings } = await supabase
+  const { data: existingBookings, error: bookingsError } = await supabase
     .from("bookings")
     .select("id, lesson_time")
     .eq("coach_id", selectedCoach)
     .eq("lesson_date", formattedDate)
     .in("status", ["booked", "completed"])
+
+  console.log("generateSlots")
+  console.log("Coach:", selectedCoach)
+  console.log("Date:", formattedDate)
+  console.log("Bookings:", existingBookings)
+  console.log("Booking Error:", bookingsError)
 
 	const bookedTimes =
 		existingBookings
