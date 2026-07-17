@@ -47,7 +47,6 @@ export default async function AdminBookingsPage() {
             last_name
           )
         `)
-        .not("status", "in", "(cancelled_coach,cancelled_client)")
         .order("lesson_date", { ascending: false })
         .order("lesson_time"),
 

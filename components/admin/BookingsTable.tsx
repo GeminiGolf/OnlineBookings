@@ -112,13 +112,6 @@ const filteredBookings = bookings.filter((booking) => {
     return false
   }
 
-  if (
-    booking.status === "cancelled_client" ||
-    booking.status === "cancelled_coach"
-  ) {
-    return false
-  }
-
   if (!search.trim()) return true
 
   const value = search.toLowerCase()
@@ -455,11 +448,49 @@ const saveBooking = async () => {
 
                 <tbody>
 
-                {groupedBookings[date].map((booking) => (
+                {groupedBookings[date]
+                  .sort((a, b) => {
+                    const aCancelled =
+                      a.status === "cancelled" ||
+                      a.status === "cancelled_admin" ||
+                      a.status === "cancelled_coach"
+
+                    const bCancelled =
+                      b.status === "cancelled" ||
+                      b.status === "cancelled_admin" ||
+                      b.status === "cancelled_coach"
+
+                    if (aCancelled !== bCancelled) {
+                      return Number(aCancelled) - Number(bCancelled)
+                    }
+
+                    const parseTime = (time: string) => {
+                      const [hourPart, meridiem] = time.split(" ")
+                      let hour = Number(hourPart.replace(":00", ""))
+
+                      if (meridiem === "PM" && hour !== 12) hour += 12
+                      if (meridiem === "AM" && hour === 12) hour = 0
+
+                      return hour
+                    }
+
+                    return parseTime(a.lesson_time) - parseTime(b.lesson_time)
+                  })
+                  .map((booking) => {
+                    const isCancelled =
+                      booking.status === "cancelled" ||
+                      booking.status === "cancelled_admin" ||
+                      booking.status === "cancelled_coach"
+
+                    return (
 
                   <tr
                     key={booking.id}
-                    className="hover:bg-gray-50"
+                    className={
+                      isCancelled
+                        ? "bg-gray-100 text-gray-500 hover:bg-gray-200"
+                        : "hover:bg-gray-50"
+                    }
                   >
 
                     <td className="border p-3 text-center">
@@ -514,9 +545,10 @@ const saveBooking = async () => {
 
                   </tr>
 
-                ))}
+                )
+              })}
 
-              </tbody>
+            </tbody>
 
             </table>
 
