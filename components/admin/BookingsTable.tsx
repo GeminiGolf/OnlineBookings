@@ -365,23 +365,22 @@ const saveBooking = async () => {
         </div>
       </div>
 
-      <div className="space-y-4">
+<div className="overflow-hidden rounded-2xl border bg-white shadow-sm">
 
-            {sortedDates.map((date) => (
-              <div
-                key={date}
-                className="overflow-hidden rounded-2xl border bg-white shadow-sm"
-              >
-
-                <div
-                  onClick={() =>
-                    setCollapsedDates((prev) => ({
-                      ...prev,
-                      [date]: !prev[date],
-                    }))
-                  }
-                  className="flex cursor-pointer items-center justify-between bg-gray-100 px-5 py-4 hover:bg-gray-200"
-                >
+  {sortedDates.map((date, index) => (
+    <div
+      key={date}
+      className={index !== 0 ? "border-t border-gray-200" : ""}
+    >
+      <div
+        onClick={() =>
+          setCollapsedDates((prev) => ({
+            ...prev,
+            [date]: !prev[date],
+          }))
+        }
+        className="flex cursor-pointer items-center justify-between bg-white px-5 py-4 hover:bg-gray-50"
+      >
 
                   <div className="flex items-center gap-3">
 
@@ -407,10 +406,9 @@ const saveBooking = async () => {
                   </span>
 
                 </div>
-
+                
                 {!collapsedDates[date] && (
-  
-                <div className="px-8 py-2">
+                  <div className="border-t bg-gray-50 px-6 py-4">
 
                 <table className="w-full overflow-hidden rounded-xl border border-gray-300">
 

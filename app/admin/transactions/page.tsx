@@ -91,11 +91,11 @@ export default async function AdminTransactionsPage() {
   )
 
   return (
-    <main className="min-h-screen bg-gray-100 p-3 sm:p-10 text-black">
+    <main className="min-h-screen bg-gray-100 p-3 sm:p-4 text-black">
       <div className="mx-auto max-w-6xl">
         <Link
           href="/admin/"
-          className="mb-6 inline-block rounded-lg border bg-white px-4 py-2"
+          className="mb-4 inline-block rounded-lg border bg-white px-4 py-2"
         >
           ← Back to Dashboard
         </Link>
