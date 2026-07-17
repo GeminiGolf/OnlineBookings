@@ -87,8 +87,11 @@ export default function ClientDashboard() {
     const { data: { session } } = await supabase.auth.getSession()
     if (!session) return
 
-    const { data: clientRecord, error: clientError } = await supabase.from("clients").select("*").eq("profile_id", session.user.id).maybeSingle()
-    console.log("CLIENT", clientRecord); console.log("CLIENT ERROR", clientError)
+    const { data: clientRecord } = await supabase
+      .from("clients")
+      .select("*")
+      .eq("profile_id", session.user.id)
+      .maybeSingle()
     if (!clientRecord) return
 
     const today = new Date().toISOString().split("T")[0]
@@ -392,8 +395,7 @@ export default function ClientDashboard() {
     )
 
     const lastBooking = response.ok ? await response.json() : null
-    console.log("lastBooking:", lastBooking)
-    console.log("selectedTime:", selectedTime)
+
     const { data: newBooking, error } = await supabase
       .from("bookings")
       .insert({

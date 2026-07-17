@@ -144,8 +144,7 @@ export default function BookPage() {
     )
 
     const lastBooking = response.ok ? await response.json() : null
-    console.log("lastBooking:", lastBooking)
-    console.log("selectedTime:", selectedTime)
+
     const { data: booking, error } = await supabase
       .from("bookings")
       .insert({

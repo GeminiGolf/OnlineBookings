@@ -81,9 +81,7 @@ export default function CoachDashboardClient({
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null)
   const [showCancelModal, setShowCancelModal] = useState(false)
   const [showCompleteModal, setShowCompleteModal] = useState(false)
-  const [showTransactionModal, setShowTransactionModal] = useState(false)
   const [showTransactionForm, setShowTransactionForm] = useState(false)
-  const [paymentMethod, setPaymentMethod] = useState("")
   const [rescheduleBooking, setRescheduleBooking] = useState<Booking | null>(initialRescheduleBooking || null)
   const [moveBooking, setMoveBooking] = useState<Booking | null>(null)
   const [cancellationReason, setCancellationReason] = useState("")
@@ -1009,6 +1007,7 @@ export default function CoachDashboardClient({
                       cancellation_reason: cancellationReason,
                     })
                     .eq("id", selectedBooking.id)
+
                   await supabase.from("notifications").insert({
                     coach_id: coachId,
                     client_id: selectedBooking.clients?.id,
@@ -1016,6 +1015,11 @@ export default function CoachDashboardClient({
                     type: "coach_cancelled",
                     message: cancellationReason,
                   })
+                  await supabase
+                    .from("notifications")
+                    .delete()
+                    .eq("booking_id", selectedBooking.id)
+                    .eq("type", "late_booking")
                   setShowCancelModal(false)
                   setSelectedBooking(null)
                   setCancellationReason("")
