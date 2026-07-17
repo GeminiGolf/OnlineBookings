@@ -1,6 +1,8 @@
 "use client"
 
 import { useMemo, useState } from "react"
+import { supabase } from "@/lib/supabaseClient"
+import { useRouter } from "next/navigation"
 import { DayPicker } from "react-day-picker"
 import { format } from "date-fns"
 import "react-day-picker/dist/style.css"
@@ -11,7 +13,7 @@ type Booking = {
   lesson_date: string
   lesson_time: string
   status: string
-  reschedules: number | null
+  client_reschedules: number | null
 
   clients: {
     id: number
@@ -44,6 +46,8 @@ export default function BookingsTable({
   bookings,
   coaches,
 }: Props) {
+  const router = useRouter()
+
   const [search, setSearch] = useState("")
 
   const [startDate, setStartDate] = useState("")
@@ -66,6 +70,18 @@ export default function BookingsTable({
 
     return state
   })
+
+  const [editingBooking, setEditingBooking] =
+    useState<Booking | null>(null)
+
+  const [editHour, setEditHour] = useState("9")
+  const [editMeridiem, setEditMeridiem] =
+    useState<"AM" | "PM">("AM")
+
+  const [editDate, setEditDate] = useState("")
+  const [editCoachId, setEditCoachId] = useState<number | "">("")
+  const [editStatus, setEditStatus] = useState("")
+  const [editReschedules, setEditReschedules] = useState(0)
 
   const [currentMonth, setCurrentMonth] = useState(() => {
     const today = new Date()
@@ -154,6 +170,30 @@ const formatLessonTime = (time: string) => {
     .replace(":00", "")
     .replace(/\s+/g, " ")
     .trim()
+}
+
+const saveBooking = async () => {
+  if (!editingBooking) return
+
+  const { error } = await supabase
+    .from("bookings")
+    .update({
+      lesson_date: editDate,
+      lesson_time: `${editHour}:00 ${editMeridiem}`,
+      coach_id: editCoachId,
+      status: editStatus,
+      client_reschedules: editReschedules,
+    })
+    .eq("id", editingBooking.id)
+
+  if (error) {
+    console.error(error)
+    alert(error.message)
+    return
+  }
+
+  setEditingBooking(null)
+  router.refresh()
 }
 
   return (
@@ -403,6 +443,25 @@ const formatLessonTime = (time: string) => {
 
                     <td className="border p-3 text-center">
                       <button
+                        type="button"
+                        onClick={() => {
+                          setEditingBooking(booking)
+
+                          setEditHour(
+                            booking.lesson_time
+                              .replace(":00", "")
+                              .split(" ")[0]
+                          )
+
+                          setEditMeridiem(
+                            booking.lesson_time.split(" ")[1] as "AM" | "PM"
+                          )
+
+                          setEditDate(booking.lesson_date)
+                          setEditCoachId(booking.coaches?.id ?? "")
+                          setEditStatus(booking.status)
+                          setEditReschedules(booking.client_reschedules ?? 0)
+                        }}
                         className="rounded p-1 hover:bg-gray-100"
                         title="Edit booking"
                       >
@@ -429,7 +488,7 @@ const formatLessonTime = (time: string) => {
                     </td>
 
                     <td className="border p-3 text-center">
-                      {booking.reschedules ?? 0}
+                      {booking.client_reschedules ?? 0}
                     </td>
 
                   </tr>
@@ -451,6 +510,205 @@ const formatLessonTime = (time: string) => {
       {!sortedDates.length && (
         <div className="rounded-xl border bg-white p-8 text-center text-gray-500">
           No bookings found.
+        </div>
+      )}
+
+      {editingBooking && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+
+          <div className="w-full max-w-xl rounded-2xl bg-white p-6 shadow-xl">
+
+            <h2 className="mb-6 text-2xl font-bold">
+              Edit Booking
+            </h2>
+
+            <div className="space-y-5">
+
+              <div>
+
+                <label className="mb-1 block text-sm font-semibold">
+                  Client
+                </label>
+
+                <input
+                  disabled
+                  value={
+                    editingBooking.clients?.preferred_name
+                      ? `${editingBooking.clients.preferred_name} ${editingBooking.clients.last_name}`
+                      : `${editingBooking.clients?.first_name} ${editingBooking.clients?.last_name}`
+                  }
+                  className="w-full rounded-lg border bg-gray-100 p-2"
+                />
+
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+
+                <div>
+
+                  <label className="mb-1 block text-sm font-semibold">
+                    Date
+                  </label>
+
+                  <input
+                    type="date"
+                    value={editDate}
+                    onChange={(e) => setEditDate(e.target.value)}
+                    className="w-full rounded-lg border p-2"
+                  />
+
+                </div>
+
+                <div>
+
+                  <label className="mb-1 block text-sm font-semibold">
+                    Time
+                  </label>
+
+                  <div className="flex gap-2">
+
+                    <select
+                      value={editHour}
+                      onChange={(e) => setEditHour(e.target.value)}
+                      className="w-24 rounded-lg border p-2"
+                    >
+                    
+                      {[1,2,3,4,5,6,7,8,9,10,11,12].map((hour) => (
+                        <option
+                          key={hour}
+                          value={hour}
+                        >
+                          {hour}
+                        </option>
+                      ))}
+                    </select>
+
+                    <select
+                      value={editMeridiem}
+                      onChange={(e) =>
+                        setEditMeridiem(e.target.value as "AM" | "PM")
+                      }
+                      className="w-24 rounded-lg border p-2"
+                    >
+                      <option value="AM">AM</option>
+                      <option value="PM">PM</option>
+                    </select>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+
+                <div>
+
+                  <label className="mb-1 block text-sm font-semibold">
+                    Coach
+                  </label>
+
+                  <select
+                    value={editCoachId}
+                    onChange={(e) => setEditCoachId(Number(e.target.value))}
+                    className="w-full rounded-lg border p-2"
+                  >
+
+                    {coaches.map((coach) => (
+
+                      <option
+                        key={coach.id}
+                        value={coach.id}
+                      >
+                        {coach.name}
+                      </option>
+
+                    ))}
+
+                  </select>
+
+                </div>
+
+                <div>
+
+                  <label className="mb-1 block text-sm font-semibold">
+                    Status
+                  </label>
+
+                  <select
+                    value={editStatus}
+                    onChange={(e) => setEditStatus(e.target.value)}
+                    className="w-full rounded-lg border p-2"
+                  >
+
+                    <option value="booked">
+                      booked
+                    </option>
+
+                    <option value="completed">
+                      completed
+                    </option>
+
+                    <option value="no_show">
+                      no_show
+                    </option>
+
+                    <option value="cancelled">
+                      cancelled
+                    </option>
+
+                    <option value="cancelled_coach">
+                      cancelled_coach
+                    </option>
+
+                    <option value="cancelled_admin">
+                      cancelled_admin
+                    </option>
+
+                  </select>
+
+                </div>
+
+              </div>
+
+              <div>
+
+                <label className="mb-1 block text-sm font-semibold">
+                  Reschedules
+                </label>
+
+                <input
+                  type="number"
+                  min={0}
+                  value={editReschedules}
+                  onChange={(e) => setEditReschedules(Number(e.target.value))}
+                  className="w-24 rounded-lg border p-2"
+                />
+
+              </div>
+
+              <div className="flex justify-end gap-3">
+
+                <button
+                  onClick={() => setEditingBooking(null)}
+                  className="rounded-lg border px-5 py-2"
+                >
+                  Cancel
+                </button>
+
+                <button
+                  onClick={saveBooking}
+                  className="rounded-lg bg-black px-5 py-2 text-white"
+                >
+                  Save
+                </button>
+
+              </div>
+
+            </div>
+
+          </div>
+
         </div>
       )}
 
