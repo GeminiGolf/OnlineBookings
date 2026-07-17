@@ -57,16 +57,16 @@ export default async function AdminBookingsPage() {
     ])
 
   return (
-    <main className="min-h-screen bg-gray-100 p-8 text-black">
+    <main className="min-h-screen bg-gray-100 p-4 text-black">
       <div className="mx-auto max-w-7xl">
         <Link
           href="/admin"
-          className="mb-8 inline-block rounded-xl border border-black bg-white px-6 py-3 hover:bg-gray-100"
+          className="mb-4 inline-block rounded-xl border border-black bg-white px-6 py-3 hover:bg-gray-100"
         >
           ← Back to Dashboard
         </Link>
 
-        <div className="rounded-3xl bg-white p-8 shadow">
+        <div className="rounded-3xl bg-white p-4 shadow">
           <BookingsTable
             bookings={bookings ?? []}
             coaches={coaches ?? []}

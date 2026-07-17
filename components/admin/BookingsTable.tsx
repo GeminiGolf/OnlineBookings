@@ -410,35 +410,35 @@ const saveBooking = async () => {
 
                 {!collapsedDates[date] && (
   
-                <div className="p-4">
+                <div className="px-8 py-2">
 
-                <table className="w-full overflow-hidden rounded-xl border">
+                <table className="w-full overflow-hidden rounded-xl border border-gray-300">
 
-                <thead className="bg-gray-100">
+                <thead className="border-b-2 border-gray-300 bg-gray-200">
 
                 <tr>
 
-                <th className="w-12 border p-2 text-center">
+                <th className="w-12 px-3 py-2 text-center">
                   ✏️
                 </th>
 
-                <th className="border p-2">
+                <th className="px-3 py-2 text-left">
                 Time
                 </th>
 
-                <th className="border p-2">
+                <th className="px-3 py-2 text-left">
                 Client
                 </th>
 
-                <th className="border p-2">
+                <th className="px-3 py-2 text-left">
                 Coach
                 </th>
 
-                <th className="border p-2">
+                <th className="px-3 py-2 text-left">
                 Status
                 </th>
 
-                <th className="border p-2 text-center">
+                <th className="px-3 py-2 text-left">
                   RS
                 </th>
 
@@ -493,7 +493,7 @@ const saveBooking = async () => {
                     }
                   >
 
-                    <td className="border p-3 text-center">
+                    <td className="px-3 py-3 text-center">
                       <button
                         type="button"
                         onClick={() => {
@@ -521,25 +521,25 @@ const saveBooking = async () => {
                       </button>
                     </td>
 
-                    <td className="border p-3">
+                    <td className="px-3 py-3">
                       {formatLessonTime(booking.lesson_time)}
                     </td>
 
-                    <td className="border p-3">
+                    <td className="px-3 py-3">
                       {booking.clients?.preferred_name
                         ? `${booking.clients.preferred_name} ${booking.clients.last_name}`
                         : `${booking.clients?.first_name} ${booking.clients?.last_name}`}
                     </td>
 
-                    <td className="border p-3">
+                    <td className="px-3 py-3">
                       {booking.coaches?.name.split(" ")[0]}
                     </td>
 
-                    <td className="border p-3">
+                    <td className="px-3 py-3">
                       {booking.status}
                     </td>
 
-                    <td className="border p-3 text-center">
+                    <td className="px-3 py-3">
                       {booking.client_reschedules ?? 0}
                     </td>
 
