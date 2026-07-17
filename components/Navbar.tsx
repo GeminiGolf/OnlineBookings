@@ -126,7 +126,13 @@ export default function Navbar() {
           .select("id")
           .eq("client_id", client.id)
           .is("client_read_at", null)
-          .in("type", ["coach_cancelled", "coach_rescheduled", "coach_booked", "no_show"])
+          .in("type", [
+            "coach_cancelled",
+            "admin_cancelled",
+            "coach_rescheduled",
+            "coach_booked",
+            "no_show",
+          ])
         setClientNotificationCount(notifications?.length || 0)
       }
     }
@@ -237,7 +243,9 @@ export default function Navbar() {
       await supabase
         .from("bookings")
         .update({
-          status: "cancelled",
+          status: role === "admin"
+            ? "cancelled_admin"
+            : "cancelled_coach",
           cancellation_reason: reason,
         })
         .eq("id", bookingId)
@@ -252,7 +260,9 @@ export default function Navbar() {
         coach_id: originalNotification.coach_id,
         client_id: originalNotification.client_id,
         booking_id: originalNotification.booking_id,
-        type: "coach_cancelled",
+        type: role === "admin"
+          ? "admin_cancelled"
+          : "coach_cancelled",
         message: `Late booking request rejected.\n\nReason:\n${reason}`,
       })
     }

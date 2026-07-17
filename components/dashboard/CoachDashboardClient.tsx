@@ -1003,7 +1003,10 @@ export default function CoachDashboardClient({
                   await supabase
                     .from("bookings")
                     .update({
-                      status: "cancelled_coach",
+                      status:
+                        basePath === "/admin/schedule"
+                          ? "cancelled_admin"
+                          : "cancelled_coach",
                       cancellation_reason: cancellationReason,
                     })
                     .eq("id", selectedBooking.id)
@@ -1012,7 +1015,10 @@ export default function CoachDashboardClient({
                     coach_id: coachId,
                     client_id: selectedBooking.clients?.id,
                     booking_id: selectedBooking.id,
-                    type: "coach_cancelled",
+                    type:
+                      basePath === "/admin/schedule"
+                        ? "admin_cancelled"
+                        : "coach_cancelled",
                     message: cancellationReason,
                   })
                   await supabase

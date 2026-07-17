@@ -42,7 +42,13 @@ export default function ClientNotificationsPage() {
       .from("notifications")
       .select("*")
       .eq("client_id", client.id)
-      .in("type", ["coach_cancelled", "coach_rescheduled", "coach_booked", "no_show"])
+      .in("type", [
+        "coach_cancelled",
+        "admin_cancelled",
+        "coach_rescheduled",
+        "coach_booked",
+        "no_show",
+      ])
       .order("created_at", { ascending: false })
     const enrichedNotifications = await Promise.all(
       (data || []).map(async (notification) => {
