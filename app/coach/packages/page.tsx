@@ -77,6 +77,7 @@ export default async function CoachPackagesPage() {
 
       return {
         id: pkg.id,
+        client_id: pkg.client_id,
 
         transaction_name: pkg.transaction_name ?? "",
 
@@ -106,14 +107,8 @@ export default async function CoachPackagesPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-100 p-3 text-black sm:p-10">
+    <main className="min-h-screen bg-gray-100 px-4 pb-4 pt-8 text-black sm:p-10">
       <div className="mx-auto max-w-6xl">
-        <Link
-          href="/coach/dashboard"
-          className="mb-3 inline-block rounded-lg border bg-white px-4 py-2 sm:mb-6"
-        >
-          ← Back to Dashboard
-        </Link>
 
         <CoachPackagesTable packages={packages} />
       </div>

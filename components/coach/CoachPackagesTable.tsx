@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import { useMemo, useState } from "react"
 import { DayPicker } from "react-day-picker"
 import { format } from "date-fns"
@@ -27,6 +28,8 @@ export type CoachPackageRow = {
   last_name: string
   phone: string
   email: string
+
+  client_id: number
 
   client_name: string
 }
@@ -103,10 +106,10 @@ export default function CoachPackagesTable({ packages }: Props) {
   const paginatedInactivePackages = inactivePackages.slice((inactivePage - 1) * rowsPerPage, inactivePage * rowsPerPage)
 
   return (
-    <div className="mx-auto max-w-6xl">
-      <h1 className="mb-4 text-[22px] font-bold">Packages</h1>
+    <div className="mx-auto max-w-5xl">
+      <h1 className="mb-2 text-[22px] font-bold">Packages</h1>
 
-      <div className="mb-5 flex flex-wrap items-center gap-3">
+      <div className="mb-5 flex flex-wrap items-center gap-2">
         <input
           type="text"
           placeholder="Search..."
@@ -116,7 +119,7 @@ export default function CoachPackagesTable({ packages }: Props) {
             setActivePage(1)
             setInactivePage(1)
           }}
-          className="w-[120px] rounded-lg border p-2"
+          className="w-[120px] rounded-lg border border-black bg-white px-3 py-2"
         />
 
         <div className="relative">
@@ -212,10 +215,10 @@ export default function CoachPackagesTable({ packages }: Props) {
         </div>
       </div>
 
-      <div className="mb-8 overflow-hidden rounded-2xl border bg-white">
+      <div className="mb-4 overflow-hidden rounded-2xl border bg-white">
         <button
           onClick={() => setShowActive(!showActive)}
-          className="flex w-full items-center justify-between border-b p-4 font-semibold"
+          className="flex w-full items-center justify-between border-b p-3 font-semibold"
         >
           Active Packages
           {showActive ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
@@ -223,7 +226,7 @@ export default function CoachPackagesTable({ packages }: Props) {
 
         {showActive && (
           <>
-            <div className="p-6">
+            <div className="hidden p-5 md:block">
               <table className="hidden w-full table-fixed border border-gray-300 rounded-lg border-separate border-spacing-0 md:table">
               <thead>
                 <tr className="border-b text-left">
@@ -237,7 +240,7 @@ export default function CoachPackagesTable({ packages }: Props) {
               <tbody>
                 {paginatedActivePackages.length === 0 ? (
                   <tr>
-                    <td colSpan={4} className="p-6 text-center text-gray-500">
+                    <td colSpan={4} className="p-5 text-center text-gray-500">
                       No active packages.
                     </td>
                   </tr>
@@ -250,7 +253,14 @@ export default function CoachPackagesTable({ packages }: Props) {
                         <td className="p-4 font-semibold">{remaining}</td>
                         <td className="p-4">{formatExpiry(pkg.expiration_date)}</td>
                         <td className="p-4">{pkg.transaction_name}</td>
-                        <td className="p-4">{pkg.client_name}</td>
+                        <td className="p-4">
+                          <Link
+                            href={`/coach/clients/${pkg.client_id}`}
+                            className="text-blue-600 hover:underline"
+                          >
+                            {pkg.client_name}
+                          </Link>
+                        </td>
                       </tr>
                     )
                   })
@@ -259,7 +269,7 @@ export default function CoachPackagesTable({ packages }: Props) {
               </table>
             </div>
 
-            <div className="px-6 pb-6 overflow-x-auto md:hidden">
+            <div className="md:hidden">
               {paginatedActivePackages.length === 0 ? (
                 <div className="p-4 text-center text-gray-500">No active packages.</div>
               ) : (
@@ -267,20 +277,28 @@ export default function CoachPackagesTable({ packages }: Props) {
                   const remaining = remainingLessons(pkg)
 
                   return (
-                    <div key={pkg.id} className="border-b p-4 last:border-0">
-                      <div className="flex justify-between">
-                        <span className="font-semibold">{pkg.client_name}</span>
-                        <span className="font-bold">{remaining}</span>
+                    <div key={pkg.id} className="border-b px-5 py-1.5 last:border-0">
+                      <Link
+                        href={`/coach/clients/${pkg.client_id}`}
+                        className="font-semibold text-blue-600 hover:underline"
+                      >
+                        {pkg.client_name}
+                      </Link>
+
+                      <div className="text-sm text-gray-600">
+                        {pkg.transaction_name} ({remaining})
                       </div>
-                      <div className="mt-1 text-sm text-gray-600">{pkg.transaction_name}</div>
-                      <div className="mt-1 text-sm">Expires {formatExpiry(pkg.expiration_date)}</div>
+
+                      <div className="text-sm">
+                        Expires {formatExpiry(pkg.expiration_date)}
+                      </div>
                     </div>
                   )
                 })
               )}
             </div>
 
-            <div className="flex items-center justify-center gap-3 border-t p-4">
+            <div className="flex items-center justify-center gap-3 border-t py-1.5">
               <button
                 onClick={() => setActivePage((p) => Math.max(1, p - 1))}
                 disabled={activePage === 1}
@@ -308,7 +326,7 @@ export default function CoachPackagesTable({ packages }: Props) {
       <div className="overflow-hidden rounded-2xl border bg-white">
         <button
           onClick={() => setShowInactive(!showInactive)}
-          className="flex w-full items-center justify-between border-b p-4 font-semibold"
+          className="flex w-full items-center justify-between border-b p-3 font-semibold"
         >
           Inactive Packages
           {showInactive ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
@@ -316,7 +334,7 @@ export default function CoachPackagesTable({ packages }: Props) {
 
         {showInactive && (
           <>
-            <div className="p-6">
+            <div className="hidden p-6 md:block">
               <table className="hidden w-full table-fixed border border-gray-300 rounded-lg border-separate border-spacing-0 md:table">
               <thead>
                 <tr className="border-b text-left">
@@ -343,7 +361,14 @@ export default function CoachPackagesTable({ packages }: Props) {
                         <td className="p-4 font-semibold">{remaining}</td>
                         <td className="p-4">{formatExpiry(pkg.expiration_date)}</td>
                         <td className="p-4">{pkg.transaction_name}</td>
-                        <td className="p-4">{pkg.client_name}</td>
+                        <td className="p-4">
+                          <Link
+                            href={`/coach/clients/${pkg.client_id}`}
+                            className="text-blue-600 hover:underline"
+                          >
+                            {pkg.client_name}
+                          </Link>
+                        </td>
                       </tr>
                     )
                   })
@@ -352,7 +377,7 @@ export default function CoachPackagesTable({ packages }: Props) {
               </table>
             </div>
 
-            <div className="px-6 pb-6 overflow-x-auto md:hidden">
+            <div className="md:hidden">
               {paginatedInactivePackages.length === 0 ? (
                 <div className="p-4 text-center text-gray-500">No inactive packages.</div>
               ) : (
@@ -360,20 +385,28 @@ export default function CoachPackagesTable({ packages }: Props) {
                   const remaining = remainingLessons(pkg)
 
                   return (
-                    <div key={pkg.id} className="border-b p-4 last:border-0">
-                      <div className="flex justify-between">
-                        <span className="font-semibold">{pkg.client_name}</span>
-                        <span className="font-bold">{remaining}</span>
+                    <div key={pkg.id} className="border-b px-5 py-1.5 last:border-0">
+                      <Link
+                        href={`/coach/clients/${pkg.client_id}`}
+                        className="font-semibold text-blue-600 hover:underline"
+                      >
+                        {pkg.client_name}
+                      </Link>
+
+                      <div className="text-sm text-gray-600">
+                        {pkg.transaction_name} ({remaining})
                       </div>
-                      <div className="mt-1 text-sm text-gray-600">{pkg.transaction_name}</div>
-                      <div className="mt-1 text-sm">Expired {formatExpiry(pkg.expiration_date)}</div>
+
+                      <div className="text-sm">
+                        Expired {formatExpiry(pkg.expiration_date)}
+                      </div>
                     </div>
                   )
                 })
               )}
             </div>
 
-            <div className="flex items-center justify-center gap-3 border-t p-4">
+            <div className="flex items-center justify-center gap-3 border-t py-1.5">
               <button
                 onClick={() => setInactivePage((p) => Math.max(1, p - 1))}
                 disabled={inactivePage === 1}
