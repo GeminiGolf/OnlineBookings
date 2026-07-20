@@ -727,8 +727,9 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 								>
 									<option>Cash</option>
 									<option>Card</option>
-									<option>Bank Transfer</option>
-									<option>Other</option>
+									<option>Transfer</option>
+									<option>E-wallet</option>
+									<option>Free Lesson</option>
 								</select>
 							</div>
 
