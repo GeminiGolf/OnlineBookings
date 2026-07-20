@@ -227,9 +227,9 @@ export default function CoachPackagesTable({ packages }: Props) {
               <table className="hidden w-full table-fixed border border-gray-300 rounded-lg border-separate border-spacing-0 md:table">
               <thead>
                 <tr className="border-b text-left">
-                  <th className="border-b border-r p-4">Remaining</th>
-                  <th className="border-b border-r p-4">Expiry</th>
-                  <th className="border-b border-r p-4">Package</th>
+                  <th className="border-b p-4">Remaining</th>
+                  <th className="border-b p-4">Expiry</th>
+                  <th className="border-b p-4">Package</th>
                   <th className="border-b p-4">Name</th>
                 </tr>
               </thead>
@@ -319,11 +319,11 @@ export default function CoachPackagesTable({ packages }: Props) {
             <div className="p-6">
               <table className="hidden w-full table-fixed border border-gray-300 rounded-lg border-separate border-spacing-0 md:table">
               <thead>
-                <tr className="bg-gray-50 text-left">
-                  <th className="p-4">Remaining</th>
-                  <th className="p-4">Expiry</th>
-                  <th className="p-4">Package</th>
-                  <th className="p-4">Name</th>
+                <tr className="border-b text-left">
+                  <th className="border-b p-4">Remaining</th>
+                  <th className="border-b p-4">Expiry</th>
+                  <th className="border-b p-4">Package</th>
+                  <th className="border-b p-4">Name</th>
                 </tr>
               </thead>
 
@@ -340,10 +340,10 @@ export default function CoachPackagesTable({ packages }: Props) {
 
                     return (
                       <tr key={pkg.id} className="border-b last:border-0">
-                        <td className="border-b border-r p-4 font-semibold">{remaining}</td>
-                        <td className="border-b border-r p-4">{formatExpiry(pkg.expiration_date)}</td>
-                        <td className="border-b border-r p-4">{pkg.transaction_name}</td>
-                        <td className="border-b p-4">{pkg.client_name}</td>
+                        <td className="p-4 font-semibold">{remaining}</td>
+                        <td className="p-4">{formatExpiry(pkg.expiration_date)}</td>
+                        <td className="p-4">{pkg.transaction_name}</td>
+                        <td className="p-4">{pkg.client_name}</td>
                       </tr>
                     )
                   })
