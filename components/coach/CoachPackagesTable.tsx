@@ -48,6 +48,8 @@ export default function CoachPackagesTable({ packages }: Props) {
   const [showInactive, setShowInactive] = useState(false)
   const [activePage, setActivePage] = useState(1)
   const [inactivePage, setInactivePage] = useState(1)
+  const [sortBy, setSortBy] = useState<"remaining" | "expiry">("remaining")
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc")
   const rowsPerPage = 10
   const filteredPackages = useMemo(() => {
     return packages.filter((pkg) => {
@@ -73,32 +75,67 @@ export default function CoachPackagesTable({ packages }: Props) {
   }
 
   const remainingLessons = (pkg: CoachPackageRow) => pkg.lessons_added - pkg.lessons_used
+
+  function handleRemainingSort() {
+    if (sortBy === "remaining") {
+      setSortDirection((prev) => (prev === "desc" ? "asc" : "desc"))
+    } else {
+      setSortBy("remaining")
+      setSortDirection("desc")
+    }
+  }
+
+  function handleExpirySort() {
+    if (sortBy === "expiry") {
+      setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"))
+    } else {
+      setSortBy("expiry")
+      setSortDirection("asc")
+    }
+  }
   const activePackages = useMemo(() => {
-    return [...filteredPackages]
-      .filter((pkg) => {
-        const remaining = remainingLessons(pkg)
-        const expired = pkg.expiration_date && new Date(pkg.expiration_date) < today
-        return remaining > 0 && !expired
-      })
-      .sort((a, b) => {
-        const remainingA = a.lessons_added - a.lessons_used
-        const remainingB = b.lessons_added - b.lessons_used
-        if (remainingA !== remainingB) {
-          return remainingA - remainingB
-        }
-        return (a.expiration_date ?? "").localeCompare(b.expiration_date ?? "")
-      })
-  }, [filteredPackages])
+    const active = [...filteredPackages].filter((pkg) => {
+      const remaining = remainingLessons(pkg)
+      const expired = pkg.expiration_date && new Date(pkg.expiration_date) < today
+      return remaining > 0 && !expired
+    })
+
+    active.sort((a, b) => {
+      if (sortBy === "remaining") {
+        return sortDirection === "desc"
+          ? remainingLessons(b) - remainingLessons(a)
+          : remainingLessons(a) - remainingLessons(b)
+      }
+
+      return sortDirection === "asc"
+        ? (a.expiration_date ?? "").localeCompare(b.expiration_date ?? "")
+        : (b.expiration_date ?? "").localeCompare(a.expiration_date ?? "")
+    })
+
+    return active
+  }, [filteredPackages, sortBy, sortDirection])
 
   const inactivePackages = useMemo(() => {
-    return [...filteredPackages]
-      .filter((pkg) => {
-        const remaining = remainingLessons(pkg)
-        const expired = pkg.expiration_date && new Date(pkg.expiration_date) < today
-        return remaining <= 0 || expired
-      })
-      .sort((a, b) => (b.expiration_date ?? "").localeCompare(a.expiration_date ?? ""))
-  }, [filteredPackages])
+    const inactive = [...filteredPackages].filter((pkg) => {
+      const remaining = remainingLessons(pkg)
+      const expired = pkg.expiration_date && new Date(pkg.expiration_date) < today
+      return remaining <= 0 || expired
+    })
+
+    inactive.sort((a, b) => {
+      if (sortBy === "remaining") {
+        return sortDirection === "desc"
+          ? remainingLessons(b) - remainingLessons(a)
+          : remainingLessons(a) - remainingLessons(b)
+      }
+
+      return sortDirection === "asc"
+        ? (a.expiration_date ?? "").localeCompare(b.expiration_date ?? "")
+        : (b.expiration_date ?? "").localeCompare(a.expiration_date ?? "")
+    })
+
+    return inactive
+  }, [filteredPackages, sortBy, sortDirection])
 
   const activeTotalPages = Math.max(1, Math.ceil(activePackages.length / rowsPerPage))
   const inactiveTotalPages = Math.max(1, Math.ceil(inactivePackages.length / rowsPerPage))
@@ -230,8 +267,32 @@ export default function CoachPackagesTable({ packages }: Props) {
               <table className="hidden w-full table-fixed border border-gray-300 rounded-lg border-separate border-spacing-0 md:table">
               <thead>
                 <tr className="border-b text-left">
-                  <th className="border-b p-4">Remaining</th>
-                  <th className="border-b p-4">Expiry</th>
+                  <th className="border-b p-4">
+                    <button
+                      onClick={handleRemainingSort}
+                      className="flex items-center gap-1 font-semibold"
+                    >
+                      Remaining{" "}
+                      {sortBy === "remaining"
+                        ? sortDirection === "desc"
+                          ? "▼"
+                          : "▲"
+                        : "▶"}
+                    </button>
+                  </th>
+                  <th className="border-b p-4">
+                    <button
+                      onClick={handleExpirySort}
+                      className="flex items-center gap-1 font-semibold"
+                    >
+                      Expiry{" "}
+                      {sortBy === "expiry"
+                        ? sortDirection === "asc"
+                          ? "▲"
+                          : "▼"
+                        : "▶"}
+                    </button>
+                  </th>
                   <th className="border-b p-4">Package</th>
                   <th className="border-b p-4">Name</th>
                 </tr>
@@ -338,8 +399,32 @@ export default function CoachPackagesTable({ packages }: Props) {
               <table className="hidden w-full table-fixed border border-gray-300 rounded-lg border-separate border-spacing-0 md:table">
               <thead>
                 <tr className="border-b text-left">
-                  <th className="border-b p-4">Remaining</th>
-                  <th className="border-b p-4">Expiry</th>
+                  <th className="border-b p-4">
+                    <button
+                      onClick={handleRemainingSort}
+                      className="flex items-center gap-1 font-semibold"
+                    >
+                      Remaining{" "}
+                      {sortBy === "remaining"
+                        ? sortDirection === "desc"
+                          ? "▼"
+                          : "▲"
+                        : "▶"}
+                    </button>
+                  </th>
+                  <th className="border-b p-4">
+                    <button
+                      onClick={handleExpirySort}
+                      className="flex items-center gap-1 font-semibold"
+                    >
+                      Expiry{" "}
+                      {sortBy === "expiry"
+                        ? sortDirection === "asc"
+                          ? "▲"
+                          : "▼"
+                        : "▶"}
+                    </button>
+                  </th>
                   <th className="border-b p-4">Package</th>
                   <th className="border-b p-4">Name</th>
                 </tr>
