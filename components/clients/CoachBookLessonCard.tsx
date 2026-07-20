@@ -19,6 +19,9 @@ export default function CoachBookLessonCard({
   const [timeSlots, setTimeSlots] = useState<string[]>([])
   const [selectedTime, setSelectedTime] = useState("")
   const [loading, setLoading] = useState(false)
+  const [completedDates, setCompletedDates] = useState<Date[]>([])
+  const [upcomingDates, setUpcomingDates] = useState<Date[]>([])
+  const [noShowDates, setNoShowDates] = useState<Date[]>([])
 
   useEffect(() => {
     async function loadSlots() {
@@ -38,6 +41,37 @@ export default function CoachBookLessonCard({
 
     loadSlots()
   }, [selectedDate, coachId])
+
+  useEffect(() => {
+    async function loadLessonDates() {
+      const { data: bookings } = await supabase
+        .from("bookings")
+        .select("lesson_date, status")
+        .eq("client_id", clientId)
+
+      if (!bookings) return
+
+      setCompletedDates(
+        bookings
+          .filter((b) => b.status === "completed")
+          .map((b) => new Date(b.lesson_date))
+      )
+
+      setUpcomingDates(
+        bookings
+          .filter((b) => b.status === "booked")
+          .map((b) => new Date(b.lesson_date))
+      )
+
+      setNoShowDates(
+        bookings
+          .filter((b) => b.status === "no_show")
+          .map((b) => new Date(b.lesson_date))
+      )
+    }
+
+    loadLessonDates()
+  }, [clientId])
 
 
   async function confirmBooking() {
@@ -127,6 +161,16 @@ export default function CoachBookLessonCard({
               before: new Date(),
             },
           ]}
+          modifiers={{
+            completedLesson: completedDates,
+            upcomingLesson: upcomingDates,
+            noShowLesson: noShowDates,
+          }}
+          modifiersClassNames={{
+            completedLesson: "bg-sky-300 text-black rounded-md",
+            upcomingLesson: "bg-gray-300 text-black rounded-md",
+            noShowLesson: "bg-red-300 text-black rounded-md",
+          }}
         />
       </div>
 
