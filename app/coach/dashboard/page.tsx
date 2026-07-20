@@ -97,28 +97,34 @@ export default function CoachDashboardPage() {
           </Link>
 
           <Link
-            href="/coach/mapschedule"
+            href="/notifications"
             className="rounded-3xl bg-white p-5 sm:p-8 shadow-lg transition hover:scale-[1.02]"
           >
             <h2 className="text-[20px] font-bold text-black sm:text-[20px]">
-              Map Schedule
+              Notifications ({totalNotifications})
+
+              {urgentNotifications > 0 && (
+                <span className="ml-2 text-red-600">
+                  [{urgentNotifications} Urgent]
+                </span>
+              )}
             </h2>
 
-            <p className="mt-2 text-base text-gray-600 sm:mt-3 sm:base">
-              Edit your weekly coaching availability.
+            <p className="mt-2 text-base text-gray-600 sm:mt-3 sm:text-base">
+              View unread notifications.
             </p>
           </Link>
 
           <Link
-            href="/coach/lessons"
+            href="/coach/packages"
             className="rounded-3xl bg-white p-5 sm:p-8 shadow-lg transition hover:scale-[1.02]"
           >
             <h2 className="text-[20px] font-bold text-black sm:text-[20px]">
-              Previous Lessons
+              Client Packages
             </h2>
 
             <p className="mt-2 text-base text-gray-600 sm:mt-3 sm:text-base">
-              View lesson history and past clients.
+              View all client packages
             </p>
           </Link>
 
@@ -136,21 +142,28 @@ export default function CoachDashboardPage() {
           </Link>
 
           <Link
-            href="/notifications"
+            href="/coach/lessons"
             className="rounded-3xl bg-white p-5 sm:p-8 shadow-lg transition hover:scale-[1.02]"
           >
             <h2 className="text-[20px] font-bold text-black sm:text-[20px]">
-              Notifications ({totalNotifications})
-
-              {urgentNotifications > 0 && (
-                <span className="ml-2 text-red-600">
-                  [{urgentNotifications} Urgent]
-                </span>
-              )}
+              Previous Lessons
             </h2>
 
             <p className="mt-2 text-base text-gray-600 sm:mt-3 sm:text-base">
-              View unread notifications.
+              View lesson history and past clients.
+            </p>
+          </Link>
+
+          <Link
+            href="/coach/mapschedule"
+            className="rounded-3xl bg-white p-5 sm:p-8 shadow-lg transition hover:scale-[1.02]"
+          >
+            <h2 className="text-[20px] font-bold text-black sm:text-[20px]">
+              Map Schedule
+            </h2>
+
+            <p className="mt-2 text-base text-gray-600 sm:mt-3 sm:base">
+              Edit your weekly coaching availability.
             </p>
           </Link>
 
