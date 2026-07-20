@@ -43,6 +43,7 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
   const [page, setPage] = useState(1)
   const [receiptUrl, setReceiptUrl] = useState<string | null>(null)
 	const [editingTransaction, setEditingTransaction] = useState<TransactionRow | null>(null)
+	const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
 
 	const [editForm, setEditForm] = useState({
 		transaction_name: "",
@@ -163,6 +164,23 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 
 		alert("Transaction updated.")
 
+		window.location.reload()
+	}
+
+	async function deleteTransaction() {
+		if (!editingTransaction) return
+
+		const { error } = await supabase
+			.from("lesson_packages")
+			.delete()
+			.eq("id", editingTransaction.id)
+
+		if (error) {
+			alert(error.message)
+			return
+		}
+
+		alert("Transaction deleted.")
 		window.location.reload()
 	}
 
@@ -750,10 +768,10 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 
 						<div className="mt-8 flex justify-end gap-3">
 							<button
-								onClick={() => setEditingTransaction(null)}
-								className="rounded-lg border px-4 py-2"
+								onClick={() => setShowDeleteConfirm(true)}
+								className="rounded-lg bg-red-600 px-4 py-2 text-white hover:bg-red-700"
 							>
-								Cancel
+								Delete
 							</button>
 
 							<button
@@ -761,6 +779,34 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 								className="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
 							>
 								Save
+							</button>
+						</div>
+					</div>
+				</div>
+			)}
+
+			{showDeleteConfirm && (
+				<div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50">
+					<div className="w-full max-w-sm rounded-xl bg-white p-6 shadow-xl">
+						<h3 className="text-xl font-bold">Delete Transaction?</h3>
+
+						<p className="mt-3 text-gray-600">
+							This action cannot be undone.
+						</p>
+
+						<div className="mt-6 flex justify-end gap-3">
+							<button
+								onClick={() => setShowDeleteConfirm(false)}
+								className="rounded-lg border px-4 py-2"
+							>
+								Cancel
+							</button>
+
+							<button
+								onClick={deleteTransaction}
+								className="rounded-lg bg-red-600 px-4 py-2 text-white hover:bg-red-700"
+							>
+								Delete
 							</button>
 						</div>
 					</div>
