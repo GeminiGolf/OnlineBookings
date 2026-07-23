@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabaseServer"
-import CoachDashboardClient from "@/components/dashboard/CoachDashboardClient"
+import CoachScheduling from "@/components/scheduling/CoachScheduling"
 
 type Props = {
   searchParams: Promise<{
@@ -100,7 +100,7 @@ export default async function CoachSchedulePage({ searchParams }: Props) {
   }
 
   return (
-    <CoachDashboardClient
+    <CoachScheduling
       coachId={coach.id}
       coachName={coach.name}
       initialBookings={bookings || []}
