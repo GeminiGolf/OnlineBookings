@@ -688,15 +688,25 @@ export default function NotificationsPage() {
                 ))}
               </div>
 
-              <div className="mt-4 flex gap-3">
+              <div className="mt-4 flex items-center gap-3">
                 {activePage > 1 && (
-                  <button onClick={() => setActivePage((p) => p - 1)} className="rounded bg-gray-300 px-4 py-2">
+                  <button
+                    onClick={() => setActivePage((p) => p - 1)}
+                    className="rounded bg-gray-300 px-4 py-2"
+                  >
                     Previous
                   </button>
                 )}
 
+                <span className="font-medium text-black">
+                  Page {activePage}
+                </span>
+
                 {activeHasNext && (
-                  <button onClick={() => setActivePage((p) => p + 1)} className="rounded bg-gray-300 px-4 py-2">
+                  <button
+                    onClick={() => setActivePage((p) => p + 1)}
+                    className="rounded bg-gray-300 px-4 py-2"
+                  >
                     Next
                   </button>
                 )}
@@ -878,14 +888,25 @@ export default function NotificationsPage() {
                     ))}
                   </div>
 
-                  <div className="mt-4 flex gap-3">
-                    {olderPage > 1 && (
-                      <button onClick={() => setOlderPage((p) => p - 1)} className="rounded bg-gray-300 px-4 py-2">
+                  <div className="mt-4 flex items-center gap-3">
+                    {activePage > 1 && (
+                      <button
+                        onClick={() => setActivePage((p) => p - 1)}
+                        className="rounded bg-gray-300 px-4 py-2"
+                      >
                         Previous
                       </button>
                     )}
-                    {olderHasNext && (
-                      <button onClick={() => setOlderPage((p) => p + 1)} className="rounded bg-gray-300 px-4 py-2">
+
+                    <span className="font-medium text-black">
+                      Page {activePage}
+                    </span>
+
+                    {activeHasNext && (
+                      <button
+                        onClick={() => setActivePage((p) => p + 1)}
+                        className="rounded bg-gray-300 px-4 py-2"
+                      >
                         Next
                       </button>
                     )}
