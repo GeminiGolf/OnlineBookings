@@ -13,7 +13,9 @@ type Lesson = {
   lesson_notes: string | null
   clients: {
     id: number
-    name: string
+    first_name: string
+    last_name: string
+    preferred_name: string | null
     phone: string | null
   } | null
 }
@@ -35,7 +37,14 @@ export default function CoachPreviousLessonsTable({ lessons }: Props) {
   const [noteText, setNoteText] = useState("")
   const filteredLessons = useMemo(() => {
     return lessons.filter((lesson) => {
-      const clientName = lesson.clients?.name?.toLowerCase() || ""
+      const clientName = [
+        lesson.clients?.preferred_name,
+        lesson.clients?.first_name,
+        lesson.clients?.last_name,
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase()
       const phone = lesson.clients?.phone?.toLowerCase() || ""
       const searchText = search.toLowerCase()
       const matchesSearch = !search || clientName.includes(searchText) || phone.includes(searchText)
@@ -189,7 +198,21 @@ export default function CoachPreviousLessonsTable({ lessons }: Props) {
                     year: "2-digit",
                   })}
                 </td>
-                <td className="p-3">{lesson.clients?.name || "-"}</td>
+                <td className="p-3">
+                  {lesson.clients ? (
+                    <a
+                      href={`/coach/clients/${lesson.clients.id}`}
+                      className="text-blue-600 hover:underline"
+                    >
+                      {lesson.clients.preferred_name
+                        ? `(${lesson.clients.preferred_name}) `
+                        : ""}
+                      {lesson.clients.first_name} {lesson.clients.last_name}
+                    </a>
+                  ) : (
+                    "-"
+                  )}
+                </td>
                 <td className="p-3">
                   <td className="p-3">
                     <button
@@ -230,7 +253,22 @@ export default function CoachPreviousLessonsTable({ lessons }: Props) {
                     year: "2-digit",
                   })}
                 </span>
-                <span className="text-left">{lesson.clients?.name}</span>
+                <span className="text-left">
+                  {lesson.clients ? (
+                    <a
+                      href={`/coach/clients/${lesson.clients.id}`}
+                      className="text-blue-600 hover:underline"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      {lesson.clients.preferred_name
+                        ? `(${lesson.clients.preferred_name}) `
+                        : ""}
+                      {lesson.clients.first_name} {lesson.clients.last_name}
+                    </a>
+                  ) : (
+                    "-"
+                  )}
+                </span>
                 <span>{expandedId === lesson.id ? "▲" : "▼"}</span>
               </button>
 

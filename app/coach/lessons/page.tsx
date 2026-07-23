@@ -29,7 +29,9 @@ export default async function CoachLessonsPage() {
       *,
       clients (
         id,
-        name,
+        first_name,
+        last_name,
+        preferred_name,
         phone
       )
     `)
