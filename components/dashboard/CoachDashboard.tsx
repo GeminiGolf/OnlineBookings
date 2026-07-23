@@ -61,11 +61,10 @@ type Props = {
   weeklyBreaks: WeeklyBreak[]
   dateOverrides: DateOverride[]
   rescheduleBooking?: Booking | null
-  basePath?: string
   headerContent?: React.ReactNode
 }
 
-export default function CoachDashboardClient({
+export default function CoachDashboard({
   coachId,
   coachName,
   initialBookings,
@@ -74,7 +73,6 @@ export default function CoachDashboardClient({
   weeklyBreaks,
   dateOverrides,
   rescheduleBooking: initialRescheduleBooking,
-  basePath = "/coach/schedule",
   headerContent,
 }: Props) {
   const router = useRouter()
@@ -273,10 +271,7 @@ export default function CoachDashboardClient({
       setMoveBooking(null)
       const params = new URLSearchParams()
       params.set("date", selectedDate)
-      if (coachId > 0 && basePath === "/admin/schedule") {
-        params.set("coach", String(coachId))
-      }
-      router.push(`${basePath}?${params.toString()}`)
+      router.push(`/coach/schedule?${params.toString()}`)
       return
     }
 
@@ -329,13 +324,12 @@ export default function CoachDashboardClient({
   function goToDate(date: string) {
     const params = new URLSearchParams()
     params.set("date", date)
-    if (coachId > 0 && basePath === "/admin/schedule") {
-      params.set("coach", String(coachId))
-    }
+
     if (rescheduleBooking) {
       params.set("reschedule", String(rescheduleBooking.id))
     }
-    router.push(`${basePath}?${params.toString()}`)
+
+    router.push(`/coach/schedule?${params.toString()}`)
   }
 
   function previousDay() {
@@ -704,11 +698,7 @@ export default function CoachDashboardClient({
                 </div>
 
                 <Link
-                  href={`${
-                    basePath === "/admin/schedule"
-                      ? "/admin/clients"
-                      : "/coach/clients"
-                  }/${selectedBooking.clients?.id}`}
+                  href={`/coach/clients/${selectedBooking.clients?.id}`}
                   className="text-xl font-semibold underline text-blue-600 hover:text-blue-800"
                 >
                   {selectedBooking.clients?.preferred_name
@@ -1003,10 +993,7 @@ export default function CoachDashboardClient({
                   await supabase
                     .from("bookings")
                     .update({
-                      status:
-                        basePath === "/admin/schedule"
-                          ? "cancelled_admin"
-                          : "cancelled_coach",
+                      status: "cancelled_coach",
                       cancellation_reason: cancellationReason,
                     })
                     .eq("id", selectedBooking.id)
@@ -1015,10 +1002,7 @@ export default function CoachDashboardClient({
                     coach_id: coachId,
                     client_id: selectedBooking.clients?.id,
                     booking_id: selectedBooking.id,
-                    type:
-                      basePath === "/admin/schedule"
-                        ? "admin_cancelled"
-                        : "coach_cancelled",
+                    type: "coach_cancelled",
                     message: cancellationReason,
                   })
                   await supabase
