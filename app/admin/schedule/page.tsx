@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabaseServer"
-import CoachDashboardClient from "@/components/dashboard/CoachDashboardClient"
+import AdminDashboard from "@/components/dashboard/AdminDashboard"
 import CoachSelector from "@/components/CoachSelector"
 
 type Props = {
@@ -44,7 +44,7 @@ export default async function AdminSchedulePage({ searchParams }: Props) {
 
   if (!coachId) {
     return (
-      <CoachDashboardClient
+      <AdminDashboard
         coachId={0}
         coachName=""
         initialBookings={[]}
@@ -52,7 +52,6 @@ export default async function AdminSchedulePage({ searchParams }: Props) {
         availability={null}
         weeklyBreaks={[]}
         dateOverrides={[]}
-        basePath="/admin/schedule"
         headerContent={
           <CoachSelector
             coaches={coaches || []}
@@ -132,7 +131,7 @@ export default async function AdminSchedulePage({ searchParams }: Props) {
     rescheduleBooking = data
   }
   return (
-    <CoachDashboardClient
+    <AdminDashboard
       coachId={coach.id}
       coachName={coach.name}
       initialBookings={bookings || []}
@@ -141,7 +140,6 @@ export default async function AdminSchedulePage({ searchParams }: Props) {
       weeklyBreaks={weeklyBreaks || []}
       dateOverrides={dateOverrides || []}
       rescheduleBooking={rescheduleBooking}
-      basePath="/admin/schedule"
       headerContent={
         <CoachSelector
           coaches={coaches || []}
