@@ -118,6 +118,7 @@ export default async function AdminClientProfilePage({ params }: Props) {
             
             <AdminClientContactEditor
               clientId={client.id}
+              profileId={client.profile_id}
               initialPhone={client.phone}
               initialEmail={client.email}
             />
