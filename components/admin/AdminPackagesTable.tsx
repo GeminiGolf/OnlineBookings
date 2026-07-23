@@ -1,6 +1,8 @@
 "use client"
 
 import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { supabase } from "@/lib/supabaseClient"
 import { useMemo, useState } from "react"
 import { DayPicker } from "react-day-picker"
 import { format } from "date-fns"
@@ -61,10 +63,19 @@ export default function AdminPackagesTable({
   const [inactivePage, setInactivePage] = useState(1)
   const [sortBy, setSortBy] = useState<"remaining" | "expiry">("remaining")
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc")
-
   const [selectedCoaches, setSelectedCoaches] = useState<number[]>(
     coaches.map((coach) => coach.id)
   )
+  const [editingPackage, setEditingPackage] =
+    useState<CoachPackageRow | null>(null)
+  const [packageName, setPackageName] = useState("")
+  const [lessonsAdded, setLessonsAdded] = useState(0)
+  const [lessonsUsed, setLessonsUsed] = useState(0)
+  const [purchaseDate, setPurchaseDate] = useState("")
+  const [expiryDate, setExpiryDate] = useState("")
+  const router = useRouter()
+
+
   const rowsPerPage = 10
   const filteredPackages = useMemo(() => {
     return packages.filter((pkg) => {
@@ -92,7 +103,31 @@ export default function AdminPackagesTable({
     return format(new Date(date), "dd/MM/yy")
   }
 
-  const remainingLessons = (pkg: CoachPackageRow) => pkg.lessons_added - pkg.lessons_used
+  const remainingLessons = (pkg: CoachPackageRow) =>
+    pkg.lessons_added - pkg.lessons_used
+
+  async function handleSavePackage() {
+    if (!editingPackage) return
+
+    const { error } = await supabase
+      .from("lesson_packages")
+      .update({
+        transaction_name: packageName,
+        lessons_added: lessonsAdded,
+        lessons_used: lessonsUsed,
+        purchase_date: purchaseDate || null,
+        expiration_date: expiryDate || null,
+      })
+      .eq("id", editingPackage.id)
+
+    if (error) {
+      alert(error.message)
+      return
+    }
+
+    setEditingPackage(null)
+    router.refresh()
+  }
 
   function handleRemainingSort() {
     if (sortBy === "remaining") {
@@ -308,6 +343,7 @@ export default function AdminPackagesTable({
               <table className="hidden w-full table-fixed border border-gray-300 rounded-lg border-separate border-spacing-0 md:table">
               <thead>
                 <tr className="border-b text-left">
+                  <th className="border-b p-4 w-16">Edit</th>
                   <th className="border-b p-4">
                     <button
                       onClick={handleRemainingSort}
@@ -342,7 +378,7 @@ export default function AdminPackagesTable({
               <tbody>
                 {paginatedActivePackages.length === 0 ? (
                   <tr>
-                    <td colSpan={4} className="p-5 text-center text-gray-500">
+                    <td colSpan={5} className="p-5 text-center text-gray-500">
                       No active packages.
                     </td>
                   </tr>
@@ -352,6 +388,21 @@ export default function AdminPackagesTable({
 
                     return (
                       <tr key={pkg.id}>
+                        <td className="p-4">
+                          <button
+                            onClick={() => {
+                              setEditingPackage(pkg)
+                              setPackageName(pkg.transaction_name)
+                              setLessonsAdded(pkg.lessons_added)
+                              setLessonsUsed(pkg.lessons_used)
+                              setPurchaseDate(pkg.purchase_date ?? "")
+                              setExpiryDate(pkg.expiration_date ?? "")
+                            }}
+                            className="rounded border px-2 py-1 hover:bg-gray-100"
+                          >
+                            ✏️
+                          </button>
+                        </td>
                         <td className="p-4 font-semibold">{remaining}</td>
                         <td className="p-4">{formatExpiry(pkg.expiration_date)}</td>
                         <td className="p-4">{pkg.transaction_name}</td>
@@ -440,6 +491,7 @@ export default function AdminPackagesTable({
               <table className="hidden w-full table-fixed border border-gray-300 rounded-lg border-separate border-spacing-0 md:table">
               <thead>
                 <tr className="border-b text-left">
+                  <th className="border-b p-4 w-16">Edit</th>
                   <th className="border-b p-4">
                     <button
                       onClick={handleRemainingSort}
@@ -474,7 +526,7 @@ export default function AdminPackagesTable({
               <tbody>
                 {paginatedInactivePackages.length === 0 ? (
                   <tr>
-                    <td colSpan={4} className="p-6 text-center text-gray-500">
+                    <td colSpan={5} className="p-6 text-center text-gray-500">
                       No inactive packages.
                     </td>
                   </tr>
@@ -484,6 +536,14 @@ export default function AdminPackagesTable({
 
                     return (
                       <tr key={pkg.id} className="border-b last:border-0">
+                        <td className="p-4">
+                          <button
+                            onClick={() => setEditingPackage(pkg)}
+                            className="rounded border px-2 py-1 hover:bg-gray-100"
+                          >
+                            ✏️
+                          </button>
+                        </td>
                         <td className="p-4 font-semibold">{remaining}</td>
                         <td className="p-4">{formatExpiry(pkg.expiration_date)}</td>
                         <td className="p-4">{pkg.transaction_name}</td>
@@ -556,6 +616,112 @@ export default function AdminPackagesTable({
           </>
         )}
       </div>
+
+      {editingPackage && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+          <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-xl">
+            <h2 className="mb-4 text-xl font-bold">Edit Package</h2>
+
+            <div className="space-y-4">
+
+              <div>
+                <label className="block text-sm font-semibold mb-1">
+                  Client
+                </label>
+                <div className="rounded border bg-gray-100 px-3 py-2">
+                  {editingPackage.client_name}
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold mb-1">
+                  Coach
+                </label>
+                <div className="rounded border bg-gray-100 px-3 py-2">
+                  {editingPackage.coach_name}
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold mb-1">
+                  Package
+                </label>
+                <input
+                  className="w-full rounded border px-3 py-2"
+                  value={packageName}
+                  onChange={(e) => setPackageName(e.target.value)}
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold mb-1">
+                  Lessons Added
+                </label>
+                <input
+                  type="number"
+                  className="w-full rounded border px-3 py-2"
+                  value={lessonsAdded}
+                  onChange={(e) => setLessonsAdded(Number(e.target.value))}
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold mb-1">
+                  Lessons Used
+                </label>
+                <input
+                  type="number"
+                  className="w-full rounded border px-3 py-2"
+                  value={lessonsUsed}
+                  onChange={(e) => setLessonsUsed(Number(e.target.value))}
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold mb-1">
+                  Purchase Date
+                </label>
+                <input
+                  type="date"
+                  className="w-full rounded border px-3 py-2"
+                  value={purchaseDate}
+                  onChange={(e) => setPurchaseDate(e.target.value)}
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold mb-1">
+                  Expiry Date
+                </label>
+                <input
+                  type="date"
+                  className="w-full rounded border px-3 py-2"
+                  value={expiryDate}
+                  onChange={(e) => setExpiryDate(e.target.value)}
+                />
+              </div>
+
+            </div>
+
+            <div className="mt-8 flex justify-end gap-3">
+              <button
+                onClick={() => setEditingPackage(null)}
+                className="rounded-lg border px-4 py-2 hover:bg-gray-100"
+              >
+                Cancel
+              </button>
+
+              <button
+                onClick={handleSavePackage}
+                className="rounded-lg bg-green-600 px-4 py-2 text-white hover:bg-green-700"
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   )
 }
