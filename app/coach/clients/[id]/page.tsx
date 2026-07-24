@@ -1,4 +1,4 @@
-import CoachClientProfileClient from "@/components/clients/CoachClientProfileClient"
+import ClientIDTransactionForm from "@/components/transactions/ClientIDTransactionForm"
 import Link from "next/link"
 import { createClient } from "@/lib/supabaseServer"
 import { redirect } from "next/navigation"
@@ -101,7 +101,7 @@ export default async function CoachClientProfilePage({ params }: Props) {
                     : `${client.first_name} ${client.last_name}`}
                 </h1>
 
-                <CoachClientProfileClient
+                <ClientIDTransactionForm
                   clientId={client.id}
                   lessonsRemaining={client.lessons_remaining}
                 />

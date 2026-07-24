@@ -18,7 +18,7 @@ type Props = {
 }
 
 
-export default function CoachClientProfileClient({ clientId, lessonsRemaining }: Props) {
+export default function ClientIDTransactionForm({ clientId, lessonsRemaining }: Props) {
   const [showModal, setShowModal] = useState(false)
   const [transactionType, setTransactionType] = useState("PPV")
   const [transactionName, setTransactionName] = useState("PPV")

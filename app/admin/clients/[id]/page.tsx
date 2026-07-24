@@ -1,4 +1,4 @@
-import CoachClientProfileClient from "@/components/clients/CoachClientProfileClient"
+import ClientIDTransactionForm from "@/components/transactions/ClientIDTransactionForm"
 import Link from "next/link"
 import { createClient } from "@/lib/supabaseServer"
 import { redirect } from "next/navigation"
@@ -141,7 +141,7 @@ export default async function AdminClientProfilePage({ params }: Props) {
           />
 
           <div className="mt-8 flex flex-wrap gap-3">
-            <CoachClientProfileClient
+            <ClientIDTransactionForm
               clientId={client.id}
               lessonsRemaining={client.lessons_remaining}
             />
