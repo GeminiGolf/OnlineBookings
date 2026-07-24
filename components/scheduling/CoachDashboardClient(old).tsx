@@ -5,7 +5,6 @@ import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { supabase } from "@/lib/supabaseClient"
 import AddTransactionForm from "@/components/clients/AddTransactionForm"
-import { getMalaysiaDate } from "@/lib/date"
 
 type Booking = {
   id: number
@@ -344,14 +343,14 @@ export default function CoachDashboardClient({
     goToDate(date.toISOString().split("T")[0])
   }
 
-  function today() {
-    goToDate(getMalaysiaDate())
-  }
-
   function nextDay() {
     const date = new Date(selectedDate)
     date.setDate(date.getDate() + 1)
     goToDate(date.toISOString().split("T")[0])
+  }
+
+  function today() {
+    goToDate(new Date().toISOString().split("T")[0])
   }
 
   async function closeDay() {
@@ -751,13 +750,16 @@ export default function CoachDashboardClient({
                 <div className="flex gap-3 pt-4">
                   <button
                     onClick={() => {
-                      const today = getMalaysiaDate()
+                      const today = new Date()
+                      today.setHours(0, 0, 0, 0)
 
-                      if (selectedBooking.lesson_date > today) {
+                      const lessonDate = new Date(selectedBooking.lesson_date)
+                      lessonDate.setHours(0, 0, 0, 0)
+
+                      if (lessonDate > today) {
                         alert("Future lessons cannot be marked as completed.")
                         return
                       }
-
                       const lessonTime = selectedBooking.lesson_time.trim().toUpperCase()
                       let lessonHour = parseInt(lessonTime)
                       if (lessonTime.includes("PM") && lessonHour !== 12) {
@@ -766,19 +768,11 @@ export default function CoachDashboardClient({
                       if (lessonTime.includes("AM") && lessonHour === 12) {
                         lessonHour = 0
                       }
-
-                      const now = new Date()
                       const lessonStart = new Date()
                       lessonStart.setHours(lessonHour, 0, 0, 0)
-
-                      const completionAllowedTime = new Date(
-                        lessonStart.getTime() + 30 * 60 * 1000
-                      )
-
-                      if (now < completionAllowedTime) {
-                        const confirmed = window.confirm(
-                          `This lesson starts at ${selectedBooking.lesson_time}`
-                        )
+                      const completionAllowedTime = new Date(lessonStart.getTime() + 30 * 60 * 1000)
+                      if (today < completionAllowedTime) {
+                        const confirmed = window.confirm(`This lesson starts at ${selectedBooking.lesson_time}`)
                         if (!confirmed) {
                           return
                         }
@@ -869,7 +863,10 @@ export default function CoachDashboardClient({
 
               <button
                 onClick={async () => {
-                  const todayDate = getMalaysiaDate()
+                  const todayDate =
+                    new Date()
+                      .toISOString()
+                      .split("T")[0]
 
                   await supabase
                     .from("bookings")
