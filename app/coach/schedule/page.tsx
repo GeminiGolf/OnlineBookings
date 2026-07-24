@@ -1,6 +1,6 @@
 import { createClient } from "@/lib/supabaseServer"
 import CoachScheduling from "@/components/scheduling/CoachScheduling"
-
+import { getMalaysiaDate } from "@/lib/date"
 type Props = {
   searchParams: Promise<{
     date?: string
@@ -8,9 +8,10 @@ type Props = {
   }>
 }
 
+
 export default async function CoachSchedulePage({ searchParams }: Props) {
   const params = await searchParams
-  const selectedDate = params.date || new Date().toISOString().split("T")[0]
+  const selectedDate = params.date || getMalaysiaDate()
   const rescheduleId = params.reschedule ? Number(params.reschedule) : null
   const supabase = await createClient()
   const {

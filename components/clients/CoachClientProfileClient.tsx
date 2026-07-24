@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { supabase } from "@/lib/supabaseClient"
-
+import { getMalaysiaDate } from "@/lib/date"
 type CoachDefaults = {
   ppv_price: number | null
   ppv_expiry_months: number | null
@@ -16,6 +16,7 @@ type Props = {
   clientId: number
   lessonsRemaining: number
 }
+
 
 export default function CoachClientProfileClient({ clientId, lessonsRemaining }: Props) {
   const [showModal, setShowModal] = useState(false)
@@ -150,8 +151,7 @@ export default function CoachClientProfileClient({ clientId, lessonsRemaining }:
       receiptUrl = fileName
     }
 
-    const purchaseDate = new Date().toISOString().split("T")[0]
-
+    const purchaseDate = getMalaysiaDate()
     const {
       data: { user },
     } = await supabase.auth.getUser()

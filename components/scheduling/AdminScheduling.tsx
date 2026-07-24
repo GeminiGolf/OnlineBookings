@@ -4,8 +4,8 @@ import Link from "next/link"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { supabase } from "@/lib/supabaseClient"
-import CoachClientProfileClient from "@/components/clients/CoachClientProfileClient"
 import AddTransactionForm from "@/components/clients/AddTransactionForm"
+import { getMalaysiaDate } from "@/lib/date"
 
 type Booking = {
   id: number
@@ -349,7 +349,7 @@ export default function AdminDashboard({
   }
 
   function today() {
-    goToDate(new Date().toISOString().split("T")[0])
+    goToDate(getMalaysiaDate())
   }
 
   async function closeDay() {

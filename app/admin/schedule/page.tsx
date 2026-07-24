@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabaseServer"
 import AdminScheduling from "@/components/scheduling/AdminScheduling"
 import CoachSelector from "@/components/CoachSelector"
-
+import { getMalaysiaDate } from "@/lib/date"
 type Props = {
   searchParams: Promise<{
     date?: string
@@ -10,10 +10,11 @@ type Props = {
   }>
 }
 
+
 export default async function AdminSchedulePage({ searchParams }: Props) {
   const params = await searchParams
   const selectedDate =
-    params.date || new Date().toISOString().split("T")[0]
+    params.date || getMalaysiaDate()
   const coachId = params.coach
     ? Number(params.coach)
     : null

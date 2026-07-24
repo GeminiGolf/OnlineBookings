@@ -6,6 +6,7 @@ import "react-day-picker/dist/style.css"
 import { supabase } from "@/lib/supabaseClient"
 import Link from "next/link"
 import RequireClient from "@/components/auth/RequireClient"
+import { getMalaysiaDate } from "@/lib/date"
 type Coach = {
   id: number
   name: string
@@ -21,6 +22,7 @@ type ClientData = {
   lessons_remaining: number
   primary_coach_id: number | null
 }
+
 
 export default function ClientDashboard() {
   const [upcomingPage, setUpcomingPage] = useState(1)
@@ -94,7 +96,7 @@ export default function ClientDashboard() {
       .maybeSingle()
     if (!clientRecord) return
 
-    const today = new Date().toISOString().split("T")[0]
+    const today = getMalaysiaDate()
     const { data: missedLessons } = await supabase.from("bookings").select("id, coach_id, client_id").eq("status", "booked").lt("lesson_date", today)
 
     if (missedLessons?.length) {
