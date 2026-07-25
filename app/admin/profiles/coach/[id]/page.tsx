@@ -98,6 +98,7 @@ export default async function AdminCoachProfilePage({
 
               <AdminCoachContactEditor
                 coachId={coach.id}
+                profileId={coach.profile_id}
                 initialPhone={coach.phone}
                 initialEmail={coach.email}
               />

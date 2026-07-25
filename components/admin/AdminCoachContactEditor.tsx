@@ -6,12 +6,14 @@ import { supabase } from "@/lib/supabaseClient"
 
 type Props = {
   coachId: number
+  profileId: string
   initialPhone: string | null
   initialEmail: string | null
 }
 
 export default function AdminCoachContactEditor({
   coachId,
+  profileId,
   initialPhone,
   initialEmail,
 }: Props) {
@@ -52,15 +54,27 @@ export default function AdminCoachContactEditor({
   async function saveEmail() {
     setSaving(true)
 
-    await supabase
-      .from("coaches")
-      .update({
-        email:
-          email.trim() === ""
-            ? null
-            : email.trim(),
-      })
-      .eq("id", coachId)
+    const response = await fetch(
+      "/api/admin/coach/update-email",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          profileId,
+          email: email.trim() === "" ? null : email.trim(),
+        }),
+      }
+    )
+
+    const result = await response.json()
+
+    if (!response.ok) {
+      alert(result.error)
+      setSaving(false)
+      return
+    }
 
     setSaving(false)
     setEditingEmail(false)
