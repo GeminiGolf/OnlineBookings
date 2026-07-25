@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { createClient } from "@/lib/supabaseServer"
-import CoachClientsSearch from "@/components/clients/CoachClientsSearch"
+import ClientsSearch from "@/components/coach/ClientsSearch"
+import AddClient from "@/components/coach/AddClient"
 import { redirect } from "next/navigation"
 export default async function CoachClientsPage() {
   const supabase = await createClient()
@@ -25,7 +26,7 @@ export default async function CoachClientsPage() {
                   ← Back to Dashboard
                 </Link>
         <h1 className="text-3xl font-bold sm:text-4xl">My Clients</h1>
-        <CoachClientsSearch clients={clients || []} />
+        <ClientsSearch clients={clients || []} />
 
       </div>
     </main>

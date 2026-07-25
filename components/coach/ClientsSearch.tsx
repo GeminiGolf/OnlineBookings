@@ -1,6 +1,7 @@
 "use client"
 import { useMemo, useState } from "react"
 import Link from "next/link"
+import AddClient from "@/components/coach/AddClient"
 
 type Client = {
   id: number
@@ -16,9 +17,10 @@ type Props = {
   clients: Client[]
 }
 
-export default function CoachClientsSearch({ clients }: Props) {
+export default function ClientsSearch({ clients }: Props) {
   const [search, setSearch] = useState("")
   const [page, setPage] = useState(1)
+  const [showAddClient, setShowAddClient] = useState(false)
   const filteredClients = useMemo(() => {
     const term = search.toLowerCase().trim()
     const results =
@@ -49,6 +51,15 @@ export default function CoachClientsSearch({ clients }: Props) {
   )
   return (
     <div className="mt-4">
+      <div className="mb-4 flex items-center justify-end">
+        <button
+          onClick={() => setShowAddClient(true)}
+          className="rounded-xl bg-green-600 px-4 py-2 font-medium text-white transition hover:bg-green-700"
+        >
+          Create Client
+        </button>
+      </div>
+
       <input
         type="text"
         placeholder="Search name, phone or email..."
@@ -165,6 +176,11 @@ export default function CoachClientsSearch({ clients }: Props) {
           Next
         </button>
       </div>
+      <AddClient
+        open={showAddClient}
+        onClose={() => setShowAddClient(false)}
+        onCreated={() => window.location.reload()}
+      />
     </div>
   )
 }
