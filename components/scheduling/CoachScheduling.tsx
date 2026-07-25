@@ -432,29 +432,29 @@ export default function CoachDashboard({
     <main className="min-h-screen bg-gray-100 p-4 text-black">
       <div className="mx-auto max-w-6xl">
         <h1 className="text-2xl font-bold">Schedule</h1>
-        <div className="mb-2 mt-1">
+        <div className="mb-1 mt-1">
           {headerContent ?? (
             <p className="text-gray-600">
               Welcome back, {coachName}
             </p>
           )}
         </div>
-        <div className="mb-3 sm:mb-6 flex flex-wrap items-center gap-3">
+        <div className="mb-3 sm:mb-3 flex flex-wrap items-center gap-3">
           <button
             onClick={previousDay}
-            className="rounded-lg border bg-white px-4 py-2 shadow-sm"
+            className="rounded-lg border bg-white px-4 py-1 shadow-sm"
           >
             <span className="hidden sm:inline">← Previous</span>
             <span className="sm:hidden">←</span>
           </button>
 
-          <button onClick={today} className="rounded-lg border bg-white px-4 py-2 shadow-sm">
+          <button onClick={today} className="rounded-lg border bg-white px-4 py-1 shadow-sm">
             Today
           </button>
 
           <button
             onClick={nextDay}
-            className="rounded-lg border bg-white px-4 py-2 shadow-sm"
+            className="rounded-lg border bg-white px-4 py-1 shadow-sm"
           >
             <span className="hidden sm:inline">Next →</span>
             <span className="sm:hidden">→</span>
@@ -464,16 +464,16 @@ export default function CoachDashboard({
             type="date"
             value={selectedDate}
             onChange={(e) => goToDate(e.target.value)}
-            className="rounded-lg border bg-white px-4 py-2"
+            className="rounded-lg border bg-white px-4 py-1"
           />
 
-          <button onClick={closeDay} className="rounded-lg bg-red-600 px-4 py-2 text-white hover:bg-red-700">
+          <button onClick={closeDay} className="rounded-lg bg-red-600 px-4 py-1 text-white hover:bg-red-700">
             Close Day
           </button>
 
           <button
             onClick={() => setShowExtendModal(true)}
-            className="rounded-lg bg-green-600 px-4 py-2 text-white hover:bg-green-700"
+            className="rounded-lg bg-green-600 px-4 py-1 text-white hover:bg-green-700"
           >
             Extend Day
           </button>
@@ -506,7 +506,7 @@ export default function CoachDashboard({
         )}
 
         <div className="overflow-hidden rounded-2xl border bg-white shadow-lg">
-          <div className="grid grid-cols-[120px_1fr] border-b bg-gray-50">
+          <div className="grid grid-cols-[100px_1fr] border-b bg-gray-50">
             <div className="border-r p-4 font-bold">Time</div>
             <div className="p-4 font-bold">Schedule</div>
           </div>
@@ -543,7 +543,7 @@ export default function CoachDashboard({
             }
 
             return (
-              <div key={hour} className="grid grid-cols-[120px_1fr] border-b">
+              <div key={hour} className="grid grid-cols-[100px_1fr] border-b">
                 <div className="flex items-center border-r bg-gray-50 p-3 font-semibold">{formatHour(hour)}</div>
                 <button
                   onClick={() => toggleSlot(hour)}
@@ -656,7 +656,7 @@ export default function CoachDashboard({
         <div className="fixed inset-0 flex items-center justify-center bg-black/50 p-6">
           <div className="w-full max-w-lg rounded-2xl bg-white p-8 shadow-2xl">
             <div className="mb-6 flex items-center justify-between">
-              <h2 className="text-3xl font-bold">Client Details</h2>
+              <h2 className="text-2xl font-bold">Client Details</h2>
 
               <button onClick={() => setSelectedBooking(null)} className="text-2xl font-bold">
                 ×
@@ -738,7 +738,7 @@ export default function CoachDashboard({
                   Move Lesson
                 </button>
               ) : (
-                <div className="flex gap-3 pt-4">
+                <div className="grid grid-cols-2 gap-3 pt-4 sm:flex">
                   <button
                     onClick={() => {
                       const today = new Date()

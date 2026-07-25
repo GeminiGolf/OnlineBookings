@@ -510,7 +510,7 @@ export default function AdminDashboard({
         )}
 
         <div className="overflow-hidden rounded-2xl border bg-white shadow-lg">
-          <div className="grid grid-cols-[120px_1fr] border-b bg-gray-50">
+          <div className="grid grid-cols-[110px_1fr] border-b bg-gray-50">
             <div className="border-r p-4 font-bold">Time</div>
             <div className="p-4 font-bold">Schedule</div>
           </div>
@@ -547,7 +547,7 @@ export default function AdminDashboard({
             }
 
             return (
-              <div key={hour} className="grid grid-cols-[120px_1fr] border-b">
+              <div key={hour} className="grid grid-cols-[110px_1fr] border-b">
                 <div className="flex items-center border-r bg-gray-50 p-3 font-semibold">{formatHour(hour)}</div>
                 <button
                   onClick={() => toggleSlot(hour)}
@@ -642,7 +642,7 @@ export default function AdminDashboard({
                 </div>
               </div>
 
-              <div className="flex gap-3 pt-4">
+              <div className="grid grid-cols-2 gap-3 pt-4 sm:flex">
                 <button onClick={() => setShowExtendModal(false)} className="rounded border px-4 py-2">
                   Cancel
                 </button>
