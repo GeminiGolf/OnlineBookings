@@ -19,6 +19,7 @@ export default function BookPage() {
   const [selectedCoachData, setSelectedCoachData] = useState<any>(null)
   const bookingSummaryRef = useRef<HTMLDivElement>(null)
   const coachSectionRef = useRef<HTMLDivElement>(null)
+  const slotsRef = useRef<HTMLDivElement>(null)
   
 
   useEffect(() => {
@@ -57,11 +58,40 @@ export default function BookPage() {
         return
       }
 
-      setTimeSlots(await response.json())
+      const slots = await response.json()
+
+      setTimeSlots(slots)
+
+      if (window.innerWidth < 1024) {
+        setTimeout(() => {
+          slotsRef.current?.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          })
+        }, 150)
+      }
     }
 
     loadSlots()
   }, [selectedDate, selectedCoach])
+
+  useEffect(() => {
+    if (!selectedCoachData || window.innerWidth >= 1024) return
+
+    const timeout = setTimeout(() => {
+      if (!coachSectionRef.current) return
+
+      window.scrollTo({
+        top:
+          coachSectionRef.current.getBoundingClientRect().top +
+          window.scrollY +
+          180,
+        behavior: "smooth",
+      })
+    }, 100)
+
+    return () => clearTimeout(timeout)
+  }, [selectedCoachData])
 
   useEffect(() => {
     if (selectedTime && bookingSummaryRef.current) {
@@ -279,13 +309,13 @@ export default function BookPage() {
   return (
     <main className="min-h-screen bg-gray-100 p-4 lg:p-10 text-black">
       <div className="mx-auto max-w-4xl">
-        <h1 className="mb-6 text-center lg:text-left text-2xl lg:text-3xl font-bold">          Book a Lesson
+        <h1 className="mb-3 text-center lg:text-left text-2xl lg:text-3xl font-bold">          Book a Lesson
         </h1>
 
         <div className="rounded-2xl bg-white p-4 lg:p-8 shadow-lg">
           <div className="grid gap-6 lg:gap-10 md:grid-cols-2">
             <div ref={coachSectionRef}>
-              <label className="mb-2 block text-lg font-semibold">Select Coach</label>
+              <label className="mb-1 block text-lg font-semibold">Select Coach</label>
               <select
                 value={selectedCoach ?? ""}
                 onChange={async (e) => {
@@ -302,14 +332,6 @@ export default function BookPage() {
 
                   setSelectedCoachData(data)
 
-                  if (window.innerWidth < 1024) {
-                    requestAnimationFrame(() => {
-                      coachSectionRef.current?.scrollIntoView({
-                        behavior: "smooth",
-                        block: "start",
-                      })
-                    })
-                  }
                 }}
                 className="w-full rounded-xl border p-4"
               >
@@ -361,7 +383,10 @@ export default function BookPage() {
                   ]}
                 />
 
-                <div className="mt-2 lg:mt-6 border-t pt-2 lg:pt-4 min-h-[60px] lg:min-h-[80px] w-full flex flex-col items-center">
+                <div
+                  ref={slotsRef}
+                  className="mt-2 lg:mt-6 border-t pt-2 lg:pt-4 min-h-[60px] lg:min-h-[80px] w-full flex flex-col items-center"
+                >
                   <h3 className="mb-3 text-base font-semibold text-center">Available Time Slots</h3>
 
                   {timeSlots.length === 0 ? (

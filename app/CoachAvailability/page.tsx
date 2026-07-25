@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { DayPicker } from "react-day-picker"
 import "react-day-picker/dist/style.css"
 import { supabase } from "@/lib/supabaseClient"
@@ -20,6 +20,8 @@ export default function CoachAvailabilityPage() {
   const [selectedCoachData, setSelectedCoachData] = useState<Coach | null>(null)
   const [selectedDate, setSelectedDate] = useState<Date>()
   const [timeSlots, setTimeSlots] = useState<string[]>([])
+  const dateRef = useRef<HTMLLabelElement>(null)
+  const slotsRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     fetchCoaches()
@@ -61,6 +63,15 @@ export default function CoachAvailabilityPage() {
 			const slots = await response.json()
 
 			setTimeSlots(slots)
+
+      if (window.innerWidth < 1024) {
+        setTimeout(() => {
+          slotsRef.current?.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          })
+        }, 150)
+      }
 		}
 
 		loadSlots()
@@ -79,7 +90,10 @@ export default function CoachAvailabilityPage() {
             {/* Coach */}
 
             <div>
-              <label className="mb-2 block text-lg font-semibold">
+              <label
+                ref={dateRef}
+                className="mb-2 block text-lg font-semibold"
+              >
                 Select Coach
               </label>
 
@@ -97,6 +111,18 @@ export default function CoachAvailabilityPage() {
                     .single()
 
                   setSelectedCoachData(data)
+
+                  if (window.innerWidth < 1024) {
+                    setTimeout(() => {
+                      window.scrollTo({
+                        top:
+                          dateRef.current!.getBoundingClientRect().top +
+                          window.scrollY +
+                          150,
+                        behavior: "smooth",
+                      })
+                    }, 150)
+                  }
                 }}
                 className="w-full rounded-xl border p-4"
               >
@@ -150,7 +176,10 @@ export default function CoachAvailabilityPage() {
                   ]}
                 />
 
-                <div className="mt-2 lg:mt-6 border-t pt-2 lg:pt-4 min-h-[60px] lg:min-h-[80px] w-full flex flex-col items-center">
+                <div
+                  ref={slotsRef}
+                  className="mt-2 lg:mt-6 border-t pt-2 lg:pt-4 min-h-[60px] lg:min-h-[80px] w-full flex flex-col items-center"
+                >
 
                   <h3 className="mb-3 text-base font-semibold text-center">
                     Available Time Slots
