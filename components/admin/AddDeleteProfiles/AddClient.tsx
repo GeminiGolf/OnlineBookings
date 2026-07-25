@@ -87,7 +87,7 @@ export default function AddClient({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-6">
       <div className="w-full max-w-lg rounded-2xl bg-white p-6 text-black shadow-xl">
-        <div className="mb-6 flex justify-end">
+        <div className="mb-1 flex justify-end">
           <button
             onClick={onClose}
             className="rounded border px-3 py-1 text-lg hover:bg-gray-100"
@@ -96,7 +96,7 @@ export default function AddClient({
           </button>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-1">
           <div>
             <label className="mb-1 block font-medium">
               Preferred Name

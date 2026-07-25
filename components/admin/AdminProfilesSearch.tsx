@@ -10,6 +10,8 @@ type Profile = {
   preferred_name?: string | null
   first_name?: string | null
   last_name?: string | null
+  email?: string | null
+  phone?: string | null
 }
 
 type Props = {
@@ -28,7 +30,22 @@ export default function AdminProfilesSearch({
     return !term
       ? profiles
       : profiles.filter((profile) =>
-          profile.name.toLowerCase().includes(term)
+          profile.name.toLowerCase().includes(term) ||
+          (profile.preferred_name ?? "")
+            .toLowerCase()
+            .includes(term) ||
+          (profile.first_name ?? "")
+            .toLowerCase()
+            .includes(term) ||
+          (profile.last_name ?? "")
+            .toLowerCase()
+            .includes(term) ||
+          (profile.email ?? "")
+            .toLowerCase()
+            .includes(term) ||
+          (profile.phone ?? "")
+            .toLowerCase()
+            .includes(term)
         )
   }, [profiles, search])
 

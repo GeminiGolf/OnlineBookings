@@ -2,10 +2,12 @@
 
 import { useState } from "react"
 import AddClient from "./AddClient"
+import AddCoach from "./AddCoach"
 
 export default function CreateProfileButton() {
   const [showMenu, setShowMenu] = useState(false)
   const [showClient, setShowClient] = useState(false)
+  const [showCoach, setShowCoach] = useState(false)
 
   return (
     <>
@@ -30,7 +32,11 @@ export default function CreateProfileButton() {
             </button>
 
             <button
-              className="block w-full px-4 py-3 text-left text-gray-400"
+              onClick={() => {
+                setShowMenu(false)
+                setShowCoach(true)
+              }}
+              className="block w-full px-4 py-3 text-left hover:bg-gray-100"
             >
               Coach
             </button>
@@ -42,6 +48,13 @@ export default function CreateProfileButton() {
         <AddClient
           open={showClient}
           onClose={() => setShowClient(false)}
+        />
+      )}
+
+      {showCoach && (
+        <AddCoach
+          open={showCoach}
+          onClose={() => setShowCoach(false)}
         />
       )}
     </>
