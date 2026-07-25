@@ -72,7 +72,15 @@ export default function AddClient({
     setSaving(false)
 
     if (!response.ok) {
-      alert(result.error)
+      console.error(result)
+
+      alert(
+        result.error_description ??
+        result.error ??
+        result.message ??
+        "Unable to create client."
+      )
+
       return
     }
 

@@ -50,11 +50,15 @@ export default function ClientsSearch({ clients }: Props) {
     page * itemsPerPage
   )
   return (
-    <div className="mt-4">
-      <div className="mb-4 flex items-center justify-end">
+    <div className="relative mt-4">
+      <div className="mb-6 flex w-full items-center">
+        <h1 className="text-3xl font-bold sm:text-4xl">
+          My Clients
+        </h1>
+
         <button
           onClick={() => setShowAddClient(true)}
-          className="rounded-xl bg-green-600 px-4 py-2 font-medium text-white transition hover:bg-green-700"
+          className="absolute right-0 top-0 rounded-xl bg-green-600 px-4 py-2 font-medium text-white transition hover:bg-green-700"
         >
           Create Client
         </button>

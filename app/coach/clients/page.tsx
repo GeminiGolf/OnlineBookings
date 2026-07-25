@@ -21,11 +21,10 @@ export default async function CoachClientsPage() {
       <div className="mx-auto max-w-6xl">
                 <Link
                   href="/coach/dashboard"
-                  className="mb-6 inline-block rounded-lg border bg-white px-4 py-2"
+                  className="mb-1 inline-block rounded-lg border bg-white px-4 py-2"
                 >
                   ← Back to Dashboard
                 </Link>
-        <h1 className="text-3xl font-bold sm:text-4xl">My Clients</h1>
         <ClientsSearch clients={clients || []} />
 
       </div>
