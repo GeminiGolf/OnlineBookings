@@ -36,6 +36,7 @@ export default function AddTransactionForm({
 
   const [paymentMethod, setPaymentMethod] = useState("")
   const [receiptFile, setReceiptFile] = useState<File | null>(null)
+  const [saving, setSaving] = useState(false)
 
   const expiry = new Date()
   expiry.setFullYear(expiry.getFullYear() + 1)
@@ -163,10 +164,14 @@ export default function AddTransactionForm({
   }
 
   async function saveTransaction() {
+    if (saving) return
+
     if (!paymentMethod) {
       alert("Please select a payment method.")
       return
     }
+
+    setSaving(true)
 
     let receiptUrl: string | null = null
 
@@ -183,6 +188,7 @@ export default function AddTransactionForm({
       if (uploadError) {
         console.error("UPLOAD ERROR", uploadError)
         alert(uploadError.message)
+        setSaving(false)
         return
       }
 
@@ -233,6 +239,7 @@ export default function AddTransactionForm({
       )
 
       alert(error.message)
+      setSaving(false)
       return
     }
 
@@ -275,16 +282,17 @@ export default function AddTransactionForm({
       })
       .eq("id", clientId)
 
+    alert("Transaction added successfully.")
     onSaved()
   }
 
   return (
     <>
-      <h3 className="mb-4 text-xl font-bold">
+      <h3 className="mb-2 text-xl font-bold">
         Add Transaction
       </h3>
 
-      <div className="space-y-4">
+      <div className="space-y-2">
         <div>
           <label className="mb-1 block text-sm font-medium">
             Transaction Type
@@ -297,7 +305,7 @@ export default function AddTransactionForm({
                 e.target.value
               )
             }
-            className="w-full rounded border p-3"
+            className="w-full rounded border p-2"
           >
             <option>PPV</option>
             <option>5 Lessons</option>
@@ -320,7 +328,7 @@ export default function AddTransactionForm({
                 )
               }
               placeholder="Describe the purchase"
-              className="w-full rounded border p-3"
+              className="w-full rounded border p-2"
             />
           </div>
         )}
@@ -339,7 +347,7 @@ export default function AddTransactionForm({
                 Number(e.target.value)
               )
             }
-            className="w-full rounded border p-3 disabled:bg-gray-100"
+            className="w-full rounded border p-2 disabled:bg-gray-100"
           />
         </div>
 
@@ -359,7 +367,7 @@ export default function AddTransactionForm({
             onChange={(e) =>
               setPrice(Number(e.target.value))
             }
-            className="w-full rounded border p-3 disabled:bg-gray-100"
+            className="w-full rounded border p-2 disabled:bg-gray-100"
           />
         </div>
 
@@ -375,7 +383,7 @@ export default function AddTransactionForm({
                 e.target.value
               )
             }
-            className="w-full rounded border p-3"
+            className="w-full rounded border p-2"
           >
             <option value="">
               Select payment method
@@ -418,7 +426,7 @@ export default function AddTransactionForm({
 
             <label
               htmlFor="receipt-upload"
-              className="block w-full cursor-pointer rounded border p-3"
+              className="block w-full cursor-pointer rounded border p-2"
             >
               {receiptFile
                 ? receiptFile.name
@@ -440,11 +448,11 @@ export default function AddTransactionForm({
                 e.target.value
               )
             }
-            className="w-full rounded border p-3"
+            className="w-full rounded border p-1"
           />
         </div>
 
-        <div className="flex gap-3 pt-4">
+        <div className="flex gap-3 pt-2">
           <button
             onClick={onCancel}
             className="rounded border px-4 py-2"
@@ -454,9 +462,10 @@ export default function AddTransactionForm({
 
           <button
             onClick={saveTransaction}
-            className="rounded bg-blue-600 px-4 py-2 text-white"
+            disabled={saving}
+            className="rounded bg-blue-600 px-4 py-2 text-white disabled:cursor-not-allowed disabled:opacity-50"
           >
-            Save
+            {saving ? "Saving..." : "Save"}
           </button>
         </div>
       </div>

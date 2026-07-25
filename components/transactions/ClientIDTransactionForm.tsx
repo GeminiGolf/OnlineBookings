@@ -29,8 +29,7 @@ export default function ClientIDTransactionForm({ clientId, lessonsRemaining }: 
   const isOther = transactionType === "Other"
   const [paymentMethod, setPaymentMethod] = useState("")
   const [receiptFile, setReceiptFile] = useState<File | null>(null)
-  const [detailsOpen, setDetailsOpen] = useState(false)
-  const today = new Date()
+  const [saving, setSaving] = useState(false)
   const expiry = new Date()
   expiry.setFullYear(expiry.getFullYear() + 1)
   const [expirationDate, setExpirationDate] = useState(expiry.toISOString().split("T")[0])
@@ -132,10 +131,14 @@ export default function ClientIDTransactionForm({ clientId, lessonsRemaining }: 
     }
 
   async function saveTransaction() {
+    if (saving) return
+
     if (!paymentMethod) {
       alert("Please select a payment method.")
       return
     }
+
+    setSaving(true)
     let receiptUrl: string | null = null
     if (receiptFile) {
       const fileExt = receiptFile.name.split(".").pop()
@@ -146,6 +149,7 @@ export default function ClientIDTransactionForm({ clientId, lessonsRemaining }: 
       if (uploadError) {
         console.error("UPLOAD ERROR", uploadError)
         alert(uploadError.message)
+        setSaving(false)
         return
       }
       receiptUrl = fileName
@@ -183,6 +187,7 @@ export default function ClientIDTransactionForm({ clientId, lessonsRemaining }: 
     if (error) {
       console.error("LESSON PACKAGE ERROR", error)
       alert(error.message)
+      setSaving(false)
       return
     }
     if (
@@ -219,6 +224,7 @@ export default function ClientIDTransactionForm({ clientId, lessonsRemaining }: 
         expiry_date: expirationDate,
       })
       .eq("id", clientId)
+    alert("Transaction added successfully.")
     window.location.reload()
   }
 
@@ -237,14 +243,14 @@ export default function ClientIDTransactionForm({ clientId, lessonsRemaining }: 
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-6">
           <div className="w-full max-w-lg rounded-2xl bg-white p-6 text-black">
-            <h2 className="mb-6 text-2xl font-bold">New Transaction</h2>
-            <div className="space-y-4">
+            <h2 className="mb-2 text-2xl font-bold">New Transaction</h2>
+            <div className="space-y-2">
               <div>
                 <label className="mb-1 block text-sm font-medium">Transaction Type</label>
                 <select
                   value={transactionType}
                   onChange={(e) => updateTransaction(e.target.value)}
-                  className="w-full rounded border p-3"
+                  className="w-full rounded border p-2"
                 >
                   <option>PPV</option>
                   <option>5 Lessons</option>
@@ -260,7 +266,7 @@ export default function ClientIDTransactionForm({ clientId, lessonsRemaining }: 
                     value={transactionName}
                     onChange={(e) => setTransactionName(e.target.value)}
                     placeholder="Describe the purchase"
-                    className="w-full rounded border p-3"
+                    className="w-full rounded border p-2"
                   />
                 </div>
               )}
@@ -272,7 +278,7 @@ export default function ClientIDTransactionForm({ clientId, lessonsRemaining }: 
                   value={lessonsAdded}
                   disabled={!isOther}
                   onChange={(e) => setLessonsAdded(Number(e.target.value))}
-                  className="w-full rounded border p-3 disabled:bg-gray-100"
+                  className="w-full rounded border p-2 disabled:bg-gray-100"
                 />
               </div>
 
@@ -287,7 +293,7 @@ export default function ClientIDTransactionForm({ clientId, lessonsRemaining }: 
                   }
                   disabled={!isOther}
                   onChange={(e) => setPrice(Number(e.target.value))}
-                  className="w-full rounded border p-3 disabled:bg-gray-100"
+                  className="w-full rounded border p-2 disabled:bg-gray-100"
                 />
               </div>
               <div>
@@ -295,7 +301,7 @@ export default function ClientIDTransactionForm({ clientId, lessonsRemaining }: 
                 <select
                   value={paymentMethod}
                   onChange={(e) => setPaymentMethod(e.target.value)}
-                  className="w-full rounded border p-3"
+                  className="w-full rounded border p-2"
                 >
                   <option value="">Select payment method</option>
                   <option value="cash">Cash</option>
@@ -324,7 +330,7 @@ export default function ClientIDTransactionForm({ clientId, lessonsRemaining }: 
 
                   <label
                     htmlFor="receipt-upload"
-                    className="block w-full cursor-pointer rounded border p-3"
+                    className="block w-full cursor-pointer rounded border p-2"
                   >
                     {receiptFile ? receiptFile.name : "Choose File"}
                   </label>
@@ -344,17 +350,21 @@ export default function ClientIDTransactionForm({ clientId, lessonsRemaining }: 
                       e.target.value
                     )
                   }
-                  className="w-full rounded border p-3"
+                  className="w-full rounded border p-1"
                 />
               </div>
 
-              <div className="flex gap-3 pt-4">
+              <div className="flex gap-3 pt-2">
                 <button onClick={() => setShowModal(false)} className="rounded border px-4 py-2">
                   Cancel
                 </button>
 
-                <button onClick={saveTransaction} className="rounded bg-blue-600 px-4 py-2 text-white">
-                  Save
+                <button
+                  onClick={saveTransaction}
+                  disabled={saving}
+                  className="rounded bg-blue-600 px-4 py-2 text-white disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  {saving ? "Saving..." : "Save"}
                 </button>
               </div>
             </div>
