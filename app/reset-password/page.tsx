@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { supabase } from "@/lib/supabaseClient"
 
@@ -12,6 +12,21 @@ export default function ResetPasswordPage() {
   const [showPasswords, setShowPasswords] = useState(false)
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
+
+  useEffect(() => {
+    const hash = window.location.hash.substring(1)
+    const params = new URLSearchParams(hash)
+
+    const access_token = params.get("access_token")
+    const refresh_token = params.get("refresh_token")
+
+    if (!access_token || !refresh_token) return
+
+    supabase.auth.setSession({
+      access_token,
+      refresh_token,
+    })
+  }, [])
 
   async function handleResetPassword(e: React.FormEvent) {
     e.preventDefault()
