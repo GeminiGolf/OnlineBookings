@@ -283,44 +283,89 @@ export default function AdminDashboard({
       setSelectedBooking(booking)
       return
     }
+
+    const overrideOpen = isOverrideOpen(hour)
+    const overrideClosed = isOverrideClosed(hour)
+    const breakHour = isBreakHour(hour)
     const available = isAvailableHour(hour)
-    const override = dateOverrides.find((item) => item.lesson_time.startsWith(String(hour).padStart(2, "0")))
+
     const timeString = `${String(hour).padStart(2, "0")}:00:00`
-    if (override) {
-      const confirmed = window.confirm(
-        override.is_available ? `Close ${formatHour(hour)}?` : `Open ${formatHour(hour)}?`
-      )
-      if (!confirmed) {
-        return
-      }
-      await supabase.from("date_overrides").delete().eq("id", override.id)
+
+    // Open Override -> Break / Available
+    if (overrideOpen) {
+      const confirmed = window.confirm(`Close ${formatHour(hour)}?`)
+      if (!confirmed) return
+
+      await supabase
+        .from("date_overrides")
+        .delete()
+        .eq("coach_id", coachId)
+        .eq("lesson_date", selectedDate)
+        .eq("lesson_time", timeString)
+
       window.location.reload()
       return
     }
 
-    if (available) {
-      const confirmed = window.confirm(`Close ${formatHour(hour)}?`)
-      if (!confirmed) {
-        return
-      }
-      await supabase.from("date_overrides").insert({
-        coach_id: coachId,
-        lesson_date: selectedDate,
-        lesson_time: timeString,
-        is_available: false,
-      })
-    } else {
+    // Closed Override -> Available
+    if (overrideClosed) {
       const confirmed = window.confirm(`Open ${formatHour(hour)}?`)
-      if (!confirmed) {
-        return
-      }
+      if (!confirmed) return
+
+      await supabase
+        .from("date_overrides")
+        .delete()
+        .eq("coach_id", coachId)
+        .eq("lesson_date", selectedDate)
+        .eq("lesson_time", timeString)
+
+      window.location.reload()
+      return
+    }
+
+    // Break -> Open Override
+    if (breakHour) {
+      const confirmed = window.confirm(`Open ${formatHour(hour)}?`)
+      if (!confirmed) return
+
       await supabase.from("date_overrides").insert({
         coach_id: coachId,
         lesson_date: selectedDate,
         lesson_time: timeString,
         is_available: true,
       })
+
+      window.location.reload()
+      return
     }
+
+    // Available -> Closed Override
+    if (available) {
+      const confirmed = window.confirm(`Close ${formatHour(hour)}?`)
+      if (!confirmed) return
+
+      await supabase.from("date_overrides").insert({
+        coach_id: coachId,
+        lesson_date: selectedDate,
+        lesson_time: timeString,
+        is_available: false,
+      })
+
+      window.location.reload()
+      return
+    }
+
+    // Closed -> Open Override
+    const confirmed = window.confirm(`Open ${formatHour(hour)}?`)
+    if (!confirmed) return
+
+    await supabase.from("date_overrides").insert({
+      coach_id: coachId,
+      lesson_date: selectedDate,
+      lesson_time: timeString,
+      is_available: true,
+    })
+
     window.location.reload()
   }
 

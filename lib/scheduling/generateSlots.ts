@@ -90,8 +90,14 @@ export async function generateSlots(
   const breakTimes =
     weeklyBreaks?.map((item) => formatHour(item.hour)) || []
 
+  const overrideOpenTimes =
+    dateOverrides
+      ?.filter((o) => o.is_available)
+      .map((o) => formatHour(parseInt(o.lesson_time.split(":")[0]))) || []
+
   availableSlots = availableSlots.filter(
-    (slot) => !breakTimes.includes(slot)
+    (slot) =>
+      !breakTimes.includes(slot) || overrideOpenTimes.includes(slot)
   )
 
   const today = new Date()
