@@ -890,7 +890,12 @@ export default function NotificationsPage() {
             <div className="space-y-4">
               <div>
                 <p className="text-sm text-gray-500">Client</p>
-                <p className="text-xl font-semibold">{selectedClient.client_name}</p>
+                <Link
+                  href={`/admin/clients/${selectedClient.client_id}`}
+                  className="text-xl font-semibold text-blue-600 underline hover:text-blue-800"
+                >
+                  {selectedClient.client_name}
+                </Link>
               </div>
               <div>
                 <p className="text-sm text-gray-500">Phone</p>
