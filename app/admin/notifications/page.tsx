@@ -417,12 +417,21 @@ export default function NotificationsPage() {
           <div className="mb-4 flex items-center justify-between">
             <h2 className="text-2xl font-bold text-red-700">Urgent</h2>
 
-            <button
-              onClick={() => setShowPushModal(true)}
-              className="rounded-md bg-sky-500 px-4 py-2 font-medium text-white transition hover:bg-sky-600"
-            >
-              Push Notification
-            </button>
+            <div className="flex items-center gap-2">
+              <Link
+                href="/admin/notifications/sent"
+                className="rounded-md bg-blue-900 px-4 py-2 font-medium text-white transition hover:bg-blue-950"
+              >
+                Sent
+              </Link>
+
+              <button
+                onClick={() => setShowPushModal(true)}
+                className="rounded-md bg-sky-500 px-4 py-2 font-medium text-white transition hover:bg-sky-600"
+              >
+                Push Notification
+              </button>
+            </div>
           </div>
 
           {urgentNotifications.length === 0 ? (
