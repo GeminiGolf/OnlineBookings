@@ -1,19 +1,29 @@
 "use client"
 
 import Link from "next/link"
+import RequireAdmin from "@/components/auth/RequireAdmin"
 import AllNotifications from "@/components/admin/AllNotifications"
 
-export default function AdminSentNotificationsPage() {
+export default function SentNotificationsPage() {
   return (
-    <div className="space-y-6">
-      <Link
-        href="/admin/notifications"
-        className="inline-flex items-center rounded-lg bg-gray-200 px-4 py-2 font-medium text-gray-800 transition hover:bg-gray-300"
-      >
-        ← Return to Notifications
-      </Link>
+    <RequireAdmin>
+      <main className="min-h-screen bg-gray-100 p-8">
+        <div className="mx-auto max-w-6xl">
+          <div className="mb-6 flex items-center justify-between">
 
-      <AllNotifications />
-    </div>
+            <Link
+              href="/admin/notifications"
+              className="rounded-lg bg-blue-900 px-4 py-2 font-medium text-white hover:bg-blue-950"
+            >
+              Back to Notifications
+            </Link>
+          </div>
+
+          <div className="rounded-2xl bg-white p-6 shadow">
+            <AllNotifications />
+          </div>
+        </div>
+      </main>
+    </RequireAdmin>
   )
 }
