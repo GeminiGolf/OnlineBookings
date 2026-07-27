@@ -150,11 +150,13 @@ export default function AdminDashboard({
 
   function formatHour(hour: number) {
     const suffix = hour >= 12 ? "PM" : "AM"
-    let display = hour
-    if (hour > 12) {
-      display = hour - 12
+    let display = hour % 12
+
+    if (display === 0) {
+      display = 12
     }
-    return `${display}:00 ${suffix}`
+
+    return `${display} ${suffix}`
   }
 
   function getBookingForHour(hour: number) {
@@ -555,7 +557,7 @@ export default function AdminDashboard({
         )}
 
         <div className="overflow-hidden rounded-2xl border bg-white shadow-lg">
-          <div className="grid grid-cols-[110px_1fr] border-b bg-gray-50">
+          <div className="grid grid-cols-[80px_1fr] border-b bg-gray-50">
             <div className="border-r p-4 font-bold">Time</div>
             <div className="p-4 font-bold">Schedule</div>
           </div>
@@ -592,7 +594,7 @@ export default function AdminDashboard({
             }
 
             return (
-              <div key={hour} className="grid grid-cols-[110px_1fr] border-b">
+              <div key={hour} className="grid grid-cols-[80px_1fr] border-b">
                 <div className="flex items-center border-r bg-gray-50 p-3 font-semibold">{formatHour(hour)}</div>
                 <button
                   onClick={() => toggleSlot(hour)}

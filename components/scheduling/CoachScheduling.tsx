@@ -150,13 +150,14 @@ export default function CoachDashboard({
 
   function formatHour(hour: number) {
     const suffix = hour >= 12 ? "PM" : "AM"
-    let display = hour
-    if (hour > 12) {
-      display = hour - 12
-    }
-    return `${display}:00 ${suffix}`
-  }
+    let display = hour % 12
 
+    if (display === 0) {
+      display = 12
+    }
+
+    return `${display} ${suffix}`
+  }
   function getBookingForHour(hour: number) {
     return initialBookings.find((booking) => {
       if (booking.status !== "booked" && booking.status !== "completed" && booking.status !== "no_show") {
@@ -551,7 +552,7 @@ export default function CoachDashboard({
         )}
 
         <div className="overflow-hidden rounded-2xl border bg-white shadow-lg">
-          <div className="grid grid-cols-[100px_1fr] border-b bg-gray-50">
+          <div className="grid grid-cols-[80px_1fr] border-b bg-gray-50">
             <div className="border-r p-4 font-bold">Time</div>
             <div className="p-4 font-bold">Schedule</div>
           </div>
@@ -597,8 +598,8 @@ export default function CoachDashboard({
             }
 
             return (
-              <div key={hour} className="grid grid-cols-[100px_1fr] border-b">
-                <div className="flex items-center border-r bg-gray-50 p-3 font-semibold">{formatHour(hour)}</div>
+              <div key={hour} className="grid grid-cols-[80px_1fr] border-b">
+                <div className="flex items-center border-r bg-gray-50 pl-4 pr-3 py-3 font-semibold">{formatHour(hour)}</div>
                 <button
                   onClick={() => toggleSlot(hour)}
                   className={`h-14 w-full px-4 text-left transition hover:brightness-95 ${bgClass}`}
