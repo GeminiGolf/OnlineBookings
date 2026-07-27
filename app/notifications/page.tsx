@@ -1,4 +1,5 @@
 "use client"
+import Image from "next/image"
 import Link from "next/link"
 import { useEffect, useState } from "react"
 import { supabase } from "@/lib/supabaseClient"
@@ -29,6 +30,7 @@ type Notification = {
   original_datetime?: string
   new_datetime?: string
   notes?: string
+  subject?: string
 }
 
 export default function NotificationsPage() {
@@ -87,6 +89,7 @@ export default function NotificationsPage() {
           "client_cancelled",
           "client_rescheduled",
           "missing_receipt",
+          "admin_message_coach",
         ])
         .order("created_at", { ascending: false })
       data = result.data
@@ -237,6 +240,11 @@ export default function NotificationsPage() {
           type_label = "No Show"
           original_datetime = `${formatDate(lesson_date)} @ ${lesson_time.replace(":00", "")}`
           notes = "Missed Lesson"
+        }
+
+        if (notification.type === "admin_message_coach") {
+          type_label = notification.subject || "Admin Message"
+          notes = notification.message || ""
         }
 
         if (notification.type === "missing_receipt") {
@@ -547,16 +555,38 @@ export default function NotificationsPage() {
                             className="h-5 w-5"
                           />
 
-                          <button
-                            onClick={() => setSelectedClient(notification)}
-                            className="rounded-md px-2 py-1 text-lg transition hover:bg-sky-200 hover:scale-110 cursor-pointer"
-                          >
-                            👤
-                          </button>
+                          {notification.type === "admin_message_coach" ? (
+                            <Image
+                              src="/images/gemini-logo-black.png"
+                              alt="Gemini Golf Academy"
+                              width={32}
+                              height={32}
+                              className="object-contain"
+                            />
+                          ) : (
+                            <button
+                              onClick={() => setSelectedClient(notification)}
+                              className="rounded-md px-2 py-1 text-lg transition hover:bg-sky-200 hover:scale-110 cursor-pointer"
+                            >
+                              👤
+                            </button>
+                          )}
 
                           <div className="grid grid-cols-[120px_180px_180px_1fr] gap-4 text-sm text-black">
-                            <span>{notification.type_label || "-"}</span>
-                            <span>{notification.original_datetime || "-"}</span>
+                            <span
+                              className={
+                                notification.type === "admin_message_coach"
+                                  ? "font-semibold text-red-600"
+                                  : ""
+                              }
+                            >
+                              {notification.type_label || "-"}
+                            </span>
+                            <span>
+                              {notification.type === "admin_message_coach"
+                                ? ""
+                                : notification.original_datetime || "-"}
+                            </span>
                             <span>{notification.new_datetime || "-"}</span>
                             {notification.type === "missing_receipt" ? (
                               <details>
@@ -608,29 +638,51 @@ export default function NotificationsPage() {
                           className="h-5 w-5"
                         />
 
-                        <button
-                          onClick={() => setSelectedClient(notification)}
-                          className="rounded-md px-2 py-1 text-lg hover:bg-sky-200"
-                        >
-                          👤
-                        </button>
+                        {notification.type === "admin_message_coach" ? (
+                          <Image
+                            src="/images/gemini-logo-black.png"
+                            alt="Gemini Golf Academy"
+                            width={28}
+                            height={28}
+                            className="object-contain"
+                          />
+                        ) : (
+                          <button
+                            onClick={() => setSelectedClient(notification)}
+                            className="rounded-md px-2 py-1 text-lg hover:bg-sky-200"
+                          >
+                            👤
+                          </button>
+                        )}
 
                         <button onClick={() => toggleExpanded(notification.id)} className="flex-1 text-left">
-                          <div className="font-semibold">
+                          <div
+                            className={`font-semibold ${
+                              notification.type === "admin_message_coach"
+                                ? "text-red-600"
+                                : ""
+                            }`}
+                          >
                             {notification.type_label || "-"}{" "}
                             {expandedNotifications.includes(notification.id) ? "▲" : "▼"}
                           </div>
 
-                          <div className="text-sm text-gray-600">{notification.original_datetime || "-"}</div>
+                          {notification.type !== "admin_message_coach" && (
+                            <div className="text-sm text-gray-600">
+                              {notification.original_datetime || "-"}
+                            </div>
+                          )}
                         </button>
                       </div>
 
                       {expandedNotifications.includes(notification.id) && (
                         <div className="mt-4 space-y-3 text-sm">
-                          <div>
-                            <p className="font-semibold">Original Date</p>
-                            <p>{notification.original_datetime || "-"}</p>
-                          </div>
+                          {notification.type !== "admin_message_coach" && (
+                            <div>
+                              <p className="font-semibold">Original Date</p>
+                              <p>{notification.original_datetime || "-"}</p>
+                            </div>
+                          )}
 
                           {notification.new_datetime && (
                             <div>
@@ -763,24 +815,44 @@ export default function NotificationsPage() {
                               className="h-5 w-5"
                             />
 
-                            <button
-                              onClick={() => setSelectedClient(notification)}
-                              className="rounded-md px-2 py-1 text-lg transition hover:bg-sky-200 hover:scale-110 cursor-pointer"
-                            >
-                              👤
-                            </button>
+                            {notification.type === "admin_message_coach" ? (
+                              <Image
+                                src="/images/gemini-logo-black.png"
+                                alt="Gemini Golf Academy"
+                                width={32}
+                                height={32}
+                                className="object-contain"
+                              />
+                            ) : (
+                              <button
+                                onClick={() => setSelectedClient(notification)}
+                                className="rounded-md px-2 py-1 text-lg transition hover:bg-sky-200 hover:scale-110 cursor-pointer"
+                              >
+                                👤
+                              </button>
+                            )}
 
                             <div className="contents text-sm text-black">
-                              <span className="border-l border-gray-300 px-3 py-3">
+                              <span
+                                className={`border-l border-gray-300 px-3 py-3 ${
+                                  notification.type === "admin_message_coach"
+                                    ? "font-semibold text-red-600"
+                                    : ""
+                                }`}
+                              >
                                 {notification.type_label || "-"}
                               </span>
                               <span className="border-l border-gray-300 px-3 py-3">
-                                {notification.original_datetime || "-"}
+                                {notification.type === "admin_message_coach"
+                                  ? ""
+                                  : notification.original_datetime || "-"}
                               </span>
                               <span className="border-l border-gray-300 px-3 py-3">
                                 {notification.new_datetime || "-"}
                               </span>
-                              <span className="border-l border-gray-300 px-3 py-3">{notification.notes || "-"}</span>
+                              <span className="border-l border-gray-300 px-3 py-3 whitespace-pre-wrap">
+                                {notification.notes || "-"}
+                              </span>
                               <span className="border-l border-gray-300 px-3 py-3">
                                 {notification.resolved_at
                                   ? `${new Date(notification.resolved_at).toLocaleDateString("en-GB", {
@@ -816,29 +888,51 @@ export default function NotificationsPage() {
                               className="h-5 w-5"
                             />
 
-                            <button
-                              onClick={() => setSelectedClient(notification)}
-                              className="rounded-md px-2 py-1 text-lg hover:bg-sky-200"
-                            >
-                              👤
-                            </button>
+                            {notification.type === "admin_message_coach" ? (
+                              <Image
+                                src="/images/gemini-logo-black.png"
+                                alt="Gemini Golf Academy"
+                                width={28}
+                                height={28}
+                                className="object-contain"
+                              />
+                            ) : (
+                              <button
+                                onClick={() => setSelectedClient(notification)}
+                                className="rounded-md px-2 py-1 text-lg hover:bg-sky-200"
+                              >
+                                👤
+                              </button>
+                            )}
 
                             <button onClick={() => toggleExpanded(notification.id)} className="flex-1 text-left">
-                              <div className="font-semibold">
+                              <div
+                                className={`font-semibold ${
+                                  notification.type === "admin_message_coach"
+                                    ? "text-red-600"
+                                    : ""
+                                }`}
+                              >
                                 {notification.type_label || "-"}{" "}
                                 {expandedNotifications.includes(notification.id) ? "▲" : "▼"}
                               </div>
 
-                              <div className="text-sm text-black">{notification.original_datetime || "-"}</div>
+                              {notification.type !== "admin_message_coach" && (
+                                <div className="text-sm text-black">
+                                  {notification.original_datetime || "-"}
+                                </div>
+                              )}
                             </button>
                           </div>
 
                           {expandedNotifications.includes(notification.id) && (
                             <div className="mt-4 space-y-3 text-sm">
-                              <div>
-                                <p className="font-semibold">Original Date</p>
-                                <p>{notification.original_datetime || "-"}</p>
-                              </div>
+                              {notification.type !== "admin_message_coach" && (
+                                <div>
+                                  <p className="font-semibold">Original Date</p>
+                                  <p>{notification.original_datetime || "-"}</p>
+                                </div>
+                              )}
 
                               {notification.new_datetime && (
                                 <div>
@@ -847,10 +941,14 @@ export default function NotificationsPage() {
                                 </div>
                               )}
 
-                              <div>
-                                <p className="font-semibold">Notes</p>
-                                <p className="whitespace-pre-wrap">{notification.notes || "-"}</p>
-                              </div>
+                              {notification.type === "admin_message_coach" ? (
+                                <p className="whitespace-pre-wrap">{notification.notes}</p>
+                              ) : (
+                                <>
+                                  <p className="font-semibold">Notes</p>
+                                  <p className="whitespace-pre-wrap">{notification.notes || "-"}</p>
+                                </>
+                              )}
 
                               <div>
                                 <p className="font-semibold">Done At</p>

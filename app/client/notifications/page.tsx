@@ -48,6 +48,7 @@ export default function ClientNotificationsPage() {
         "coach_rescheduled",
         "coach_booked",
         "no_show",
+        "admin_message_client",
       ])
       .order("created_at", { ascending: false })
     const enrichedNotifications = await Promise.all(
@@ -56,7 +57,14 @@ export default function ClientNotificationsPage() {
         let new_datetime = ""
         let details = notification.message || ""
 
-        if (notification.booking_id) {
+        if (notification.type === "admin_message_client") {
+          details = notification.message || ""
+        }
+
+        if (
+          notification.booking_id &&
+          notification.type !== "admin_message_client"
+        ) {
           const { data: booking, error: bookingError } = await supabase
             .from("bookings")
             .select("*")
@@ -151,18 +159,25 @@ export default function ClientNotificationsPage() {
       hour12: true,
     })
   }
-  function getTypeLabel(type: string) {
-    switch (type) {
+  function getTypeLabel(notification: any) {
+    switch (notification.type) {
       case "coach_cancelled":
         return "Cancellation"
+
       case "coach_rescheduled":
         return "Rescheduled"
+
       case "coach_booked":
         return "Booked"
+
       case "no_show":
         return "Missed Lesson"
+
+      case "admin_message_client":
+        return notification.subject || "Admin Message"
+
       default:
-        return type
+        return notification.type
     }
   }
 
@@ -199,8 +214,20 @@ export default function ClientNotificationsPage() {
                   <div>
                     <input type="checkbox" onChange={() => markAsRead(notification.id)} />
                   </div>
-                  <div>{getTypeLabel(notification.type)}</div>
-                  <div>{notification.original_datetime}</div>
+                  <div
+                    className={
+                      notification.type === "admin_message_client"
+                        ? "font-semibold text-red-600"
+                        : ""
+                    }
+                  >
+                    {getTypeLabel(notification)}
+                  </div>
+                  <div>
+                    {notification.type === "admin_message_client"
+                      ? ""
+                      : notification.original_datetime}
+                  </div>
                   <div className="whitespace-pre-line">{notification.details}</div>
                   <div>{formatDateTime(notification.created_at)}</div>
                 </div>
@@ -211,20 +238,35 @@ export default function ClientNotificationsPage() {
                     <input type="checkbox" onChange={() => markAsRead(notification.id)} />
 
                     <button onClick={() => toggleNotification(notification.id)} className="flex-1 text-left">
-                      <div className="font-semibold">
-                        {getTypeLabel(notification.type)} {expandedNotifications.includes(notification.id) ? "▲" : "▼"}
+                      <div
+                        className={`font-semibold ${
+                          notification.type === "admin_message_client"
+                            ? "text-red-600"
+                            : ""
+                        }`}
+                      >
+                        {getTypeLabel(notification)}{" "}
+                        {expandedNotifications.includes(notification.id) ? "▲" : "▼"}
                       </div>
 
-                      <div className="text-sm text-gray-600">{notification.original_datetime}</div>
+                      {notification.type !== "admin_message_client" && (
+                        <div className="text-sm text-gray-600">
+                          {notification.original_datetime}
+                        </div>
+                      )}
                     </button>
                   </div>
 
                   {expandedNotifications.includes(notification.id) && (
                     <div className="mt-4 space-y-4">
-                      <div>
-                        <p className="font-semibold">Notes</p>
+                      {notification.type === "admin_message_client" ? (
                         <p>{notification.message}</p>
-                      </div>
+                      ) : (
+                        <div>
+                          <p className="font-semibold">Notes</p>
+                          <p>{notification.message}</p>
+                        </div>
+                      )}
 
                       <div>
                         <p className="font-semibold">Created</p>
@@ -276,8 +318,20 @@ export default function ClientNotificationsPage() {
                     <div className="hidden lg:grid grid-cols-[60px_180px_220px_1fr_220px] items-center gap-4 rounded-xl bg-white p-4 shadow">
                       <div>✓</div>
 
-                      <div>{getTypeLabel(notification.type)}</div>
-                      <div>{notification.original_datetime}</div>
+                      <div
+                        className={
+                          notification.type === "admin_message_client"
+                            ? "font-semibold text-red-600"
+                            : ""
+                        }
+                      >
+                        {getTypeLabel(notification)}
+                      </div>
+                      <div>
+                        {notification.type === "admin_message_client"
+                          ? ""
+                          : notification.original_datetime}
+                      </div>
                       <div className="whitespace-pre-line">{notification.details}</div>
                       <div>{formatDateTime(notification.created_at)}</div>
                     </div>
@@ -285,19 +339,33 @@ export default function ClientNotificationsPage() {
                     {/* Mobile */}
                     <div className="lg:hidden rounded-xl bg-white p-4 shadow">
                       <button onClick={() => toggleNotification(notification.id)} className="flex-1 text-left">
-                        <div className="font-semibold">
-                          {getTypeLabel(notification.type)}{" "}
+                        <div
+                          className={`font-semibold ${
+                            notification.type === "admin_message_client"
+                              ? "text-red-600"
+                              : ""
+                          }`}
+                        >
+                          {getTypeLabel(notification)}
                           {expandedNotifications.includes(notification.id) ? "▲" : "▼"}
                         </div>
-                        <div className="text-sm text-gray-600">{notification.original_datetime}</div>
+                        {notification.type !== "admin_message_client" && (
+                          <div className="text-sm text-gray-600">
+                            {notification.original_datetime}
+                          </div>
+                        )}
                       </button>
 
                       {expandedNotifications.includes(notification.id) && (
                         <div className="mt-4 space-y-4">
-                          <div>
-                            <p className="font-semibold">Notes</p>
+                          {notification.type === "admin_message_client" ? (
                             <p>{notification.message}</p>
-                          </div>
+                          ) : (
+                            <div>
+                              <p className="font-semibold">Notes</p>
+                              <p>{notification.message}</p>
+                            </div>
+                          )}
 
                           <div>
                             <p className="font-semibold">Created</p>

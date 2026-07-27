@@ -5,6 +5,7 @@ import Link from "next/link"
 import { supabase } from "@/lib/supabaseClient"
 import { useRouter } from "next/navigation"
 import RequireAdmin from "@/components/auth/RequireAdmin"
+import PushNotificationsModal from "@/components/admin/PushNotificationsModal"
 
 type Notification = {
   id: number
@@ -46,6 +47,8 @@ export default function NotificationsPage() {
   const [selectedClient, setSelectedClient] = useState<Notification | null>(null)
   const [olderFilter, setOlderFilter] = useState("all")
   const [expandedNotifications, setExpandedNotifications] = useState<number[]>([])
+  const [showPushModal, setShowPushModal] = useState(false)
+
   const router = useRouter()
 
   useEffect(() => {
@@ -411,7 +414,17 @@ export default function NotificationsPage() {
       <div className="mx-auto max-w-6xl">
         {/* URGENT */}
         <div className="mb-10">
-          <h2 className="mb-4 text-2xl font-bold text-red-700">Urgent</h2>
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="text-2xl font-bold text-red-700">Urgent</h2>
+
+            <button
+              onClick={() => setShowPushModal(true)}
+              className="rounded-md bg-sky-500 px-4 py-2 font-medium text-white transition hover:bg-sky-600"
+            >
+              Push Notification
+            </button>
+          </div>
+
           {urgentNotifications.length === 0 ? (
             <div className="rounded-xl bg-white p-6 shadow">
               <p className="text-black">No urgent notifications.</p>
@@ -917,6 +930,11 @@ export default function NotificationsPage() {
           </div>
         </div>
       )}
+
+      <PushNotificationsModal
+        open={showPushModal}
+        onClose={() => setShowPushModal(false)}
+      />
     </main>
   </RequireAdmin>
   )
