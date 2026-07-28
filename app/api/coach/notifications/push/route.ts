@@ -19,29 +19,26 @@ export async function POST(req: Request) {
   try {
     const { notificationId } = await req.json();
 
+    console.log("notificationId:", notificationId);
+
     if (!notificationId) {
+      console.log("❌ Missing notificationId");
+
       return NextResponse.json(
         { error: "Missing notificationId" },
         { status: 400 }
       );
     }
 
-    // TODO: Replace columns if your schema differs.
     const { data: notification, error: notificationError } = await supabase
       .from("notifications")
       .select("*")
       .eq("id", notificationId)
       .single();
 
-    if (notificationError || !notification) {
-      return NextResponse.json(
-        { error: "Notification not found" },
-        { status: 404 }
-      );
-    }
-
-    let body: string | null = null;
-    let preferenceColumn: string | null = null;
+    console.log("notification:", notification);
+    let body: string;
+    let preferenceColumn: string;
 
     switch (notification.type) {
       case "late_booking":
@@ -65,52 +62,58 @@ export async function POST(req: Request) {
         break;
 
       default:
-        return NextResponse.json({ success: true });
+        throw new Error(`Unknown notification type: ${notification.type}`);
     }
 
-    const { data: preferences } = await supabase
+    console.log("[PUSH] Loading preferences...");
+
+    const { data: preferences, error: preferencesError } = await supabase
       .from("coach_notification_preferences")
       .select("*")
       .eq("coach_id", notification.coach_id)
-      .maybeSingle();
+      .single();
 
-    if (preferences && preferenceColumn && !preferences[preferenceColumn]) {
+    if (preferencesError) {
+      throw preferencesError;
+    }
+
+    console.log("[PUSH] Preferences:", preferences);
+
+    if (!preferences[preferenceColumn]) {
       return NextResponse.json({
         success: true,
-        skipped: "Disabled by coach",
+        skipped: "Preference disabled",
       });
     }
 
-    const { data: coach } = await supabase
+    console.log("[PUSH] Loading coach...");
+
+    const { data: coach, error: coachError } = await supabase
       .from("coaches")
       .select("profile_id")
       .eq("id", notification.coach_id)
       .single();
 
-    if (!coach) {
-      return NextResponse.json(
-        { error: "Coach not found" },
-        { status: 404 }
-      );
+    if (coachError) {
+      throw coachError;
     }
 
-    const { data: subscriptions } = await supabase
+    console.log("[PUSH] Coach:", coach);
+
+    const { data: subscriptions, error: subscriptionsError } = await supabase
       .from("push_subscriptions")
       .select("*")
       .eq("profile_id", coach.profile_id);
 
-    if (!subscriptions?.length) {
-      return NextResponse.json({
-        success: true,
-        skipped: "No subscriptions",
-      });
+    if (subscriptionsError) {
+      throw subscriptionsError;
     }
 
-    console.log("========== PUSH DEBUG ==========");
-    console.log("Notification:", notification);
-    console.log("Preference:", preferenceColumn);
-    console.log("Coach:", coach);
-    console.log("Subscriptions:", subscriptions);
+    console.log("[PUSH] Subscriptions:", subscriptions);
+
+    if (!subscriptions.length) {
+      throw new Error("No subscriptions found.");
+    }
 
     const payload = JSON.stringify({
       title: "Gemini Golf Academy",
@@ -119,36 +122,21 @@ export async function POST(req: Request) {
     });
 
     for (const subscription of subscriptions) {
-      console.log("Sending to:", subscription.endpoint);
+      console.log("[PUSH] Sending...");
 
-      try {
-        await webpush.sendNotification(
-          {
-            endpoint: subscription.endpoint,
-            keys: {
-              p256dh: subscription.p256dh,
-              auth: subscription.auth,
-            },
+      await webpush.sendNotification(
+        {
+          endpoint: subscription.endpoint,
+          keys: {
+            p256dh: subscription.p256dh,
+            auth: subscription.auth,
           },
-          payload
-        );
+        },
+        payload
+      );
 
-        console.log("✅ Push sent successfully");
-      } catch (err: any) {
-        console.error("❌ Push failed:", err);
-
-        if (err.statusCode === 404 || err.statusCode === 410) {
-          console.log("Removing expired subscription");
-
-          await supabase
-            .from("push_subscriptions")
-            .delete()
-            .eq("id", subscription.id);
-        }
-      }
+      console.log("[PUSH] Sent!");
     }
-
-    console.log("========== END PUSH DEBUG ==========");
 
     return NextResponse.json({ success: true });
   } catch (err) {
