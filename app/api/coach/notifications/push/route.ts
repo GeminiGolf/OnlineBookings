@@ -14,6 +14,8 @@ webpush.setVapidDetails(
 );
 
 export async function POST(req: Request) {
+  console.log("🚨 PUSH ROUTE WAS CALLED 🚨");
+
   try {
     const { notificationId } = await req.json();
 
@@ -104,6 +106,12 @@ export async function POST(req: Request) {
       });
     }
 
+    console.log("========== PUSH DEBUG ==========");
+    console.log("Notification:", notification);
+    console.log("Preference:", preferenceColumn);
+    console.log("Coach:", coach);
+    console.log("Subscriptions:", subscriptions);
+
     const payload = JSON.stringify({
       title: "Gemini Golf Academy",
       body,
@@ -111,6 +119,8 @@ export async function POST(req: Request) {
     });
 
     for (const subscription of subscriptions) {
+      console.log("Sending to:", subscription.endpoint);
+
       try {
         await webpush.sendNotification(
           {
@@ -122,17 +132,23 @@ export async function POST(req: Request) {
           },
           payload
         );
+
+        console.log("✅ Push sent successfully");
       } catch (err: any) {
+        console.error("❌ Push failed:", err);
+
         if (err.statusCode === 404 || err.statusCode === 410) {
+          console.log("Removing expired subscription");
+
           await supabase
             .from("push_subscriptions")
             .delete()
             .eq("id", subscription.id);
-        } else {
-          console.error(err);
         }
       }
     }
+
+    console.log("========== END PUSH DEBUG ==========");
 
     return NextResponse.json({ success: true });
   } catch (err) {

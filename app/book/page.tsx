@@ -269,9 +269,20 @@ export default function BookPage() {
           is_read: false,
         })
         .select()
+        .single()
 
       if (error) {
         alert("NOTIFICATION FAILED:\n\n" + JSON.stringify(error, null, 2))
+      } else {
+        await fetch("/api/coach/notifications/push", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            notificationId: data.id,
+          }),
+        })
       }
     }
     // We'll add the new late-booking logic here next.

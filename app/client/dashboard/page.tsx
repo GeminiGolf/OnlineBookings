@@ -469,14 +469,30 @@ export default function ClientDashboard() {
     }
 
     if (isLateBooking && newBooking) {
-      await supabase.from("notifications").insert({
-        coach_id: selectedCoach,
-        client_id: client.id,
-        booking_id: newBooking.id,
-        type: "late_booking",
-        is_urgent: true,
-        message: `Late booking requires review.\n\nDate: ${formattedDate}\nTime: ${selectedTime}`,
-      })
+      const { data: notification, error: notificationError } = await supabase
+        .from("notifications")
+        .insert({
+          coach_id: selectedCoach,
+          client_id: client.id,
+          booking_id: newBooking.id,
+          type: "late_booking",
+          is_urgent: true,
+          message: `Late booking requires review.\n\nDate: ${formattedDate}\nTime: ${selectedTime}`,
+        })
+        .select()
+        .single()
+
+      if (!notificationError && notification) {
+        await fetch("/api/coach/notifications/push", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            notificationId: notification.id,
+          }),
+        })
+      }
     }
     await fetch("/api/check-double-bookings", {
       method: "POST",
