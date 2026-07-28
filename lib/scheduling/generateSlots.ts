@@ -1,4 +1,5 @@
 import { SupabaseClient } from "@supabase/supabase-js"
+import { getMalaysiaDate, getMalaysiaHour } from "@/lib/date"
 
 function formatHour(hour: number) {
   const suffix = hour >= 12 ? "PM" : "AM"
@@ -100,9 +101,9 @@ export async function generateSlots(
       !breakTimes.includes(slot) || overrideOpenTimes.includes(slot)
   )
 
-  const today = new Date()
-  const isToday =
-    selectedDate.toDateString() === today.toDateString()
+  const malaysiaToday = getMalaysiaDate()
+  const isToday = formattedDate === malaysiaToday
+  const malaysiaHour = getMalaysiaHour()
 
   if (isToday) {
     availableSlots = availableSlots.filter((slot) => {
@@ -119,7 +120,7 @@ export async function generateSlots(
         militaryHour = 0
       }
 
-      return militaryHour > today.getHours()
+      return militaryHour > malaysiaHour
     })
   }
 

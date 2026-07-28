@@ -12,3 +12,13 @@ export function getMalaysiaDate() {
 
   return `${year}-${month}-${day}`
 }
+
+export function getMalaysiaHour() {
+  return Number(
+    new Intl.DateTimeFormat("en", {
+      timeZone: "Asia/Kuala_Lumpur",
+      hour: "numeric",
+      hour12: false,
+    }).format(new Date())
+  )
+}
