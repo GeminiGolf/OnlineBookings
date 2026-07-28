@@ -25,12 +25,6 @@ export async function POST(req: Request) {
       )
     }
 
-    await supabaseAdmin
-      .from("push_subscriptions")
-      .delete()
-      .eq("profile_id", profile_id)
-      .neq("endpoint", endpoint)
-
     const { data, error } = await supabaseAdmin
       .from("push_subscriptions")
       .upsert(
