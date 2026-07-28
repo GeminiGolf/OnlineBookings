@@ -206,8 +206,20 @@ const saveBooking = async () => {
     return
   }
 
-  setEditingBooking(null)
-  router.refresh()
+    await fetch("/api/check-double-bookings", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        coachId: editCoachId,
+        lessonDate: editDate,
+        lessonTime: `${editHour}:00 ${editMeridiem}`,
+      }),
+    })
+
+    setEditingBooking(null)
+    router.refresh()
 }
 
   return (

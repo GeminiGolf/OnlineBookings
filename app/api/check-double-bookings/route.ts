@@ -91,30 +91,61 @@ export async function POST(req: Request) {
 
     message += "\nPlease resolve immediately."
 
-    await supabase.from("notifications").insert({
-      coach_id: coachId,
-      client_id: null,
-      booking_id: null,
-      type: "double_booking",
-      is_urgent: true,
-      is_read: false,
-      message,
-    })
+    const { data: notification, error: notificationError } = await supabase
+      .from("notifications")
+      .insert({
+        coach_id: coachId,
+        client_id: null,
+        booking_id: null,
+        type: "double_booking",
+        is_urgent: true,
+        is_read: false,
+        message,
+      })
+      .select()
+      .single()
 
-    await supabase.from("double_booking_alerts").insert({
-      coach_id: coachId,
-      lesson_date: lessonDate,
-      lesson_time: lessonTime,
-    })
+    if (!notificationError && notification) {
+      const baseUrl =
+        process.env.NEXT_PUBLIC_SITE_URL ??
+        "http://localhost:3000"
+
+      await fetch(
+        `${baseUrl}/api/coach/notifications/push`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            notificationId: notification.id,
+          }),
+        }
+      )
+    }
+
+    const { error: alertError } = await supabase
+      .from("double_booking_alerts")
+      .insert({
+        coach_id: coachId,
+        lesson_date: lessonDate,
+        lesson_time: lessonTime,
+      })
+
+    if (alertError) {
+      throw alertError
+    }
 
     return NextResponse.json({
       success: true,
       duplicate: true,
     })
-  } catch (err) {
-    return NextResponse.json(
-      { success: false, error: "Server error", details: err },
-      { status: 500 }
-    )
-  }
+    } catch (err) {
+      console.error("DOUBLE BOOKING ERROR:", err)
+
+      return NextResponse.json(
+        { success: false, error: "Server error", details: err },
+        { status: 500 }
+      )
+    }
 }

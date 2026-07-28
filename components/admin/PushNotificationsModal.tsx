@@ -150,14 +150,34 @@ export default function PushNotificationsModal({
         }
       })
 
-      const { error } = await supabase
+      const { data: insertedNotifications, error } = await supabase
         .from("notifications")
         .insert(notifications)
+        .select("id, type")
 
       if (error) {
         alert(error.message)
         return
       }
+
+      const coachNotifications =
+        insertedNotifications?.filter(
+          (notification) => notification.type === "admin_message_coach"
+        ) ?? []
+
+      await Promise.all(
+        coachNotifications.map((notification) =>
+          fetch("/api/coach/notifications/push", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              notificationId: notification.id,
+            }),
+          })
+        )
+      )
 
       alert("Notification sent successfully.")
 

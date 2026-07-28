@@ -330,15 +330,30 @@ export default function ClientDashboard() {
       return
     }
 
-    await supabase.from("notifications").insert({
-      coach_id: lesson.coach_id,
-      client_id: lesson.client_id,
-      booking_id: lesson.id,
-      type: "client_cancelled",
-      is_urgent: false,
+    const { data: notification, error: notificationError } = await supabase
+      .from("notifications")
+      .insert({
+        coach_id: lesson.coach_id,
+        client_id: lesson.client_id,
+        booking_id: lesson.id,
+        type: "client_cancelled",
+        is_urgent: false,
+        message: `Client cancelled lesson.\n\nDate: ${lesson.lesson_date}\nTime: ${lesson.lesson_time}\n\nReason:\n${reason.trim()}`,
+      })
+      .select()
+      .single()
 
-      message: `Client cancelled lesson.\n\nDate: ${lesson.lesson_date}\nTime: ${lesson.lesson_time}\n\nReason:\n${reason.trim()}`,
-    })
+    if (!notificationError && notification) {
+      await fetch("/api/coach/notifications/push", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          notificationId: notification.id,
+        }),
+      })
+    }
 
     alert("Lesson cancelled.")
 
