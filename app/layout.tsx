@@ -25,7 +25,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Gemini Golf",
-  description: "Golf Lesson Booking Platform",
+  description:
+    "Golf Lesson Booking Platform",
 
   manifest: "/manifest.json",
 
@@ -47,6 +48,10 @@ export const metadata: Metadata = {
       { url: "/icon-512.png", sizes: "512x512", type: "image/png" },
     ],
     apple: "/apple-touch-icon.png",
+  },
+
+  other: {
+    "mobile-web-app-capable": "yes",
   },
 }
 

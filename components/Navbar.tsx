@@ -25,6 +25,17 @@ export default function Navbar() {
     }[]
   >([])
   useEffect(() => {
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker
+        .register("/sw.js")
+        .then(() => {
+          console.log("Service Worker registered")
+        })
+        .catch((error) => {
+          console.error("Service Worker registration failed:", error)
+        })
+    }
+
     checkSession()
 
     const {
@@ -32,11 +43,13 @@ export default function Navbar() {
     } = supabase.auth.onAuthStateChange(() => {
       checkSession()
     })
+
     const notificationChannel = supabase
       .channel("navbar-notifications")
       .on("postgres_changes", { event: "*", schema: "public", table: "notifications" }, checkSession)
       .on("postgres_changes", { event: "*", schema: "public", table: "bookings" }, checkSession)
       .subscribe()
+
     return () => {
       authSubscription.unsubscribe()
       supabase.removeChannel(notificationChannel)
