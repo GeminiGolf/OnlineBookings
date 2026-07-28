@@ -14,15 +14,12 @@ webpush.setVapidDetails(
 );
 
 export async function POST(req: Request) {
-  console.log("🚨 PUSH ROUTE WAS CALLED 🚨");
 
   try {
     const { notificationId } = await req.json();
 
-    console.log("notificationId:", notificationId);
 
     if (!notificationId) {
-      console.log("❌ Missing notificationId");
 
       return NextResponse.json(
         { error: "Missing notificationId" },
@@ -36,7 +33,6 @@ export async function POST(req: Request) {
       .eq("id", notificationId)
       .single();
 
-    console.log("notification:", notification);
     let body: string;
     let preferenceColumn: string;
 
@@ -65,28 +61,22 @@ export async function POST(req: Request) {
         throw new Error(`Unknown notification type: ${notification.type}`);
     }
 
-    console.log("[PUSH] Loading preferences...");
-
     const { data: preferences, error: preferencesError } = await supabase
       .from("coach_notification_preferences")
       .select("*")
       .eq("coach_id", notification.coach_id)
-      .single();
+      .maybeSingle();
 
     if (preferencesError) {
       throw preferencesError;
     }
 
-    console.log("[PUSH] Preferences:", preferences);
-
-    if (!preferences[preferenceColumn]) {
+    if (preferences && !preferences[preferenceColumn]) {
       return NextResponse.json({
         success: true,
         skipped: "Preference disabled",
       });
     }
-
-    console.log("[PUSH] Loading coach...");
 
     const { data: coach, error: coachError } = await supabase
       .from("coaches")
@@ -98,8 +88,6 @@ export async function POST(req: Request) {
       throw coachError;
     }
 
-    console.log("[PUSH] Coach:", coach);
-
     const { data: subscriptions, error: subscriptionsError } = await supabase
       .from("push_subscriptions")
       .select("*")
@@ -108,8 +96,6 @@ export async function POST(req: Request) {
     if (subscriptionsError) {
       throw subscriptionsError;
     }
-
-    console.log("[PUSH] Subscriptions:", subscriptions);
 
     if (!subscriptions.length) {
       throw new Error("No subscriptions found.");
@@ -122,7 +108,6 @@ export async function POST(req: Request) {
     });
 
     for (const subscription of subscriptions) {
-      console.log("[PUSH] Sending...");
 
       await webpush.sendNotification(
         {
@@ -135,7 +120,6 @@ export async function POST(req: Request) {
         payload
       );
 
-      console.log("[PUSH] Sent!");
     }
 
     return NextResponse.json({ success: true });

@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server"
 import { supabaseAdmin } from "@/lib/supabaseAdmin"
 
-export async function POST(request: NextRequest) {
+export async function POST(req: Request) {
+
   try {
-    const body = await request.json()
+    const body = await req.json()
 
     const {
       profile_id,
@@ -30,7 +31,7 @@ export async function POST(request: NextRequest) {
       .eq("profile_id", profile_id)
       .neq("endpoint", endpoint)
 
-    const { error } = await supabaseAdmin
+    const { data, error } = await supabaseAdmin
       .from("push_subscriptions")
       .upsert(
         {
@@ -44,7 +45,8 @@ export async function POST(request: NextRequest) {
         {
           onConflict: "profile_id,endpoint",
         }
-      )
+        )
+        .select()
 
     if (error) {
       console.error(error)

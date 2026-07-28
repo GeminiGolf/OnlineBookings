@@ -29,7 +29,6 @@ export default function Navbar() {
       navigator.serviceWorker
         .register("/sw.js")
         .then(() => {
-          console.log("Service Worker registered")
         })
         .catch((error) => {
           console.error("Service Worker registration failed:", error)
@@ -58,28 +57,17 @@ export default function Navbar() {
 
   async function registerPushSubscription(profileId: string) {
     try {
-      console.log("=== PUSH DEBUG START ===")
-
-      console.log("serviceWorker:", "serviceWorker" in navigator)
-      console.log("PushManager:", "PushManager" in window)
-      console.log("Notification:", "Notification" in window)
-      console.log("Permission:", Notification.permission)
-      console.log("VAPID:", process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY)
 
       if (!("serviceWorker" in navigator)) {
-        console.log("No service worker support")
         return
       }
 
       if (!("PushManager" in window)) {
-        console.log("No PushManager support")
         return
       }
 
       if (Notification.permission === "default") {
-        console.log("Requesting permission...")
         const permission = await Notification.requestPermission()
-        console.log("Permission result:", permission)
 
         if (permission !== "granted") {
           return
@@ -87,19 +75,14 @@ export default function Navbar() {
       }
 
       if (Notification.permission !== "granted") {
-        console.log("Permission not granted")
         return
       }
 
       const registration = await navigator.serviceWorker.ready
-      console.log("SW ready")
 
       let subscription = await registration.pushManager.getSubscription()
 
-      console.log("Existing subscription:", subscription)
-
       if (!subscription) {
-        console.log("Creating subscription...")
 
         subscription = await registration.pushManager.subscribe({
           userVisibleOnly: true,
@@ -108,9 +91,7 @@ export default function Navbar() {
           ),
         })
 
-        console.log("Subscription created")
       }
-
       const response = await fetch("/api/push/subscribe", {
         method: "POST",
         headers: {
@@ -124,8 +105,6 @@ export default function Navbar() {
         }),
       })
 
-      console.log("API status:", response.status)
-      console.log("=== PUSH DEBUG END ===")
     } catch (error) {
       console.error("PUSH ERROR:", error)
     }
