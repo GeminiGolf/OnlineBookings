@@ -1,6 +1,7 @@
 "use client"
 import Image from "next/image"
 import Link from "next/link"
+import { Settings } from "lucide-react"
 import { useEffect, useState } from "react"
 import { supabase } from "@/lib/supabaseClient"
 import { useRouter } from "next/navigation"
@@ -432,12 +433,22 @@ export default function NotificationsPage() {
   return (
     <main className="min-h-screen bg-gray-100 p-8">
       <div className="mx-auto max-w-6xl">
-        <Link
-          href="/coach/dashboard"
-          className="mb-6 inline-block rounded-lg border border-black bg-white px-4 py-2 text-black hover:bg-gray-100"
-        >
-          ← Back to Dashboard
-        </Link>
+        <div className="mb-6 flex items-center gap-3">
+          <Link
+            href="/coach/dashboard"
+            className="rounded-lg border border-black bg-white px-4 py-2 text-black hover:bg-gray-100"
+          >
+            ← Back to Dashboard
+          </Link>
+
+          <Link
+            href="/coach/notifications/settings"
+            className="flex h-11 w-11 items-center justify-center rounded-lg border border-black bg-white text-black hover:bg-gray-100"
+            title="Notification Settings"
+          >
+            <Settings className="h-5 w-5" />
+          </Link>
+        </div>
         {/* URGENT */}
         <div className="mb-10">
           <h2 className="mb-4 text-2xl font-bold text-red-700">Urgent</h2>
