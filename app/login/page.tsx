@@ -10,7 +10,6 @@ export default function LoginPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
-  const [keepLoggedIn, setKeepLoggedIn] = useState(false)
 
   async function handleLogin() {
     const { data, error } = await supabase.auth.signInWithPassword({
@@ -24,13 +23,6 @@ export default function LoginPage() {
     }
 
     const user = data.user
-
-    localStorage.setItem(
-      "loginExpiry",
-      keepLoggedIn
-        ? "never"
-        : (Date.now() + 6 * 60 * 60 * 1000).toString()
-    )
 
     if (!user) {
       alert("No user found.")
@@ -104,14 +96,6 @@ export default function LoginPage() {
               Show Password
             </label>
 
-            <label className="flex items-center gap-1 text-black">
-              <input
-                type="checkbox"
-                checked={keepLoggedIn}
-                onChange={(e) => setKeepLoggedIn(e.target.checked)}
-              />
-              Keep me logged in
-            </label>
           </div>
 
           <button
