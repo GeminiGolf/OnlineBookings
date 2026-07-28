@@ -56,6 +56,81 @@ export default function Navbar() {
     }
   }, [])
 
+  async function registerPushSubscription(profileId: string) {
+    try {
+      console.log("=== PUSH DEBUG START ===")
+
+      console.log("serviceWorker:", "serviceWorker" in navigator)
+      console.log("PushManager:", "PushManager" in window)
+      console.log("Notification:", "Notification" in window)
+      console.log("Permission:", Notification.permission)
+      console.log("VAPID:", process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY)
+
+      if (!("serviceWorker" in navigator)) {
+        console.log("No service worker support")
+        return
+      }
+
+      if (!("PushManager" in window)) {
+        console.log("No PushManager support")
+        return
+      }
+
+      if (Notification.permission === "default") {
+        console.log("Requesting permission...")
+        const permission = await Notification.requestPermission()
+        console.log("Permission result:", permission)
+
+        if (permission !== "granted") {
+          return
+        }
+      }
+
+      if (Notification.permission !== "granted") {
+        console.log("Permission not granted")
+        return
+      }
+
+      const registration = await navigator.serviceWorker.ready
+      console.log("SW ready")
+
+      let subscription = await registration.pushManager.getSubscription()
+
+      console.log("Existing subscription:", subscription)
+
+      if (!subscription) {
+        console.log("Creating subscription...")
+
+        subscription = await registration.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: urlBase64ToUint8Array(
+            process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!
+          ),
+        })
+
+        console.log("Subscription created")
+      }
+
+      const response = await fetch("/api/push/subscribe", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          profile_id: profileId,
+          endpoint: subscription.endpoint,
+          keys: subscription.toJSON().keys,
+          userAgent: navigator.userAgent,
+        }),
+      })
+
+      console.log("API status:", response.status)
+      console.log("=== PUSH DEBUG END ===")
+    } catch (error) {
+      console.error("PUSH ERROR:", error)
+    }
+  }
+
   async function checkSession() {
     setLoading(true)
     const {
@@ -63,6 +138,9 @@ export default function Navbar() {
     } = await supabase.auth.getSession()
 
     setLoggedIn(!!session)
+    if (session) {
+      await registerPushSubscription(session.user.id)
+    }
     if (!session) {
       setRole("")
       setUrgentCount(0)
@@ -205,6 +283,18 @@ export default function Navbar() {
       setUrgentNotifications(enrichedUrgent)
     }
     setLoading(false)
+  }
+
+  function urlBase64ToUint8Array(base64String: string) {
+    const padding = "=".repeat((4 - (base64String.length % 4)) % 4)
+
+    const base64 = (base64String + padding)
+      .replace(/-/g, "+")
+      .replace(/_/g, "/")
+
+    const rawData = window.atob(base64)
+
+    return Uint8Array.from([...rawData].map((char) => char.charCodeAt(0)))
   }
 
   async function handleApprove(notificationId: number) {
