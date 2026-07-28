@@ -30,7 +30,7 @@ export default function ClientNotificationsPage() {
     const { data: client } = await supabase.from("clients").select("*").eq("profile_id", session.user.id).single()
     const { data: profile } = await supabase.from("profiles").select("role").eq("id", session.user.id).single()
     if (profile?.role === "coach") {
-      router.push("/notifications")
+      router.push("/coach/notifications")
       return
     }
     if (profile?.role !== "client" && profile?.role !== "admin") {

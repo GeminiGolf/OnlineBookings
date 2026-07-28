@@ -97,7 +97,7 @@ export default function CoachDashboardPage() {
           </Link>
 
           <Link
-            href="/notifications"
+            href="/coach/notifications"
             className="rounded-3xl bg-white p-5 sm:p-8 shadow-lg transition hover:scale-[1.02]"
           >
             <h2 className="text-[20px] font-bold text-black sm:text-[20px]">
