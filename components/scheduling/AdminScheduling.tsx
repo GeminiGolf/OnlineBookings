@@ -261,13 +261,13 @@ export default function AdminDashboard({
         new_time: newTime,
       })
 
-      await supabase.from("notifications").insert({
-        coach_id: coachId,
-        client_id: activeBooking.clients?.id,
-        booking_id: activeBooking.id,
-        type: "coach_rescheduled",
-        message: "Admin rescheduled lesson",
-      })
+  // await supabase.from("notifications").insert({
+  //   coach_id: coachId,
+  //   client_id: activeBooking.clients?.id,
+  //   booking_id: activeBooking.id,
+  //   type: "admin_rescheduled",
+  //   message: "Admin rescheduled lesson",
+  // })
 
       setRescheduleBooking(null)
       setMoveBooking(null)
@@ -1049,13 +1049,13 @@ export default function AdminDashboard({
                     })
                     .eq("id", selectedBooking.id)
 
-                  await supabase.from("notifications").insert({
-                    coach_id: coachId,
-                    client_id: selectedBooking.clients?.id,
-                    booking_id: selectedBooking.id,
-                    type: "admin_cancelled",
-                    message: cancellationReason,
-                  })
+                  //await supabase.from("notifications").insert({
+                  //  coach_id: coachId,
+                  //  client_id: selectedBooking.clients?.id,
+                  //  booking_id: selectedBooking.id,
+                  //  type: "admin_cancelled",
+                  //  message: cancellationReason,
+                  //})
                   await supabase
                     .from("notifications")
                     .delete()

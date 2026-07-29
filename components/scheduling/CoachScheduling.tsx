@@ -260,13 +260,13 @@ export default function CoachDashboard({
         new_time: newTime,
       })
 
-      await supabase.from("notifications").insert({
-        coach_id: coachId,
-        client_id: activeBooking.clients?.id,
-        booking_id: activeBooking.id,
-        type: "coach_rescheduled",
-        message: "Coach rescheduled lesson",
-      })
+    // await supabase.from("notifications").insert({
+    //   coach_id: coachId,
+    //   client_id: activeBooking.clients?.id,
+    //   booking_id: activeBooking.id,
+    //   type: "coach_rescheduled",
+    //   message: "Coach rescheduled lesson",
+    // })
 
       setRescheduleBooking(null)
       setMoveBooking(null)
