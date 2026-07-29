@@ -51,6 +51,29 @@ export async function POST(req: Request) {
       )
     }
 
+    const { data: coach } = await supabaseAdmin
+      .from("coaches")
+      .select("id")
+      .eq("profile_id", profile_id)
+      .maybeSingle()
+
+    if (coach) {
+      await supabaseAdmin
+        .from("coach_notification_preferences")
+        .upsert(
+          {
+            coach_id: coach.id,
+            late_booking: true,
+            client_cancelled: true,
+            double_booking: true,
+            admin_message: true,
+          },
+          {
+            onConflict: "coach_id",
+          }
+        )
+    }
+
     return NextResponse.json({
       success: true,
     })
