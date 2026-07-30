@@ -41,3 +41,10 @@ body {
   @apply text-[18px] font-light uppercase tracking-[0.12em] text-black;
 }
 
+.dashboard-label {
+  @apply text-[13px] font-light uppercase tracking-[0.12em] text-black;
+}
+
+.dashboard-value {
+  @apply text-[15px] font-light text-black;
+}

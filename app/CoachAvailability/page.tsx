@@ -6,7 +6,7 @@ import { DayPicker } from "react-day-picker"
 import "react-day-picker/dist/style.css"
 import { supabase } from "@/lib/supabaseClient"
 import DashboardContainer from "@/components/layout/DashboardContainer"
-
+import CoachSelect from "@/components/ui/CoachSelect";
 type Coach = {
   id: number
   name: string
@@ -81,7 +81,7 @@ export default function CoachAvailabilityPage() {
   return (
     <main className="min-h-screen bg-gray-100 p-3 sm:p-10 text-black">
       <DashboardContainer>
-        <h1 className="mb-6 text-center lg:text-left text-2xl lg:text-3xl font-bold">
+        <h1 className="dashboard-heading mb-6 text-center lg:text-left">
           Coach Availability
         </h1>
 
@@ -93,25 +93,24 @@ export default function CoachAvailabilityPage() {
             <div>
               <label
                 ref={dateRef}
-                className="mb-2 block text-lg font-semibold"
+                className="dashboard-label mb-3 block"
               >
                 Select Coach
               </label>
 
-              <select
-                value={selectedCoach ?? ""}
-                onChange={async (e) => {
-                  const coachId = Number(e.target.value)
-
-                  setSelectedCoach(coachId)
+              <CoachSelect
+                coaches={coaches}
+                value={selectedCoach}
+                onChange={async (coachId) => {
+                  setSelectedCoach(coachId);
 
                   const { data } = await supabase
                     .from("coaches")
                     .select("id, name, preferred_name, photo_url, specializations")
                     .eq("id", coachId)
-                    .single()
+                    .single();
 
-                  setSelectedCoachData(data)
+                  setSelectedCoachData(data);
 
                   if (window.innerWidth < 1024) {
                     setTimeout(() => {
@@ -121,20 +120,11 @@ export default function CoachAvailabilityPage() {
                           window.scrollY +
                           150,
                         behavior: "smooth",
-                      })
-                    }, 150)
+                      });
+                    }, 150);
                   }
                 }}
-                className="w-full rounded-xl border p-4"
-              >
-                <option value="">Choose a coach</option>
-
-                {coaches.map((coach) => (
-                  <option key={coach.id} value={coach.id}>
-                    {coach.preferred_name || coach.name}
-                  </option>
-                ))}
-              </select>
+              />
 
               {selectedCoachData && (
                 <div className="mt-4 rounded-xl border bg-white p-4">
@@ -159,7 +149,7 @@ export default function CoachAvailabilityPage() {
             {/* Calendar */}
 
             <div>
-              <label className="mb-4 block text-lg font-semibold">
+              <label className="dashboard-label mb-3 block">
                 Select Date
               </label>
 
@@ -182,7 +172,7 @@ export default function CoachAvailabilityPage() {
                   className="mt-2 lg:mt-6 border-t pt-2 lg:pt-4 min-h-[60px] lg:min-h-[80px] w-full flex flex-col items-center"
                 >
 
-                  <h3 className="mb-3 text-base font-semibold text-center">
+                  <h3 className="dashboard-label mb-3 text-center">
                     Available Time Slots
                   </h3>
 
