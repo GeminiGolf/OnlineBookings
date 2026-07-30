@@ -392,7 +392,7 @@ export default function Navbar() {
       <Link href="/" className="flex items-center justify-center text-white transition hover:text-gray-300">
         <Home size={24} strokeWidth={2.5} />
       </Link>
-      <div className="flex items-center gap-2 text-sm lg:gap-6 lg:text-base">
+      <div className="flex items-center gap-5 text-sm lg:gap-8 lg:text-base">
         {!loading && (
           <>
             {loggedIn && role === "coach" && (
@@ -652,11 +652,11 @@ export default function Navbar() {
 
             {!loggedIn && (
               <>
-                <Link href="/login" className="text-base transition hover:text-blue-400">
-                  Login
+                <Link href="/login" className="text-sm font-light uppercase tracking-[0.15em] text-white/80">
+                  <span className="inline-block scale-x-90">LOGIN</span>
                 </Link>
-                <Link href="/signup" className="text-base transition hover:text-green-400">
-                  Sign Up
+                <Link href="/signup" className="text-sm font-light uppercase tracking-[0.15em] text-white/80">
+                  <span className="inline-block scale-x-90">SIGN UP</span>
                 </Link>
               </>
             )}
