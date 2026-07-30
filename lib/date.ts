@@ -22,3 +22,29 @@ export function getMalaysiaHour() {
     }).format(new Date())
   )
 }
+
+export function formatMalaysiaLessonReminder(
+  lessonDate: string,
+  lessonTime: string,
+  coachName: string
+) {
+  const today = getMalaysiaDate()
+
+  const dayText =
+    lessonDate === today
+      ? "today"
+      : "tomorrow"
+
+  const [hour] = lessonTime.split(":").map(Number)
+
+  const displayHour =
+    hour === 0
+      ? 12
+      : hour > 12
+        ? hour - 12
+        : hour
+
+  const ampm = hour >= 12 ? "PM" : "AM"
+
+  return `${displayHour} ${ampm} ${dayText} with ${coachName}`
+}

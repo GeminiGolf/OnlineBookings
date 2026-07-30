@@ -7,14 +7,16 @@ import { supabase } from "@/lib/supabaseClient";
 
 type Preferences = {
   late_booking_rejected: boolean;
-  appointment_reminders: boolean;
+  appointment_reminder_hours: number[];
   admin_messages: boolean;
 };
 
 export default function CoachNotificationSettingsPage() {
+  const SHOW_APPOINTMENT_REMINDERS = false;
+
   const [preferences, setPreferences] = useState<Preferences>({
     late_booking_rejected: true,
-    appointment_reminders: true,
+    appointment_reminder_hours: [12],
     admin_messages: true,
   });
 
@@ -37,7 +39,7 @@ export default function CoachNotificationSettingsPage() {
       const { data } = await supabase
         .from("client_notification_preferences")
         .select(
-          "late_booking_rejected, appointment_reminders, admin_messages"
+          "late_booking_rejected, appointment_reminder_hours, admin_messages"
         )
         .eq("client_id", client.id)
         .maybeSingle();
@@ -97,6 +99,59 @@ export default function CoachNotificationSettingsPage() {
     }
   }
 
+  async function updateReminderHours(hours: number[]) {
+    const previous = preferences;
+
+    setPreferences((current) => ({
+      ...current,
+      appointment_reminder_hours: hours,
+    }));
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) return;
+
+    const { data: client } = await supabase
+      .from("clients")
+      .select("id, name")
+      .eq("profile_id", user.id)
+      .maybeSingle();
+
+    if (!client) {
+      setPreferences(previous);
+      alert("Client not found.");
+      return;
+    }
+
+    const { error } = await supabase
+      .from("client_notification_preferences")
+      .upsert(
+        {
+          client_id: client.id,
+          name: client.name,
+          appointment_reminder_hours: hours,
+        },
+        {
+          onConflict: "client_id",
+        }
+      );
+
+    if (error) {
+      setPreferences(previous);
+      alert("Could not save notification settings.");
+    }
+  }
+
+  function toggleReminder(hour: number) {
+    const updated = preferences.appointment_reminder_hours.includes(hour)
+      ? preferences.appointment_reminder_hours.filter((h) => h !== hour)
+      : [...preferences.appointment_reminder_hours, hour].sort((a, b) => b - a);
+
+    updateReminderHours(updated);
+  }
+
   return (
     <main className="min-h-screen bg-gray-100">
       <div className="mx-auto max-w-6xl p-8">
@@ -140,29 +195,39 @@ export default function CoachNotificationSettingsPage() {
           </div>
         </div>
 
-        <div className="border-b p-4 sm:p-6">
-          <div className="flex items-start justify-between">
-            <div>
-              <h2 className="text-lg font-semibold text-black">
-                Appointment Reminders
-              </h2>
-              <p className="mt-1 text-sm text-gray-600">
-                Receive a reminder before your upcoming lesson.
-              </p>
+        {SHOW_APPOINTMENT_REMINDERS && (
+          <div className="border-b p-4 sm:p-6">
+            <h2 className="text-lg font-semibold text-black">
+              Appointment Reminders
+            </h2>
+
+            <p className="mt-1 mb-4 text-sm text-gray-600">
+              Choose when you'd like to receive reminders before your lesson.
+            </p>
+
+            <div className="space-y-3">
+
+              {[24, 12, 6, 2].map((hour) => (
+                <label
+                  key={hour}
+                  className="flex items-center justify-between rounded-lg border px-4 py-3 hover:bg-gray-50"
+                >
+                  <span className="text-black">
+                    {hour} hour{hour === 1 ? "" : "s"} before
+                  </span>
+
+                  <input
+                    type="checkbox"
+                    checked={preferences.appointment_reminder_hours.includes(hour)}
+                    onChange={() => toggleReminder(hour)}
+                    className="h-5 w-5"
+                  />
+                </label>
+              ))}
+
             </div>
-
-            <input
-              type="checkbox"
-              checked={preferences.appointment_reminders}
-              onChange={(e) =>
-                updatePreference("appointment_reminders", e.target.checked)
-              }
-              className="mt-1 h-5 w-5"
-            />
           </div>
-        </div>
-
-
+        )}
       </div>
     </div>
   </main>

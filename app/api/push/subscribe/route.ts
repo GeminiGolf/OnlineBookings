@@ -76,6 +76,29 @@ export async function POST(req: Request) {
         )
     }
 
+    const { data: client } = await supabaseAdmin
+      .from("clients")
+      .select("id, name")
+      .eq("profile_id", profile_id)
+      .maybeSingle()
+
+    if (client) {
+      await supabaseAdmin
+        .from("client_notification_preferences")
+        .upsert(
+          {
+            client_id: client.id,
+            name: client.name,
+            late_booking_rejected: true,
+            appointment_reminder_hours: [12],
+            admin_messages: true,
+          },
+          {
+            onConflict: "client_id",
+          }
+        )
+    }
+
     return NextResponse.json({
       success: true,
     })
