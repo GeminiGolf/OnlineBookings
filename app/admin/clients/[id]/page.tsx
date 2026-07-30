@@ -10,6 +10,7 @@ import AdminClientContactEditor from "@/components/admin/AdminClientContactEdito
 import ClientNotesCard from "@/components/clients/ClientNotesCard"
 import AdminLessonsRemainingEditor from "@/components/admin/AdminLessonsRemainingEditor"
 import AdminCoachEditor from "@/components/admin/AdminCoachEditor"
+import DashboardContainer from "@/components/layout/DashboardContainer"
 
 type Props = {
   params: Promise<{
@@ -93,7 +94,7 @@ export default async function AdminClientProfilePage({ params }: Props) {
 
   return (
     <main className="min-h-screen bg-gray-100 p-3 sm:p-10 text-black">
-      <div className="mx-auto w-full max-w-5xl">
+      <DashboardContainer>
         <Link
           href="/admin/profiles"
           className="mb-6 inline-block rounded-lg border bg-white px-4 py-2"
@@ -213,7 +214,7 @@ export default async function AdminClientProfilePage({ params }: Props) {
             />
           </div>
         </div>
-      </div>
+      </DashboardContainer>
     </main>
   )
 }

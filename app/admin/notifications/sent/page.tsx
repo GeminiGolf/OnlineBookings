@@ -3,12 +3,13 @@
 import Link from "next/link"
 import RequireAdmin from "@/components/auth/RequireAdmin"
 import AllNotifications from "@/components/admin/AllNotifications"
-
+import DashboardContainer from "@/components/layout/DashboardContainer"
 export default function SentNotificationsPage() {
   return (
     <RequireAdmin>
-      <main className="min-h-screen bg-gray-100 p-8">
-        <div className="mx-auto max-w-6xl">
+      <main className="min-h-screen bg-gray-100 p-3 sm:p-10 text-black">
+        <DashboardContainer>
+
           <div className="mb-6 flex items-center justify-between">
 
             <Link
@@ -22,7 +23,7 @@ export default function SentNotificationsPage() {
           <div className="rounded-2xl bg-white p-6 shadow">
             <AllNotifications />
           </div>
-        </div>
+        </DashboardContainer>
       </main>
     </RequireAdmin>
   )

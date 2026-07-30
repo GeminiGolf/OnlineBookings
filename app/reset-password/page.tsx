@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { supabase } from "@/lib/supabaseClient"
+import DashboardContainer from "@/components/layout/DashboardContainer"
 
 export default function ResetPasswordPage() {
   const router = useRouter()
@@ -68,8 +69,8 @@ export default function ResetPasswordPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-100 p-8">
-      <div className="mx-auto max-w-md rounded-2xl bg-white p-8 text-black shadow">
+    <main className="min-h-screen bg-gray-100 p-3 sm:p-10 text-black">
+      <DashboardContainer>
         <h1 className="mb-6 text-2xl font-bold">
           Reset Password
         </h1>
@@ -135,7 +136,7 @@ export default function ResetPasswordPage() {
             {loading ? "Resetting Password..." : "Reset Password"}
           </button>
         </form>
-      </div>
+      </DashboardContainer>
     </main>
   )
 }

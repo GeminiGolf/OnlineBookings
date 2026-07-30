@@ -4,6 +4,7 @@ import Link from "next/link"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { supabase } from "@/lib/supabaseClient"
+import DashboardContainer from "@/components/layout/DashboardContainer"
 import AddTransactionForm from "@/components/clients/AddTransactionForm"
 import { getMalaysiaDate } from "@/lib/date"
 
@@ -480,8 +481,8 @@ export default function AdminDashboard({
   }
 
   return (
-    <main className="min-h-screen bg-gray-100 p-4 text-black">
-      <div className="mx-auto max-w-6xl">
+    <main className="min-h-screen bg-gray-100 p-3 sm:p-10 text-black">
+      <DashboardContainer>
         <h1 className="text-2xl font-bold">Schedule</h1>
         <div className="mb-2 mt-1">
           {headerContent ?? (
@@ -631,7 +632,7 @@ export default function AdminDashboard({
             )
           })}
         </div>
-      </div>
+      </DashboardContainer>
 
       {showExtendModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-6">

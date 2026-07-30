@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react"
 import { DayPicker } from "react-day-picker"
 import "react-day-picker/dist/style.css"
 import { supabase } from "@/lib/supabaseClient"
+import DashboardContainer from "@/components/layout/DashboardContainer"
 
 type Coach = {
   id: number
@@ -78,8 +79,8 @@ export default function CoachAvailabilityPage() {
 	}, [selectedCoach, selectedDate])
 
   return (
-    <main className="min-h-screen bg-gray-100 p-4 lg:p-10 text-black">
-      <div className="mx-auto max-w-4xl">
+    <main className="min-h-screen bg-gray-100 p-3 sm:p-10 text-black">
+      <DashboardContainer>
         <h1 className="mb-6 text-center lg:text-left text-2xl lg:text-3xl font-bold">
           Coach Availability
         </h1>
@@ -228,7 +229,7 @@ export default function CoachAvailabilityPage() {
 
           </div>
         </div>
-      </div>
+      </DashboardContainer>
     </main>
   )
 }

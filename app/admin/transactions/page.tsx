@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { createClient } from "@/lib/supabaseServer"
 import { redirect } from "next/navigation"
+import DashboardContainer from "@/components/layout/DashboardContainer"
 import AdminTransactionsTable, {
   TransactionRow,
 } from "@/components/transactions/AdminTransactionsTable"
@@ -91,8 +92,8 @@ export default async function AdminTransactionsPage() {
   )
 
   return (
-    <main className="min-h-screen bg-gray-100 p-3 sm:p-4 text-black">
-      <div className="mx-auto max-w-6xl">
+    <main className="min-h-screen bg-gray-100 p-3 sm:p-10 text-black">
+      <DashboardContainer>
         <Link
           href="/admin/"
           className="mb-4 inline-block rounded-lg border bg-white px-4 py-2"
@@ -103,7 +104,7 @@ export default async function AdminTransactionsPage() {
         <div className="rounded-2xl bg-white p-4 shadow">
           <AdminTransactionsTable transactions={transactions} />
         </div>
-      </div>
+      </DashboardContainer>
     </main>
   )
 }

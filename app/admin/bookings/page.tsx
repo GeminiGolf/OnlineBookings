@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { createClient } from "@/lib/supabaseServer"
 import BookingsTable from "@/components/admin/BookingsTable"
+import DashboardContainer from "@/components/layout/DashboardContainer"
 
 export default async function AdminBookingsPage() {
   const supabase = await createClient()
@@ -57,8 +58,8 @@ export default async function AdminBookingsPage() {
     ])
 
   return (
-    <main className="min-h-screen bg-gray-100 p-5 text-black">
-      <div className="mx-auto max-w-7xl">
+    <main className="min-h-screen bg-gray-100 p-3 sm:p-10 text-black">
+      <DashboardContainer>
         <Link
           href="/admin"
           className="mb-4 inline-block rounded-xl border border-black bg-white px-4 py-2 hover:bg-gray-100"
@@ -72,7 +73,7 @@ export default async function AdminBookingsPage() {
             coaches={coaches ?? []}
           />
         </div>
-      </div>
+      </DashboardContainer>
     </main>
   )
 }

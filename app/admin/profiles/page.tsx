@@ -2,7 +2,7 @@ import { createClient } from "@/lib/supabaseServer"
 import { redirect } from "next/navigation"
 import AdminProfilesSearch from "@/components/admin/AdminProfilesSearch"
 import CreateProfileButton from "@/components/admin/AddDeleteProfiles/CreateProfileButton"
-
+import DashboardContainer from "@/components/layout/DashboardContainer"
 export default async function AdminProfilesPage() {
   const supabase = await createClient()
 
@@ -62,7 +62,7 @@ export default async function AdminProfilesPage() {
   })
   return (
     <main className="min-h-screen bg-gray-100 p-3 sm:p-10 text-black">
-      <div className="mx-auto max-w-6xl">
+      <DashboardContainer>
         <div className="mb-6 flex items-center justify-between">
           <h1 className="text-3xl font-bold sm:text-4xl">
             Profiles
@@ -72,7 +72,7 @@ export default async function AdminProfilesPage() {
         </div>
 
         <AdminProfilesSearch profiles={profiles} />
-      </div>
+      </DashboardContainer>
     </main>
   )
 }
