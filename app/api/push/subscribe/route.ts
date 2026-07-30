@@ -42,6 +42,8 @@ export async function POST(req: Request) {
         )
         .select()
 
+    console.log("UPSERT RESULT:", data)
+
     if (error) {
       console.error(error)
 
