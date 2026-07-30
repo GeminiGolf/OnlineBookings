@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
-
+import DashboardContainer from "@/components/layout/DashboardContainer"
 type Preferences = {
   late_booking_rejected: boolean;
   appointment_reminder_hours: number[];
@@ -153,8 +153,8 @@ export default function CoachNotificationSettingsPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-100">
-      <div className="mx-auto max-w-6xl p-8">
+    <main className="min-h-screen bg-gray-100 p-3 sm:p-10 text-black">
+     <DashboardContainer>
       <Link
         href="/client/notifications"
         className="mt-0 mb-4 inline-flex items-center gap-2 rounded-lg border border-black bg-white px-4 py-2 text-black hover:bg-gray-100"
@@ -229,7 +229,7 @@ export default function CoachNotificationSettingsPage() {
           </div>
         )}
       </div>
-    </div>
+    </DashboardContainer>
   </main>
   );
 }

@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { Settings } from "lucide-react"
 import RequireClient from "@/components/auth/RequireClient"
-
+import DashboardContainer from "@/components/layout/DashboardContainer"
 export default function ClientNotificationsPage() {
   const [notifications, setNotifications] = useState<any[]>([])
   const [olderNotifications, setOlderNotifications] = useState<any[]>([])
@@ -196,8 +196,8 @@ export default function ClientNotificationsPage() {
   }
   return (
     <RequireClient>
-      <main className="min-h-screen bg-gray-100 p-4 lg:p-8 text-black">
-      <div className="mx-auto max-w-6xl lg:p-10">
+      <main className="min-h-screen bg-gray-100 p-3 sm:p-10 text-black">
+       <DashboardContainer>
         <div className="w-full">
           <div className="mb-6 flex items-center gap-3">
             <Link
@@ -429,7 +429,7 @@ export default function ClientNotificationsPage() {
             )}
           </div>
         </div>
-      </div>
+      </DashboardContainer>
     </main>
   </RequireClient>
   )

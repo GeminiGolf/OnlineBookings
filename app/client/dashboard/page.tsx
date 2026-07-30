@@ -7,6 +7,7 @@ import { supabase } from "@/lib/supabaseClient"
 import Link from "next/link"
 import RequireClient from "@/components/auth/RequireClient"
 import { getMalaysiaDate } from "@/lib/date"
+import DashboardContainer from "@/components/layout/DashboardContainer"
 type Coach = {
   id: number
   name: string
@@ -549,8 +550,8 @@ export default function ClientDashboard() {
     .slice((packagesPage - 1) * ITEMS_PER_PAGE, packagesPage * ITEMS_PER_PAGE)
   return (
     <RequireClient>
-      <main className="min-h-screen bg-gray-100 text-black">
-      <div className="mx-auto mt-8 max-w-5xl p-4 lg:p-6">
+      <main className="min-h-screen bg-gray-100 p-3 sm:p-10 text-black">
+        <DashboardContainer>
         <div className="mt-8">
           {/* Mobile / Small Screen */}
           <div className="lg:hidden rounded-2xl bg-white shadow">
@@ -1115,7 +1116,7 @@ export default function ClientDashboard() {
             </div>
           </div>
         )}
-      </div>
+      </DashboardContainer>
     </main>
   </RequireClient>
   )
