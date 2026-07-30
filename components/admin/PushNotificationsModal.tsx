@@ -165,8 +165,13 @@ export default function PushNotificationsModal({
           (notification) => notification.type === "admin_message_coach"
         ) ?? []
 
-      await Promise.all(
-        coachNotifications.map((notification) =>
+      const clientNotifications =
+        insertedNotifications?.filter(
+          (notification) => notification.type === "admin_message_client"
+        ) ?? []
+
+      await Promise.all([
+        ...coachNotifications.map((notification) =>
           fetch("/api/coach/notifications/push", {
             method: "POST",
             headers: {
@@ -176,8 +181,20 @@ export default function PushNotificationsModal({
               notificationId: notification.id,
             }),
           })
-        )
-      )
+        ),
+
+        ...clientNotifications.map((notification) =>
+          fetch("/api/client/notifications/push", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              notificationId: notification.id,
+            }),
+          })
+        ),
+      ])
 
       alert("Notification sent successfully.")
 

@@ -122,10 +122,10 @@ export default function CoachNotificationSettingsPage() {
           <div className="flex items-start justify-between">
             <div>
               <h2 className="text-lg font-semibold text-black">
-                Late Booking Rejected
+                Coach Cancelled
               </h2>
               <p className="mt-1 text-sm text-gray-600">
-                Receive a push notification when your coach declines a late booking request.
+                Receive a push notification when your coach cancels an appointment.
               </p>
             </div>
 
@@ -162,27 +162,6 @@ export default function CoachNotificationSettingsPage() {
           </div>
         </div>
 
-        <div className="p-4 sm:p-6">
-          <div className="flex items-start justify-between">
-            <div>
-              <h2 className="text-lg font-semibold text-black">
-                Admin Messages
-              </h2>
-              <p className="mt-1 text-sm text-gray-600">
-                Receive push notifications for messages from Gemini Golf Academy.
-              </p>
-            </div>
-
-            <input
-              type="checkbox"
-              checked={preferences.admin_messages}
-              onChange={(e) =>
-                updatePreference("admin_messages", e.target.checked)
-              }
-              className="mt-1 h-5 w-5"
-            />
-          </div>
-        </div>
 
       </div>
     </div>
