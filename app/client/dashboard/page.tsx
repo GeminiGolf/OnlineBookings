@@ -550,7 +550,7 @@ export default function ClientDashboard() {
   return (
     <RequireClient>
       <main className="min-h-screen bg-gray-100 text-black">
-      <div className="mx-auto max-w-5xl p-4 lg:p-8">
+      <div className="mx-auto mt-8 max-w-5xl p-4 lg:p-6">
         <div className="mt-8">
           {/* Mobile / Small Screen */}
           <div className="lg:hidden rounded-2xl bg-white shadow">
@@ -661,7 +661,7 @@ export default function ClientDashboard() {
           </div>
         </div>
 
-        <div className="mt-8 grid gap-8 lg:grid-cols-2">
+        <div className="mt-4 grid gap-4 lg:mt-8 lg:grid-cols-2">
           <div className="rounded-2xl bg-white p-3 lg:p-8 shadow">
             <h2 className="mb-3 text-[18px] font-bold text-black">Book A Lesson</h2>
 
@@ -845,7 +845,7 @@ export default function ClientDashboard() {
           </div>
         </div>
 
-        <div className="mt-8 grid gap-8 lg:grid-cols-2">
+        <div className="mt-4 grid gap-4 lg:mt-8 lg:grid-cols-2">
           <div className="rounded-2xl bg-white p-3 lg:p-8 shadow">
             <h2 className="mb-3 text-[18px] font-bold text-black">Previous Lessons</h2>
 

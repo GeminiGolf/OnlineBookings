@@ -388,7 +388,7 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="flex flex-wrap items-center justify-between border-b border-gray-800 bg-black px-4 py-4 lg:px-8 lg:py-5 text-white">
+    <nav className="absolute left-0 top-0 z-50 flex w-full flex-wrap items-center justify-between bg-black/40 backdrop-blur-md px-6 py-3 text-white lg:px-10 lg:py-3">
       <Link href="/" className="flex items-center justify-center text-white transition hover:text-gray-300">
         <Home size={24} strokeWidth={2.5} />
       </Link>
@@ -640,9 +640,7 @@ export default function Navbar() {
                     </span>
                   )}
                 </Link>
-                <Link href="/book" className="text-base transition hover:text-yellow-400">
-                  Book
-                </Link>
+
                 <Link href="/client/dashboard" className="text-base transition hover:text-green-400">
                   Dashboard
                 </Link>
@@ -654,12 +652,6 @@ export default function Navbar() {
 
             {!loggedIn && (
               <>
-                <Link
-                  href="/CoachAvailability"
-                  className="text-base transition hover:text-yellow-400"
-                >
-                  Book
-                </Link>
                 <Link href="/login" className="text-base transition hover:text-blue-400">
                   Login
                 </Link>
