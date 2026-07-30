@@ -382,13 +382,32 @@ export default function NotificationsPage() {
       .eq("id", notification.id)
       .single()
     if (originalNotification?.client_id) {
-      await supabase.from("notifications").insert({
-        coach_id: originalNotification.coach_id,
-        client_id: originalNotification.client_id,
-        booking_id: originalNotification.booking_id,
-        type: "coach_cancelled",
-        message: `Late booking request rejected.\n\nReason:\n${reason}`,
-      })
+      const { data: clientNotification, error: notificationError } =
+        await supabase
+          .from("notifications")
+          .insert({
+            coach_id: originalNotification.coach_id,
+            client_id: originalNotification.client_id,
+            booking_id: originalNotification.booking_id,
+            type: currentRole === "admin"
+              ? "admin_cancelled"
+              : "coach_cancelled",
+            message: `Late booking request rejected.\n\nReason:\n${reason}`,
+          })
+          .select()
+          .single();
+
+      if (!notificationError && clientNotification) {
+        await fetch("/api/client/notifications/push", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            notificationId: clientNotification.id,
+          }),
+        })
+      }
     }
 
     const { error } = await supabase

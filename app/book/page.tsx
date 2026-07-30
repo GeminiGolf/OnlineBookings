@@ -29,7 +29,7 @@ export default function BookPage() {
   async function fetchCoaches() {
     const { data } = await supabase.from("coaches").select("*")
     if (data) {
-      setCoaches(data.filter((coach) => coach.id !== 3))
+      setCoaches(data.filter((coach) => coach.id !== 3 && coach.id !== 8))
     }
 
   }

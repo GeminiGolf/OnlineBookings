@@ -27,7 +27,7 @@ export default function SignupPage() {
         .order("name")
 
       if (data) {
-        setCoaches(data.filter((coach) => coach.id !== 3))
+        setCoaches(data.filter((coach) => coach.id !== 3 && coach.id !== 8))
       }
     }
 

@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react"
 import { supabase } from "@/lib/supabaseClient"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
+import { Settings } from "lucide-react"
 import RequireClient from "@/components/auth/RequireClient"
 
 export default function ClientNotificationsPage() {
@@ -197,7 +199,26 @@ export default function ClientNotificationsPage() {
       <main className="min-h-screen bg-gray-100 p-4 lg:p-8 text-black">
       <div className="mx-auto max-w-6xl lg:p-10">
         <div className="w-full">
-          <h2 className="mb-4 text-[20px] lg:text-2xl font-bold text-left"> Notifications ({notifications.length})</h2>
+          <div className="mb-6 flex items-center gap-3">
+            <Link
+              href="/client/dashboard"
+              className="rounded-lg border border-black bg-white px-4 py-2 text-black hover:bg-gray-100"
+            >
+              ← Back to Dashboard
+            </Link>
+
+            <Link
+              href="/client/notifications/settings"
+              className="flex h-11 w-11 items-center justify-center rounded-lg border border-black bg-white text-black hover:bg-gray-100"
+              title="Notification Settings"
+            >
+              <Settings className="h-5 w-5" />
+            </Link>
+          </div>
+
+          <h2 className="mb-4 text-[20px] lg:text-2xl font-bold text-left">
+            Notifications ({notifications.length})
+          </h2>
           <div className="space-y-1">
             <div className="hidden lg:grid grid-cols-[60px_180px_220px_1fr_220px] gap-4 px-4 font-semibold">
               <div></div>
