@@ -105,14 +105,14 @@ export default function SignupPage() {
   }
 
   return (
-    <main className="flex min-h-screen items-start justify-center bg-gray-100 px-4 pt-10 sm:items-center sm:p-10">
+    <main className="flex min-h-screen items-start justify-center bg-gray-100 px-6 pt-10 sm:items-center sm:p-10">
       <div className="w-full max-w-md rounded-2xl bg-white p-4 shadow-lg sm:p-8">
-        <h1 className="mb-1 text-3xl font-bold text-black sm:text-3xl">
+        <h1 className="mb-2 text-3xl font-light uppercase tracking-[0.12em] text-black">
           Client Signup
         </h1>
 
-        <p className="mb-2 text-sm text-gray-600 sm:text-base">
-          Create an account to book lessons.
+        <p className="mb-6 text-sm uppercase tracking-[0.15em] text-gray-500">
+          CREATE YOUR ACCOUNT
         </p>
 
         <div className="space-y-3">
@@ -123,7 +123,7 @@ export default function SignupPage() {
                 e.target.value ? Number(e.target.value) : null
               )
             }
-            className="w-full rounded-xl border p-3 text-base text-black sm:p-3 sm:text-lg"
+            className="w-full rounded-xl border border-gray-300 bg-white px-5 py-3 text-base font-light tracking-[0.08em] text-black placeholder:text-gray-500 focus:border-black focus:outline-none"
           >
             <option value="">Choose Coach *</option>
 
@@ -139,7 +139,7 @@ export default function SignupPage() {
             placeholder="Preferred Name (Optional)"
             value={preferredName}
             onChange={(e) => setPreferredName(e.target.value)}
-            className="w-full rounded-xl border p-3 text-base text-black sm:p-3 sm:text-lg"
+            className="w-full rounded-xl border border-gray-300 bg-white px-5 py-3 text-base font-light tracking-[0.08em] text-black placeholder:text-gray-500 focus:border-black focus:outline-none"
           />
 
           <input
@@ -147,7 +147,7 @@ export default function SignupPage() {
             placeholder="Given Name *"
             value={givenName}
             onChange={(e) => setGivenName(e.target.value)}
-            className="w-full rounded-xl border p-3 text-base text-black sm:p-3 sm:text-lg"
+            className="w-full rounded-xl border border-gray-300 bg-white px-5 py-3 text-base font-light tracking-[0.08em] text-black placeholder:text-gray-500 focus:border-black focus:outline-none"
           />
 
           <input
@@ -155,7 +155,7 @@ export default function SignupPage() {
             placeholder="Family Name *"
             value={familyName}
             onChange={(e) => setFamilyName(e.target.value)}
-            className="w-full rounded-xl border p-3 text-base text-black sm:p-3 sm:text-lg"
+            className="w-full rounded-xl border border-gray-300 bg-white px-5 py-3 text-base font-light tracking-[0.08em] text-black placeholder:text-gray-500 focus:border-black focus:outline-none"
           />
 
           <input
@@ -163,7 +163,7 @@ export default function SignupPage() {
             placeholder="Phone Number *"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
-            className="w-full rounded-xl border p-3 text-base text-black sm:p-3 sm:text-lg"
+            className="w-full rounded-xl border border-gray-300 bg-white px-5 py-3 text-base font-light tracking-[0.08em] text-black placeholder:text-gray-500 focus:border-black focus:outline-none"
           />
 
           <input
@@ -171,7 +171,7 @@ export default function SignupPage() {
             placeholder="Email *"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full rounded-xl border p-3 text-base text-black sm:p-3 sm:text-lg"
+            className="w-full rounded-xl border border-gray-300 bg-white px-5 py-3 text-base font-light tracking-[0.08em] text-black placeholder:text-gray-500 focus:border-black focus:outline-none"
           />
 
           <input
@@ -179,7 +179,7 @@ export default function SignupPage() {
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full rounded-xl border p-3 text-base text-black sm:p-3 sm:text-lg"
+            className="w-full rounded-xl border border-gray-300 bg-white px-5 py-3 text-base font-light tracking-[0.08em] text-black placeholder:text-gray-500 focus:border-black focus:outline-none"
           />
 
           <input
@@ -187,10 +187,10 @@ export default function SignupPage() {
             placeholder="Confirm Password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
-            className="w-full rounded-xl border p-3 text-base text-black sm:p-3 sm:text-lg"
+            className="w-full rounded-xl border border-gray-300 bg-white px-5 py-3 text-base font-light tracking-[0.08em] text-black placeholder:text-gray-500 focus:border-black focus:outline-none"
           />
 
-          <label className="flex items-center gap-2 text-black">
+          <label className="flex items-center gap-3 text-sm font-light uppercase tracking-[0.12em] text-gray-700">
             <input
               type="checkbox"
               checked={showPassword}
@@ -201,12 +201,12 @@ export default function SignupPage() {
 
           <button
             onClick={handleSignup}
-            className="mx-auto block w-64 rounded-xl bg-green-600 p-3 text-[16px] font-bold text-white transition hover:bg-green-700 sm:w-60 sm:p-2 sm:text-lg"
+            className="mx-auto block w-64 rounded-xl bg-emerald-900 px-6 py-3 text-sm font-light uppercase tracking-[0.18em] text-white transition hover:bg-emerald-800"
           >
             Create Account
           </button>
 
-          <p className="text-center text-sm text-gray-500 sm:text-base">
+          <p className="text-center text-xs font-light uppercase tracking-[0.15em] text-gray-500">
             Already a client?{" "}
             <a
               href="/login"

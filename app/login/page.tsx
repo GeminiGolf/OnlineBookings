@@ -59,14 +59,14 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="flex min-h-screen items-start justify-center bg-gray-100 px-4 pt-10 sm:items-center sm:p-10">
+    <main className="flex min-h-screen items-start justify-center bg-gray-100 px-6 pt-10 sm:items-center sm:p-10">
       <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-lg">
-        <h1 className="mb-1 text-center text-3xl font-bold text-black sm:text-4xl">
-          Login
+        <h1 className="mb-2 text-center text-3xl font-light uppercase tracking-[0.12em] text-black">
+         Login
         </h1>
 
-        <p className="mb-4 text-center text-gray-600">
-          Welcome back!
+        <p className="mb-6 text-center text-sm uppercase tracking-[0.15em] text-gray-500">
+          WELCOME BACK
         </p>
 
         <div className="space-y-4">
@@ -75,7 +75,7 @@ export default function LoginPage() {
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full rounded-xl border p-3 text-lg text-black"
+            className="w-full rounded-xl border border-gray-300 bg-white px-5 py-3 text-[15px] font-light tracking-[0.08em] text-black placeholder:text-gray-500 focus:border-black focus:outline-none"
           />
 
           <input
@@ -83,11 +83,11 @@ export default function LoginPage() {
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full rounded-xl border p-3 text-lg text-black"
+            className="w-full rounded-xl border border-gray-300 bg-white px-5 py-3 text-[15px] font-light tracking-[0.08em] text-black placeholder:text-gray-500 focus:border-black focus:outline-none"
           />
 
           <div className="flex flex-wrap justify-center gap-4">
-            <label className="flex items-center gap-1 text-black">
+            <label className="flex items-center gap-3 text-sm font-light uppercase tracking-[0.12em] text-gray-700">
               <input
                 type="checkbox"
                 checked={showPassword}
@@ -100,7 +100,7 @@ export default function LoginPage() {
 
           <button
             onClick={handleLogin}
-            className="mx-auto mt-5 block w-4/5 rounded-xl bg-blue-600 p-3 text-[16px] font-bold text-white transition hover:bg-blue-700 sm:w-64 sm:text-lg"
+            className="mx-auto mt-5 block w-64 rounded-xl bg-[#21402E] px-6 py-3 text-sm font-light uppercase tracking-[0.18em] text-white transition hover:bg-[#2B533B]"
           >
             Login
           </button>
@@ -109,13 +109,13 @@ export default function LoginPage() {
             <button
               type="button"
               onClick={handleForgotPassword}
-              className="text-sm text-blue-600 hover:underline"
+              className="text-xs font-light uppercase tracking-[0.15em] text-gray-500 transition hover:text-black"
             >
               Forgot Password?
             </button>
 
-            <p className="text-gray-500">
-              Not a client yet?{" "}
+            <p className="text-center text-xs font-light uppercase tracking-[0.15em] text-gray-500">
+              NOT A CLIENT YET?{" "}
               <a
                 href="/signup"
                 className="font-semibold text-blue-500 hover:text-blue-400"
