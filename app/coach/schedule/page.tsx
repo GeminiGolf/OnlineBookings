@@ -1,6 +1,8 @@
 import { createClient } from "@/lib/supabaseServer"
 import CoachScheduling from "@/components/scheduling/CoachScheduling"
 import { getMalaysiaDate } from "@/lib/date"
+import DashboardContainer from "@/components/layout/DashboardContainer"
+
 type Props = {
   searchParams: Promise<{
     date?: string

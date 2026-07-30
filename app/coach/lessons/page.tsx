@@ -2,6 +2,7 @@ import Link from "next/link"
 import { createClient } from "@/lib/supabaseServer"
 import CoachPreviousLessonsTable from "@/components/coach/CoachPreviousLessonsTable"
 import { redirect } from "next/navigation"
+import DashboardContainer from "@/components/layout/DashboardContainer"
 export default async function CoachLessonsPage() {
   const supabase = await createClient()
 
@@ -41,7 +42,7 @@ export default async function CoachLessonsPage() {
 
   return (
     <main className="min-h-screen bg-gray-100 p-3 sm:p-10 text-black">
-      <div className="mx-auto max-w-6xl">
+      <DashboardContainer>
         <Link
           href="/coach/dashboard"
           className="mb-6 inline-block rounded-lg border bg-white px-4 py-2"
@@ -54,7 +55,7 @@ export default async function CoachLessonsPage() {
             lessons={lessons || []}
           />
         </div>
-      </div>
+      </DashboardContainer>
     </main>
   )
 }

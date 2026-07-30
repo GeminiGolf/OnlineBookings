@@ -4,6 +4,8 @@ import TransactionsTable, {
   TransactionRow,
 } from "@/components/transactions/TransactionsTable"
 import { redirect } from "next/navigation"
+import DashboardContainer from "@/components/layout/DashboardContainer"
+
 export default async function CoachTransactionsPage() {
   const supabase = await createClient()
 
@@ -83,7 +85,7 @@ export default async function CoachTransactionsPage() {
 
   return (
     <main className="min-h-screen bg-gray-100 p-3 sm:p-10 text-black">
-      <div className="mx-auto max-w-6xl">
+      <DashboardContainer>
         <Link
           href="/coach/dashboard"
           className="mb-3 inline-block rounded-lg border bg-white px-4 py-2 sm:mb-6"
@@ -94,7 +96,7 @@ export default async function CoachTransactionsPage() {
         <div className="rounded-2xl bg-white p-4 shadow">
           <TransactionsTable transactions={transactions} />
         </div>
-      </div>
+      </DashboardContainer>
     </main>
   )
 }

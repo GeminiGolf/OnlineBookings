@@ -5,6 +5,7 @@ import { Settings } from "lucide-react"
 import { useEffect, useState } from "react"
 import { supabase } from "@/lib/supabaseClient"
 import { useRouter } from "next/navigation"
+import DashboardContainer from "@/components/layout/DashboardContainer"
 
 type Notification = {
   id: number
@@ -450,8 +451,8 @@ export default function NotificationsPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-100 p-8">
-      <div className="mx-auto max-w-6xl">
+    <main className="min-h-screen bg-gray-100 p-3 sm:p-10 text-black">
+      <DashboardContainer>
         <div className="mb-6 flex items-center gap-3">
           <Link
             href="/coach/dashboard"
@@ -1044,7 +1045,7 @@ export default function NotificationsPage() {
             </>
           )}
         </div>
-      </div>
+      </DashboardContainer>
       {selectedClient && (
         <div className="fixed inset-0 flex items-center justify-center bg-black/50 p-6">
           <div className="w-full max-w-lg rounded-2xl bg-white p-8 shadow-2xl text-black">

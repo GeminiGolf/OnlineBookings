@@ -3,6 +3,7 @@ import Link from "next/link"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { supabase } from "@/lib/supabaseClient"
+import DashboardContainer from "@/components/layout/DashboardContainer"
 
 const days = [
   { label: "Monday",    value: 1 },
@@ -129,8 +130,8 @@ export default function CoachPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-100 p-2 sm:p-10 text-black">
-      <div className="mx-auto max-w-4xl rounded-2xl bg-white p-4 sm:p-8 shadow-lg">
+    <main className="min-h-screen bg-gray-100 p-3 sm:p-10 text-black">
+      <DashboardContainer>
         <Link
           href="/coach/dashboard"
           className="mb-6 inline-block rounded-lg border bg-white px-4 py-2"
@@ -160,7 +161,7 @@ export default function CoachPage() {
         </div>
 
         {loading && <p className="mt-6 text-sm text-gray-500">Saving...</p>}
-      </div>
+      </DashboardContainer>
     </main>
   )
 }

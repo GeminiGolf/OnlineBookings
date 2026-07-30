@@ -1,8 +1,7 @@
 import Link from "next/link"
 import { redirect } from "next/navigation"
-
+import DashboardContainer from "@/components/layout/DashboardContainer"
 import { createClient } from "@/lib/supabaseServer"
-
 import CoachPackagesTable, {
   CoachPackageRow,
 } from "@/components/coach/CoachPackagesTable"
@@ -107,11 +106,11 @@ export default async function CoachPackagesPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-100 px-4 pb-4 pt-8 text-black sm:p-10">
-      <div className="mx-auto max-w-6xl">
+    <main className="min-h-screen bg-gray-100 p-3 sm:p-10 text-black">
+      <DashboardContainer>
 
         <CoachPackagesTable packages={packages} />
-      </div>
+      </DashboardContainer>
     </main>
   )
 }

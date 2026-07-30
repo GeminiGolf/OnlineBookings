@@ -1,5 +1,6 @@
 import ClientIDTransactionForm from "@/components/transactions/ClientIDTransactionForm"
 import Link from "next/link"
+import DashboardContainer from "@/components/layout/DashboardContainer"
 import { createClient } from "@/lib/supabaseServer"
 import { redirect } from "next/navigation"
 import PreviousLessonsTable from "@/components/clients/PreviousLessonsTable"
@@ -83,7 +84,7 @@ export default async function CoachClientProfilePage({ params }: Props) {
 
   return (
     <main className="min-h-screen bg-gray-100 p-3 sm:p-10 text-black">
-      <div className="mx-auto w-full max-w-5xl">
+      <DashboardContainer>
         <Link
           href="/coach/clients"
           className="mb-6 inline-block rounded-lg border bg-white px-4 py-2"
@@ -203,7 +204,7 @@ export default async function CoachClientProfilePage({ params }: Props) {
             />
           </div>
         </div>
-      </div>
+      </DashboardContainer>
     </main>
   )
 }

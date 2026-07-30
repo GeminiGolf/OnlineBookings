@@ -71,7 +71,7 @@ export default function CoachDashboardPage() {
 
   return (
     <main className="min-h-screen bg-gray-100 p-4 sm:p-10">
-      <div className="mx-auto max-w-5xl">
+      <div className="mx-auto mt-10 max-w-5xl lg:mt-12">
         <div className="mb-3 text-center sm:mb-8 sm:text-left">
           <h1 className="whitespace-nowrap text-2xl font-bold text-black sm:text-[26px]">
             Coach Dashboard

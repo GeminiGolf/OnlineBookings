@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabaseServer"
 import ClientsSearch from "@/components/coach/ClientsSearch"
 import AddClient from "@/components/coach/AddClient"
 import { redirect } from "next/navigation"
+import DashboardContainer from "@/components/layout/DashboardContainer"
 export default async function CoachClientsPage() {
   const supabase = await createClient()
   const {
@@ -18,7 +19,7 @@ export default async function CoachClientsPage() {
   const { data: clients } = await supabase.from("clients").select("*").eq("primary_coach_id", coach.id).order("name")
   return (
     <main className="min-h-screen bg-gray-100 p-3 sm:p-10 text-black">
-      <div className="mx-auto max-w-6xl">
+      <DashboardContainer>
                 <Link
                   href="/coach/dashboard"
                   className="mb-1 inline-block rounded-lg border bg-white px-4 py-2"
@@ -27,7 +28,7 @@ export default async function CoachClientsPage() {
                 </Link>
         <ClientsSearch clients={clients || []} />
 
-      </div>
+      </DashboardContainer>
     </main>
   )
 }

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { supabase } from "@/lib/supabaseClient"
 import Link from "next/link"
 import RequireCoach from "@/components/auth/RequireCoach"
+import DashboardContainer from "@/components/layout/DashboardContainer"
 
 type Coach = {
   id: number
@@ -80,8 +81,9 @@ export default function CoachProfilePage() {
 
   return (
     <RequireCoach>
-      <main className="min-h-screen bg-gray-100 text-black">
-      <div className="mx-auto max-w-5xl p-4 lg:p-8">
+      <main className="min-h-screen bg-gray-100 p-3 sm:p-10 text-black">
+
+      <DashboardContainer>
         <div className="mb-4">
           <h1 className="text-[24px] lg:text-[24px] font-bold">
             My Profile
@@ -204,7 +206,7 @@ export default function CoachProfilePage() {
             {coach?.specializations || "None added"}
           </p>
         </div>
-      </div>
+      </DashboardContainer>
     </main>
   </RequireCoach>
   )
