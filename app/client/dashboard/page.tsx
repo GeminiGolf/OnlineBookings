@@ -557,7 +557,8 @@ export default function ClientDashboard() {
           <div className="lg:hidden rounded-2xl bg-white shadow">
             <button onClick={() => setShowClientInfo(!showClientInfo)} className="w-full p-4 lg:p-6 text-left">
               <div className="flex items-center justify-between">
-                <h2 className="text-[18px] lg:text-[22px] font-bold text-black">
+                <h2 className="text-[18px] font-light uppercase tracking-[0.12em] text-black">
+
                   Profile
                 </h2>
                 <span className="text-[2xl]">{showClientInfo ? "▲" : "▼"}</span>
@@ -568,8 +569,8 @@ export default function ClientDashboard() {
               <div className="px-4 pb-4 lg:px-8 lg:pb-8">
                 <div className="space-y-3 text-sm lg:text-base text-black">
                   <div>
-                    <p className="text-sm lg:text-base font-semibold">Name</p>
-                    <p>
+                    <p className="dashboard-label">Name</p>
+                    <p className="dashboard-value">
                       {client?.preferred_name
                         ? `${client.preferred_name} ${client.name?.split(" ").slice(1).join(" ")}`
                         : client?.name || "-"}
@@ -577,26 +578,30 @@ export default function ClientDashboard() {
                   </div>
 
                   <div>
-                    <p className="text-sm lg:text-base font-semibold">Phone</p>
-                    <p>{client?.phone || "Not Provided"}</p>
+                    <p className="dashboard-label">Phone</p>
+                    <p className="dashboard-value">
+                      {client?.phone || "Not Provided"}
+                    </p>
                   </div>
 
                   {client?.primary_coach_id && (
                     <div>
-                      <p className="text-sm lg:text-base font-semibold">Coach</p>
-                      <p>{coaches[0]?.preferred_name || coaches[0]?.name}</p>
+                      <p className="dashboard-label">Coach</p>
+                      <p className="dashboard-value">
+                        {coaches[0]?.preferred_name || coaches[0]?.name}
+                      </p>
                     </div>
                   )}
 
                   <div>
-                    <p className="text-sm lg:text-base font-semibold">Lessons Remaining</p>
-                    <p className="text-xl lg:text-xl font-bold">
+                    <p className="dashboard-label">Lessons Remaining</p>
+                    <p className="dashboard-value">
                       {client?.lessons_remaining ?? 0}
                     </p>
 
                     <Link
                       href="/client/changepassword"
-                      className="mt-3 inline-block font-semibold text-black underline decoration-blue-600 decoration-2 underline-offset-2"
+                      className="dashboard-value mt-4 inline-block hover:underline"
                     >
                       Change Password
                     </Link>
@@ -610,7 +615,7 @@ export default function ClientDashboard() {
           <div className="order-1 lg:order-2 hidden lg:block rounded-2xl bg-white shadow">
             <button onClick={() => setShowClientInfo(!showClientInfo)} className="w-full p-3 text-left">
               <div className="flex items-center justify-center gap-8">
-                <h2 className="text-[2xl] font-bold text-black">
+                <h2 className="text-[2xl] text-[18px] font-light uppercase tracking-[0.12em] text-black text-black">
                   Profile
                 </h2>
 
@@ -624,8 +629,8 @@ export default function ClientDashboard() {
               <div className="px-8 pb-8">
                 <div className="space-y-4 text-black">
                   <div>
-                    <p className="font-semibold">Name</p>
-                    <p>
+                    <p className="dashboard-label">Name</p>
+                    <p className="dashboard-value">
                       {client?.preferred_name
                         ? `${client.preferred_name} ${client.name?.split(" ").slice(1).join(" ")}`
                         : client?.name || "-"}
@@ -633,25 +638,30 @@ export default function ClientDashboard() {
                   </div>
 
                   <div>
-                    <p className="font-semibold">Phone</p>
-                    <p>{client?.phone || "Not Provided"}</p>
+                    <p className="dashboard-label">Phone</p>
+                    <p className="dashboard-value">
+                      {client?.phone || "Not Provided"}
+                    </p>
                   </div>
 
                   {client?.primary_coach_id && (
                     <div>
-                      <p className="font-semibold">Coach</p>
-                      <p>{coaches[0]?.preferred_name || coaches[0]?.name}</p>
+                      <p className="dashboard-label">Coach</p>
+                      <p className="dashboard-value">
+                        {coaches[0]?.preferred_name || coaches[0]?.name}
+                      </p>
                     </div>
                   )}
+
                   <div>
-                    <p className="font-semibold">Lessons Remaining</p>
-                    <p className="text-xl font-bold">
+                    <p className="dashboard-label">Lessons Remaining</p>
+                    <p className="dashboard-value">
                       {client?.lessons_remaining ?? 0}
                     </p>
 
                     <Link
                       href="/client/changepassword"
-                      className="mt-3 inline-block font-semibold text-black underline decoration-blue-600 decoration-2 underline-offset-2"
+                      className="dashboard-value mt-4 inline-block hover:underline"
                     >
                       Change Password
                     </Link>
@@ -664,7 +674,7 @@ export default function ClientDashboard() {
 
         <div className="mt-4 grid gap-4 lg:mt-8 lg:grid-cols-2">
           <div className="rounded-2xl bg-white p-3 lg:p-8 shadow">
-            <h2 className="mb-3 text-[18px] font-bold text-black">Book A Lesson</h2>
+            <h2 className="mb-3 text-[18px] text-[18px] font-light uppercase tracking-[0.12em] text-black text-black">Book A Lesson</h2>
 
             {!client?.primary_coach_id && (
               <select
@@ -715,7 +725,7 @@ export default function ClientDashboard() {
             </div>
 
             <div className="mt-6">
-              <h3 className="mb-3 text-medium font-bold text-black">Available Time Slots</h3>
+              <h3 className="mb-3 text-medium text-[18px] font-light uppercase tracking-[0.12em] text-black text-black">Available Time Slots</h3>
 
               {timeSlots.length === 0 ? (
                 <p className="text-black">No available slots.</p>
@@ -738,9 +748,9 @@ export default function ClientDashboard() {
 
             {selectedTime && (
               <div className="mt-6 rounded-xl bg-gray-100 p-4">
-                <p className="font-bold">Date: {selectedDate?.toLocaleDateString()}</p>
+                <p className="text-[18px] font-light uppercase tracking-[0.12em] text-black">Date: {selectedDate?.toLocaleDateString()}</p>
 
-                <p className="font-bold">Time: {selectedTime}</p>
+                <p className="text-[18px] font-light uppercase tracking-[0.12em] text-black">Time: {selectedTime}</p>
 
                 <button
                   onClick={confirmBooking}
@@ -753,7 +763,7 @@ export default function ClientDashboard() {
             )}
           </div>
           <div className="rounded-2xl bg-white p-3 lg:p-8 shadow">
-            <h2 className="mb-3 text-[17px] font-bold text-black">Upcoming Lessons</h2>
+            <h2 className="mb-3 text-[17px] text-[18px] font-light uppercase tracking-[0.12em] text-black text-black">Upcoming Lessons</h2>
 
             <div className="space-y-2">
               {paginatedUpcoming.map((lesson) => (
@@ -848,7 +858,7 @@ export default function ClientDashboard() {
 
         <div className="mt-4 grid gap-4 lg:mt-8 lg:grid-cols-2">
           <div className="rounded-2xl bg-white p-3 lg:p-8 shadow">
-            <h2 className="mb-3 text-[18px] font-bold text-black">Previous Lessons</h2>
+            <h2 className="mb-3 text-[18px] text-[18px] font-light uppercase tracking-[0.12em] text-black text-black">Previous Lessons</h2>
 
             <div className="overflow-hidden rounded-xl border">
               <table className="w-full border-collapse text-sm">
@@ -919,7 +929,7 @@ export default function ClientDashboard() {
             </div>
           </div>
           <div className="rounded-2xl bg-white p-3 lg:p-8 shadow">
-            <h2 className="mb-3 text-[18px] font-bold text-black">
+            <h2 className="mb-3 text-[18px] text-[18px] font-light uppercase tracking-[0.12em] text-black text-black">
               Lessons Remaining ({client?.lessons_remaining ?? 0})
             </h2>
 
@@ -939,7 +949,7 @@ export default function ClientDashboard() {
                         Balance
                       </div>
 
-                      <div className="text-[18px] font-bold">
+                      <div className="text-[18px] text-[18px] font-light uppercase tracking-[0.12em] text-black">
                         {(pkg.lessons_added || 0) - (pkg.lessons_used || 0)}
                       </div>
                     </div>
@@ -1037,7 +1047,7 @@ export default function ClientDashboard() {
         {showRescheduleModal && rescheduleLesson && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-6">
             <div className="w-full max-w-2xl rounded-2xl bg-white p-6">
-              <h2 className="mb-4 text-2xl font-bold">Reschedule Lesson</h2>
+              <h2 className="mb-4 text-2xl text-[18px] font-light uppercase tracking-[0.12em] text-black">Reschedule Lesson</h2>
 
               <div className="mb-4">
                 <p>
@@ -1104,7 +1114,7 @@ export default function ClientDashboard() {
         {selectedLessonNote && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
             <div className="w-full max-w-2xl rounded-xl bg-white p-6 shadow-xl">
-              <h3 className="mb-4 text-2xl font-bold">Lesson Notes</h3>
+              <h3 className="mb-4 text-2xl text-[18px] font-light uppercase tracking-[0.12em] text-black">Lesson Notes</h3>
               <div className="min-h-[250px] rounded-lg border p-4 whitespace-pre-wrap">
                 {selectedLessonNote.lesson_notes}
               </div>

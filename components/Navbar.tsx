@@ -392,7 +392,7 @@ export default function Navbar() {
       <Link href="/" className="flex items-center justify-center text-white transition hover:text-gray-300">
         <Home size={24} strokeWidth={2.5} />
       </Link>
-      <div className="flex items-center gap-5 text-sm lg:gap-8 lg:text-base">
+      <div className="flex items-center gap-0 text-sm lg:gap-8 lg:text-base">
         {!loading && (
           <>
             {loggedIn && role === "coach" && (
@@ -499,14 +499,27 @@ export default function Navbar() {
                   )}
                 </div>
 
-                <Link href="/coach/schedule" className="text-base transition hover:text-yellow-400">
-                  Schedule
+                <Link
+                  href="/coach/schedule"
+                  className="text-sm font-light uppercase tracking-[0.15em] text-white/80 transition hover:text-white"
+                >
+                  <span className="inline-block scale-x-90">SCHEDULE</span>
                 </Link>
-                <Link href="/coach/dashboard" className="text-base transition hover:text-green-400">
-                  {normalCount > 0 ? `Dashboard (${normalCount})` : "Dashboard"}
+                <Link
+                  href="/coach/dashboard"
+                  className="text-sm font-light uppercase tracking-[0.15em] text-white/80 transition hover:text-white"
+                >
+                  <span className="inline-block scale-x-90">
+                    <span className="inline-block scale-x-90">
+                      {normalCount > 0 ? `DASHBOARD (${normalCount})` : "DASHBOARD"}
+                    </span>
+                  </span>
                 </Link>
-                <button onClick={handleLogout} className="text-base transition hover:text-red-400">
-                  Logout
+                <button
+                  onClick={handleLogout}
+                  className="text-sm font-light uppercase tracking-[0.15em] text-white/80 transition hover:text-white"
+                >
+                  <span className="inline-block scale-x-90">LOGOUT</span>
                 </button>
               </>
             )}
@@ -641,11 +654,15 @@ export default function Navbar() {
                   )}
                 </Link>
 
-                <Link href="/client/dashboard" className="text-base transition hover:text-green-400">
-                  Dashboard
+                <Link href="/client/dashboard" className="text-sm font-light uppercase tracking-[0.15em] text-white/80 transition hover:text-white">
+                  <span className="inline-block scale-x-90">
+                    DASHBOARD
+                  </span>
                 </Link>
-                <button onClick={handleLogout} className="text-base transition hover:text-red-400">
-                  Logout
+                <button onClick={handleLogout} className="text-sm font-light uppercase tracking-[0.15em] text-white/80 transition hover:text-white">
+                  <span className="inline-block scale-x-90">
+                    LOGOUT
+                  </span>
                 </button>
               </>
             )}
