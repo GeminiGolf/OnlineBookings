@@ -736,12 +736,17 @@ export default function CoachDashboard({
       )}
 
       {selectedBooking && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/50 p-6">
-          <div className="w-full max-w-lg rounded-2xl bg-white p-8 shadow-2xl">
-            <div className="mb-6 flex items-center justify-between">
-              <h2 className="text-2xl font-bold">Client Details</h2>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-6">
+          <div className="w-full max-w-xl rounded-3xl border border-[#B9B2A8] bg-[#FEFDFC] p-8 shadow-xl">
+            <div className="mb-8 flex items-center justify-between">
+              <h2 className="text-[26px] font-light tracking-[0.04em] text-black">
+                Client Details
+              </h2>
 
-              <button onClick={() => setSelectedBooking(null)} className="text-2xl font-bold">
+              <button
+                onClick={() => setSelectedBooking(null)}
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-[#8D857A] bg-[#FEFDFC] text-xl transition hover:bg-[#F7F3EE]"
+              >
                 ×
               </button>
             </div>
@@ -749,7 +754,7 @@ export default function CoachDashboard({
             <div className="space-y-4">
               <div>
                 <div className="flex items-center gap-4">
-                  <p className="text-sm text-gray-500">Client</p>
+                  <p className="dashboard-label">Client</p>
 
                   <label className="flex items-center gap-2 text-sm cursor-pointer">
                     <input
@@ -782,7 +787,7 @@ export default function CoachDashboard({
 
                 <Link
                   href={`/coach/clients/${selectedBooking.clients?.id}`}
-                  className="text-xl font-semibold underline text-blue-600 hover:text-blue-800"
+                  className="text-[18px] font-light text-[#2F5A43] underline transition hover:text-[#3C6A50]"
                 >
                   {selectedBooking.clients?.preferred_name
                     ? `(${selectedBooking.clients.preferred_name}) ${selectedBooking.clients.first_name} ${selectedBooking.clients.last_name}`
@@ -791,23 +796,31 @@ export default function CoachDashboard({
               </div>
 
               <div>
-                <p className="text-sm text-gray-500">Phone</p>
-                <p>{selectedBooking.clients?.phone || "No phone added"}</p>
+                <p className="dashboard-label">Phone</p>
+                <p className="dashboard-value">
+                  {selectedBooking.clients?.phone || "No phone added"}
+                </p>
               </div>
 
               <div>
-                <p className="text-sm text-gray-500">Email</p>
-                <p>{selectedBooking.clients?.email || "No email added"}</p>
+                <p className="dashboard-label">Email</p>
+                <p className="dashboard-value">
+                  {selectedBooking.clients?.email || "No email added"}
+                </p>
               </div>
 
               <div>
-                <p className="text-sm text-gray-500">Notes</p>
-                <p>{selectedBooking.clients?.notes || "No notes"}</p>
+                <p className="dashboard-label">Notes</p>
+                <p className="dashboard-value">
+                  {selectedBooking.clients?.notes || "No notes"}
+                </p>
               </div>
 
               <div>
-                <p className="text-sm text-gray-500">Lessons Remaining</p>
-                <p className="font-bold">{selectedBooking.clients?.lessons_remaining}</p>
+                <p className="dashboard-label">Lessons Remaining</p>
+                <p className="dashboard-value">
+                  {selectedBooking.clients?.lessons_remaining}
+                </p>
               </div>
 
               {selectedBooking.status === "completed" ? (
@@ -862,7 +875,7 @@ export default function CoachDashboard({
 
                       setShowCompleteModal(true)
                     }}
-                    className="rounded-lg bg-sky-400 px-2 py-2 text-sm text-white hover:bg-sky-500"
+                   className="rounded-xl bg-[#7DC9F5] px-4 py-2 text-[14px] font-light tracking-[0.03em] text-white transition hover:bg-[#6BBDEB]"
                   >
                     Completed
                   </button>
@@ -871,7 +884,7 @@ export default function CoachDashboard({
                     onClick={() => {
                       setShowTransactionForm(true)
                     }}
-                    className="rounded-lg bg-blue-600 px-2 py-2 text-sm text-white hover:bg-blue-700"
+                    className="rounded-xl bg-[#3B82F6] px-4 py-2 text-[14px] font-light tracking-[0.03em] text-white transition hover:bg-[#2563EB]"
                   >
                     Add Transaction
                   </button>
@@ -881,14 +894,14 @@ export default function CoachDashboard({
                       setRescheduleBooking(selectedBooking)
                       setSelectedBooking(null)
                     }}
-                    className="rounded-lg bg-green-600 px-2 py-2 text-sm text-white hover:bg-green-700"
+                    className="rounded-xl bg-[#2F5A43] px-4 py-2 text-[14px] font-light tracking-[0.03em] text-white transition hover:bg-[#3C6A50]"
                   >
                     Reschedule Lesson
                   </button>
 
                   <button
                     onClick={() => setShowCancelModal(true)}
-                    className="rounded-lg bg-red-600 px-2 py-2 text-sm text-white hover:bg-red-700"
+                    className="rounded-xl bg-[#8F3434] px-4 py-2 text-[14px] font-light tracking-[0.03em] text-white transition hover:bg-[#A04545]"
                   >
                     Cancel Lesson
                   </button>
