@@ -34,7 +34,7 @@ export default function CoachSelect({
     >
       <div className="relative">
         <Listbox.Button className="relative w-full cursor-pointer rounded-2xl border border-gray-300 bg-white px-4 py-2.5 text-left text-[14px] font-light tracking-[0.02em] text-black shadow-sm focus:outline-none">
-          <span className="block truncate text-[14px] font-light tracking-[0.02em] leading-none">
+          <span className="block truncate text-[13px] font-light tracking-[0.12em] leading-none">
             {selected
               ? selected.preferred_name || selected.name
               : "Choose a coach"}
@@ -69,7 +69,7 @@ export default function CoachSelect({
                 {({ selected }) => (
                   <>
                     <span
-                      className={`block text-[16px] font-light tracking-[0.02em] leading-none ${
+                      className={`block text-[14px] font-light tracking-[0.06em] leading-none ${
                         selected ? "pr-6" : ""
                       }`}
                     >

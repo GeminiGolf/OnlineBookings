@@ -48,3 +48,16 @@ body {
 .dashboard-value {
   @apply text-[15px] font-light text-black;
 }
+
+.rdp-caption_label {
+  font-size: 1rem;
+  font-weight: 300;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #000;
+}
+
+.rdp-chevron {
+  width: 18px;
+  height: 18px;
+}

@@ -7,11 +7,13 @@ import "react-day-picker/dist/style.css"
 import { supabase } from "@/lib/supabaseClient"
 import DashboardContainer from "@/components/layout/DashboardContainer"
 import CoachSelect from "@/components/ui/CoachSelect";
+
 type Coach = {
   id: number
   name: string
   preferred_name: string | null
   photo_url: string | null
+  ppv_price: number | null
   specializations: string | null
 }
 
@@ -31,7 +33,7 @@ export default function CoachAvailabilityPage() {
   async function fetchCoaches() {
     const { data } = await supabase
       .from("coaches")
-      .select("id, name, preferred_name, photo_url, specializations")
+      .select("id, name, preferred_name, photo_url, ppv_price, specializations")
       .order("name")
 
     if (data) {
@@ -106,7 +108,7 @@ export default function CoachAvailabilityPage() {
 
                   const { data } = await supabase
                     .from("coaches")
-                    .select("id, name, preferred_name, photo_url, specializations")
+                    .select("id, name, preferred_name, photo_url, ppv_price, specializations")
                     .eq("id", coachId)
                     .single();
 
@@ -137,9 +139,28 @@ export default function CoachAvailabilityPage() {
                     />
                   )}
 
+                  
+
                   {selectedCoachData.specializations && (
-                    <div className="mt-3 whitespace-pre-line">
-                      {selectedCoachData.specializations}
+                    <div className="mt-5 border-t pt-4">
+                      
+                      <p className="dashboard-label mb-2">
+                        Specializations
+                      </p>
+
+                      <ul className="space-y-2">
+                        {selectedCoachData.specializations
+                          .split("\n")
+                          .filter(Boolean)
+                          .map((item) => (
+                            <li key={item} className="flex items-start gap-2">
+                              <span className="mt-[7px] h-1.5 w-1.5 rounded-full bg-[#21402E]" />
+                              <span className="text-[15px] font-light tracking-[0.02em] text-black">
+                                {item}
+                              </span>
+                            </li>
+                          ))}
+                      </ul>
                     </div>
                   )}
                 </div>
@@ -186,7 +207,7 @@ export default function CoachAvailabilityPage() {
 												{timeSlots.map((time) => (
 													<div
 														key={time}
-														className="rounded-lg bg-green-600 px-4 py-2 text-sm font-semibold text-white"
+														className="rounded-xl bg-emerald-900 px-4 py-2 text-[12px] font-light uppercase tracking-[0.18em] text-white transition hover:bg-emerald-800"
 													>
 														{time}
 													</div>
@@ -196,14 +217,14 @@ export default function CoachAvailabilityPage() {
 											<p className="mt-5 text-center text-sm text-gray-600">
 												<Link
 													href="/login"
-													className="font-semibold text-blue-700 hover:underline"
+													className="text-[13px] font-semibold tracking-[0.02em] text-blue-700 transition hover:underline"
 												>
 													Log in
 												</Link>{" "}
 												/{" "}
 												<Link
 													href="/signup"
-													className="font-semibold text-blue-700 hover:underline"
+													className="text-[13px] font-semibold tracking-[0.02em] text-blue-700 transition hover:underline"
 												>
 													Sign up
 												</Link>{" "}

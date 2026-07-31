@@ -736,7 +736,9 @@ export default function ClientDashboard() {
                       key={time}
                       onClick={() => setSelectedTime(time)}
                       className={`rounded-lg px-3 py-1 text-sm font-medium text-white transition ${
-                        selectedTime === time ? "bg-green-700" : "bg-green-600"
+                        selectedTime === time
+                          ? "bg-[#3C6A50]"
+                          : "bg-[#3C6A50] hover:bg-[#4A7D61]"
                       }`}
                     >
                       {time}
@@ -789,14 +791,14 @@ export default function ClientDashboard() {
                       <div className="mt-3 flex gap-2">
                         <button
                           onClick={() => openReschedule(lesson)}
-                          className="rounded bg-green-600 px-3 py-1 text-white"
+                          className="rounded-lg bg-[#3C6A50] px-3 py-1.5 text-sm font-light text-white transition hover:bg-[#4A7D61]"
                         >
                           Reschedule
                         </button>
 
                         <button
                           onClick={() => cancelLesson(lesson)}
-                          className="rounded bg-red-600 px-3 py-1 text-white"
+                          className="rounded-lg bg-[#A34A4A] px-3 py-1.5 text-sm font-light text-white transition hover:bg-[#B95B5B]"
                         >
                           Cancel
                         </button>
@@ -813,12 +815,12 @@ export default function ClientDashboard() {
                     <div className="flex gap-2">
                       <button
                         onClick={() => openReschedule(lesson)}
-                        className="rounded bg-green-600 px-2 py-1 text-sm text-white"
+                        className="rounded-lg bg-[#3C6A50] px-3 py-1.5 text-sm font-light text-white transition hover:bg-[#4A7D61]"
                       >
                         Reschedule
                       </button>
 
-                      <button onClick={() => cancelLesson(lesson)} className="rounded bg-red-600 px-2 py-1 text-sm text-white">
+                      <button onClick={() => cancelLesson(lesson)} className="rounded-lg bg-[#A34A4A] px-3 py-1.5 text-sm font-light text-white transition hover:bg-[#B95B5B]">
                         Cancel
                       </button>
                     </div>
@@ -864,9 +866,17 @@ export default function ClientDashboard() {
               <table className="w-full border-collapse text-sm">
                 <thead>
                   <tr className="border-b bg-gray-50">
-                    <th className="p-3 text-left">Date</th>
-                    <th className="p-3 text-left">Method</th>
-                    <th className="p-3 text-left">Notes</th>
+                    <th className="dashboard-label p-3 text-left font-light">
+                      Date
+                    </th>
+
+                    <th className="dashboard-label p-3 text-left font-light">
+                      Method
+                    </th>
+
+                    <th className="dashboard-label p-3 text-left font-light">
+                      Notes
+                    </th>
                   </tr>
                 </thead>
 
@@ -961,10 +971,21 @@ export default function ClientDashboard() {
 
                   {expandedPackageId === pkg.id && (
                     <div className="mt-4 space-y-2 border-t pt-4">
-                      <div>Purchase: {pkg.transaction_name}</div>
-                      <div>Purchased: {formatDate(pkg.purchase_date)}</div>
-                      <div>Expiry: {formatDate(pkg.expiration_date)}</div>
-                      <div>Method: {pkg.payment_method}</div>
+                      <div className="dashboard-value text-[13px]">
+                        Purchase: {pkg.transaction_name}
+                      </div>
+
+                      <div className="dashboard-value text-[13px]">
+                        Purchased: {formatDate(pkg.purchase_date)}
+                      </div>
+
+                      <div className="dashboard-value text-[13px]">
+                        Expiry: {formatDate(pkg.expiration_date)}
+                      </div>
+
+                      <div className="dashboard-value text-[13px]">
+                        Method: {pkg.payment_method}
+                      </div>
                     </div>
                   )}
                 </div>

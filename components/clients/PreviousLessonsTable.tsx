@@ -51,9 +51,17 @@ export default function PreviousLessonsTable({ lessons }: Props) {
         <table className="w-full">
           <thead>
             <tr className="border-b bg-gray-50">
-              <th className="dashboard-label p-3 text-left">Date</th>
-              <th className="dashboard-label p-3 text-left">Method</th>
-              <th className="dashboard-label p-3 text-left">Notes</th>
+              <th className="dashboard-label px-4 py-4 text-left align-middle">
+                Date
+              </th>
+
+              <th className="dashboard-label px-4 py-4 text-left align-middle">
+                Method
+              </th>
+
+              <th className="dashboard-label px-4 py-4 text-left align-middle">
+                Notes
+              </th>
             </tr>
           </thead>
 
