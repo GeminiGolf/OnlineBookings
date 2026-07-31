@@ -8,7 +8,7 @@ export default function ClientChangePasswordPage() {
      <DashboardContainer>
         <Link
           href="/client/dashboard"
-          className="inline-block rounded-lg border border-black bg-white px-4 py-2 text-black no-underline hover:bg-gray-100"
+          className="mb-8 inline-block rounded-lg border border-black bg-white px-5 py-2.5 text-[13px] font-light tracking-[0.06em] text-black no-underline transition hover:bg-gray-100"
         >
           ← Back to Profile
         </Link>

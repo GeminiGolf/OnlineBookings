@@ -157,17 +157,17 @@ export default function CoachNotificationSettingsPage() {
      <DashboardContainer>
       <Link
         href="/client/notifications"
-        className="mt-0 mb-4 inline-flex items-center gap-2 rounded-lg border border-black bg-white px-4 py-2 text-black hover:bg-gray-100"
+        className="mb-8 inline-flex items-center gap-2 rounded-lg border border-black bg-white px-5 py-2.5 text-[13px] font-light tracking-[0.06em] text-black transition hover:bg-gray-100"
       >
-        <ArrowLeft className="h-4 w-4" />
+        <ArrowLeft className="h-4 w-4 stroke-[1.75]" />
         Back to Notifications
       </Link>
 
-      <h1 className="text-2xl font-bold text-black sm:text-2xl">
+      <h1 className="text-[18px] font-light uppercase tracking-[0.12em] text-black">
         Push Notification Settings
       </h1>
 
-      <p className="mt-1 mb-4 text-gray-600">
+      <p className="dashboard-value mt-2 mb-6 text-[13px]">
         Choose which push notifications you'd like to receive on your devices.
       </p>
 
@@ -176,10 +176,10 @@ export default function CoachNotificationSettingsPage() {
         <div className="border-b p-4 sm:p-6">
           <div className="flex items-start justify-between">
             <div>
-              <h2 className="text-lg font-semibold text-black">
+              <h2 className="dashboard-label">
                 Coach Cancelled
               </h2>
-              <p className="mt-1 text-sm text-gray-600">
+              <p className="dashboard-value mt-2 text-[13px]">
                 Receive a push notification when your coach cancels an appointment.
               </p>
             </div>

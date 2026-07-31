@@ -74,14 +74,15 @@ export default function ChangePassword() {
 
   return (
     <div className="mx-auto max-w-md rounded-2xl bg-white p-8 text-black shadow">
-      <h1 className="mb-6 text-2xl font-bold">Change Password</h1>
+      <h1 className="mb-6 text-[18px] font-light uppercase tracking-[0.12em] text-black">
+        Change Password
+      </h1>
 
       <form onSubmit={handleChangePassword} className="space-y-5">
         <div>
-          <label className="mb-2 block font-semibold">
+          <label className="dashboard-label mb-2 block">
             Current Password
           </label>
-
           <input
             type={showPasswords ? "text" : "password"}
             value={currentPassword}
@@ -92,7 +93,7 @@ export default function ChangePassword() {
         </div>
 
         <div>
-          <label className="mb-2 block font-semibold">
+          <label className="dashboard-label mb-2 block">
             New Password
           </label>
 
@@ -106,7 +107,7 @@ export default function ChangePassword() {
         </div>
 
         <div>
-          <label className="mb-2 block font-semibold">
+          <label className="dashboard-label mb-2 block">
             Confirm New Password
           </label>
 
@@ -130,7 +131,7 @@ export default function ChangePassword() {
 
           <label
             htmlFor="show-passwords"
-            className="cursor-pointer select-none"
+            className="dashboard-value cursor-pointer select-none text-[13px]"
           >
             Show passwords
           </label>
@@ -146,16 +147,16 @@ export default function ChangePassword() {
 					/>
 
 					<label
-						htmlFor="logout-other-devices"
-						className="cursor-pointer select-none"
-					>
-						Log out of other devices
-					</label>
+            htmlFor="logout-other-devices"
+            className="dashboard-value cursor-pointer select-none text-[13px]"
+          >
+            Log out of other devices
+          </label>
 				</div>
         <button
           type="submit"
           disabled={loading}
-          className="mx-auto block w-4/5 rounded-xl bg-blue-600 p-3 text-[16px] font-bold text-white transition hover:bg-blue-700 sm:w-64 sm:text-lg"
+          className="mx-auto block w-4/5 rounded-xl bg-[#3C6A50] p-3 text-[13px] font-light tracking-[0.06em] text-white transition hover:bg-[#4A7D61] sm:w-64"
         >
           {loading ? "Changing Password..." : "Change Password"}
         </button>

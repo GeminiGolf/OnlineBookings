@@ -202,25 +202,25 @@ export default function ClientNotificationsPage() {
           <div className="mb-6 flex items-center gap-3">
             <Link
               href="/client/dashboard"
-              className="rounded-lg border border-black bg-white px-4 py-2 text-black hover:bg-gray-100"
+              className="rounded-lg border border-black bg-white px-5 py-2.5 text-[13px] font-light tracking-[0.06em] text-black transition hover:bg-gray-100"
             >
               ← Back to Dashboard
             </Link>
 
             <Link
               href="/client/notifications/settings"
-              className="flex h-11 w-11 items-center justify-center rounded-lg border border-black bg-white text-black hover:bg-gray-100"
+              className="flex h-10 w-10 items-center justify-center rounded-lg border border-black bg-white text-black transition hover:bg-gray-100"
               title="Notification Settings"
             >
-              <Settings className="h-5 w-5" />
+              <Settings className="h-5 w-5 stroke-[1.25]" />
             </Link>
           </div>
 
-          <h2 className="mb-4 text-[20px] lg:text-2xl font-bold text-left">
+          <h2 className="mb-4 text-[18px] font-light uppercase tracking-[0.12em] text-black">
             Notifications ({notifications.length})
           </h2>
           <div className="space-y-1">
-            <div className="hidden lg:grid grid-cols-[60px_180px_220px_1fr_220px] gap-4 px-4 font-semibold">
+            <div className="dashboard-label hidden lg:grid grid-cols-[60px_180px_220px_1fr_220px] gap-4 px-4">
               <div></div>
               <div>Type</div>
               <div>Lesson</div>
@@ -236,21 +236,25 @@ export default function ClientNotificationsPage() {
                     <input type="checkbox" onChange={() => markAsRead(notification.id)} />
                   </div>
                   <div
-                    className={
+                    className={`dashboard-value ${
                       notification.type === "admin_message_client"
-                        ? "font-semibold text-red-600"
+                        ? "text-red-600"
                         : ""
-                    }
+                    }`}
                   >
                     {getTypeLabel(notification)}
                   </div>
-                  <div>
+                  <div className="dashboard-value">
                     {notification.type === "admin_message_client"
                       ? ""
                       : notification.original_datetime}
                   </div>
-                  <div className="whitespace-pre-line">{notification.details}</div>
-                  <div>{formatDateTime(notification.created_at)}</div>
+                  <div className="dashboard-value whitespace-pre-line">
+                    {notification.details}
+                  </div>
+                  <div className="dashboard-value">
+                    {formatDateTime(notification.created_at)}
+                  </div>
                 </div>
 
                 {/* Mobile */}
@@ -260,7 +264,7 @@ export default function ClientNotificationsPage() {
 
                     <button onClick={() => toggleNotification(notification.id)} className="flex-1 text-left">
                       <div
-                        className={`font-semibold ${
+                        className={`dashboard-value ${
                           notification.type === "admin_message_client"
                             ? "text-red-600"
                             : ""
@@ -281,17 +285,21 @@ export default function ClientNotificationsPage() {
                   {expandedNotifications.includes(notification.id) && (
                     <div className="mt-4 space-y-4">
                       {notification.type === "admin_message_client" ? (
-                        <p>{notification.message}</p>
+                        <p className="dashboard-value">{notification.message}</p>
                       ) : (
                         <div>
-                          <p className="font-semibold">Notes</p>
-                          <p>{notification.message}</p>
+                          <p className="dashboard-label">Notes</p>
+                          <p className="dashboard-value whitespace-pre-line">
+                            {notification.message}
+                          </p>
                         </div>
                       )}
 
                       <div>
-                        <p className="font-semibold">Created</p>
-                        <p>{formatDateTime(notification.created_at)}</p>
+                        <p className="dashboard-label">Created</p>
+                        <p className="dashboard-value">
+                          {formatDateTime(notification.created_at)}
+                        </p>
                       </div>
                     </div>
                   )}
@@ -327,7 +335,7 @@ export default function ClientNotificationsPage() {
           </div>
 
           <div className="mt-10">
-            <button onClick={() => setShowOlder(!showOlder)} className="text-[20px] lg:text-2xl font-bold text-left">
+            <button onClick={() => setShowOlder(!showOlder)} className="text-[18px] font-light uppercase tracking-[0.12em] text-black">
               Older Notifications {showOlder ? "▲" : "▼"}
             </button>
 
@@ -340,28 +348,32 @@ export default function ClientNotificationsPage() {
                       <div>✓</div>
 
                       <div
-                        className={
+                        className={`dashboard-value ${
                           notification.type === "admin_message_client"
-                            ? "font-semibold text-red-600"
+                            ? "text-red-600"
                             : ""
-                        }
+                        }`}
                       >
                         {getTypeLabel(notification)}
                       </div>
-                      <div>
+                      <div className="dashboard-value">
                         {notification.type === "admin_message_client"
                           ? ""
                           : notification.original_datetime}
                       </div>
-                      <div className="whitespace-pre-line">{notification.details}</div>
-                      <div>{formatDateTime(notification.created_at)}</div>
+                      <div className="dashboard-value whitespace-pre-line">
+                        {notification.details}
+                      </div>
+                      <div className="dashboard-value">
+                        {formatDateTime(notification.created_at)}
+                      </div>
                     </div>
 
                     {/* Mobile */}
                     <div className="lg:hidden rounded-xl bg-white p-4 shadow">
                       <button onClick={() => toggleNotification(notification.id)} className="flex-1 text-left">
                         <div
-                          className={`font-semibold ${
+                          className={`dashboard-value ${
                             notification.type === "admin_message_client"
                               ? "text-red-600"
                               : ""
@@ -383,14 +395,18 @@ export default function ClientNotificationsPage() {
                             <p>{notification.message}</p>
                           ) : (
                             <div>
-                              <p className="font-semibold">Notes</p>
-                              <p>{notification.message}</p>
+                              <p className="dashboard-label">Notes</p>
+                              <p className="dashboard-value whitespace-pre-line">
+                                {notification.message}
+                              </p>
                             </div>
                           )}
 
                           <div>
-                            <p className="font-semibold">Created</p>
-                            <p>{formatDateTime(notification.created_at)}</p>
+                            <p className="dashboard-label">Created</p>
+                            <p className="dashboard-value">
+                              {formatDateTime(notification.created_at)}
+                            </p>
                           </div>
                         </div>
                       )}
