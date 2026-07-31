@@ -235,7 +235,7 @@ export default function ClientIDTransactionForm({ clientId, lessonsRemaining }: 
           setShowModal(true)
           updateTransaction("PPV")
         }}
-        className="rounded-lg bg-blue-600 px-3 py-2 text-sm text-white sm:px-4 sm:text-sm"
+        className="rounded-lg bg-[#5C7896] px-3 py-2 text-sm font-light tracking-[0.06em] text-white transition hover:bg-[#6E89A5] sm:px-4 sm:text-sm"
       >
         Add Transaction
       </button>
@@ -243,14 +243,14 @@ export default function ClientIDTransactionForm({ clientId, lessonsRemaining }: 
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-6">
           <div className="w-full max-w-lg rounded-2xl bg-white p-6 text-black">
-            <h2 className="mb-2 text-2xl font-bold">New Transaction</h2>
+            <h2 className="mb-2 text-[20px] font-light tracking-[0.08em] text-black">New Transaction</h2>
             <div className="space-y-2">
               <div>
-                <label className="mb-1 block text-sm font-medium">Transaction Type</label>
+                <label className="mb-1 block dashboard-label">Transaction Type</label>
                 <select
                   value={transactionType}
                   onChange={(e) => updateTransaction(e.target.value)}
-                  className="w-full rounded border p-2"
+                  className="w-full rounded-xl border border-[#B9B2A8] bg-[#FEFDFC] px-3 py-2 text-[15px] font-light text-black focus:border-[#5C7896] focus:outline-none"
                 >
                   <option>PPV</option>
                   <option>5 Lessons</option>
@@ -261,29 +261,29 @@ export default function ClientIDTransactionForm({ clientId, lessonsRemaining }: 
 
               {isOther && (
                 <div>
-                  <label className="mb-1 block text-sm font-medium">Transaction Name</label>
+                  <label className="mb-1 block dashboard-label">Transaction Name</label>
                   <input
                     value={transactionName}
                     onChange={(e) => setTransactionName(e.target.value)}
                     placeholder="Describe the purchase"
-                    className="w-full rounded border p-2"
+                    className="w-full rounded-xl border border-[#B9B2A8] bg-[#FEFDFC] px-3 py-2 text-[15px] font-light text-black focus:border-[#5C7896] focus:outline-none"
                   />
                 </div>
               )}
 
               <div>
-                <label className="mb-1 block text-sm font-medium">Lessons Adding</label>
+                <label className="mb-1 block dashboard-label">Lessons Adding</label>
                 <input
                   type="number"
                   value={lessonsAdded}
                   disabled={!isOther}
                   onChange={(e) => setLessonsAdded(Number(e.target.value))}
-                  className="w-full rounded border p-2 disabled:bg-gray-100"
+                  className="w-full rounded-xl border border-[#B9B2A8] bg-[#FEFDFC] px-3 py-2 text-[15px] font-light text-black focus:border-[#5C7896] focus:outline-none disabled:bg-gray-100"
                 />
               </div>
 
               <div>
-                <label className="mb-1 block text-sm font-medium">Price</label>
+                <label className="mb-1 block dashboard-label">Price</label>
                 <input
                   type="number"
                   value={
@@ -293,15 +293,15 @@ export default function ClientIDTransactionForm({ clientId, lessonsRemaining }: 
                   }
                   disabled={!isOther}
                   onChange={(e) => setPrice(Number(e.target.value))}
-                  className="w-full rounded border p-2 disabled:bg-gray-100"
+                  className="w-full rounded-xl border border-[#B9B2A8] bg-[#FEFDFC] px-3 py-2 text-[15px] font-light text-black focus:border-[#5C7896] focus:outline-none disabled:bg-gray-100"
                 />
               </div>
               <div>
-                <label className="mb-1 block text-sm font-medium">Payment Method</label>
+                <label className="mb-1 block dashboard-label">Payment Method</label>
                 <select
                   value={paymentMethod}
                   onChange={(e) => setPaymentMethod(e.target.value)}
-                  className="w-full rounded border p-2"
+                  className="w-full rounded-xl border border-[#B9B2A8] bg-[#FEFDFC] px-3 py-2 text-[15px] font-light text-black focus:border-[#5C7896] focus:outline-none"
                 >
                   <option value="">Select payment method</option>
                   <option value="cash">Cash</option>
@@ -314,7 +314,7 @@ export default function ClientIDTransactionForm({ clientId, lessonsRemaining }: 
 
               {showReceiptUpload && (
                 <div>
-                  <label className="mb-1 block text-sm font-medium">
+                  <label className="mb-1 block dashboard-label">
                     Upload Receipt
                   </label>
 
@@ -330,7 +330,7 @@ export default function ClientIDTransactionForm({ clientId, lessonsRemaining }: 
 
                   <label
                     htmlFor="receipt-upload"
-                    className="block w-full cursor-pointer rounded border p-2"
+                    className="block w-full cursor-pointer rounded-xl border border-[#B9B2A8] bg-[#FEFDFC] px-3 py-2 text-[15px] font-light text-black transition hover:bg-[#F7F3EE]"
                   >
                     {receiptFile ? receiptFile.name : "Choose File"}
                   </label>
@@ -338,7 +338,7 @@ export default function ClientIDTransactionForm({ clientId, lessonsRemaining }: 
               )}
 
               <div>
-                <label className="mb-1 block text-sm font-medium">
+                <label className="mb-1 block dashboard-label">
                   Package Expiration Date
                 </label>
 
@@ -350,19 +350,22 @@ export default function ClientIDTransactionForm({ clientId, lessonsRemaining }: 
                       e.target.value
                     )
                   }
-                  className="w-full rounded border p-1"
+                  className="w-77 rounded-xl border border-[#B9B2A8] bg-[#FEFDFC] px-3 py-2 text-[15px] font-light text-black focus:border-[#5C7896] focus:outline-none"
                 />
               </div>
 
               <div className="flex gap-3 pt-2">
-                <button onClick={() => setShowModal(false)} className="rounded border px-4 py-2">
+                <button
+                  onClick={() => setShowModal(false)}
+                  className="rounded-lg bg-[#8F3434] px-4 py-2 font-light tracking-[0.06em] text-white transition hover:bg-[#A34A4A]"
+                >
                   Cancel
                 </button>
 
                 <button
                   onClick={saveTransaction}
                   disabled={saving}
-                  className="rounded bg-blue-600 px-4 py-2 text-white disabled:cursor-not-allowed disabled:opacity-50"
+                  className="rounded-lg bg-[#5C7896] px-4 py-2 font-light tracking-[0.06em] text-white transition hover:bg-[#6E89A5] disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {saving ? "Saving..." : "Save"}
                 </button>

@@ -451,27 +451,30 @@ export default function NotificationsPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-100 p-3 sm:p-10 text-black">
+    <main className="min-h-screen bg-[#F2EEE8] px-4 pt-8 pb-3 sm:p-10 text-black">
       <DashboardContainer>
-        <div className="mb-6 flex items-center gap-3">
+        <div className="mb-8 flex items-center gap-3">
           <Link
             href="/coach/dashboard"
-            className="rounded-lg border border-black bg-white px-4 py-2 text-black hover:bg-gray-100"
+            className="rounded-lg border border-[#8D857A] bg-[#FEFDFC] px-5 py-2 font-light tracking-[0.06em] text-black transition hover:bg-[#F7F3EE]"
           >
             ← Back to Dashboard
           </Link>
 
           <Link
             href="/coach/notifications/settings"
-            className="flex h-11 w-11 items-center justify-center rounded-lg border border-black bg-white text-black hover:bg-gray-100"
+            className="flex h-10 w-10 items-center justify-center rounded-lg border border-[#8D857A] bg-[#FEFDFC] text-black transition hover:bg-[#F7F3EE]"
             title="Notification Settings"
           >
             <Settings className="h-5 w-5" />
           </Link>
         </div>
+
         {/* URGENT */}
         <div className="mb-10">
-          <h2 className="mb-4 text-2xl font-bold text-red-700">Urgent</h2>
+          <h2 className="mb-5 text-[20px] font-light uppercase tracking-[0.08em] text-[#8F3434]">
+            Urgent
+          </h2>
           {urgentNotifications.length === 0 ? (
             <div className="rounded-xl bg-white p-6 shadow">
               <p className="text-black">No urgent notifications.</p>
@@ -555,17 +558,21 @@ export default function NotificationsPage() {
         </div>
         {/* STANDARD */}
         <div>
-          <h2 className="mb-4 text-2xl font-bold text-black">Notifications ({activeNotifications.length})</h2>
-          <div className="hidden lg:grid mb-3 ml-16 grid-cols-[140px_180px_180px_1fr_140px] gap-4 text-sm font-bold text-gray-600">
-            <span>Type</span>
-            <span>Original Date</span>
-            <span>New Date</span>
-            <span>Notes</span>
-            <span>Created</span>
+          <h2 className="mb-5 text-[20px] font-light uppercase tracking-[0.08em] text-black">
+            Notifications ({activeNotifications.length})
+          </h2>
+          <div className="mb-3 hidden lg:grid grid-cols-[140px_180px_180px_1fr_140px] gap-4 rounded-xl border border-[#B9B2A8] bg-[#F3F0EA] px-16 py-3">
+            <span className="dashboard-label">Type</span>
+            <span className="dashboard-label">Original Date</span>
+            <span className="dashboard-label">New Date</span>
+            <span className="dashboard-label">Notes</span>
+            <span className="dashboard-label text-right">Created</span>
           </div>
           {activeNotifications.length === 0 ? (
-            <div className="rounded-xl bg-white p-6 shadow">
-              <p className="text-black">No notifications.</p>
+            <div className="rounded-2xl border border-[#B9B2A8] bg-[#FEFDFC] p-10 text-center shadow-xl">
+              <p className="dashboard-value">
+                No notifications.
+              </p>
             </div>
           ) : (
             <>
@@ -573,80 +580,94 @@ export default function NotificationsPage() {
                 {paginatedActiveNotifications.map((notification) => (
                   <div key={notification.id}>
                     <div
-                      className={`hidden lg:block rounded-xl p-4 shadow ${
-                        notification.is_read ? "bg-gray-200" : "bg-white"
+                      className={`hidden lg:block rounded-2xl border shadow-xl transition ${
+                        notification.is_read
+                          ? "border-[#B9B2A8] bg-[#ECE7DE]"
+                          : "border-[#B9B2A8] bg-[#FEFDFC]"
                       }`}
                     >
-                      <div className="flex items-center justify-between gap-4">
-                        <div className="flex items-center gap-3">
+                      <div className="flex items-center justify-between gap-6 px-5 py-4">
+                        <div className="flex items-center gap-4">
                           <input
                             type="checkbox"
                             checked={notification.is_read}
                             onChange={(e) => toggleNotification(notification.id, e.target.checked)}
-                            className="h-5 w-5"
+                            className="h-5 w-5 accent-[#2F5A43]"
                           />
 
                           {notification.type === "admin_message_coach" ? (
                             <Image
                               src="/images/gemini-logo-black.png"
                               alt="Gemini Golf Academy"
-                              width={32}
-                              height={32}
+                              width={34}
+                              height={34}
                               className="object-contain"
                             />
                           ) : (
                             <button
                               onClick={() => setSelectedClient(notification)}
-                              className="rounded-md px-2 py-1 text-lg transition hover:bg-sky-200 hover:scale-110 cursor-pointer"
+                              className="flex h-10 w-10 items-center justify-center rounded-full transition hover:bg-[#DDEEDB] hover:scale-105"
                             >
                               👤
                             </button>
                           )}
 
-                          <div className="grid grid-cols-[120px_180px_180px_1fr] gap-4 text-sm text-black">
+                          <div className="grid grid-cols-[120px_180px_180px_1fr] items-center gap-4">
                             <span
-                              className={
+                              className={`dashboard-value ${
                                 notification.type === "admin_message_coach"
-                                  ? "font-semibold text-red-600"
+                                  ? "text-[#8F3434]"
                                   : ""
-                              }
+                              }`}
                             >
                               {notification.type_label || "-"}
                             </span>
-                            <span>
+
+                            <span className="dashboard-value">
                               {notification.type === "admin_message_coach"
-                                ? ""
+                                ? "-"
                                 : notification.original_datetime || "-"}
                             </span>
-                            <span>{notification.new_datetime || "-"}</span>
+
+                            <span className="dashboard-value">
+                              {notification.new_datetime || "-"}
+                            </span>
+
                             {notification.type === "missing_receipt" ? (
                               <details>
-                                <summary className="cursor-pointer">{notification.notes || "-"}</summary>
-                                <div className="mt-2 space-y-1 text-xs">
-                                  <div>
+                                <summary className="dashboard-value cursor-pointer hover:text-[#2F5A43]">
+                                  {notification.notes || "-"}
+                                </summary>
+
+                                <div className="mt-3 rounded-xl border border-[#B9B2A8] bg-[#F7F3EE] p-3 space-y-2">
+                                  <div className="dashboard-value">
                                     <strong>Client:</strong>{" "}
                                     <a
                                       href={`/coach/clients/${notification.client_id}`}
-                                      className="text-blue-600 underline"
+                                      className="text-[#2F5A43] underline"
                                     >
                                       {notification.client_name}
                                     </a>
                                   </div>
-                                  <div>
+
+                                  <div className="dashboard-value">
                                     <strong>Purchase:</strong> {notification.notes}
                                   </div>
-                                  <div>
+
+                                  <div className="dashboard-value">
                                     <strong>Date:</strong> {notification.original_datetime}
                                   </div>
                                 </div>
                               </details>
                             ) : (
-                              <span className="truncate">{notification.notes || "-"}</span>
+                              <span className="dashboard-value truncate">
+                                {notification.notes || "-"}
+                              </span>
                             )}
                           </div>
                         </div>
 
-                        <span className="text-sm text-gray-600 whitespace-nowrap">
+                        <span className="dashboard-value whitespace-nowrap text-right">
                           {new Date(notification.created_at).toLocaleDateString("en-GB", {
                             day: "2-digit",
                             month: "2-digit",
@@ -660,113 +681,136 @@ export default function NotificationsPage() {
                       </div>
                     </div>
 
-                    <div className="lg:hidden rounded-xl bg-white p-4 shadow mb-3 text-black">
-                      <div className="flex items-center gap-3">
-                        <input
-                          type="checkbox"
-                          checked={notification.is_read}
-                          onChange={(e) => toggleNotification(notification.id, e.target.checked)}
-                          className="h-5 w-5"
-                        />
+                      <div
+                        className={`lg:hidden mb-4 rounded-2xl border shadow-xl ${
+                          notification.is_read
+                            ? "border-[#B9B2A8] bg-[#ECE7DE]"
+                            : "border-[#B9B2A8] bg-[#FEFDFC]"
+                        }`}
+                      >
+                        <div className="p-5">
+                          <div className="flex items-center gap-3">
+                            <input
+                              type="checkbox"
+                              checked={notification.is_read}
+                              onChange={(e) => toggleNotification(notification.id, e.target.checked)}
+                              className="h-5 w-5 accent-[#2F5A43]"
+                            />
 
-                        {notification.type === "admin_message_coach" ? (
-                          <Image
-                            src="/images/gemini-logo-black.png"
-                            alt="Gemini Golf Academy"
-                            width={28}
-                            height={28}
-                            className="object-contain"
-                          />
-                        ) : (
-                          <button
-                            onClick={() => setSelectedClient(notification)}
-                            className="rounded-md px-2 py-1 text-lg hover:bg-sky-200"
-                          >
-                            👤
-                          </button>
-                        )}
-
-                        <button onClick={() => toggleExpanded(notification.id)} className="flex-1 text-left">
-                          <div
-                            className={`font-semibold ${
-                              notification.type === "admin_message_coach"
-                                ? "text-red-600"
-                                : ""
-                            }`}
-                          >
-                            {notification.type_label || "-"}{" "}
-                            {expandedNotifications.includes(notification.id) ? "▲" : "▼"}
-                          </div>
-
-                          {notification.type !== "admin_message_coach" && (
-                            <div className="text-sm text-gray-600">
-                              {notification.original_datetime || "-"}
-                            </div>
-                          )}
-                        </button>
-                      </div>
-
-                      {expandedNotifications.includes(notification.id) && (
-                        <div className="mt-4 space-y-3 text-sm">
-                          {notification.type !== "admin_message_coach" && (
-                            <div>
-                              <p className="font-semibold">Original Date</p>
-                              <p>{notification.original_datetime || "-"}</p>
-                            </div>
-                          )}
-
-                          {notification.new_datetime && (
-                            <div>
-                              <p className="font-semibold">New Date</p>
-                              <p>{notification.new_datetime}</p>
-                            </div>
-                          )}
-
-                          <div>
-                            {notification.type === "missing_receipt" ? (
-                              <details className="group mt-1">
-                                <div className="mt-2 space-y-1 text-sm">
-                                  <div>
-                                    <strong>Client:</strong>{" "}
-                                    <Link
-                                      href={`/coach/clients/${notification.client_id}`}
-                                      className="text-blue-600 underline"
-                                    >
-                                      {notification.client_name}
-                                    </Link>
-                                  </div>
-
-                                  <div>
-                                    <strong>Purchase:</strong> {notification.notes}
-                                  </div>
-
-                                  <div>
-                                    <strong>Date:</strong> {notification.original_datetime}
-                                  </div>
-                                </div>
-                              </details>
+                            {notification.type === "admin_message_coach" ? (
+                              <Image
+                                src="/images/gemini-logo-black.png"
+                                alt="Gemini Golf Academy"
+                                width={30}
+                                height={30}
+                                className="object-contain"
+                              />
                             ) : (
-                              <p className="whitespace-pre-wrap">{notification.notes || "-"}</p>
+                              <button
+                                onClick={() => setSelectedClient(notification)}
+                                className="flex h-10 w-10 items-center justify-center rounded-full transition hover:bg-[#DDEEDB]"
+                              >
+                                👤
+                              </button>
                             )}
+
+                            <button
+                              onClick={() => toggleExpanded(notification.id)}
+                              className="flex-1 text-left"
+                            >
+                              <div
+                                className={`dashboard-value ${
+                                  notification.type === "admin_message_coach"
+                                    ? "text-[#8F3434]"
+                                    : ""
+                                }`}
+                              >
+                                {notification.type_label || "-"}{" "}
+                                {expandedNotifications.includes(notification.id) ? "▲" : "▼"}
+                              </div>
+
+                              {notification.type !== "admin_message_coach" && (
+                                <div className="dashboard-label mt-1">
+                                  {notification.original_datetime || "-"}
+                                </div>
+                              )}
+                            </button>
                           </div>
 
-                          <div>
-                            <p className="font-semibold">Created</p>
-                            <p>
-                              {new Date(notification.created_at).toLocaleDateString("en-GB", {
-                                day: "2-digit",
-                                month: "2-digit",
-                              })}{" "}
-                              |{" "}
-                              {new Date(notification.created_at).toLocaleTimeString([], {
-                                hour: "2-digit",
-                                minute: "2-digit",
-                              })}
-                            </p>
-                          </div>
+                          {expandedNotifications.includes(notification.id) && (
+                            <div className="mt-5 space-y-4 rounded-xl border border-[#B9B2A8] bg-[#F7F3EE] p-4">
+                              {notification.type !== "admin_message_coach" && (
+                                <div>
+                                  <p className="dashboard-label">Original Date</p>
+                                  <p className="dashboard-value">
+                                    {notification.original_datetime || "-"}
+                                  </p>
+                                </div>
+                              )}
+
+                              {notification.new_datetime && (
+                                <div>
+                                  <p className="dashboard-label">New Date</p>
+                                  <p className="dashboard-value">
+                                    {notification.new_datetime}
+                                  </p>
+                                </div>
+                              )}
+
+                              <div>
+                                <p className="dashboard-label">Notes</p>
+
+                                {notification.type === "missing_receipt" ? (
+                                  <details className="mt-2">
+                                    <summary className="dashboard-value cursor-pointer hover:text-[#2F5A43]">
+                                      {notification.notes || "-"}
+                                    </summary>
+
+                                    <div className="mt-3 rounded-xl border border-[#B9B2A8] bg-[#FEFDFC] p-3 space-y-2">
+                                      <div className="dashboard-value">
+                                        <strong>Client:</strong>{" "}
+                                        <Link
+                                          href={`/coach/clients/${notification.client_id}`}
+                                          className="text-[#2F5A43] underline"
+                                        >
+                                          {notification.client_name}
+                                        </Link>
+                                      </div>
+
+                                      <div className="dashboard-value">
+                                        <strong>Purchase:</strong> {notification.notes}
+                                      </div>
+
+                                      <div className="dashboard-value">
+                                        <strong>Date:</strong> {notification.original_datetime}
+                                      </div>
+                                    </div>
+                                  </details>
+                                ) : (
+                                  <p className="dashboard-value whitespace-pre-wrap">
+                                    {notification.notes || "-"}
+                                  </p>
+                                )}
+                              </div>
+
+                              <div>
+                                <p className="dashboard-label">Created</p>
+                                <p className="dashboard-value">
+                                  {new Date(notification.created_at).toLocaleDateString("en-GB", {
+                                    day: "2-digit",
+                                    month: "2-digit",
+                                  })}
+                                  {" | "}
+                                  {new Date(notification.created_at).toLocaleTimeString([], {
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                  })}
+                                </p>
+                              </div>
+                            </div>
+                          )}
                         </div>
-                      )}
-                    </div>
+                      </div>
                   </div>
                 ))}
               </div>
@@ -798,20 +842,23 @@ export default function NotificationsPage() {
           )}
         </div>
 
-        <div className="mt-10">
-          <button onClick={() => setShowOlder(!showOlder)} className="mb-4 text-2xl font-bold text-black">
+        <div className="mt-12">
+          <button
+            onClick={() => setShowOlder(!showOlder)}
+            className="mb-5 text-[20px] font-light uppercase tracking-[0.08em] text-black transition hover:text-[#3C6A50]"
+          >
             Older Notifications {showOlder ? " ▲" : " ▼"}
           </button>
 
           {showOlder && (
             <>
-              <div className="mb-4">
+              <div className="mb-5">
                 <select
                   value={olderFilter}
                   onChange={(e) => setOlderFilter(e.target.value)}
-                  className="rounded border px-3 py-2 text-black bg-white"
+                  className="rounded-xl border border-[#B9B2A8] bg-[#FEFDFC] px-4 py-2 font-light tracking-[0.04em] text-black shadow-sm focus:border-[#2F5A43] focus:outline-none"
                 >
-                  <option value="all">All</option>
+                  <option value="all">All Notifications</option>
                   <option value="Cancelled">Cancelled</option>
                   <option value="Rescheduled">Rescheduled</option>
                   <option value="Late Booking">Late Booking</option>
@@ -819,13 +866,14 @@ export default function NotificationsPage() {
                   <option value="No Show">No Show</option>
                 </select>
               </div>
-              <div className="hidden lg:grid mb-3 ml-16 grid grid-cols-[140px_180px_180px_1fr_140px_140px] gap-4 text-sm font-bold text-gray-600">
-                <span>Type</span>
-                <span>Original Date</span>
-                <span>New Date</span>
-                <span>Notes</span>
-                <span>Done At</span>
-                <span>Created</span>
+
+              <div className="mb-3 hidden lg:grid grid-cols-[140px_180px_180px_1fr_140px_140px] gap-4 rounded-xl border border-[#B9B2A8] bg-[#F3F0EA] px-16 py-3">
+                <span className="dashboard-label">Type</span>
+                <span className="dashboard-label">Original Date</span>
+                <span className="dashboard-label">New Date</span>
+                <span className="dashboard-label">Notes</span>
+                <span className="dashboard-label">Done At</span>
+                <span className="dashboard-label text-right">Created</span>
               </div>
 
               {olderNotifications.length === 0 ? (
@@ -837,13 +885,19 @@ export default function NotificationsPage() {
                   <div className="overflow-hidden rounded-xl border border-gray-300 bg-white">
                     {paginatedOlderNotifications.map((notification) => (
                       <div key={notification.id}>
-                        <div className="hidden lg:block border-b border-gray-300 bg-white">
+                        <div
+                          className={`hidden lg:block rounded-2xl border shadow-xl mb-0 ${
+                            notification.is_read
+                              ? "border-[#B9B2A8] bg-[#ECE7DE]"
+                              : "border-[#B9B2A8] bg-[#FEFDFC]"
+                          }`}
+                        >
                           <div className="grid grid-cols-[40px_40px_140px_180px_180px_1fr_140px_140px] items-center">
                             <input
                               type="checkbox"
                               checked={notification.is_read}
                               onChange={(e) => toggleNotification(notification.id, e.target.checked)}
-                              className="h-5 w-5"
+                              className="h-5 w-5 accent-[#2F5A43]"
                             />
 
                             {notification.type === "admin_message_coach" ? (
@@ -863,28 +917,34 @@ export default function NotificationsPage() {
                               </button>
                             )}
 
-                            <div className="contents text-sm text-black">
+                            <div className="contents">
                               <span
-                                className={`border-l border-gray-300 px-3 py-3 ${
+                                className={`dashboard-value border-l border-[#B9B2A8] px-3 py-4 ${
                                   notification.type === "admin_message_coach"
-                                    ? "font-semibold text-red-600"
+                                    ? "text-[#8F3434]"
                                     : ""
                                 }`}
                               >
                                 {notification.type_label || "-"}
                               </span>
-                              <span className="border-l border-gray-300 px-3 py-3">
+                              <span className="dashboard-value border-l border-[#B9B2A8] px-3 py-4">
                                 {notification.type === "admin_message_coach"
                                   ? ""
                                   : notification.original_datetime || "-"}
                               </span>
-                              <span className="border-l border-gray-300 px-3 py-3">
+                              <span className="dashboard-value border-l border-[#B9B2A8] px-3 py-4">
                                 {notification.new_datetime || "-"}
                               </span>
-                              <span className="border-l border-gray-300 px-3 py-3 whitespace-pre-wrap">
+                              <span
+                                className={`dashboard-value border-l border-[#B9B2A8] px-3 py-4 whitespace-pre-wrap ${
+                                  notification.type === "admin_message_coach"
+                                    ? "text-[#8F3434]"
+                                    : ""
+                                }`}
+                              >
                                 {notification.notes || "-"}
                               </span>
-                              <span className="border-l border-gray-300 px-3 py-3">
+                              <span className="dashboard-value border-l border-[#B9B2A8] px-3 py-4">
                                 {notification.resolved_at
                                   ? `${new Date(notification.resolved_at).toLocaleDateString("en-GB", {
                                       day: "2-digit",
@@ -895,7 +955,7 @@ export default function NotificationsPage() {
                                     })}`
                                   : "-"}
                               </span>
-                              <span className="border-l border-gray-300 px-3 py-3">
+                              <span className="dashboard-value border-l border-[#B9B2A8] px-3 py-4">
                                 {new Date(notification.created_at).toLocaleDateString("en-GB", {
                                   day: "2-digit",
                                   month: "2-digit",
@@ -910,13 +970,19 @@ export default function NotificationsPage() {
                           </div>
                         </div>
 
-                        <div className="lg:hidden rounded-xl bg-white p-4 shadow mb-3 text-black">
+                        <div
+                          className={`lg:hidden mb-0 rounded-2xl border shadow-xl ${
+                            notification.is_read
+                              ? "border-[#B9B2A8] bg-[#ECE7DE]"
+                              : "border-[#B9B2A8] bg-[#FEFDFC]"
+                          }`}
+                        >
                           <div className="flex items-center gap-3">
                             <input
                               type="checkbox"
                               checked={notification.is_read}
                               onChange={(e) => toggleNotification(notification.id, e.target.checked)}
-                              className="h-5 w-5"
+                              className="h-5 w-5 accent-[#2F5A43]"
                             />
 
                             {notification.type === "admin_message_coach" ? (
@@ -930,7 +996,7 @@ export default function NotificationsPage() {
                             ) : (
                               <button
                                 onClick={() => setSelectedClient(notification)}
-                                className="rounded-md px-2 py-1 text-lg hover:bg-sky-200"
+                                className="flex h-10 w-10 items-center justify-center rounded-full transition hover:bg-[#DDEEDB]"
                               >
                                 👤
                               </button>
@@ -938,9 +1004,9 @@ export default function NotificationsPage() {
 
                             <button onClick={() => toggleExpanded(notification.id)} className="flex-1 text-left">
                               <div
-                                className={`font-semibold ${
+                                className={`dashboard-value ${
                                   notification.type === "admin_message_coach"
-                                    ? "text-red-600"
+                                    ? "text-[#8F3434]"
                                     : ""
                                 }`}
                               >
@@ -949,7 +1015,7 @@ export default function NotificationsPage() {
                               </div>
 
                               {notification.type !== "admin_message_coach" && (
-                                <div className="text-sm text-black">
+                                <div className="dashboard-label mt-1">
                                   {notification.original_datetime || "-"}
                                 </div>
                               )}
@@ -957,32 +1023,46 @@ export default function NotificationsPage() {
                           </div>
 
                           {expandedNotifications.includes(notification.id) && (
-                            <div className="mt-4 space-y-3 text-sm">
+                            <div className="mt-5 space-y-4 rounded-xl border border-[#B9B2A8] bg-[#F7F3EE] p-4">
                               {notification.type !== "admin_message_coach" && (
                                 <div>
-                                  <p className="font-semibold">Original Date</p>
-                                  <p>{notification.original_datetime || "-"}</p>
+                                  <p className="dashboard-label">Original Date</p>
+                                  <p className="dashboard-value">
+                                    {notification.original_datetime || "-"}
+                                  </p>
                                 </div>
                               )}
 
                               {notification.new_datetime && (
                                 <div>
-                                  <p className="font-semibold">New Date</p>
-                                  <p>{notification.new_datetime}</p>
+                                  <p className="dashboard-label">New Date</p>
+                                  <p className="dashboard-value">
+                                    {notification.new_datetime}
+                                  </p>
                                 </div>
                               )}
 
                               {notification.type === "admin_message_coach" ? (
-                                <p className="whitespace-pre-wrap">{notification.notes}</p>
+                                <p className="dashboard-value whitespace-pre-wrap text-[#8F3434]">
+                                  {notification.notes}
+                                </p>
                               ) : (
                                 <>
-                                  <p className="font-semibold">Notes</p>
-                                  <p className="whitespace-pre-wrap">{notification.notes || "-"}</p>
+                                  <p className="dashboard-label">Notes</p>
+                                  <p
+                                    className={`dashboard-value whitespace-pre-wrap ${
+                                      notification.type === "admin_message_coach"
+                                        ? "text-[#8F3434]"
+                                        : ""
+                                    }`}
+                                  >
+                                    {notification.notes || "-"}
+                                  </p>
                                 </>
                               )}
 
                               <div>
-                                <p className="font-semibold">Done At</p>
+                                <p className="dashboard-label">Done At</p>
                                 <p>
                                   {notification.resolved_at
                                     ? `${new Date(notification.resolved_at).toLocaleDateString("en-GB", {
@@ -997,7 +1077,7 @@ export default function NotificationsPage() {
                               </div>
 
                               <div>
-                                <p className="font-semibold">Created</p>
+                                <p className="dashboard-label">Created</p>
                                 <p>
                                   {new Date(notification.created_at).toLocaleDateString("en-GB", {
                                     day: "2-digit",

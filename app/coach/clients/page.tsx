@@ -18,11 +18,11 @@ export default async function CoachClientsPage() {
   }
   const { data: clients } = await supabase.from("clients").select("*").eq("primary_coach_id", coach.id).order("name")
   return (
-    <main className="min-h-screen bg-gray-100 p-3 sm:p-10 text-black">
+    <main className="min-h-screen bg-[#F2EEE8] px-4 pt-8 pb-3 sm:p-10 text-black">
       <DashboardContainer>
                 <Link
                   href="/coach/dashboard"
-                  className="mb-1 inline-block rounded-lg border bg-white px-4 py-2"
+                  className="mb-2 inline-block rounded-lg border border-[#8D857A] bg-[#FEFDFC] px-4 py-2 text-[13px] font-light tracking-[0.06em] text-black transition hover:bg-[#F7F3EE]"
                 >
                   ← Back to Dashboard
                 </Link>

@@ -463,7 +463,7 @@ export default function AddTransactionForm({
           <button
             onClick={saveTransaction}
             disabled={saving}
-            className="rounded bg-blue-600 px-4 py-2 text-white disabled:cursor-not-allowed disabled:opacity-50"
+            className="rounded-lg bg-[#5C7896] px-4 py-2 text-white transition hover:bg-[#6E89A5] disabled:cursor-not-allowed disabled:opacity-50"
           >
             {saving ? "Saving..." : "Save"}
           </button>

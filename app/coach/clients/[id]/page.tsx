@@ -83,20 +83,20 @@ export default async function CoachClientProfilePage({ params }: Props) {
     .order("purchase_date", { ascending: false })
 
   return (
-    <main className="min-h-screen bg-gray-100 p-3 sm:p-10 text-black">
+    <main className="min-h-screen bg-[#F2EEE8] px-4 pt-8 pb-3 sm:p-10 text-black">
       <DashboardContainer>
         <Link
           href="/coach/clients"
-          className="mb-6 inline-block rounded-lg border bg-white px-4 py-2"
+          className="mb-6 inline-block rounded-lg border border-[#8D857A] bg-[#FEFDFC] px-4 py-2 text-[13px] font-light tracking-[0.06em] text-black transition hover:bg-[#F7F3EE]"
         >
           ← Back to Clients
         </Link>
 
-        <div className="rounded-2xl bg-white p-3 sm:p-4 shadow">
+        <div className="rounded-3xl border border-[#B9B2A8] bg-[#FEFDFC] p-4 sm:p-5 shadow-xl">
           <details>
             <summary className="relative flex cursor-pointer items-center justify-center list-none">
               <div className="flex items-center gap-4">
-                <h1 className="text-[18px] font-bold sm:text-[18px]">
+                <h1 className="text-[16px] font-light tracking-[0.04em] text-black">
                   {client.preferred_name
                     ? `(${client.preferred_name}) ${client.first_name} ${client.last_name}`
                     : `${client.first_name} ${client.last_name}`}
@@ -108,30 +108,30 @@ export default async function CoachClientProfilePage({ params }: Props) {
                 />
               </div>
 
-              <span className="absolute right-0 text-gray-500">▼</span>
+              <span className="absolute right-0 text-[#8D857A]">▼</span>
             </summary>
 
             <div className="mt-4">
               <div className="mt-2 grid gap-4 md:grid-cols-2">
                 <div>
-                  <p className="text-sm text-gray-500">Phone</p>
-                  <p className="text-sm sm:text-base">
+                  <p className="dashboard-label">Phone</p>
+                  <p className="dashboard-value">
                     {client.phone || "Not provided"}
                   </p>
                 </div>
 
                 <div>
-                  <p className="text-sm text-gray-500">Email</p>
-                  <p className="text-sm sm:text-base">
+                  <p className="dashboard-label">Email</p>
+                  <p className="dashboard-value">
                     {client.email || "Not provided"}
                   </p>
                 </div>
 
                 <div>
-                  <p className="text-sm text-gray-500">
+                  <p className="dashboard-label">
                     Lessons Remaining
                   </p>
-                  <p className="text-lg font-bold">
+                  <p className="text-[18px] font-light text-black">
                     {client.lessons_remaining}
                   </p>
                 </div>
@@ -151,8 +151,8 @@ export default async function CoachClientProfilePage({ params }: Props) {
             coachId={coach.id}
           />
 
-          <div className="rounded-2xl bg-white p-4 shadow">
-            <h2 className="mb-4 text-[19px] font-bold">
+          <div className="rounded-3xl border border-[#B9B2A8] bg-[#FEFDFC] p-5 shadow-xl">
+            <h2 className="mb-4 text-[18px] font-light tracking-[0.04em] text-black">
               Upcoming Lessons
             </h2>
 
@@ -160,7 +160,7 @@ export default async function CoachClientProfilePage({ params }: Props) {
               {(upcomingLessons || []).map((lesson) => (
                 <div
                   key={lesson.id}
-                  className="rounded-lg border p-3 text-sm sm:text-[15px]"
+                  className="rounded-xl border border-[#B9B2A8] bg-[#FEFDFC] p-3 text-[15px] font-light tracking-[0.02em] text-black"
                 >
                   {new Date(lesson.lesson_date).toLocaleDateString(
                     "en-GB",
@@ -177,7 +177,7 @@ export default async function CoachClientProfilePage({ params }: Props) {
               ))}
 
               {(!upcomingLessons || upcomingLessons.length === 0) && (
-                <p className="text-sm sm:text-base text-gray-500">
+                <p className="dashboard-value text-[#7B746A]">
                   No upcoming lessons.
                 </p>
               )}
@@ -186,16 +186,16 @@ export default async function CoachClientProfilePage({ params }: Props) {
         </div>
 
         <div className="mt-4 grid gap-4 lg:grid-cols-2">
-          <div className="rounded-2xl bg-white p-4 shadow">
-            <h2 className="mb-4 text-[19px] font-bold">
+          <div className="rounded-3xl border border-[#B9B2A8] bg-[#FEFDFC] p-5 shadow-xl">
+            <h2 className="mb-4 text-[18px] font-light tracking-[0.04em] text-black">
               Previous Lessons
             </h2>
 
             <PreviousLessonsTable lessons={previousLessons || []} />
           </div>
 
-          <div className="rounded-2xl bg-white p-4 shadow">
-            <h2 className="mb-4 text-[19px] font-bold">
+          <div className="rounded-3xl border border-[#B9B2A8] bg-[#FEFDFC] p-5 shadow-xl">
+            <h2 className="mb-4 text-[18px] font-light tracking-[0.04em] text-black">
               Lessons Remaining
             </h2>
 

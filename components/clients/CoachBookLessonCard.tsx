@@ -143,11 +143,11 @@ export default function CoachBookLessonCard({
   }
 
   return (
-    <div className="rounded-2xl bg-white p-3 lg:p-8 shadow">
-      <h2 className="mb-3 text-[18px] font-bold text-black">
+    <div className="rounded-3xl border border-[#B9B2A8] bg-[#FEFDFC] p-4 lg:p-8 shadow-xl">
+      <h2 className="mb-4 text-[18px] font-light tracking-[0.04em] text-black">
         Book A Lesson
       </h2>
-      <div className="mx-auto w-fit rounded-xl border px-3 pt-3 pb-0 text-sm overflow-hidden">
+      <div className="mx-auto w-fit overflow-hidden rounded-2xl border border-[#B9B2A8] bg-[#FEFDFC] px-3 pt-3 pb-0">
         <DayPicker
           className="mt-4 -mb-4 scale-90 lg:scale-90 origin-top"
           mode="single"
@@ -167,20 +167,20 @@ export default function CoachBookLessonCard({
             noShowLesson: noShowDates,
           }}
           modifiersClassNames={{
-            completedLesson: "bg-sky-300 text-black rounded-md",
-            upcomingLesson: "bg-gray-300 text-black rounded-md",
-            noShowLesson: "bg-red-300 text-black rounded-md",
+            completedLesson: "bg-[#D6EAF4] text-black rounded-md",
+            upcomingLesson: "bg-[#D6D1C8] text-black rounded-md",
+            noShowLesson: "bg-[#F1D7D7] text-black rounded-md",
           }}
         />
       </div>
 
       <div className="mt-6">
-        <h3 className="mb-3 font-bold text-black">
+        <h3 className="mb-3 text-[15px] font-light uppercase tracking-[0.12em] text-black">
           Available Time Slots
         </h3>
 
         {timeSlots.length === 0 ? (
-          <p className="text-black">
+          <p className="dashboard-value">
             No available slots.
           </p>
         ) : (
@@ -189,10 +189,10 @@ export default function CoachBookLessonCard({
               <button
                 key={time}
                 onClick={() => setSelectedTime(time)}
-                className={`rounded-lg px-3 py-1 text-sm font-medium text-white transition ${
+                className={`rounded-lg px-3 py-2 text-[13px] font-light tracking-[0.06em] text-white transition ${
                   selectedTime === time
-                    ? "bg-green-700"
-                    : "bg-green-600"
+                    ? "bg-[#244634]"
+                    : "bg-[#2F5A43] hover:bg-[#3C6A50]"
                 }`}
               >
                 {time}
@@ -203,17 +203,17 @@ export default function CoachBookLessonCard({
       </div>
 
       {selectedTime && (
-        <div className="mt-6 rounded-xl bg-gray-100 p-4">
-          <p className="font-bold">
+        <div className="mt-6 rounded-2xl border border-[#B9B2A8] bg-[#F3F0EA] p-5">
+          <p className="dashboard-value">
             Date: {selectedDate?.toLocaleDateString()}
           </p>
-          <p className="font-bold">
+          <p className="dashboard-value">
             Time: {selectedTime}
           </p>
           <button
             onClick={confirmBooking}
             disabled={loading}
-            className="mt-4 rounded-lg bg-black px-6 py-3 text-white"
+            className="mt-4 rounded-lg bg-[#486B8A] px-6 py-3 text-[13px] font-light tracking-[0.06em] text-white transition hover:bg-[#3C6A50]"
           >
             {loading
               ? "Booking..."

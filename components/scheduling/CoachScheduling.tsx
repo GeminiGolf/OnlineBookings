@@ -476,12 +476,14 @@ export default function CoachDashboard({
   }
 
   return (
-    <main className="min-h-screen bg-gray-100 p-3 sm:p-10 text-black">
+    <main className="min-h-screen bg-[#ECE8E1] px-4 pt-8 pb-3 sm:p-10 text-black">
       <DashboardContainer>
-        <h1 className="text-2xl font-bold">Schedule</h1>
+        <h1 className="text-[20px] font-light uppercase tracking-[0.12em] text-black">
+          Schedule
+        </h1>
         <div className="mb-1 mt-1">
           {headerContent ?? (
-            <p className="text-gray-600">
+            <p className="mt-1 text-[15px] font-light tracking-[0.02em] text-black">
               Welcome back, {coachName}
             </p>
           )}
@@ -489,19 +491,22 @@ export default function CoachDashboard({
         <div className="mb-3 sm:mb-3 flex flex-wrap items-center gap-3">
           <button
             onClick={previousDay}
-            className="rounded-lg border bg-white px-4 py-1 shadow-sm"
+            className="rounded-lg border border-[#8D857A] bg-[#FEFDFC] px-3 py-2 text-[13px] font-light tracking-[0.06em] text-black transition hover:bg-[#F7F3EE] sm:px-5"
           >
             <span className="hidden sm:inline">← Previous</span>
             <span className="sm:hidden">←</span>
           </button>
 
-          <button onClick={today} className="rounded-lg border bg-white px-4 py-1 shadow-sm">
+          <button
+            onClick={today}
+            className="rounded-lg border border-[#8D857A] bg-[#FEFDFC] px-3 py-2 text-[13px] font-light tracking-[0.06em] text-black transition hover:bg-[#F7F3EE] sm:px-5"
+          >
             Today
           </button>
 
           <button
             onClick={nextDay}
-            className="rounded-lg border bg-white px-4 py-1 shadow-sm"
+            className="rounded-lg border border-[#8D857A] bg-[#FEFDFC] px-3 py-2 text-[13px] font-light tracking-[0.06em] text-black transition hover:bg-[#F7F3EE] sm:px-5"
           >
             <span className="hidden sm:inline">Next →</span>
             <span className="sm:hidden">→</span>
@@ -511,16 +516,19 @@ export default function CoachDashboard({
             type="date"
             value={selectedDate}
             onChange={(e) => goToDate(e.target.value)}
-            className="rounded-lg border bg-white px-4 py-1"
+            className="rounded-lg border border-[#8D857A] bg-[#FEFDFC] px-3 py-2 text-[13px] font-light tracking-[0.06em] text-black sm:px-5"
           />
 
-          <button onClick={closeDay} className="rounded-lg bg-red-600 px-4 py-1 text-white hover:bg-red-700">
+          <button
+            onClick={closeDay}
+            className="rounded-lg bg-[#8F3434] px-3 py-2 text-[13px] font-light tracking-[0.06em] text-white transition hover:bg-[#A34A4A] sm:px-5"
+          >
             Close Day
           </button>
 
           <button
             onClick={() => setShowExtendModal(true)}
-            className="rounded-lg bg-green-600 px-4 py-1 text-white hover:bg-green-700"
+            className="rounded-lg bg-[#2F5A43] px-3 py-2 text-[13px] font-light tracking-[0.06em] text-white transition hover:bg-[#3C6A50] sm:px-5"
           >
             Extend Day
           </button>
@@ -552,10 +560,15 @@ export default function CoachDashboard({
           </div>
         )}
 
-        <div className="overflow-hidden rounded-2xl border bg-white shadow-lg">
-          <div className="grid grid-cols-[80px_1fr] border-b bg-gray-50">
-            <div className="border-r p-4 font-bold">Time</div>
-            <div className="p-4 font-bold">Schedule</div>
+        <div className="overflow-hidden rounded-3xl border border-[#B9B2A8] bg-white shadow-xl">
+          <div className="grid grid-cols-[82px_1fr] border-b border-[#B9B2A8] bg-[#F3F0EA]">
+            <div className="dashboard-label flex items-center border-r border-[#B9B2A8] bg-[#F3F0EA] p-4">
+              Time
+            </div>
+
+            <div className="dashboard-label flex items-center p-4">
+              Schedule
+            </div>
           </div>
 
           {hours.map((hour) => {
@@ -573,46 +586,50 @@ export default function CoachDashboard({
             const breakHour = isBreakHour(hour)
             const overrideClosed = isOverrideClosed(hour)
             const overrideOpen = isOverrideOpen(hour)
-            let bgClass = "bg-gray-300"
+            let bgClass = "bg-[#D6D1C8]"
             if (available && !breakHour) {
-              bgClass = "bg-white"
+              bgClass = "bg-[#FEFDFC]"
             }
             if (overrideOpen) {
-              bgClass = "bg-white"
+              bgClass = "bg-[#FEFDFC]"
             }
             if (overrideClosed) {
-              bgClass = "bg-gray-300"
+              bgClass = "bg-[#D6D1C8]"
             }
             if (overrideClosed) {
-              bgClass = "bg-gray-300"
+              bgClass = "bg-[#D6D1C8]"
             }
             if (booking) {
               if (booking.status === "completed") {
-                bgClass = "bg-sky-200"
+                bgClass = "bg-[#D6EAF4]"
               } else if (booking.status === "no_show") {
-                bgClass = "bg-red-200"
+                bgClass = "bg-[#F1D7D7]"
               } else if (booking.is_new) {
-                bgClass = "bg-purple-200"
+                bgClass = "bg-[#E7DCF3]"
               } else {
-                bgClass = booking.clients?.lessons_remaining === 0 ? "bg-yellow-200" : "bg-green-200"
+                bgClass = booking.clients?.lessons_remaining === 0 ? "bg-yellow-200" : "bg-[#DDEEDB]"
               }
             }
 
             return (
-              <div key={hour} className="grid grid-cols-[80px_1fr] border-b">
-                <div className="flex items-center border-r bg-gray-50 pl-4 pr-3 py-3 font-semibold">{formatHour(hour)}</div>
+              <div key={hour} className="grid grid-cols-[82px_1fr] border-b border-[#B9B2A8]">
+                <div className="flex items-center whitespace-nowrap border-r border-[#B9B2A8] bg-[#FEFDFC] px-3 py-2 text-[14px] font-light text-black">
+                  {formatHour(hour)}
+                </div>
+
                 <button
                   onClick={() => toggleSlot(hour)}
-                  className={`h-14 w-full px-4 text-left transition hover:brightness-95 ${bgClass}`}
+                  className={`min-h-[52px] w-full px-4 py-2 text-left transition hover:brightness-95 ${bgClass}`}
                 >
                   {booking ? (
-                    <div>
-                      <p className="font-bold">
+                    <div className="flex flex-col justify-center gap-0.5 leading-tight">
+                      <p className="text-[16px] font-light tracking-[0.02em] leading-none text-black">
                         {booking.clients?.preferred_name
                           ? `(${booking.clients.preferred_name}) ${booking.clients.first_name} ${booking.clients.last_name}`
                           : `${booking.clients?.first_name} ${booking.clients?.last_name}`}
                       </p>
-                      <p className="text-sm text-gray-700">
+
+                      <p className="text-[13px] font-light tracking-[0.02em] leading-none text-black">
                         {booking.status === "completed"
                           ? "Completed Lesson"
                           : booking.status === "no_show"
@@ -621,15 +638,25 @@ export default function CoachDashboard({
                       </p>
                     </div>
                   ) : overrideClosed ? (
-                    <p className="text-gray-600">Closed (Override)</p>
+                    <p className="text-[14px] font-light tracking-[0.02em] text-black">
+                      Closed (Override)
+                    </p>
                   ) : overrideOpen ? (
-                    <p className="text-gray-500">Available (Override)</p>
+                    <p className="text-[14px] font-light tracking-[0.02em] text-black">
+                      Available (Override)
+                    </p>
                   ) : breakHour ? (
-                    <p className="text-gray-600">Break</p>
+                    <p className="text-[14px] font-light tracking-[0.02em] text-black">
+                      Break
+                    </p>
                   ) : available ? (
-                    <p className="text-gray-500">Available</p>
+                    <p className="text-[14px] font-light tracking-[0.02em] text-black">
+                      Available
+                    </p>
                   ) : (
-                    <p className="text-gray-600">Closed</p>
+                    <p className="text-[14px] font-light tracking-[0.02em] text-black">
+                      Closed
+                    </p>
                   )}
                 </button>
               </div>

@@ -89,7 +89,7 @@ export default function ClientNotesCard({
           </div>
         </div>
       ) : (
-        <p className="text-[18px] font-light uppercase tracking-[0.12em] text-black">
+        <p className="text-[14px] font-light uppercase tracking-[0.12em] text-black">
         {notes || "No notes"}
         </p>
       )}

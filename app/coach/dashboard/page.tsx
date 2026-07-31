@@ -70,14 +70,14 @@ export default function CoachDashboardPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-100 p-4 sm:p-10">
+    <main className="min-h-screen bg-[#F2EEE8] p-4 sm:p-10">
       <div className="mx-auto mt-10 max-w-5xl lg:mt-12">
         <div className="mb-3 text-center sm:mb-8 sm:text-left">
-          <h1 className="whitespace-nowrap text-2xl font-bold text-black sm:text-[26px]">
+          <h1 className="whitespace-nowrap text-[20px] font-light uppercase tracking-[0.12em] text-black">
             Coach Dashboard
           </h1>
 
-          <p className="whitespace-nowrap text-sm text-gray-600 sm:text-[18px]">
+          <p className="mt-2 text-[15px] font-light tracking-[0.02em] text-black">
             Manage your coaching business.
           </p>
         </div>
@@ -85,22 +85,22 @@ export default function CoachDashboardPage() {
         <div className="mt-3 grid gap-4 md:mt-10 md:grid-cols-2">
           <Link
             href="/coach/clients"
-            className="rounded-3xl bg-white p-5 sm:p-8 shadow-lg transition hover:scale-[1.02]"
+            className="rounded-3xl border border-[#B9B2A8] bg-[#FEFDFC] p-5 sm:p-8 shadow-xl transition hover:-translate-y-1 hover:shadow-2xl"
           >
-            <h2 className="text-[20px] font-bold text-black sm:text-[20px]">
+            <h2 className="text-[20px] font-light tracking-[0.06em] text-black">
               My Clients
             </h2>
 
-            <p className="mt-2 text-base text-gray-600 sm:mt-3 sm:text-base">
+            <p className="mt-2 text-[15px] font-light tracking-[0.02em] text-black">
               View and manage assigned clients.
             </p>
           </Link>
 
           <Link
             href="/coach/notifications"
-            className="rounded-3xl bg-white p-5 sm:p-8 shadow-lg transition hover:scale-[1.02]"
+            className="rounded-3xl border border-[#B9B2A8] bg-[#FEFDFC] p-5 sm:p-8 shadow-xl transition hover:-translate-y-1 hover:shadow-2xl"
           >
-            <h2 className="text-[20px] font-bold text-black sm:text-[20px]">
+            <h2 className="text-[20px] font-light tracking-[0.06em] text-black">
               Notifications ({totalNotifications})
 
               {urgentNotifications > 0 && (
@@ -110,72 +110,72 @@ export default function CoachDashboardPage() {
               )}
             </h2>
 
-            <p className="mt-2 text-base text-gray-600 sm:mt-3 sm:text-base">
+            <p className="mt-2 text-[15px] font-light tracking-[0.02em] text-black">
               View unread notifications.
             </p>
           </Link>
 
           <Link
             href="/coach/packages"
-            className="rounded-3xl bg-white p-5 sm:p-8 shadow-lg transition hover:scale-[1.02]"
+            className="rounded-3xl border border-[#B9B2A8] bg-[#FEFDFC] p-5 sm:p-8 shadow-xl transition hover:-translate-y-1 hover:shadow-2xl"
           >
-            <h2 className="text-[20px] font-bold text-black sm:text-[20px]">
+            <h2 className="text-[20px] font-light tracking-[0.06em] text-black">
               Client Packages
             </h2>
 
-            <p className="mt-2 text-base text-gray-600 sm:mt-3 sm:text-base">
+            <p className="mt-2 text-[15px] font-light tracking-[0.02em] text-black">
               View all client packages
             </p>
           </Link>
 
           <Link
             href="/coach/transactions"
-            className="rounded-3xl bg-white p-5 sm:p-8 shadow-lg transition hover:scale-[1.02]"
+            className="rounded-3xl border border-[#B9B2A8] bg-[#FEFDFC] p-5 sm:p-8 shadow-xl transition hover:-translate-y-1 hover:shadow-2xl"
           >
-            <h2 className="text-[20px] font-bold text-black sm:text-[20px]">
+            <h2 className="text-[20px] font-light tracking-[0.06em] text-black">
               Transactions
             </h2>
 
-            <p className="mt-2 text-base text-gray-600 sm:mt-3 sm:text-base">
+            <p className="mt-2 text-[15px] font-light tracking-[0.02em] text-black">
               View transactions
             </p>
           </Link>
 
           <Link
             href="/coach/lessons"
-            className="rounded-3xl bg-white p-5 sm:p-8 shadow-lg transition hover:scale-[1.02]"
+            className="rounded-3xl border border-[#B9B2A8] bg-[#FEFDFC] p-5 sm:p-8 shadow-xl transition hover:-translate-y-1 hover:shadow-2xl"
           >
-            <h2 className="text-[20px] font-bold text-black sm:text-[20px]">
+            <h2 className="text-[20px] font-light tracking-[0.06em] text-black">
               Previous Lessons
             </h2>
 
-            <p className="mt-2 text-base text-gray-600 sm:mt-3 sm:text-base">
+            <p className="mt-2 text-[15px] font-light tracking-[0.02em] text-black">
               View lesson history and past clients.
             </p>
           </Link>
 
           <Link
             href="/coach/mapschedule"
-            className="rounded-3xl bg-white p-5 sm:p-8 shadow-lg transition hover:scale-[1.02]"
+            className="rounded-3xl border border-[#B9B2A8] bg-[#FEFDFC] p-5 sm:p-8 shadow-xl transition hover:-translate-y-1 hover:shadow-2xl"
           >
-            <h2 className="text-[20px] font-bold text-black sm:text-[20px]">
+            <h2 className="text-[20px] font-light tracking-[0.06em] text-black">
               Map Schedule
             </h2>
 
-            <p className="mt-2 text-base text-gray-600 sm:mt-3 sm:base">
+            <p className="mt-2 text-[15px] font-light tracking-[0.02em] text-black">
               Edit your weekly coaching availability.
             </p>
           </Link>
 
           <Link
             href="/coach/profile"
-            className="rounded-3xl bg-white p-5 sm:p-8 shadow-lg transition hover:scale-[1.02]"
+            className="rounded-3xl border border-[#B9B2A8] bg-[#FEFDFC] p-5 sm:p-8 shadow-xl transition hover:-translate-y-1 hover:shadow-2xl"
           >
-            <h2 className="text-[20px] font-bold text-black">
+            <h2 className="text-[20px] font-light tracking-[0.06em] text-black">
               My Profile
             </h2>
 
-            <p className="mt-2 text-base text-gray-600">
+            <p className="mt-2 text-[15px] font-light tracking-[0.02em] text-black">
               View details
             </p>
           </Link>
