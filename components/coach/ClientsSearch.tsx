@@ -52,7 +52,7 @@ export default function ClientsSearch({ clients }: Props) {
   return (
     <div className="relative mt-4">
       <div className="mb-6 flex w-full items-center">
-        <h1 className="text-[20px] font-light uppercase tracking-[0.12em] text-black">
+        <h1 className="text-[22px] font-light uppercase tracking-[0.12em] text-[#2F5A43]">
           My Clients
         </h1>
 
@@ -72,22 +72,22 @@ export default function ClientsSearch({ clients }: Props) {
           setSearch(e.target.value)
           setPage(1)
         }}
-        className="w-full rounded-xl border border-[#8D857A] bg-[#FEFDFC] px-4 py-3 text-[15px] font-light tracking-[0.02em] text-black placeholder:text-[#7B746A]"
+        className="w-full rounded-xl border border-[#3A5D49] bg-white px-4 py-3 text-[15px] font-light tracking-[0.02em] text-[#1F3327] placeholder:text-[#6D7F72] shadow-sm focus:border-[#2F5A43] focus:outline-none"
       />
 
       <div className="space-y-3 md:hidden mt-4">
         {paginatedClients.map((client) => (
           <details
             key={client.id}
-            className="overflow-hidden rounded-2xl border border-[#B9B2A8] bg-[#FEFDFC]"
+            className="overflow-hidden rounded-2xl border border-[#3A5D49] bg-white"
           >
-            <summary className="cursor-pointer list-none p-3 text-[14px] font-light tracking-[0.06em] text-black">
+            <summary className="cursor-pointer list-none p-3 text-[14px] font-light tracking-[0.06em] text-[#1F3327]">
               {client.preferred_name
                 ? `(${client.preferred_name}) ${client.last_name}`
                 : `${client.first_name} ${client.last_name}`}
             </summary>
 
-            <div className="border-t border-[#B9B2A8] p-3 text-[14px] font-light tracking-[0.05em] text-black">
+            <div className="border-t border-[#3A5D49] p-3 text-[14px] font-light tracking-[0.05em] text-[#1F3327]">
               <p>
                 <span className="font-medium">Phone:</span>{" "}
                 {client.phone || "-"}
@@ -118,10 +118,10 @@ export default function ClientsSearch({ clients }: Props) {
         )}
       </div>
 
-      <div className="mt-6 hidden overflow-x-auto rounded-3xl border border-[#B9B2A8] bg-[#FEFDFC] shadow-xl md:block">
+      <div className="mt-6 hidden overflow-x-auto rounded-3xl border border-[#3A5D49] bg-white shadow-md md:block">
         <table className="w-full">
           <thead>
-            <tr className="border-b border-[#B9B2A8] bg-[#F3F0EA]">
+            <tr className="border-b border-[#3A5D49] bg-white">
               <th className="dashboard-label p-4 text-left">Name</th>
               <th className="dashboard-label p-4 text-left">Phone</th>
               <th className="dashboard-label p-4 text-left">Email</th>
@@ -131,8 +131,8 @@ export default function ClientsSearch({ clients }: Props) {
 
           <tbody>
             {paginatedClients.map((client) => (
-              <tr key={client.id} className="border-b border-[#B9B2A8] hover:bg-[#F7F3EE]">
-                <td className="p-4 text-[14px] font-light tracking-[0.04em] text-black">
+              <tr key={client.id} className="border-b border-[#3A5D49] transition hover:bg-[#F6FAF6]">
+                <td className="dashboard-value p-4 text-[#1F3327]">
                   <Link
                     href={`/coach/clients/${client.id}`}
                     className="block w-full"
@@ -142,9 +142,9 @@ export default function ClientsSearch({ clients }: Props) {
                       : `${client.first_name} ${client.last_name}`}
                   </Link>
                 </td>
-                <td className="dashboard-value p-4">{client.phone || "-"}</td>
-                <td className="dashboard-value p-4">{client.email || "-"}</td>
-                <td className="dashboard-value p-4">{client.lessons_remaining}</td>
+                <td className="dashboard-value p-4 text-[#1F3327]">{client.phone || "-"}</td>
+                <td className="dashboard-value p-4 text-[#1F3327]">{client.email || "-"}</td>
+                <td className="dashboard-value p-4 text-[#1F3327]">{client.lessons_remaining}</td>
               </tr>
             ))}
 
@@ -163,19 +163,19 @@ export default function ClientsSearch({ clients }: Props) {
         <button
           onClick={() => setPage((p) => Math.max(1, p - 1))}
           disabled={page === 1}
-          className="rounded-lg border border-[#8D857A] bg-[#FEFDFC] px-4 py-2 text-[13px] font-light tracking-[0.06em] text-black transition hover:bg-[#F7F3EE] disabled:opacity-50"
+          className="rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[13px] font-light tracking-[0.04em] text-[#1F3327] shadow-sm transition hover:bg-[#F6FAF6] disabled:opacity-50"
         >
           Previous
         </button>
 
-        <span>
+        <span className="dashboard-value">
           Page {page} of {totalPages}
         </span>
 
         <button
           onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
           disabled={page === totalPages}
-          className="rounded-lg border border-[#8D857A] bg-[#FEFDFC] px-4 py-2 text-[13px] font-light tracking-[0.06em] text-black transition hover:bg-[#F7F3EE] disabled:opacity-50"
+          className="rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[13px] font-light tracking-[0.04em] text-[#1F3327] shadow-sm transition hover:bg-[#F6FAF6] disabled:opacity-50"
         >
           Next
         </button>

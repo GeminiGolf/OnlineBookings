@@ -38,15 +38,15 @@ body {
 }
 
 .dashboard-heading {
-  @apply text-[18px] font-light uppercase tracking-[0.12em] text-black;
+  @apply text-[18px] font-light uppercase tracking-[0.12em] text-[#2F5A43];
 }
 
 .dashboard-label {
-  @apply text-[13px] font-light uppercase tracking-[0.12em] text-black;
+  @apply text-[13px] font-light uppercase tracking-[0.12em] text-[#2F5A43];
 }
 
 .dashboard-value {
-  @apply text-[15px] font-light text-black;
+  @apply text-[15px] font-light text-[#1F3327];
 }
 
 .rdp-caption_label {

@@ -51,7 +51,9 @@ export default async function CoachClientProfilePage({ params }: Props) {
   if (!client) {
     return (
       <main className="min-h-screen bg-gray-100 p-3 sm:p-10 text-black">
-        <h1 className="text-2xl font-bold">Client Not Found</h1>
+        <h1 className="text-[22px] font-light uppercase tracking-[0.12em] text-[#2F5A43]">
+          Client Not Found
+        </h1>
       </main>
     )
   }
@@ -87,16 +89,16 @@ export default async function CoachClientProfilePage({ params }: Props) {
       <DashboardContainer>
         <Link
           href="/coach/clients"
-          className="mb-6 inline-block rounded-lg border border-[#8D857A] bg-[#FEFDFC] px-4 py-2 text-[13px] font-light tracking-[0.06em] text-black transition hover:bg-[#F7F3EE]"
+          className="mb-3 sm:mb-6 inline-block rounded-xl border border-[#3A5D49] bg-white px-5 py-2 text-[13px] font-medium tracking-[0.04em] text-[#1F3327] shadow-sm transition hover:bg-[#F6FAF6]"
         >
           ← Back to Clients
         </Link>
 
-        <div className="rounded-3xl border border-[#B9B2A8] bg-[#FEFDFC] p-4 sm:p-5 shadow-xl">
+        <div className="rounded-3xl border border-[#3A5D49] bg-white p-4 sm:p-5 shadow-md">
           <details>
             <summary className="relative flex cursor-pointer items-center justify-center list-none">
               <div className="flex items-center gap-4">
-                <h1 className="text-[16px] font-light tracking-[0.04em] text-black">
+                <h1 className="text-[20px] font-light normal-case tracking-[0.02em] text-[#2F5A43]">
                   {client.preferred_name
                     ? `(${client.preferred_name}) ${client.first_name} ${client.last_name}`
                     : `${client.first_name} ${client.last_name}`}
@@ -131,7 +133,7 @@ export default async function CoachClientProfilePage({ params }: Props) {
                   <p className="dashboard-label">
                     Lessons Remaining
                   </p>
-                  <p className="text-[18px] font-light text-black">
+                  <p className="text-[18px] font-light text-[#1F3327]">
                     {client.lessons_remaining}
                   </p>
                 </div>
@@ -145,22 +147,22 @@ export default async function CoachClientProfilePage({ params }: Props) {
           </details>
         </div>
 
-        <div className="mt-8 grid gap-4 lg:grid-cols-2">
+        <div className="mt-4 grid gap-2 lg:gap-4 lg:grid-cols-2">
           <CoachBookLessonCard
             clientId={client.id}
             coachId={coach.id}
           />
 
-          <div className="rounded-3xl border border-[#B9B2A8] bg-[#FEFDFC] p-5 shadow-xl">
-            <h2 className="mb-4 text-[18px] font-light tracking-[0.04em] text-black">
+          <div className="rounded-3xl border border-[#3A5D49] bg-white p-5 shadow-md">
+            <h2 className="dashboard-heading mb-4">
               Upcoming Lessons
             </h2>
 
-            <div className="space-y-2">
+            <div className="space-y-3">
               {(upcomingLessons || []).map((lesson) => (
                 <div
                   key={lesson.id}
-                  className="rounded-xl border border-[#B9B2A8] bg-[#FEFDFC] p-3 text-[15px] font-light tracking-[0.02em] text-black"
+                  className="dashboard-value rounded-xl border border-[#3A5D49] bg-white p-3 transition hover:bg-[#F6FAF6]"
                 >
                   {new Date(lesson.lesson_date).toLocaleDateString(
                     "en-GB",
@@ -177,7 +179,7 @@ export default async function CoachClientProfilePage({ params }: Props) {
               ))}
 
               {(!upcomingLessons || upcomingLessons.length === 0) && (
-                <p className="dashboard-value text-[#7B746A]">
+                <p className="dashboard-value text-[#6D7F72]">
                   No upcoming lessons.
                 </p>
               )}
@@ -185,17 +187,17 @@ export default async function CoachClientProfilePage({ params }: Props) {
           </div>
         </div>
 
-        <div className="mt-4 grid gap-4 lg:grid-cols-2">
-          <div className="rounded-3xl border border-[#B9B2A8] bg-[#FEFDFC] p-5 shadow-xl">
-            <h2 className="mb-4 text-[18px] font-light tracking-[0.04em] text-black">
+        <div className="mt-2 grid gap-2 lg:gap-4 lg:grid-cols-2">
+          <div className="rounded-3xl border border-[#3A5D49] bg-white p-5 shadow-md">
+            <h2 className="dashboard-heading mb-4">
               Previous Lessons
             </h2>
 
             <PreviousLessonsTable lessons={previousLessons || []} />
           </div>
 
-          <div className="rounded-3xl border border-[#B9B2A8] bg-[#FEFDFC] p-5 shadow-xl">
-            <h2 className="mb-4 text-[18px] font-light tracking-[0.04em] text-black">
+          <div className="rounded-3xl border border-[#3A5D49] bg-white p-5 shadow-md">
+            <h2 className="dashboard-heading mb-4">
               Lessons Remaining
             </h2>
 

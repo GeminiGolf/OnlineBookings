@@ -22,7 +22,7 @@ export default async function CoachClientsPage() {
       <DashboardContainer>
                 <Link
                   href="/coach/dashboard"
-                  className="mb-2 inline-block rounded-lg border border-[#8D857A] bg-[#FEFDFC] px-4 py-2 text-[13px] font-light tracking-[0.06em] text-black transition hover:bg-[#F7F3EE]"
+                  className="mb-3 sm:mb-6 inline-block rounded-xl border border-[#3A5D49] bg-white px-5 py-2 text-[13px] font-light tracking-[0.04em] text-[#1F3327] shadow-sm transition hover:bg-[#F6FAF6]"
                 >
                   ← Back to Dashboard
                 </Link>

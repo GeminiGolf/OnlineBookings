@@ -143,11 +143,12 @@ export default function CoachBookLessonCard({
   }
 
   return (
-    <div className="rounded-3xl border border-[#B9B2A8] bg-[#FEFDFC] p-4 lg:p-8 shadow-xl">
-      <h2 className="mb-4 text-[18px] font-light tracking-[0.04em] text-black">
+    <div className="rounded-3xl border border-[#3A5D49] bg-white p-4 lg:p-8 shadow-md">
+      <h2 className="dashboard-heading mb-4">
         Book A Lesson
       </h2>
-      <div className="mx-auto w-fit overflow-hidden rounded-2xl border border-[#B9B2A8] bg-[#FEFDFC] px-3 pt-3 pb-0">
+
+      <div className="mx-auto w-fit overflow-hidden rounded-2xl border border-[#3A5D49] bg-white px-3 pt-3 pb-0">
         <DayPicker
           className="mt-4 -mb-4 scale-90 lg:scale-90 origin-top"
           mode="single"
@@ -175,7 +176,7 @@ export default function CoachBookLessonCard({
       </div>
 
       <div className="mt-6">
-        <h3 className="mb-3 text-[15px] font-light uppercase tracking-[0.12em] text-black">
+        <h3 className="dashboard-label mb-3 text-[15px]">
           Available Time Slots
         </h3>
 
@@ -203,7 +204,7 @@ export default function CoachBookLessonCard({
       </div>
 
       {selectedTime && (
-        <div className="mt-6 rounded-2xl border border-[#B9B2A8] bg-[#F3F0EA] p-5">
+        <div className="mt-6 rounded-2xl border border-[#3A5D49] bg-[#F8FBF8] p-5">
           <p className="dashboard-value">
             Date: {selectedDate?.toLocaleDateString()}
           </p>
@@ -213,7 +214,7 @@ export default function CoachBookLessonCard({
           <button
             onClick={confirmBooking}
             disabled={loading}
-            className="mt-4 rounded-lg bg-[#486B8A] px-6 py-3 text-[13px] font-light tracking-[0.06em] text-white transition hover:bg-[#3C6A50]"
+            className="mt-4 rounded-xl bg-[#2F5A43] px-6 py-3 text-[13px] font-medium tracking-[0.04em] text-white shadow-sm transition hover:bg-[#244634]"
           >
             {loading
               ? "Booking..."
