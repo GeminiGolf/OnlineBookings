@@ -97,7 +97,7 @@ export default function ResetPasswordPage() {
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
               autoComplete="new-password"
-              className="w-full rounded-xl border border-[#3A5D49] bg-[#FCFAF6] px-5 py-2.5 text-[15px] font-light text-[#1F3327] placeholder:text-[#6D7F72] focus:border-[#2F5A43] focus:outline-none"
+              className="w-full rounded-xl border border-[#3A5D49] bg-[#FCFAF6] px-5 py-3 text-[14px] font-light tracking-[0.08em] text-[#2F5A43] placeholder:text-[#6D7F72] placeholder:tracking-[0.08em] focus:border-[#2F5A43] focus:outline-none"
             />
           </div>
 
@@ -111,7 +111,7 @@ export default function ResetPasswordPage() {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               autoComplete="new-password"
-              className="w-full rounded-xl border border-[#3A5D49] bg-[#FCFAF6] px-5 py-2.5 text-[15px] font-light text-[#1F3327] placeholder:text-[#6D7F72] focus:border-[#2F5A43] focus:outline-none"
+              className="w-full rounded-xl border border-[#3A5D49] bg-[#FCFAF6] px-5 py-3 text-[14px] font-light tracking-[0.08em] text-[#2F5A43] placeholder:text-[#6D7F72] placeholder:tracking-[0.08em] focus:border-[#2F5A43] focus:outline-none"
             />
           </div>
 

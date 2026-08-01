@@ -93,7 +93,7 @@ export default function ChangePassword() {
             value={currentPassword}
             onChange={(e) => setCurrentPassword(e.target.value)}
             autoComplete="current-password"
-            className="w-full rounded-xl border border-[#55725F] bg-white px-5 py-2.5 text-[15px] font-light text-[#1F3327] placeholder:text-[#7B867D] focus:border-[#2F5A43] focus:outline-none"
+            className="w-full rounded-xl border border-[#55725F] bg-white px-5 py-2.5 text-[14px] font-light tracking-[0.08em] text-[#2F5A43] placeholder:text-[#7B867D] placeholder:tracking-[0.08em] focus:border-[#2F5A43] focus:outline-none"
           />
         </div>
 
@@ -107,7 +107,7 @@ export default function ChangePassword() {
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
             autoComplete="new-password"
-            className="w-full rounded-xl border border-[#55725F] bg-white px-5 py-2.5 text-[15px] font-light text-[#1F3327] placeholder:text-[#7B867D] focus:border-[#2F5A43] focus:outline-none"
+            className="w-full rounded-xl border border-[#55725F] bg-white px-5 py-2.5 text-[14px] font-light tracking-[0.08em] text-[#2F5A43] placeholder:text-[#7B867D] placeholder:tracking-[0.08em] focus:border-[#2F5A43] focus:outline-none"
           />
         </div>
 
@@ -121,7 +121,7 @@ export default function ChangePassword() {
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             autoComplete="new-password"
-            className="w-full rounded-xl border border-[#55725F] bg-white px-5 py-2.5 text-[15px] font-light text-[#1F3327] placeholder:text-[#7B867D] focus:border-[#2F5A43] focus:outline-none"
+            className="w-full rounded-xl border border-[#55725F] bg-white px-5 py-2.5 text-[14px] font-light tracking-[0.08em] text-[#2F5A43] placeholder:text-[#7B867D] placeholder:tracking-[0.08em] focus:border-[#2F5A43] focus:outline-none"
           />
         </div>
 

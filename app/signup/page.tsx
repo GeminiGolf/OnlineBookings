@@ -122,7 +122,7 @@ export default function SignupPage() {
                 e.target.value ? Number(e.target.value) : null
               )
             }
-            className="w-full rounded-xl border border-[#3A5D49] bg-[#FCFAF6] px-5 py-2.5 text-[15px] font-light text-[#1F3327] placeholder:text-[#6D7F72] focus:border-[#2F5A43] focus:outline-none"
+            className="w-full rounded-xl border border-[#3A5D49] bg-[#FCFAF6] px-5 py-2.5 text-[14px] font-light tracking-[0.08em] text-[#2F5A43] placeholder:text-[#6D7F72] focus:border-[#2F5A43] focus:outline-none"
           >
             <option value="">Choose Coach *</option>
 
@@ -138,7 +138,7 @@ export default function SignupPage() {
             placeholder="Preferred Name (Optional)"
             value={preferredName}
             onChange={(e) => setPreferredName(e.target.value)}
-            className="w-full rounded-xl border border-[#3A5D49] bg-[#FCFAF6] px-5 py-2.5 text-[15px] font-light text-[#1F3327] placeholder:text-[#6D7F72] focus:border-[#2F5A43] focus:outline-none"
+            className="w-full rounded-xl border border-[#3A5D49] bg-[#FCFAF6] px-5 py-2.5 text-[14px] font-light tracking-[0.08em] text-[#2F5A43] placeholder:text-[#6D7F72] focus:border-[#2F5A43] focus:outline-none"
           />
 
           <input
@@ -146,7 +146,7 @@ export default function SignupPage() {
             placeholder="Given Name *"
             value={givenName}
             onChange={(e) => setGivenName(e.target.value)}
-            className="w-full rounded-xl border border-[#3A5D49] bg-[#FCFAF6] px-5 py-2.5 text-[15px] font-light text-[#1F3327] placeholder:text-[#6D7F72] focus:border-[#2F5A43] focus:outline-none"
+            className="w-full rounded-xl border border-[#3A5D49] bg-[#FCFAF6] px-5 py-2.5 text-[14px] font-light tracking-[0.08em] text-[#2F5A43] placeholder:text-[#6D7F72] focus:border-[#2F5A43] focus:outline-none"
           />
 
           <input
@@ -154,7 +154,7 @@ export default function SignupPage() {
             placeholder="Family Name *"
             value={familyName}
             onChange={(e) => setFamilyName(e.target.value)}
-            className="w-full rounded-xl border border-[#3A5D49] bg-[#FCFAF6] px-5 py-2.5 text-[15px] font-light text-[#1F3327] placeholder:text-[#6D7F72] focus:border-[#2F5A43] focus:outline-none"
+            className="w-full rounded-xl border border-[#3A5D49] bg-[#FCFAF6] px-5 py-2.5 text-[14px] font-light tracking-[0.08em] text-[#2F5A43] placeholder:text-[#6D7F72] focus:border-[#2F5A43] focus:outline-none"
           />
 
           <input
@@ -162,7 +162,7 @@ export default function SignupPage() {
             placeholder="Phone Number *"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
-            className="w-full rounded-xl border border-[#3A5D49] bg-[#FCFAF6] px-5 py-2.5 text-[15px] font-light text-[#1F3327] placeholder:text-[#6D7F72] focus:border-[#2F5A43] focus:outline-none"
+            className="w-full rounded-xl border border-[#3A5D49] bg-[#FCFAF6] px-5 py-2.5 text-[14px] font-light tracking-[0.08em] text-[#2F5A43] placeholder:text-[#6D7F72] focus:border-[#2F5A43] focus:outline-none"
           />
 
           <input
@@ -170,7 +170,7 @@ export default function SignupPage() {
             placeholder="Email *"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full rounded-xl border border-[#3A5D49] bg-[#FCFAF6] px-5 py-2.5 text-[15px] font-light text-[#1F3327] placeholder:text-[#6D7F72] focus:border-[#2F5A43] focus:outline-none"
+            className="w-full rounded-xl border border-[#3A5D49] bg-[#FCFAF6] px-5 py-2.5 text-[14px] font-light tracking-[0.08em] text-[#2F5A43] placeholder:text-[#6D7F72] focus:border-[#2F5A43] focus:outline-none"
           />
 
           <input
@@ -178,7 +178,7 @@ export default function SignupPage() {
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full rounded-xl border border-[#3A5D49] bg-[#FCFAF6] px-5 py-2.5 text-[15px] font-light text-[#1F3327] placeholder:text-[#6D7F72] focus:border-[#2F5A43] focus:outline-none"
+            className="w-full rounded-xl border border-[#3A5D49] bg-[#FCFAF6] px-5 py-2.5 text-[14px] font-light tracking-[0.08em] text-[#2F5A43] placeholder:text-[#6D7F72] focus:border-[#2F5A43] focus:outline-none"
           />
 
           <input
@@ -186,7 +186,7 @@ export default function SignupPage() {
             placeholder="Confirm Password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
-            className="w-full rounded-xl border border-[#3A5D49] bg-[#FCFAF6] px-5 py-2.5 text-[15px] font-light text-[#1F3327] placeholder:text-[#6D7F72] focus:border-[#2F5A43] focus:outline-none"
+            className="w-full rounded-xl border border-[#3A5D49] bg-[#FCFAF6] px-5 py-2.5 text-[14px] font-light tracking-[0.08em] text-[#2F5A43] placeholder:text-[#6D7F72] focus:border-[#2F5A43] focus:outline-none"
           />
 
           <label className="flex items-center gap-3 text-[13px] font-light uppercase tracking-[0.08em] text-[#2F5A43]">

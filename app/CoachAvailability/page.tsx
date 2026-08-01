@@ -81,13 +81,13 @@ export default function CoachAvailabilityPage() {
 	}, [selectedCoach, selectedDate])
 
   return (
-    <main className="min-h-screen bg-gray-100 p-3 sm:p-10 text-black">
+    <main className="min-h-screen bg-[#F2EEE8] p-3 sm:p-10 text-black">
       <DashboardContainer>
         <h1 className="dashboard-heading mb-6 text-center lg:text-left">
           Coach Availability
         </h1>
 
-        <div className="rounded-2xl bg-white p-4 lg:p-8 shadow-lg">
+        <div className="rounded-3xl border border-[#3A5D49] bg-white p-4 lg:p-8 shadow-md">
           <div className="grid gap-6 lg:gap-10 md:grid-cols-2">
 
             {/* Coach */}
@@ -129,7 +129,7 @@ export default function CoachAvailabilityPage() {
               />
 
               {selectedCoachData && (
-                <div className="mt-4 rounded-xl border bg-white p-4">
+                <div className="mt-4 rounded-2xl border border-[#3A5D49] bg-[#FBF8F3] p-5">
 
                   {selectedCoachData.photo_url && (
                     <img
@@ -142,7 +142,7 @@ export default function CoachAvailabilityPage() {
                   
 
                   {selectedCoachData.specializations && (
-                    <div className="mt-5 border-t pt-4">
+                    <div className="mt-5 border-t border-[#3A5D49] pt-4">
                       
                       <p className="dashboard-label mb-2">
                         Specializations
@@ -153,9 +153,11 @@ export default function CoachAvailabilityPage() {
                           .split("\n")
                           .filter(Boolean)
                           .map((item) => (
-                            <li key={item} className="flex items-start gap-2">
-                              <span className="mt-[7px] h-1.5 w-1.5 rounded-full bg-[#21402E]" />
-                              <span className="text-[15px] font-light tracking-[0.02em] text-black">
+                            <li key={item} className="flex items-start gap-3">
+                              <span className="mt-[1px] text-[18px] font-light leading-none text-[#2F5A43]">
+                                ›
+                              </span>
+                              <span className="dashboard-value text-[#2F5A43]">
                                 {item}
                               </span>
                             </li>
@@ -174,10 +176,21 @@ export default function CoachAvailabilityPage() {
                 Select Date
               </label>
 
-              <div className="rounded-xl border pt-4 lg:pt-10 pb-4 px-5 h-fit flex flex-col items-center">
+              <div className="rounded-2xl border border-[#3A5D49] bg-[#FBF8F3] pt-4 lg:pt-10 pb-4 px-5 h-fit flex flex-col items-center">
 
                 <DayPicker
-                  className="scale-90 lg:scale-90 origin-top -mb-6 lg:mb-0"
+                  className="coach-calendar scale-90 lg:scale-90 origin-top -mb-6 lg:mb-0"
+                  styles={{
+                    weekday: {
+                      color: "#2F5A43",
+                    },
+                    day: {
+                      color: "#2F5A43",
+                    },
+                    chevron: {
+                      fill: "#2F5A43",
+                    },
+                  }}
                   mode="single"
                   selected={selectedDate}
                   onSelect={setSelectedDate}
@@ -190,7 +203,7 @@ export default function CoachAvailabilityPage() {
 
                 <div
                   ref={slotsRef}
-                  className="mt-2 lg:mt-6 border-t pt-2 lg:pt-4 min-h-[60px] lg:min-h-[80px] w-full flex flex-col items-center"
+                  className="mt-2 lg:mt-6 border-t border-[#3A5D49] pt-2 lg:pt-4 min-h-[60px] lg:min-h-[80px] w-full flex flex-col items-center"
                 >
 
                   <h3 className="dashboard-label mb-3 text-center">
@@ -198,16 +211,16 @@ export default function CoachAvailabilityPage() {
                   </h3>
 
 									{timeSlots.length === 0 ? (
-										<p className="text-sm text-gray-500">
-											Select a coach and date.
-										</p>
+										<p className="text-[15px] font-light tracking-[0.02em] text-[#2F5A43]">
+                      Select a coach and date.
+                    </p>
 									) : (
 										<div className="mx-auto max-w-[340px]">
 											<div className="flex flex-wrap justify-center gap-2">
 												{timeSlots.map((time) => (
 													<div
 														key={time}
-														className="rounded-xl bg-emerald-900 px-4 py-2 text-[12px] font-light uppercase tracking-[0.18em] text-white transition hover:bg-emerald-800"
+														className="rounded-xl border border-[#3A5D49] bg-[#2F5A43] px-4 py-2 text-[12px] font-light uppercase tracking-[0.18em] text-white shadow-sm transition hover:bg-[#244634]"
 													>
 														{time}
 													</div>
@@ -217,14 +230,14 @@ export default function CoachAvailabilityPage() {
 											<p className="mt-5 text-center text-sm text-gray-600">
 												<Link
 													href="/login"
-													className="text-[13px] font-semibold tracking-[0.02em] text-blue-700 transition hover:underline"
+													className="text-[13px] font-semibold tracking-[0.02em] text-[#5874A6] transition hover:text-[#45628F] hover:underline"
 												>
 													Log in
 												</Link>{" "}
 												/{" "}
 												<Link
 													href="/signup"
-													className="text-[13px] font-semibold tracking-[0.02em] text-blue-700 transition hover:underline"
+													className="text-[13px] font-semibold tracking-[0.02em] text-[#5874A6] transition hover:text-[#45628F] hover:underline"
 												>
 													Sign up
 												</Link>{" "}

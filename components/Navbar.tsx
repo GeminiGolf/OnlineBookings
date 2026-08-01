@@ -389,13 +389,13 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="absolute left-0 top-0 z-50 flex w-full flex-wrap items-center justify-between bg-black/40 backdrop-blur-md px-6 py-3 text-white lg:px-10 lg:py-3">
+    <nav className="absolute left-0 top-0 z-50 flex w-full flex-wrap items-center justify-between border-b border-[#D8CCB7]/10 bg-[#102016]/80 px-6 py-3 text-white backdrop-blur-2xl lg:px-10 lg:py-2.5">
       <Link href="/" className="flex items-center">
         <Image
-          src="/images/logo-warm.png"
+          src="/images/navbar-logo.png"
           alt="Gemini Golf Academy"
-          width={52}
-          height={52}
+          width={80}
+          height={80}
           priority
           className="h-6 w-auto transition hover:opacity-70"
         />
@@ -677,10 +677,10 @@ export default function Navbar() {
 
             {!loggedIn && (
               <>
-                <Link href="/login" className="text-sm font-light uppercase tracking-[0.22em] text-[#E7DED1] transition hover:text-white">
+                <Link href="/login" className="flex h-8 items-center text-sm font-light uppercase tracking-[0.22em] text-[#E7DED1] transition hover:text-white">
                   <span className="inline-block scale-x-90">LOGIN</span>
                 </Link>
-                <Link href="/signup" className="text-sm font-light uppercase tracking-[0.22em] text-[#E7DED1] transition hover:text-white">
+                <Link href="/signup" className="flex h-8 items-center text-sm font-light uppercase tracking-[0.22em] text-[#E7DED1] transition hover:text-white">
                   <span className="inline-block scale-x-90">SIGN UP</span>
                 </Link>
               </>
