@@ -478,12 +478,12 @@ export default function CoachDashboard({
   return (
     <main className="min-h-screen bg-[#ECE8E1] px-4 pt-8 pb-3 sm:p-10 text-black">
       <DashboardContainer>
-        <h1 className="text-[20px] font-light uppercase tracking-[0.12em] text-black">
+        <h1 className="text-[20px] font-light uppercase tracking-[0.12em] text-[#2F5A43]">
           Schedule
         </h1>
         <div className="mb-1 mt-1">
           {headerContent ?? (
-            <p className="mt-1 text-[15px] font-light tracking-[0.02em] text-black">
+            <p className="mt-1 text-[15px] font-light tracking-[0.02em] text-[#2F5A43]">
               Welcome back, {coachName}
             </p>
           )}
@@ -491,7 +491,7 @@ export default function CoachDashboard({
         <div className="mb-3 sm:mb-3 flex flex-wrap items-center gap-3">
           <button
             onClick={previousDay}
-            className="rounded-lg border border-[#8D857A] bg-[#FEFDFC] px-3 py-2 text-[13px] font-light tracking-[0.06em] text-black transition hover:bg-[#F7F3EE] sm:px-5"
+            className="rounded-lg border border-[#3A5D49] bg-[#FBF8F3] px-3 py-2 text-[13px] font-light tracking-[0.06em] text-[#1F3327] transition sm:px-5"
           >
             <span className="hidden sm:inline">← Previous</span>
             <span className="sm:hidden">←</span>
@@ -499,14 +499,14 @@ export default function CoachDashboard({
 
           <button
             onClick={today}
-            className="rounded-lg border border-[#8D857A] bg-[#FEFDFC] px-3 py-2 text-[13px] font-light tracking-[0.06em] text-black transition hover:bg-[#F7F3EE] sm:px-5"
+            className="rounded-lg border border-[#3A5D49] bg-[#FBF8F3] px-3 py-2 text-[13px] font-light tracking-[0.06em] text-[#1F3327] transition sm:px-5"
           >
             Today
           </button>
 
           <button
             onClick={nextDay}
-            className="rounded-lg border border-[#8D857A] bg-[#FEFDFC] px-3 py-2 text-[13px] font-light tracking-[0.06em] text-black transition hover:bg-[#F7F3EE] sm:px-5"
+            className="rounded-lg border border-[#3A5D49] bg-[#FBF8F3] px-3 py-2 text-[13px] font-light tracking-[0.06em] text-[#1F3327] transition sm:px-5"
           >
             <span className="hidden sm:inline">Next →</span>
             <span className="sm:hidden">→</span>
@@ -516,7 +516,7 @@ export default function CoachDashboard({
             type="date"
             value={selectedDate}
             onChange={(e) => goToDate(e.target.value)}
-            className="rounded-lg border border-[#8D857A] bg-[#FEFDFC] px-3 py-2 text-[13px] font-light tracking-[0.06em] text-black sm:px-5"
+            className="rounded-lg border border-[#3A5D49] bg-[#FBF8F3] px-3 py-2 text-[13px] font-light tracking-[0.06em] text-[#1F3327] sm:px-5"
           />
 
           <button
@@ -560,13 +560,13 @@ export default function CoachDashboard({
           </div>
         )}
 
-        <div className="overflow-hidden rounded-3xl border border-[#B9B2A8] bg-white shadow-xl">
-          <div className="grid grid-cols-[82px_1fr] border-b border-[#B9B2A8] bg-[#F3F0EA]">
-            <div className="dashboard-label flex items-center border-r border-[#B9B2A8] bg-[#F3F0EA] p-4">
+        <div className="overflow-hidden rounded-3xl border border-[#3A5D49] bg-[#FEFDFC] shadow-md">
+          <div className="grid grid-cols-[82px_1fr] border-b border-[#3A5D49] bg-[#E8E1D8]">
+            <div className="dashboard-label flex items-center border-r border-[#3A5D49] bg-[#E8E1D8] p-4">
               Time
             </div>
 
-            <div className="dashboard-label flex items-center p-4">
+            <div className="dashboard-label flex items-center bg-[#E8E1D8] p-4">
               Schedule
             </div>
           </div>
@@ -588,10 +588,10 @@ export default function CoachDashboard({
             const overrideOpen = isOverrideOpen(hour)
             let bgClass = "bg-[#D6D1C8]"
             if (available && !breakHour) {
-              bgClass = "bg-[#FEFDFC]"
+              bgClass = "bg-[#FBF8F3]"
             }
             if (overrideOpen) {
-              bgClass = "bg-[#FEFDFC]"
+              bgClass = "bg-[#FBF8F3]"
             }
             if (overrideClosed) {
               bgClass = "bg-[#D6D1C8]"
@@ -612,8 +612,8 @@ export default function CoachDashboard({
             }
 
             return (
-              <div key={hour} className="grid grid-cols-[82px_1fr] border-b border-[#B9B2A8]">
-                <div className="flex items-center whitespace-nowrap border-r border-[#B9B2A8] bg-[#FEFDFC] px-3 py-2 text-[14px] font-light text-black">
+              <div key={hour} className="grid grid-cols-[82px_1fr] border-b border-[#3A5D49]">
+                <div className="flex items-center whitespace-nowrap border-r border-[#3A5D49] bg-[#FBF8F3] px-3 py-2 text-[14px] font-light text-[#1F3327]">
                   {formatHour(hour)}
                 </div>
 
@@ -623,13 +623,13 @@ export default function CoachDashboard({
                 >
                   {booking ? (
                     <div className="flex flex-col justify-center gap-0.5 leading-tight">
-                      <p className="text-[16px] font-light tracking-[0.02em] leading-none text-black">
+                      <p className="text-[16px] font-light tracking-[0.02em] leading-none text-[#1F3327]">
                         {booking.clients?.preferred_name
                           ? `(${booking.clients.preferred_name}) ${booking.clients.first_name} ${booking.clients.last_name}`
                           : `${booking.clients?.first_name} ${booking.clients?.last_name}`}
                       </p>
 
-                      <p className="text-[13px] font-light tracking-[0.02em] leading-none text-black">
+                      <p className="text-[13px] font-light tracking-[0.02em] leading-none text-[#1F3327]">
                         {booking.status === "completed"
                           ? "Completed Lesson"
                           : booking.status === "no_show"
@@ -638,23 +638,23 @@ export default function CoachDashboard({
                       </p>
                     </div>
                   ) : overrideClosed ? (
-                    <p className="text-[14px] font-light tracking-[0.02em] text-black">
+                    <p className="text-[14px] font-light tracking-[0.02em] text-[#1F3327]">
                       Closed (Override)
                     </p>
                   ) : overrideOpen ? (
-                    <p className="text-[14px] font-light tracking-[0.02em] text-black">
+                    <p className="text-[14px] font-light tracking-[0.02em] text-[#1F3327]">
                       Available (Override)
                     </p>
                   ) : breakHour ? (
-                    <p className="text-[14px] font-light tracking-[0.02em] text-black">
+                    <p className="text-[14px] font-light tracking-[0.02em] text-[#1F3327]">
                       Break
                     </p>
                   ) : available ? (
-                    <p className="text-[14px] font-light tracking-[0.02em] text-black">
+                    <p className="text-[14px] font-light tracking-[0.02em] text-[#1F3327]">
                       Available
                     </p>
                   ) : (
-                    <p className="text-[14px] font-light tracking-[0.02em] text-black">
+                    <p className="text-[14px] font-light tracking-[0.02em] text-[#1F3327]">
                       Closed
                     </p>
                   )}
@@ -667,7 +667,7 @@ export default function CoachDashboard({
 
       {showExtendModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-6">
-          <div className="w-full max-w-md rounded-2xl bg-white p-6">
+          <div className="w-full max-w-md rounded-2xl bg-[#FEFDFC] p-6">
             <h2 className="mb-4 text-2xl font-bold">Extend Day</h2>
             <div className="space-y-4">
               <div>
@@ -745,7 +745,7 @@ export default function CoachDashboard({
 
               <button
                 onClick={() => setSelectedBooking(null)}
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-[#8D857A] bg-[#FEFDFC] text-xl transition hover:bg-[#F7F3EE]"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-[#3A5D49] bg-[#FEFDFC] text-xl transition hover:bg-[#F7F3EE]"
               >
                 ×
               </button>
@@ -909,7 +909,7 @@ export default function CoachDashboard({
               )}
               {showTransactionForm && (
                 <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/30 p-6">
-                  <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl">
+                  <div className="w-full max-w-md rounded-2xl bg-[#FEFDFC] p-6 shadow-2xl">
                     <AddTransactionForm
                       clientId={selectedBooking.clients!.id}
                       lessonsRemaining={
@@ -933,7 +933,7 @@ export default function CoachDashboard({
 
       {showCompleteModal && selectedBooking && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-6">
-          <div className="w-full max-w-lg rounded-2xl bg-white p-6">
+          <div className="w-full max-w-lg rounded-2xl bg-[#FEFDFC] p-6">
             <h2 className="mb-4 text-2xl font-bold">
               Complete Lesson
             </h2>
@@ -1057,7 +1057,7 @@ export default function CoachDashboard({
 
       {showCancelModal && selectedBooking && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-6">
-          <div className="w-full max-w-lg rounded-2xl bg-white p-6">
+          <div className="w-full max-w-lg rounded-2xl bg-[#FEFDFC] p-6">
             <h2 className="mb-4 text-2xl font-bold">Cancel Lesson</h2>
             <p className="mb-4 text-gray-600">A cancellation reason is required.</p>
 

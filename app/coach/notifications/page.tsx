@@ -456,14 +456,14 @@ export default function NotificationsPage() {
         <div className="mb-8 flex items-center gap-3">
           <Link
             href="/coach/dashboard"
-            className="rounded-xl border border-[#C8D2C7] bg-white px-5 py-2 font-medium tracking-[0.04em] text-[#1F3327] shadow-sm transition hover:border-[#2F5A43] hover:bg-[#F8FBF8]"
+            className="rounded-xl border border-[#3A5D49] bg-white px-5 py-2 font-medium tracking-[0.04em] text-[#1F3327] shadow-sm transition hover:border-[#2F5A43] hover:bg-[#F8FBF8]"
           >
             ← Back to Dashboard
           </Link>
 
           <Link
             href="/coach/notifications/settings"
-            className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#C8D2C7] bg-white text-[#1F3327] shadow-sm transition hover:border-[#2F5A43] hover:bg-[#F8FBF8]"
+            className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#3A5D49] bg-white text-[#1F3327] shadow-sm transition hover:border-[#2F5A43] hover:bg-[#F8FBF8]"
             title="Notification Settings"
           >
             <Settings className="h-5 w-5" />
@@ -561,29 +561,31 @@ export default function NotificationsPage() {
           <h2 className="mb-5 text-[20px] font-light uppercase tracking-[0.08em] text-[#2F5A43]">
             Notifications ({activeNotifications.length})
           </h2>
-          <div className="mb-3 hidden lg:grid grid-cols-[140px_180px_180px_1fr_140px] gap-4 rounded-xl border border-[#B9B2A8] bg-[#F3F0EA] px-16 py-3">
-            <span className="dashboard-label">Type</span>
-            <span className="dashboard-label">Original Date</span>
-            <span className="dashboard-label">New Date</span>
-            <span className="dashboard-label">Notes</span>
-            <span className="dashboard-label text-right">Created</span>
+          <div className="mb-3 hidden lg:grid grid-cols-[40px_40px_140px_180px_180px_1fr_140px] items-center rounded-xl border border-[#3A5D49] bg-[#F3F0EA] px-5 py-3">
+            <span></span>
+            <span></span>
+            <span className="dashboard-label text-center">Type</span>
+            <span className="dashboard-label text-center">Original Date</span>
+            <span className="dashboard-label text-center">New Date</span>
+            <span className="dashboard-label text-center">Notes</span>
+            <span className="dashboard-label text-center">Created</span>
           </div>
           {activeNotifications.length === 0 ? (
-            <div className="rounded-2xl border border-[#B9B2A8] bg-[#FEFDFC] p-10 text-center shadow-xl">
+            <div className="rounded-2xl border border-[#3A5D49] bg-[#FEFDFC] p-10 text-center shadow-xl">
               <p className="text-[#1F3327] text-[15px] font-light">
                 No notifications.
               </p>
             </div>
           ) : (
             <>
-              <div className="space-y-4">
+              <div className="space-y-2">
                 {paginatedActiveNotifications.map((notification) => (
                   <div key={notification.id}>
                     <div
                       className={`hidden lg:block rounded-2xl border shadow-xl transition ${
                         notification.is_read
-                          ? "border-[#B9B2A8] bg-[#ECE7DE]"
-                          : "border-[#B9B2A8] bg-[#FEFDFC]"
+                          ? "border-[#3A5D49] bg-[#ECE7DE]"
+                          : "border-[#3A5D49] bg-[#FEFDFC]"
                       }`}
                     >
                       <div className="flex items-center justify-between gap-6 px-5 py-4">
@@ -612,7 +614,7 @@ export default function NotificationsPage() {
                             </button>
                           )}
 
-                          <div className="grid grid-cols-[120px_180px_180px_1fr] items-center gap-4">
+                          <div className="grid flex-1 grid-cols-[140px_180px_180px_1fr] items-center gap-4">
                             <span
                               className={`dashboard-value ${
                                 notification.type === "admin_message_coach"
@@ -639,7 +641,7 @@ export default function NotificationsPage() {
                                   {notification.notes || "-"}
                                 </summary>
 
-                                <div className="mt-3 rounded-xl border border-[#B9B2A8] bg-[#F7F3EE] p-3 space-y-2">
+                                <div className="mt-3 rounded-xl border border-[#3A5D49] bg-[#F7F3EE] p-3 space-y-2">
                                   <div className="dashboard-value">
                                     <strong>Client:</strong>{" "}
                                     <a
@@ -682,10 +684,10 @@ export default function NotificationsPage() {
                     </div>
 
                       <div
-                        className={`lg:hidden mb-4 rounded-2xl border shadow-xl ${
+                        className={`lg:hidden mb-2 rounded-2xl border shadow-xl ${
                           notification.is_read
-                            ? "border-[#B9B2A8] bg-[#ECE7DE]"
-                            : "border-[#B9B2A8] bg-[#FEFDFC]"
+                            ? "border-[#3A5D49] bg-[#ECE7DE]"
+                            : "border-[#3A5D49] bg-[#FEFDFC]"
                         }`}
                       >
                         <div className="p-5">
@@ -738,7 +740,7 @@ export default function NotificationsPage() {
                           </div>
 
                           {expandedNotifications.includes(notification.id) && (
-                            <div className="mt-5 space-y-4 rounded-xl border border-[#B9B2A8] bg-[#F7F3EE] p-4">
+                            <div className="mt-5 space-y-4 rounded-xl border border-[#3A5D49] bg-[#F7F3EE] p-4">
                               {notification.type !== "admin_message_coach" && (
                                 <div>
                                   <p className="dashboard-label">Original Date</p>
@@ -766,7 +768,7 @@ export default function NotificationsPage() {
                                       {notification.notes || "-"}
                                     </summary>
 
-                                    <div className="mt-3 rounded-xl border border-[#B9B2A8] bg-[#FEFDFC] p-3 space-y-2">
+                                    <div className="mt-3 rounded-xl border border-[#3A5D49] bg-[#FEFDFC] p-3 space-y-2">
                                       <div className="dashboard-value">
                                         <strong>Client:</strong>{" "}
                                         <Link
@@ -819,7 +821,7 @@ export default function NotificationsPage() {
                 {activePage > 1 && (
                   <button
                     onClick={() => setActivePage((p) => p - 1)}
-                    className="rounded-lg border border-[#C8D2C7] bg-white px-4 py-2 text-[#1F3327] shadow-sm transition hover:border-[#2F5A43] hover:bg-[#F8FBF8]"
+                    className="rounded-lg border border-[#3A5D49] bg-white px-4 py-2 text-[#1F3327] shadow-sm transition hover:border-[#2F5A43] hover:bg-[#F8FBF8]"
                   >
                     Previous
                   </button>
@@ -832,7 +834,7 @@ export default function NotificationsPage() {
                 {activeHasNext && (
                   <button
                     onClick={() => setActivePage((p) => p + 1)}
-                    className="rounded-lg border border-[#C8D2C7] bg-white px-4 py-2 text-[#1F3327] shadow-sm transition hover:border-[#2F5A43] hover:bg-[#F8FBF8]"
+                    className="rounded-lg border border-[#3A5D49] bg-white px-4 py-2 text-[#1F3327] shadow-sm transition hover:border-[#2F5A43] hover:bg-[#F8FBF8]"
                   >
                     Next
                   </button>
@@ -856,7 +858,7 @@ export default function NotificationsPage() {
                 <select
                   value={olderFilter}
                   onChange={(e) => setOlderFilter(e.target.value)}
-                  className="rounded-xl border border-[#C8D2C7] bg-white px-4 py-2 font-light tracking-[0.04em] text-[#1F3327] shadow-sm transition hover:border-[#2F5A43] focus:border-[#2F5A43] focus:outline-none"
+                  className="rounded-xl border border-[#3A5D49] bg-white px-4 py-2 font-light tracking-[0.04em] text-[#1F3327] shadow-sm transition hover:border-[#2F5A43] focus:border-[#2F5A43] focus:outline-none"
                 >
                   <option className="text-[#1F3327]" value="all">All Notifications</option>
                   <option className="text-[#1F3327]" value="Cancelled">Cancelled</option>
@@ -867,29 +869,30 @@ export default function NotificationsPage() {
                 </select>
               </div>
 
-              <div className="mb-3 hidden lg:grid grid-cols-[140px_180px_180px_1fr_140px_140px] gap-4 rounded-xl border border-[#B9B2A8] bg-[#F3F0EA] px-16 py-3">
-                <span className="dashboard-label">Type</span>
-                <span className="dashboard-label">Original Date</span>
-                <span className="dashboard-label">New Date</span>
-                <span className="dashboard-label">Notes</span>
-                <span className="dashboard-label">Done At</span>
-                <span className="dashboard-label text-right">Created</span>
+              <div className="mb-3 hidden lg:grid grid-cols-[40px_40px_140px_180px_180px_1fr_140px_140px] items-center rounded-xl border border-[#3A5D49] bg-[#F3F0EA] py-3">
+                <span></span>
+                <span></span>
+                <span className="dashboard-label text-center">Type</span>
+                <span className="dashboard-label text-center">Original Date</span>
+                <span className="dashboard-label text-center">New Date</span>
+                <span className="dashboard-label text-center">Notes</span>
+                <span className="dashboard-label text-center">Done At</span>
+                <span className="dashboard-label text-center">Created</span>
               </div>
-
               {olderNotifications.length === 0 ? (
                 <div className="rounded-xl bg-white p-6 shadow">
                   <p className="text-[#1F3327]">No older notifications.</p>
                 </div>
               ) : (
                 <>
-                  <div className="overflow-hidden rounded-xl border border-gray-300 bg-white">
+                  <div className="overflow-hidden rounded-xl border border-[#3A5D49] bg-white">
                     {paginatedOlderNotifications.map((notification) => (
                       <div key={notification.id}>
                         <div
-                          className={`hidden lg:block rounded-2xl border shadow-xl mb-0 ${
+                          className={`hidden lg:block border-b border-[#3A5D49] ${
                             notification.is_read
-                              ? "border-[#B9B2A8] bg-[#ECE7DE]"
-                              : "border-[#B9B2A8] bg-[#FEFDFC]"
+                              ? "bg-[#ECE7DE]"
+                              : "bg-[#FEFDFC]"
                           }`}
                         >
                           <div className="grid grid-cols-[40px_40px_140px_180px_180px_1fr_140px_140px] items-center">
@@ -919,7 +922,7 @@ export default function NotificationsPage() {
 
                             <div className="contents">
                               <span
-                                className={`dashboard-value border-l border-[#B9B2A8] px-3 py-4 ${
+                                className={`dashboard-value border-l border-[#3A5D49] px-3 py-3 ${
                                   notification.type === "admin_message_coach"
                                     ? "text-[#8F3434]"
                                     : ""
@@ -927,16 +930,16 @@ export default function NotificationsPage() {
                               >
                                 {notification.type_label || "-"}
                               </span>
-                              <span className="dashboard-value border-l border-[#B9B2A8] px-3 py-4">
+                              <span className="dashboard-value border-l border-[#3A5D49] px-3 py-2">
                                 {notification.type === "admin_message_coach"
                                   ? ""
                                   : notification.original_datetime || "-"}
                               </span>
-                              <span className="dashboard-value border-l border-[#B9B2A8] px-3 py-4">
+                              <span className="dashboard-value border-l border-[#3A5D49] px-3 py-2">
                                 {notification.new_datetime || "-"}
                               </span>
                               <span
-                                className={`dashboard-value border-l border-[#B9B2A8] px-3 py-4 whitespace-pre-wrap ${
+                                className={`dashboard-value border-l border-[#3A5D49] px-3 py-2 whitespace-pre-wrap ${
                                   notification.type === "admin_message_coach"
                                     ? "text-[#8F3434]"
                                     : ""
@@ -944,7 +947,7 @@ export default function NotificationsPage() {
                               >
                                 {notification.notes || "-"}
                               </span>
-                              <span className="dashboard-value border-l border-[#B9B2A8] px-3 py-4">
+                              <span className="dashboard-value border-l border-[#3A5D49] px-3 py-2">
                                 {notification.resolved_at
                                   ? `${new Date(notification.resolved_at).toLocaleDateString("en-GB", {
                                       day: "2-digit",
@@ -955,7 +958,7 @@ export default function NotificationsPage() {
                                     })}`
                                   : "-"}
                               </span>
-                              <span className="dashboard-value border-l border-[#B9B2A8] px-3 py-4">
+                              <span className="dashboard-value border-l border-[#3A5D49] px-3 py-2">
                                 {new Date(notification.created_at).toLocaleDateString("en-GB", {
                                   day: "2-digit",
                                   month: "2-digit",
@@ -971,13 +974,13 @@ export default function NotificationsPage() {
                         </div>
 
                         <div
-                          className={`lg:hidden mb-0 rounded-2xl border shadow-xl ${
+                          className={`lg:hidden border-b border-[#3A5D49] ${
                             notification.is_read
-                              ? "border-[#B9B2A8] bg-[#ECE7DE]"
-                              : "border-[#B9B2A8] bg-[#FEFDFC]"
+                              ? "bg-[#ECE7DE]"
+                              : "bg-[#FEFDFC]"
                           }`}
                         >
-                          <div className="flex items-center gap-3">
+                          <div className="flex items-center gap-3 px-4 py-3">
                             <input
                               type="checkbox"
                               checked={notification.is_read}
@@ -1023,7 +1026,7 @@ export default function NotificationsPage() {
                           </div>
 
                           {expandedNotifications.includes(notification.id) && (
-                            <div className="mt-5 space-y-4 rounded-xl border border-[#B9B2A8] bg-[#F7F3EE] p-4">
+                            <div className="mt-5 space-y-4 rounded-xl border border-[#3A5D49] bg-[#F7F3EE] p-4">
                               {notification.type !== "admin_message_coach" && (
                                 <div>
                                   <p className="dashboard-label">Original Date</p>
@@ -1101,7 +1104,7 @@ export default function NotificationsPage() {
                     {activePage > 1 && (
                       <button
                         onClick={() => setActivePage((p) => p - 1)}
-                        className="rounded-lg border border-[#C8D2C7] bg-white px-4 py-2 text-[#1F3327] shadow-sm transition hover:border-[#2F5A43] hover:bg-[#F8FBF8]"
+                        className="rounded-lg border border-[#3A5D49] bg-white px-4 py-2 text-[#1F3327] shadow-sm transition hover:border-[#2F5A43] hover:bg-[#F8FBF8]"
                       >
                         Previous
                       </button>
@@ -1114,7 +1117,7 @@ export default function NotificationsPage() {
                     {activeHasNext && (
                       <button
                         onClick={() => setActivePage((p) => p + 1)}
-                        className="rounded-lg border border-[#C8D2C7] bg-white px-4 py-2 text-[#1F3327] shadow-sm transition hover:border-[#2F5A43] hover:bg-[#F8FBF8]"
+                        className="rounded-lg border border-[#3A5D49] bg-white px-4 py-2 text-[#1F3327] shadow-sm transition hover:border-[#2F5A43] hover:bg-[#F8FBF8]"
                       >
                         Next
                       </button>
