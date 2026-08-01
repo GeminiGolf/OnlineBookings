@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import Image from "next/image"
 import { useEffect, useState } from "react"
 import { supabase } from "../lib/supabaseClient"
 import { Home, Bell, CalendarDays } from "lucide-react"
@@ -389,8 +390,15 @@ export default function Navbar() {
 
   return (
     <nav className="absolute left-0 top-0 z-50 flex w-full flex-wrap items-center justify-between bg-black/40 backdrop-blur-md px-6 py-3 text-white lg:px-10 lg:py-3">
-      <Link href="/" className="flex items-center justify-center text-white transition hover:text-gray-300">
-        <Home size={24} strokeWidth={2.5} />
+      <Link href="/" className="flex items-center">
+        <Image
+          src="/images/logo-warm.png"
+          alt="Gemini Golf Academy"
+          width={52}
+          height={52}
+          priority
+          className="h-6 w-auto transition hover:opacity-70"
+        />
       </Link>
       <div className="flex items-center gap-0 text-sm lg:gap-8 lg:text-base">
         {!loading && (
