@@ -144,7 +144,9 @@ export default function CoachPackagesTable({ packages }: Props) {
 
   return (
     <div className="mx-auto max-w-5xl">
-      <h1 className="mb-2 text-[22px] font-bold">Packages</h1>
+      <h1 className="mb-3 text-[22px] font-light uppercase tracking-[0.12em] text-[#2F5A43]">
+        Packages
+      </h1>
 
       <div className="mb-5 flex flex-wrap items-center gap-2">
         <input
@@ -156,7 +158,7 @@ export default function CoachPackagesTable({ packages }: Props) {
             setActivePage(1)
             setInactivePage(1)
           }}
-          className="w-[120px] rounded-lg border border-black bg-white px-3 py-2"
+          className="w-[120px] sm:w-[160px] rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[15px] font-light text-[#1F3327] placeholder:text-[#6D7F72] shadow-sm focus:border-[#2F5A43] focus:outline-none"
         />
 
         <div className="relative">
@@ -166,7 +168,7 @@ export default function CoachPackagesTable({ packages }: Props) {
               setShowStartCalendar(!showStartCalendar)
               setShowEndCalendar(false)
             }}
-            className="rounded-lg border border-black bg-green-100 px-4 py-2 hover:bg-green-200"
+            className="rounded-xl border-2 border-[#3A5D49] bg-[#35684C] px-4 py-2 text-[15px] font-light text-white shadow-sm hover:bg-[#2F5A43]"
           >
             {startDate ? format(new Date(startDate), "dd/MM/yy") : "Start Date"}
           </button>
@@ -212,7 +214,7 @@ export default function CoachPackagesTable({ packages }: Props) {
               setShowEndCalendar(!showEndCalendar)
               setShowStartCalendar(false)
             }}
-            className="rounded-lg border border-black bg-red-100 px-4 py-2 hover:bg-red-200"
+            className="rounded-xl border-2 border-[#7F2E2E] bg-[#9B3B3B] px-4 py-2 text-[15px] font-light text-white shadow-sm hover:bg-[#842F2F]"
           >
             {endDate ? format(new Date(endDate), "dd/MM/yy") : "End Date"}
           </button>
@@ -252,10 +254,10 @@ export default function CoachPackagesTable({ packages }: Props) {
         </div>
       </div>
 
-      <div className="mb-4 overflow-hidden rounded-2xl border bg-white">
+      <div className="mb-4 overflow-hidden rounded-3xl border border-[#3A5D49] bg-white shadow-md">
         <button
           onClick={() => setShowActive(!showActive)}
-          className="flex w-full items-center justify-between border-b p-3 font-semibold"
+          className="flex w-full items-center justify-between border-b border-[#3A5D49] bg-[#E8E1D8] p-4 text-[18px] font-light tracking-[0.02em] text-[#2F5A43]"
         >
           Active Packages
           {showActive ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
@@ -264,13 +266,13 @@ export default function CoachPackagesTable({ packages }: Props) {
         {showActive && (
           <>
             <div className="hidden p-5 md:block">
-              <table className="hidden w-full table-fixed border border-gray-300 rounded-lg border-separate border-spacing-0 md:table">
+              <table className="hidden w-full table-fixed rounded-2xl border border-[#3A5D49] border-separate border-spacing-0 md:table">
               <thead>
                 <tr className="border-b text-left">
                   <th className="border-b p-4">
                     <button
                       onClick={handleRemainingSort}
-                      className="flex items-center gap-1 font-semibold"
+                      className="flex items-center gap-1 dashboard-label text-[#2F5A43]"
                     >
                       Remaining{" "}
                       {sortBy === "remaining"
@@ -283,7 +285,7 @@ export default function CoachPackagesTable({ packages }: Props) {
                   <th className="border-b p-4">
                     <button
                       onClick={handleExpirySort}
-                      className="flex items-center gap-1 font-semibold"
+                      className="flex items-center gap-1 dashboard-label text-[#2F5A43]"
                     >
                       Expiry{" "}
                       {sortBy === "expiry"
@@ -293,8 +295,12 @@ export default function CoachPackagesTable({ packages }: Props) {
                         : "▶"}
                     </button>
                   </th>
-                  <th className="border-b p-4">Package</th>
-                  <th className="border-b p-4">Name</th>
+                  <th className="dashboard-label border-b border-[#3A5D49] p-4 text-left">
+                    Package
+                  </th>
+                  <th className="dashboard-label border-b border-[#3A5D49] p-4 text-left">
+                    Name
+                  </th>
                 </tr>
               </thead>
 
@@ -311,13 +317,17 @@ export default function CoachPackagesTable({ packages }: Props) {
 
                     return (
                       <tr key={pkg.id}>
-                        <td className="p-4 font-semibold">{remaining}</td>
-                        <td className="p-4">{formatExpiry(pkg.expiration_date)}</td>
-                        <td className="p-4">{pkg.transaction_name}</td>
+                        <td className="dashboard-value p-4">{remaining}</td>
+                        <td className="dashboard-value p-4">
+                          {formatExpiry(pkg.expiration_date)}
+                        </td>
+                        <td className="dashboard-value p-4">
+                          {pkg.transaction_name}
+                        </td>
                         <td className="p-4">
                           <Link
                             href={`/coach/clients/${pkg.client_id}`}
-                            className="text-blue-600 hover:underline"
+                            className="dashboard-value text-[#5874A6] underline underline-offset-2 decoration-[#5874A6] transition hover:text-[#45628F]"
                           >
                             {pkg.client_name}
                           </Link>
@@ -341,7 +351,7 @@ export default function CoachPackagesTable({ packages }: Props) {
                     <div key={pkg.id} className="border-b px-5 py-1.5 last:border-0">
                       <Link
                         href={`/coach/clients/${pkg.client_id}`}
-                        className="font-semibold text-blue-600 hover:underline"
+                        className="dashboard-label text-[#2F5A43] text-blue-600 hover:underline"
                       >
                         {pkg.client_name}
                       </Link>
@@ -363,7 +373,7 @@ export default function CoachPackagesTable({ packages }: Props) {
               <button
                 onClick={() => setActivePage((p) => Math.max(1, p - 1))}
                 disabled={activePage === 1}
-                className="rounded border px-3 py-1 disabled:opacity-50"
+                className="rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[13px] font-light tracking-[0.04em] text-[#1F3327] shadow-sm hover:bg-[#F6FAF6] disabled:opacity-50"
               >
                 Previous
               </button>
@@ -375,7 +385,7 @@ export default function CoachPackagesTable({ packages }: Props) {
               <button
                 onClick={() => setActivePage((p) => Math.min(activeTotalPages, p + 1))}
                 disabled={activePage === activeTotalPages}
-                className="rounded border px-3 py-1 disabled:opacity-50"
+                className="rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[13px] font-light tracking-[0.04em] text-[#1F3327] shadow-sm hover:bg-[#F6FAF6] disabled:opacity-50"
               >
                 Next
               </button>
@@ -384,10 +394,10 @@ export default function CoachPackagesTable({ packages }: Props) {
         )}
       </div>
 
-      <div className="overflow-hidden rounded-2xl border bg-white">
+      <div className="overflow-hidden rounded-3xl border border-[#3A5D49] bg-white shadow-md">
         <button
           onClick={() => setShowInactive(!showInactive)}
-          className="flex w-full items-center justify-between border-b p-3 font-semibold"
+          className="flex w-full items-center justify-between border-b border-[#3A5D49] bg-[#E8E1D8] p-4 text-[18px] font-light tracking-[0.02em] text-[#2F5A43]"
         >
           Inactive Packages
           {showInactive ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
@@ -396,13 +406,13 @@ export default function CoachPackagesTable({ packages }: Props) {
         {showInactive && (
           <>
             <div className="hidden p-6 md:block">
-              <table className="hidden w-full table-fixed border border-gray-300 rounded-lg border-separate border-spacing-0 md:table">
+              <table className="hidden w-full table-fixed rounded-2xl border border-[#3A5D49] border-separate border-spacing-0 md:table">
               <thead>
                 <tr className="border-b text-left">
                   <th className="border-b p-4">
                     <button
                       onClick={handleRemainingSort}
-                      className="flex items-center gap-1 font-semibold"
+                      className="flex items-center gap-1 dashboard-label text-[#2F5A43]"
                     >
                       Remaining{" "}
                       {sortBy === "remaining"
@@ -415,7 +425,7 @@ export default function CoachPackagesTable({ packages }: Props) {
                   <th className="border-b p-4">
                     <button
                       onClick={handleExpirySort}
-                      className="flex items-center gap-1 font-semibold"
+                      className="flex items-center gap-1 dashboard-label text-[#2F5A43]"
                     >
                       Expiry{" "}
                       {sortBy === "expiry"
@@ -425,8 +435,12 @@ export default function CoachPackagesTable({ packages }: Props) {
                         : "▶"}
                     </button>
                   </th>
-                  <th className="border-b p-4">Package</th>
-                  <th className="border-b p-4">Name</th>
+                  <th className="dashboard-label border-b border-[#3A5D49] p-4 text-left">
+                    Package
+                  </th>
+                  <th className="dashboard-label border-b border-[#3A5D49] p-4 text-left">
+                    Name
+                  </th>
                 </tr>
               </thead>
 
@@ -443,13 +457,17 @@ export default function CoachPackagesTable({ packages }: Props) {
 
                     return (
                       <tr key={pkg.id} className="border-b last:border-0">
-                        <td className="p-4 font-semibold">{remaining}</td>
-                        <td className="p-4">{formatExpiry(pkg.expiration_date)}</td>
-                        <td className="p-4">{pkg.transaction_name}</td>
+                        <td className="dashboard-value p-4">{remaining}</td>
+                        <td className="dashboard-value p-4">
+                          {formatExpiry(pkg.expiration_date)}
+                        </td>
+                        <td className="dashboard-value p-4">
+                          {pkg.transaction_name}
+                        </td>
                         <td className="p-4">
                           <Link
                             href={`/coach/clients/${pkg.client_id}`}
-                            className="text-blue-600 hover:underline"
+                            className="dashboard-value text-[#5874A6] underline underline-offset-2 decoration-[#5874A6] transition hover:text-[#45628F]"
                           >
                             {pkg.client_name}
                           </Link>
@@ -473,7 +491,7 @@ export default function CoachPackagesTable({ packages }: Props) {
                     <div key={pkg.id} className="border-b px-5 py-1.5 last:border-0">
                       <Link
                         href={`/coach/clients/${pkg.client_id}`}
-                        className="font-semibold text-blue-600 hover:underline"
+                        className="dashboard-label text-[#2F5A43] text-blue-600 hover:underline"
                       >
                         {pkg.client_name}
                       </Link>
@@ -495,7 +513,7 @@ export default function CoachPackagesTable({ packages }: Props) {
               <button
                 onClick={() => setInactivePage((p) => Math.max(1, p - 1))}
                 disabled={inactivePage === 1}
-                className="rounded border px-3 py-1 disabled:opacity-50"
+                className="rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[13px] font-light tracking-[0.04em] text-[#1F3327] shadow-sm hover:bg-[#F6FAF6] disabled:opacity-50"
               >
                 Previous
               </button>
@@ -507,7 +525,7 @@ export default function CoachPackagesTable({ packages }: Props) {
               <button
                 onClick={() => setInactivePage((p) => Math.min(inactiveTotalPages, p + 1))}
                 disabled={inactivePage === inactiveTotalPages}
-                className="rounded border px-3 py-1 disabled:opacity-50"
+                className="rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[13px] font-light tracking-[0.04em] text-[#1F3327] shadow-sm hover:bg-[#F6FAF6] disabled:opacity-50"
               >
                 Next
               </button>

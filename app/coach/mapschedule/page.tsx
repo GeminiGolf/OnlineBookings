@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { supabase } from "@/lib/supabaseClient"
 import DashboardContainer from "@/components/layout/DashboardContainer"
+import LoadingScreen from "@/components/ui/LoadingScreen"
 
 const days = [
   { label: "Monday",    value: 1 },
@@ -118,11 +119,7 @@ export default function CoachPage() {
   }
 
   if (loadingPage) {
-    return (
-      <main className="flex min-h-screen items-center justify-center bg-gray-100">
-        <p className="text-xl text-gray-500">Loading...</p>
-      </main>
-    )
+    return <LoadingScreen text="Loading availability..." />
   }
 
   if (!authorized) {
@@ -130,17 +127,23 @@ export default function CoachPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-100 p-3 sm:p-10 text-black">
+    <main className="min-h-screen bg-[#F2EEE8] px-4 pt-8 pb-3 sm:p-10 text-[#1F3327]">
       <DashboardContainer>
         <Link
           href="/coach/dashboard"
-          className="mb-6 inline-block rounded-lg border bg-white px-4 py-2"
+          className="mb-3 sm:mb-6 inline-flex items-center gap-2 rounded-xl border border-[#3A5D49] bg-white px-5 py-2 text-[13px] font-light tracking-[0.04em] text-[#1F3327] shadow-sm transition hover:bg-[#F6FAF6]"
         >
           ← Back to Dashboard
         </Link>
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold">Coach Availability</h1>
-          <p className="mt-2 text-gray-500">Configure your weekly lesson schedule.</p>
+
+        <div className="mb-5 sm:mb-6">
+          <h1 className="text-[22px] font-light uppercase tracking-[0.12em] text-[#2F5A43]">
+            Coach Availability
+          </h1>
+
+          <p className="mt-2 text-[15px] font-light tracking-[0.02em] text-[#1F3327]">
+            Configure your weekly lesson schedule.
+          </p>
         </div>
 
         <div className="space-y-2">
@@ -205,7 +208,7 @@ function DayAvailabilityRow({ dayLabel, dayValue, coachId, existing, weeklyBreak
   function formatHour(hour: number) {
     const suffix = hour >= 12 ? "PM" : "AM"
     const display = hour % 12 || 12
-    return `${display}:00 ${suffix}`
+    return `${display} ${suffix}`
   }
 
   async function saveBreaks() {
@@ -223,15 +226,15 @@ function DayAvailabilityRow({ dayLabel, dayValue, coachId, existing, weeklyBreak
   }
 
   return (
-    <div className="rounded-xl border border-black py-4 px-5">
+    <div className="rounded-3xl border border-[#3A5D49] bg-white px-5 py-5 shadow-md">
       {/* DESKTOP */}
       <div className="hidden min-[900px]:flex items-center justify-between">
-        <h3 className="min-w-[180px] text-[16px] font-bold">
+        <h3 className="min-w-[180px] text-[20px] font-light tracking-[0.02em] text-[#2F5A43]">
           {dayLabel}
         </h3>
         <div className="flex items-end gap-3">
           <div>
-            <label className="mb-1 block text-sm font-semibold">
+            <label className="dashboard-label mb-1 block">
               Start Time
             </label>
 
@@ -240,12 +243,12 @@ function DayAvailabilityRow({ dayLabel, dayValue, coachId, existing, weeklyBreak
               step="3600"
               value={start}
               onChange={(e) => setStart(e.target.value)}
-              className="rounded-lg border border-black px-3 py-1 text-sm"
+              className="rounded-xl border border-[#3A5D49] bg-white px-3 py-2 text-[15px] font-light text-[#1F3327] focus:border-[#2F5A43] focus:outline-none"
             />
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-semibold">
+            <label className="dashboard-label mb-1 block">
               End Time
             </label>
 
@@ -254,7 +257,7 @@ function DayAvailabilityRow({ dayLabel, dayValue, coachId, existing, weeklyBreak
               step="3600"
               value={end}
               onChange={(e) => setEnd(e.target.value)}
-              className="rounded-lg border border-black px-3 py-1 text-sm"
+              className="rounded-xl border border-[#3A5D49] bg-white px-3 py-2 text-[15px] font-light text-[#1F3327] focus:border-[#2F5A43] focus:outline-none"
             />
           </div>
 
@@ -269,7 +272,7 @@ function DayAvailabilityRow({ dayLabel, dayValue, coachId, existing, weeklyBreak
                 setEnd("19:00")
                 onSave("08:00", "19:00")
               }}
-              className="rounded-lg bg-green-600 px-4 py-2 text-sm font-semibold text-white"
+              className="rounded-xl border-2 border-[#3A5D49] bg-[#35684C] px-5 py-2 text-[15px] font-light text-white shadow-sm hover:bg-[#2F5A43]"
             >
               Open
             </button>
@@ -284,7 +287,7 @@ function DayAvailabilityRow({ dayLabel, dayValue, coachId, existing, weeklyBreak
                 setEnd("")
                 onSave("", "")
               }}
-              className="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white"
+              className="rounded-xl border-2 border-[#7F2E2E] bg-[#9B3B3B] px-5 py-2 text-[15px] font-light text-white shadow-sm hover:bg-[#842F2F]"
             >
               Close
             </button>
@@ -296,14 +299,14 @@ function DayAvailabilityRow({ dayLabel, dayValue, coachId, existing, weeklyBreak
               alert("Times saved")
             }}
             disabled={!start || !end}
-            className="shrink-0 rounded-lg bg-green-600 px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
+            className="shrink-0 rounded-xl border border-[#3A5D49] bg-[#2F5A43] px-5 py-2 text-[15px] font-light text-white shadow-sm hover:bg-[#244634] disabled:opacity-50"
           >
             Save
           </button>
 
           <button
             onClick={() => setShowBreaks(!showBreaks)}
-            className="shrink-0 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white"
+            className="shrink-0 rounded-xl border border-[#4E6FA8] bg-[#4E6FA8] px-5 py-2 text-[15px] font-light text-white shadow-sm transition hover:bg-[#3F5E92]"
           >
             Breaks ({selectedBreaks.length})
           </button>
@@ -317,30 +320,34 @@ function DayAvailabilityRow({ dayLabel, dayValue, coachId, existing, weeklyBreak
           onClick={() => setExpanded(!expanded)}
           className="flex w-full items-center justify-between"
         >
-          <h3 className="text-[18px] font-bold">{dayLabel}</h3>
-          <span className="text-lg">
+          <h3 className="text-[18px] font-light tracking-[0.02em] text-[#2F5A43]">
+            {dayLabel}
+          </h3>
+
+          <span className="text-[18px] text-[#2F5A43]">
             {expanded ? "▼" : "▶"}
           </span>
         </button>
 
         {expanded && (
           <div className="mt-4 space-y-4">
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="mb-1 block text-sm font-semibold">
+                <label className="dashboard-label mb-1 block">
                   Start Time
                 </label>
+
                 <input
                   type="time"
                   step="3600"
                   value={start}
                   onChange={(e) => setStart(e.target.value)}
-                  className="w-full appearance-none rounded-lg border border-black px-3 py-2"
+                  className="w-full appearance-none rounded-xl border border-[#3A5D49] bg-white px-3 py-2 text-[15px] font-light text-[#1F3327] focus:border-[#2F5A43] focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="mb-1 block text-sm font-semibold">
+                <label className="dashboard-label mb-1 block">
                   End Time
                 </label>
 
@@ -349,7 +356,7 @@ function DayAvailabilityRow({ dayLabel, dayValue, coachId, existing, weeklyBreak
                   step="3600"
                   value={end}
                   onChange={(e) => setEnd(e.target.value)}
-                  className="w-full appearance-none rounded-lg border border-black px-3 py-2"
+                  className="w-full appearance-none rounded-xl border border-[#3A5D49] bg-white px-3 py-2 text-[15px] font-light text-[#1F3327] focus:border-[#2F5A43] focus:outline-none"
                 />
               </div>
             </div>
@@ -367,7 +374,7 @@ function DayAvailabilityRow({ dayLabel, dayValue, coachId, existing, weeklyBreak
                     setEnd("19:00")
                     onSave("08:00", "19:00")
                   }}
-                  className="rounded-lg bg-green-600 px-5 py-2 font-semibold text-white"
+                  className="rounded-xl border-2 border-[#3A5D49] bg-[#35684C] px-3 py-2 text-[15px] font-light text-white shadow-sm"
                 >
                   Open
                 </button>
@@ -377,30 +384,32 @@ function DayAvailabilityRow({ dayLabel, dayValue, coachId, existing, weeklyBreak
                     const confirmed = window.confirm(
                       "Confirm closing this day for all future weeks?"
                     )
+
                     if (!confirmed) return
                     setStart("")
                     setEnd("")
                     onSave("", "")
                   }}
-                  className="rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white"
+                  className="rounded-xl border-2 border-[#7F2E2E] bg-[#9B3B3B] px-3 py-2 text-[15px] font-light text-white shadow-sm"
                 >
                   Close
                 </button>
               )}
+
               <button
                 onClick={async () => {
                   await onSave(start, end)
                   alert("Times saved")
                 }}
                 disabled={!start || !end}
-                className="rounded-lg bg-green-600 px-3 py-2 text-sm font-semibold text-white disabled:opacity-50"
+                className="rounded-xl border border-[#3A5D49] bg-[#2F5A43] px-3 py-2 text-[15px] font-light text-white shadow-sm disabled:opacity-50"
               >
                 Save
               </button>
 
               <button
                 onClick={() => setShowBreaks(!showBreaks)}
-                className="rounded-lg bg-blue-600 px-3 py-2 text-sm font-semibold text-white"
+                className="rounded-xl border border-[#4E6FA8] bg-[#4E6FA8] px-3 py-2 text-[15px] font-light text-white shadow-sm"
               >
                 Breaks ({selectedBreaks.length})
               </button>
@@ -410,10 +419,13 @@ function DayAvailabilityRow({ dayLabel, dayValue, coachId, existing, weeklyBreak
       </div>
 
       {showBreaks && start && end && (
-        <div className="mt-4 rounded-lg border p-4">
-          <div className="grid grid-cols-3 gap-2 md:grid-cols-4">
+        <div className="mt-4 rounded-2xl border border-[#3A5D49] bg-[#FBF8F3] p-5">
+          <div className="grid grid-cols-3 gap-3 lg:grid-cols-5">
             {generateHours().map((hour) => (
-              <label key={hour} className="flex items-center gap-2 text-sm">
+              <label
+                key={hour}
+                className="dashboard-value flex items-center gap-2"
+              >
                 <input
                   type="checkbox"
                   checked={selectedBreaks.includes(hour)}
@@ -431,7 +443,7 @@ function DayAvailabilityRow({ dayLabel, dayValue, coachId, existing, weeklyBreak
           </div>
           <button
             onClick={saveBreaks}
-            className="mt-4 rounded-lg bg-black px-4 py-2 font-semibold text-white"
+            className="mt-4 rounded-xl border border-[#3A5D49] bg-[#2F5A43] px-5 py-2 text-[15px] font-light text-white shadow-sm transition hover:bg-[#244634]"
           >
             Save Breaks
           </button>

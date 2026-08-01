@@ -78,113 +78,113 @@ export default function CoachProfilePage() {
 
   return (
     <RequireCoach>
-      <main className="min-h-screen bg-gray-100 p-3 sm:p-10 text-black">
+      <main className="min-h-screen bg-[#F2EEE8] px-4 pt-8 pb-3 sm:p-10 text-[#1F3327]">
 
       <DashboardContainer>
         <div className="mb-4">
-          <h1 className="text-[24px] lg:text-[24px] font-bold">
+          <h1 className="text-[22px] font-light uppercase tracking-[0.12em] text-[#2F5A43]">
             My Profile
           </h1>
 
           <Link
             href="/coach/changepassword"
-            className="mt-0 inline-block text-black underline decoration-blue-600 decoration-2 underline-offset-2"
+            className="dashboard-value mt-1 inline-block text-[#5874A6] underline decoration-[#5874A6] underline-offset-2 hover:text-[#45628F]"
           >
             Change Password
           </Link>
         </div>
 
         <div className="grid gap-8 lg:grid-cols-2">
-          <div className="rounded-2xl bg-white p-6 shadow">
-            <h2 className="mb-4 text-[20px] lg:text-[20px] font-bold">
+          <div className="rounded-3xl border border-[#3A5D49] bg-white p-6 shadow-md">
+            <h2 className="mb-4 text-[20px] font-light tracking-[0.02em] text-[#2F5A43]">
               Client Summary
             </h2>
 
             <div className="space-y-4">
               <div>
-                <p className="font-semibold">
+                <p className="dashboard-label">
                   Total Clients
                 </p>
 
-                <p className="text-xl font-bold">
+                <p className="dashboard-value text-[22px]">
                   {totalClients}
                 </p>
               </div>
 
               <div>
-                <p className="font-semibold">
+                <p className="dashboard-label">
                   Active Clients
                 </p>
 
-                <p className="text-xl font-bold">
+                <p className="dashboard-value text-[22px]">
                   {totalActiveClients}
                 </p>
               </div>
             </div>
           </div>
 
-          <div className="rounded-2xl bg-white p-6 shadow">
-            <h2 className="mb-4 text-[20px] lg:text-[20px] font-bold">
+          <div className="rounded-3xl border border-[#3A5D49] bg-white p-6 shadow-md">
+            <h2 className="mb-4 text-[20px] font-light tracking-[0.02em] text-[#2F5A43]">
               Lesson Defaults
             </h2>
 
             <div className="overflow-x-auto">
-              <table className="w-full border-separate border-spacing-0 overflow-hidden rounded-xl border border-black">
+              <table className="w-full overflow-hidden rounded-2xl border border-[#3A5D49] border-separate border-spacing-0">
                 <thead>
-                  <tr className="border-b bg-gray-50">
-                    <th className="p-3 text-left">
+                  <tr className="border-b border-[#3A5D49] bg-[#F3F0EA]">
+                    <th className="dashboard-label p-4 text-left">
                       Package
                     </th>
 
-                    <th className="p-3 text-left">
+                    <th className="dashboard-label p-4 text-left">
                       Price
                     </th>
 
-                    <th className="p-3 text-left">
+                    <th className="dashboard-label p-4 text-left">
                       Expiration
                     </th>
                   </tr>
                 </thead>
 
                 <tbody>
-                  <tr className="border-b">
-                    <td className="p-3">
+                  <tr className="border-b border-[#3A5D49] hover:bg-[#F6FAF6]">
+                    <td className="dashboard-value p-4">
                       PPV
                     </td>
 
-                    <td className="p-3">
+                    <td className="dashboard-value p-4">
                       RM {coach?.ppv_price ?? 0}
                     </td>
 
-                    <td className="p-3">
+                    <td className="dashboard-value p-4">
                       {coach?.ppv_expiry_months ?? 0} months
                     </td>
                   </tr>
 
                   <tr className="border-b">
-                    <td className="p-3">
+                    <td className="dashboard-value p-4">
                       5 Lessons
                     </td>
 
-                    <td className="p-3">
+                    <td className="dashboard-value p-4">
                       RM {coach?.package_5_price ?? 0}
                     </td>
 
-                    <td className="p-3">
+                    <td className="dashboard-value p-4">
                       {coach?.package_5_expiry_months ?? 0} months
                     </td>
                   </tr>
 
-                  <tr>
-                    <td className="p-3">
+                  <tr className="hover:bg-[#F6FAF6]">
+                    <td className="dashboard-value p-4">
                       10 Lessons
                     </td>
 
-                    <td className="p-3">
+                    <td className="dashboard-value p-4">
                       RM {coach?.package_10_price ?? 0}
                     </td>
 
-                    <td className="p-3">
+                    <td className="dashboard-value p-4">
                       {coach?.package_10_expiry_months ?? 0} months
                     </td>
                   </tr>
@@ -194,12 +194,12 @@ export default function CoachProfilePage() {
           </div>
         </div>
 
-        <div className="mt-8 rounded-2xl bg-white p-6 shadow">
-          <h2 className="mb-4 text-[20px] lg:text-[20px] font-bold">
+        <div className="mt-8 rounded-3xl border border-[#3A5D49] bg-white p-6 shadow-md">
+          <h2 className="mb-4 text-[20px] font-light tracking-[0.02em] text-[#2F5A43]">
             Specializations
           </h2>
 
-          <p>
+          <p className="dashboard-value">
             {coach?.specializations || "None added"}
           </p>
         </div>

@@ -113,7 +113,9 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 
   return (
     <div className="mx-auto max-w-5xl">
-      <h1 className="mb-3 text-[22px] font-bold">Transactions</h1>
+      <h1 className="mb-3 text-[22px] font-light uppercase tracking-[0.12em] text-[#2F5A43]">
+        Transactions
+      </h1>
       <div className="mb-4 flex items-center gap-3">
         <input
           type="text"
@@ -123,7 +125,7 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
             setSearch(e.target.value)
             setPage(1)
           }}
-          className="w-[105px] md:w-[110px] rounded-lg border p-2"
+          className="w-[100px] sm:w-[180px] rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[15px] font-light text-[#1F3327] placeholder:text-[#6D7F72] shadow-sm focus:border-[#2F5A43] focus:outline-none"
         />
 
         <div className="relative">
@@ -133,9 +135,14 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
               setShowStartCalendar(!showStartCalendar)
               setShowEndCalendar(false)
             }}
-            className="rounded-lg border border-black bg-green-100 px-4 py-2 hover:bg-green-200"
+            className="rounded-xl border-2 border-[#3A5D49] bg-[#35684C] px-4 py-2 text-[15px] font-light text-white shadow-sm hover:bg-[#2F5A43]"
           >
-            {startDate ? format(new Date(startDate), "dd/MM/yy") : "Start Date"}
+            {startDate ? format(new Date(startDate), "dd/MM/yy") : (
+							<>
+								<span className="sm:hidden">Start</span>
+								<span className="hidden sm:inline">Start Date</span>
+							</>
+						)}
           </button>
 
           {showStartCalendar && (
@@ -177,9 +184,14 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
               setShowEndCalendar(!showEndCalendar)
               setShowStartCalendar(false)
             }}
-            className="rounded-lg border border-black bg-red-100 px-4 py-2 hover:bg-red-200"
+            className="rounded-xl border-2 border-[#7F2E2E] bg-[#9B3B3B] px-4 py-2 text-[15px] font-light text-white shadow-sm hover:bg-[#842F2F]"
           >
-            {endDate ? format(new Date(endDate), "dd/MM/yy") : "End Date"}
+            {endDate ? format(new Date(endDate), "dd/MM/yy") : (
+							<>
+								<span className="sm:hidden">End</span>
+								<span className="hidden sm:inline">End Date</span>
+							</>
+						)}
           </button>
 
           {showEndCalendar && (
@@ -215,22 +227,28 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-2xl border bg-white">
+      <div className="overflow-hidden rounded-3xl border border-[#3A5D49] bg-white shadow-md">
         {/* Desktop */}
         <table className="hidden w-full md:table">
 					<thead>
-						<tr className="border-b text-left">
-							<th className="p-4">Date</th>
-							<th className="p-4">Price</th>
-							<th className="p-4 text-center">Details</th>
+						<tr className="border-b border-[#3A5D49] bg-[#F3F0EA]">
+							<th className="dashboard-label border-b border-[#3A5D49] p-4 text-left">
+								Date
+							</th>
+							<th className="dashboard-label border-b border-[#3A5D49] p-4 text-left">
+								Price
+							</th>
+							<th className="dashboard-label border-b border-[#3A5D49] p-4 text-center">
+								Details
+							</th>
 						</tr>
 					</thead>
 
 					<tbody>
 						{paginatedGroups.map((group) => (
 							<Fragment key={group.date}>
-								<tr className="border-b last:border-0">
-									<td className="p-4">
+								<tr className="border-b border-[#3A5D49] last:border-0 hover:bg-[#F6FAF6]">
+									<td className="dashboard-value p-4">
 										{new Date(group.date).toLocaleDateString("en-GB", {
 											day: "2-digit",
 											month: "2-digit",
@@ -238,47 +256,60 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 										})}
 									</td>
 
-									<td className="p-4">${group.total.toFixed(0)}</td>
+									<td className="dashboard-value p-4">
+										RM {(group.total).toFixed(2)}
+									</td>
 
 									<td className="p-4 text-center">
-										<button onClick={() => toggleRow(group.date)}>
-											{expandedDates.includes(group.date) ? "▲" : "▼"}
+										<button
+											type="button"
+											className="text-[#2F5A43] transition hover:text-[#1F3327]"
+											onClick={() => toggleRow(group.date)}
+										>
+											{expandedDates.includes(group.date) ? (
+												<ChevronUp size={18} />
+											) : (
+												<ChevronDown size={18} />
+											)}
 										</button>
 									</td>
 								</tr>
 
 								{expandedDates.includes(group.date) && (
 									<tr>
-										<td colSpan={3} className="border-t bg-white px-4 py-4">
-											<div className="mx-auto w-fit rounded-lg border border-gray-300 bg-gray-50 p-4">
+										<td colSpan={3} className="border-t border-[#3A5D49] bg-white px-5 py-5">
+											<div className="mx-auto w-fit rounded-2xl border border-[#3A5D49] bg-white shadow-sm">
 												<table className="w-auto text-sm">
 													<thead>
-														<tr className="border-b">
-															<th className="px-4 py-2 text-left">Price</th>
-															<th className="px-4 py-2 text-left">Purchase</th>
-															<th className="px-4 py-2 text-left">Method</th>
-															<th className="px-4 py-2 text-left">Client</th>
+														<tr className="border-b border-[#3A5D49]">
+															<th className="dashboard-label px-4 py-2 text-left">Price</th>
+															<th className="dashboard-label px-4 py-2 text-left">Purchase</th>
+															<th className="dashboard-label px-4 py-2 text-left">Method</th>
+															<th className="dashboard-label px-4 py-2 text-left">Client</th>
 														</tr>
 													</thead>
 
 													<tbody>
 														{group.transactions.map((transaction) => (
-															<tr key={transaction.id} className="border-b last:border-0">
-																<td className="px-4 py-2">
+															<tr
+																key={transaction.id}
+																className="border-b border-[#3A5D49] last:border-0 hover:bg-[#F6FAF6]"
+															>
+																<td className="dashboard-value px-4 py-2">
 																	${(transaction.price ?? 0).toFixed(0)}
 																</td>
 
-																<td className="px-4 py-2">
+																<td className="dashboard-value px-4 py-2">
 																	{transaction.transaction_name}
 																</td>
 
-																<td className="px-4 py-2">
+																<td className="dashboard-value px-4 py-2">
 																	<div className="flex items-center gap-2">
 																		{transaction.receipt_url && (
 																			<button
 																				type="button"
 																				onClick={() => setReceiptUrl(transaction.receipt_url)}
-																				className="text-blue-600 hover:text-blue-800"
+																				className="text-[#5874A6] transition hover:text-[#45628F]"
 																				title="View Receipt"
 																			>
 																				<ImageIcon size={16} />
@@ -289,7 +320,7 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 																	</div>
 																</td>
 
-																<td className="px-4 py-2">
+																<td className="dashboard-value px-4 py-2">
 																	{transaction.client_name}
 																</td>
 															</tr>
@@ -315,7 +346,7 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 
         {/* Mobile */}
         <div className="md:hidden">
-          <div className="grid grid-cols-[120px_1fr_24px] border-b px-4 py-3 text-sm font-semibold">
+          <div className="dashboard-label grid grid-cols-[120px_1fr_24px] border-b border-[#3A5D49] bg-[#F3F0EA] px-4 py-3">
             <div>Date</div>
             <div>Price</div>
             <div />
@@ -324,10 +355,10 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 						const expanded = expandedDates.includes(group.date)
 
 						return (
-							<div key={group.date} className="border-b last:border-0">
+							<div key={group.date} className="border-b border-[#3A5D49] last:border-0">
 								<button
 									onClick={() => toggleRow(group.date)}
-									className="grid w-full grid-cols-[120px_1fr_24px] items-center gap-3 p-4 text-left"
+									className="dashboard-value grid w-full grid-cols-[120px_1fr_24px] items-center gap-3 p-4 text-left"
 								>
 									<span className="font-medium">
 										{new Date(group.date).toLocaleDateString("en-GB", {
@@ -345,30 +376,30 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 								</button>
 
 								{expanded && (
-									<div className="border-t bg-white px-3 py-3">
-										<div className="mx-auto w-fit rounded-lg border border-gray-300 bg-gray-50 p-2">
+									<div className="border-t border-[#3A5D49] bg-white px-3 py-3">
+										<div className="mx-auto w-fit rounded-2xl border border-[#3A5D49] bg-white shadow-sm">
 											<table className="w-auto text-sm">
 												<thead>
-													<tr className="border-b">
-														<th className="px-1 py-1 text-left">Price</th>
-														<th className="px-2 py-1 text-left">Purchase</th>
-														<th className="px-2 py-1 text-left">Method</th>
-														<th className="px-2 py-1 text-left">Client</th>
+													<tr className="border-b border-[#3A5D49] bg-[#F3F0EA]">
+														<th className="dashboard-label px-2 py-2 text-left">Price</th>
+														<th className="dashboard-label px-2 py-2 text-left">Purchase</th>
+														<th className="dashboard-label px-2 py-2 text-left">Method</th>
+														<th className="dashboard-label px-2 py-2 text-left">Client</th>
 													</tr>
 												</thead>
 
 												<tbody>
 													{group.transactions.map((transaction) => (
 														<tr key={transaction.id} className="border-b last:border-0">
-															<td className="px-1 py-2">
-																${(transaction.price ?? 0).toFixed(0)}
+															<td className="dashboard-value px-2 py-2">
+																RM {(transaction.price ?? 0).toFixed(2)}
 															</td>
 
-															<td className="px-2 py-2">
+															<td className="dashboard-value px-2 py-2">
 																{transaction.transaction_name}
 															</td>
 
-															<td className="px-2 py-2">
+															<td className="dashboard-value px-2 py-2">
 																<div className="flex items-center gap-2">
 																	{transaction.receipt_url && (
 																		<button
@@ -411,19 +442,19 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
         <button
           onClick={() => setPage((p) => Math.max(1, p - 1))}
           disabled={page === 1}
-          className="rounded border px-3 py-1 disabled:opacity-50"
+          className="rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[13px] font-light tracking-[0.04em] text-[#1F3327] shadow-sm transition hover:bg-[#F6FAF6] disabled:opacity-50"
         >
           Previous
         </button>
 
-        <span>
+        <span className="dashboard-value">
           Page {page} of {totalPages}
         </span>
 
         <button
           onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
           disabled={page === totalPages}
-          className="rounded border px-3 py-1 disabled:opacity-50"
+          className="rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[13px] font-light tracking-[0.04em] text-[#1F3327] shadow-sm transition hover:bg-[#F6FAF6] disabled:opacity-50"
         >
           Next
         </button>

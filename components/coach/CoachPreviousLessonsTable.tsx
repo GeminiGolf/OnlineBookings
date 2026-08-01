@@ -72,7 +72,10 @@ export default function CoachPreviousLessonsTable({ lessons }: Props) {
   const paginatedLessons = filteredLessons.slice((page - 1) * lessonsPerPage, page * lessonsPerPage)
   return (
     <div className="mx-auto max-w-5xl">
-      <h1 className="mb-6 text-[22px] font-bold">Previous Lessons</h1>
+      <h1 className="mb-3 text-[22px] font-light uppercase tracking-[0.12em] text-[#2F5A43]">
+        Previous Lessons
+      </h1>
+
       <div className="mb-4 flex items-center gap-3">
         <input
           type="text"
@@ -82,7 +85,7 @@ export default function CoachPreviousLessonsTable({ lessons }: Props) {
             setSearch(e.target.value)
             setPage(1)
           }}
-          className="w-[105px] md:w-[110px] rounded-lg border p-2"
+          className="w-[95px] sm:w-[180px] rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[15px] font-light text-[#1F3327] placeholder:text-[#6D7F72] shadow-sm focus:border-[#2F5A43] focus:outline-none"
         />
 
         <div className="flex gap-3">
@@ -93,9 +96,14 @@ export default function CoachPreviousLessonsTable({ lessons }: Props) {
                 setShowStartCalendar(!showStartCalendar)
                 setShowEndCalendar(false)
               }}
-              className="rounded-lg border border-black bg-green-100 px-4 py-2 text-black hover:bg-green-200"
+              className="rounded-xl border-2 border-[#3A5D49] bg-[#35684C] px-4 py-2 text-[15px] font-light text-white shadow-sm hover:bg-[#2F5A43]"
             >
-              {fromDate ? format(new Date(fromDate), "dd MMM yyyy") : "Start Date"}
+              {fromDate ? format(new Date(fromDate), "dd/MM/yy") : (
+                <>
+                  <span className="sm:hidden">Start</span>
+                  <span className="hidden sm:inline">Start Date</span>
+                </>
+              )}
             </button>
 
             {showStartCalendar && (
@@ -138,9 +146,14 @@ export default function CoachPreviousLessonsTable({ lessons }: Props) {
                 setShowEndCalendar(!showEndCalendar)
                 setShowStartCalendar(false)
               }}
-              className="rounded-lg border border-black bg-red-100 px-4 py-2 text-black hover:bg-red-200"
+              className="rounded-xl border-2 border-[#7F2E2E] bg-[#9B3B3B] px-4 py-2 text-[15px] font-light text-white shadow-sm hover:bg-[#842F2F]"
             >
-              {toDate ? format(new Date(toDate), "dd MMM yyyy") : "End Date"}
+              {toDate ? format(new Date(toDate), "dd/MM/yy") : (
+                <>
+                  <span className="sm:hidden">End</span>
+                  <span className="hidden sm:inline">End Date</span>
+                </>
+              )}
             </button>
 
             {showEndCalendar && (
@@ -178,31 +191,34 @@ export default function CoachPreviousLessonsTable({ lessons }: Props) {
         </div>
       </div>
 
-      <div className="hidden md:block overflow-hidden rounded-xl border">
+      <div className="hidden overflow-hidden rounded-3xl border border-[#3A5D49] shadow-md md:block">
         <table className="w-full">
           <thead>
-            <tr className="border-b bg-gray-50">
-              <th className="p-3 text-left">Date</th>
-              <th className="p-3 text-left">Client Name</th>
-              <th className="p-3 text-left">Lesson Notes</th>
+            <tr className="border-b border-[#3A5D49] bg-[#F3F0EA]">
+              <th className="dashboard-label p-4 text-left">Date</th>
+              <th className="dashboard-label p-4 text-left">Client Name</th>
+              <th className="dashboard-label p-4 text-left">Lesson Notes</th>
             </tr>
           </thead>
 
           <tbody>
             {paginatedLessons.map((lesson) => (
-              <tr key={lesson.id} className="border-b">
-                <td className="p-3">
+              <tr
+                key={lesson.id}
+                className="border-b border-[#3A5D49] hover:bg-[#F6FAF6]"
+              >
+                <td className="dashboard-value p-4">
                   {new Date(lesson.lesson_date).toLocaleDateString("en-GB", {
                     day: "2-digit",
                     month: "2-digit",
                     year: "2-digit",
                   })}
                 </td>
-                <td className="p-3">
+                <td className="dashboard-value p-4">
                   {lesson.clients ? (
                     <a
                       href={`/coach/clients/${lesson.clients.id}`}
-                      className="text-blue-600 hover:underline"
+                      className="dashboard-value text-[#5874A6] underline decoration-[#5874A6] underline-offset-2 hover:text-[#45628F]"
                     >
                       {lesson.clients.preferred_name
                         ? `(${lesson.clients.preferred_name}) `
@@ -214,7 +230,7 @@ export default function CoachPreviousLessonsTable({ lessons }: Props) {
                   )}
                 </td>
                 <td className="p-3">
-                  <td className="p-3">
+                  <td className="p-0">
                     <button
                       onClick={() => {
                         setSelectedLesson(lesson)
@@ -235,16 +251,16 @@ export default function CoachPreviousLessonsTable({ lessons }: Props) {
       <div className="md:hidden">
         <div className="mb-2 grid grid-cols-[120px_1fr_24px] px-4 text-sm font-semibold">
           <div>Date</div>
-          <div>Client Name</div>
+          <div className="-ml-4">Client Name</div>
           <div />
         </div>
 
         <div className="space-y-2">
           {paginatedLessons.map((lesson) => (
-            <div key={lesson.id} className="rounded-lg border bg-white">
+            <div key={lesson.id} className="rounded-xl border border-[#3A5D49] bg-white">
               <button
                 onClick={() => setExpandedId(expandedId === lesson.id ? null : lesson.id)}
-                className="grid w-full grid-cols-[120px_1fr_24px] items-center gap-3 p-3 text-left"
+                className="dashboard-value grid w-full grid-cols-[120px_1fr_24px] items-center gap-3 p-4 text-left"
               >
                 <span>
                   {new Date(lesson.lesson_date).toLocaleDateString("en-GB", {
@@ -253,11 +269,11 @@ export default function CoachPreviousLessonsTable({ lessons }: Props) {
                     year: "2-digit",
                   })}
                 </span>
-                <span className="text-left">
+                <span className="-ml-8 text-left">
                   {lesson.clients ? (
                     <a
                       href={`/coach/clients/${lesson.clients.id}`}
-                      className="text-blue-600 hover:underline"
+                      className="dashboard-value text-[#5874A6] underline decoration-[#5874A6] underline-offset-2 hover:text-[#45628F]"
                       onClick={(e) => e.stopPropagation()}
                     >
                       {lesson.clients.preferred_name
@@ -304,17 +320,19 @@ export default function CoachPreviousLessonsTable({ lessons }: Props) {
         <button
           onClick={() => setPage((p) => Math.max(1, p - 1))}
           disabled={page === 1}
-          className="rounded border px-3 py-1 disabled:opacity-50"
+          className="rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[13px] font-light tracking-[0.04em] text-[#1F3327] shadow-sm transition hover:bg-[#F6FAF6] disabled:opacity-50"
         >
           Previous
         </button>
-        <span>
+
+        <span className="dashboard-value">
           Page {page} of {totalPages}
         </span>
+
         <button
           onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
           disabled={page === totalPages}
-          className="rounded border px-3 py-1 disabled:opacity-50"
+          className="rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[13px] font-light tracking-[0.04em] text-[#1F3327] shadow-sm transition hover:bg-[#F6FAF6] disabled:opacity-50"
         >
           Next
         </button>
