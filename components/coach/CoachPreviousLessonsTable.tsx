@@ -207,18 +207,19 @@ export default function CoachPreviousLessonsTable({ lessons }: Props) {
                 key={lesson.id}
                 className="border-b border-[#3A5D49] hover:bg-[#F6FAF6]"
               >
-                <td className="dashboard-value p-4">
+                <td className="p-4 text-[15px] font-light text-[#2F5A43]">
                   {new Date(lesson.lesson_date).toLocaleDateString("en-GB", {
                     day: "2-digit",
                     month: "2-digit",
                     year: "2-digit",
                   })}
                 </td>
-                <td className="dashboard-value p-4">
+
+                <td className="p-4 text-[15px] font-light text-[#2F5A43]">
                   {lesson.clients ? (
                     <a
                       href={`/coach/clients/${lesson.clients.id}`}
-                      className="dashboard-value text-[#5874A6] underline decoration-[#5874A6] underline-offset-2 hover:text-[#45628F]"
+                      className="text-[#2F5A43] underline decoration-[#2F5A43] underline-offset-2 hover:text-[#2F5A43]"
                     >
                       {lesson.clients.preferred_name
                         ? `(${lesson.clients.preferred_name}) `
@@ -229,18 +230,17 @@ export default function CoachPreviousLessonsTable({ lessons }: Props) {
                     "-"
                   )}
                 </td>
+
                 <td className="p-3">
-                  <td className="p-0">
-                    <button
-                      onClick={() => {
-                        setSelectedLesson(lesson)
-                        setNoteText(lesson.lesson_notes || "")
-                      }}
-                      className="rounded px-2 py-1 text-base hover:bg-gray-100"
-                    >
-                      ✏️
-                    </button>
-                  </td>
+                  <button
+                    onClick={() => {
+                      setSelectedLesson(lesson)
+                      setNoteText(lesson.lesson_notes || "")
+                    }}
+                    className="rounded px-2 py-1 text-base hover:bg-gray-100"
+                  >
+                    ✏️
+                  </button>
                 </td>
               </tr>
             ))}

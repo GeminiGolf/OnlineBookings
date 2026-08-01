@@ -317,17 +317,22 @@ export default function CoachPackagesTable({ packages }: Props) {
 
                     return (
                       <tr key={pkg.id}>
-                        <td className="dashboard-value p-4">{remaining}</td>
-                        <td className="dashboard-value p-4">
+                        <td className="p-4 text-[15px] font-light text-[#2F5A43]">
+                          {remaining}
+                        </td>
+
+                        <td className="p-4 text-[15px] font-light text-[#2F5A43]">
                           {formatExpiry(pkg.expiration_date)}
                         </td>
-                        <td className="dashboard-value p-4">
+
+                        <td className="p-4 text-[15px] font-light text-[#2F5A43]">
                           {pkg.transaction_name}
                         </td>
+
                         <td className="p-4">
                           <Link
                             href={`/coach/clients/${pkg.client_id}`}
-                            className="dashboard-value text-[#5874A6] underline underline-offset-2 decoration-[#5874A6] transition hover:text-[#45628F]"
+                            className="text-[15px] font-light text-[#2F5A43] underline decoration-[#2F5A43] underline-offset-2 transition hover:text-[#2F5A43]"
                           >
                             {pkg.client_name}
                           </Link>
@@ -457,17 +462,22 @@ export default function CoachPackagesTable({ packages }: Props) {
 
                     return (
                       <tr key={pkg.id} className="border-b last:border-0">
-                        <td className="dashboard-value p-4">{remaining}</td>
-                        <td className="dashboard-value p-4">
+                        <td className="p-4 text-[15px] font-light text-[#2F5A43]">
+                          {remaining}
+                        </td>
+
+                        <td className="p-4 text-[15px] font-light text-[#2F5A43]">
                           {formatExpiry(pkg.expiration_date)}
                         </td>
-                        <td className="dashboard-value p-4">
+
+                        <td className="p-4 text-[15px] font-light text-[#2F5A43]">
                           {pkg.transaction_name}
                         </td>
+
                         <td className="p-4">
                           <Link
                             href={`/coach/clients/${pkg.client_id}`}
-                            className="dashboard-value text-[#5874A6] underline underline-offset-2 decoration-[#5874A6] transition hover:text-[#45628F]"
+                            className="text-[15px] font-light text-[#2F5A43] underline decoration-[#2F5A43] underline-offset-2 transition hover:text-[#2F5A43]"
                           >
                             {pkg.client_name}
                           </Link>

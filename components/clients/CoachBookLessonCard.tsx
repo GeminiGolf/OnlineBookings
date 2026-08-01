@@ -181,7 +181,7 @@ export default function CoachBookLessonCard({
         </h3>
 
         {timeSlots.length === 0 ? (
-          <p className="dashboard-value text-[#6D7F72]">
+          <p className="text-[15px] font-light text-[#2F5A43]">
             No available slots.
           </p>
         ) : (

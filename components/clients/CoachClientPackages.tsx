@@ -84,7 +84,10 @@ export default function CoachClientPackages({ packages }: Props) {
       {/* Mobile */}
       <div className="w-full space-y-3 lg:hidden">
         {paginatedPackages.map((pkg) => (
-          <div key={pkg.id} className="w-full rounded-2xl border border-[#B9B2A8] bg-[#FEFDFC] p-4">
+          <div
+            key={pkg.id}
+            className="w-full rounded-2xl border border-[#3A5D49] bg-[#FEFDFC] p-4"
+          >
             <button
               onClick={() => setExpandedPackageId(expandedPackageId === pkg.id ? null : pkg.id)}
               className="flex w-full items-center justify-between"
@@ -92,11 +95,14 @@ export default function CoachClientPackages({ packages }: Props) {
               <div className="flex flex-1 items-center justify-between gap-6">
                 <div>
                   <div className="dashboard-label">Balance</div>
-                  <div className="text-[15px] font-light text-black">{(pkg.lessons_added || 0) - (pkg.lessons_used || 0)}</div>
+                  <div className="text-[15px] font-light text-[#2F5A43]">
+                    {(pkg.lessons_added || 0) - (pkg.lessons_used || 0)}
+                  </div>
                 </div>
 
                 <div className="text-center">
                   <div className="dashboard-label">Receipt</div>
+
                   <div>
                     {pkg.receipt_url ? (
                       <span
@@ -104,16 +110,17 @@ export default function CoachClientPackages({ packages }: Props) {
                           e.stopPropagation()
                           viewReceipt(pkg.receipt_url)
                         }}
-                        className="cursor-pointer"
+                        className="cursor-pointer text-[#2F5A43]"
                       >
                         📷
                       </span>
                     ) : (
                       <label
                         onClick={(e) => e.stopPropagation()}
-                        className="cursor-pointer rounded-lg border border-[#8D857A] bg-[#FEFDFC] px-3 py-1 sm:py-2 text-[13px] font-light tracking-[0.06em] text-black transition hover:bg-[#F7F3EE]"
+                        className="cursor-pointer rounded-lg border border-[#3A5D49] bg-[#FEFDFC] px-3 py-1 sm:py-2 text-[13px] font-light tracking-[0.06em] text-[#2F5A43] transition hover:bg-[#F7F3EE]"
                       >
                         Upload
+
                         <input
                           type="file"
                           accept="image/*"
@@ -129,13 +136,16 @@ export default function CoachClientPackages({ packages }: Props) {
                     )}
                   </div>
                 </div>
-              </div>
 
-              <span className="ml-3 text-[18px]">{expandedPackageId === pkg.id ? "▲" : "▼"}</span>
+                </div>
+
+                <span className="ml-3 text-[18px] text-[#2F5A43]">
+                  {expandedPackageId === pkg.id ? "▲" : "▼"}
+                </span>
             </button>
 
             {expandedPackageId === pkg.id && (
-              <div className="dashboard-value mt-4 space-y-2 border-t border-[#B9B2A8] pt-4">
+              <div className="mt-4 space-y-2 border-t border-[#3A5D49] pt-4 text-[15px] font-light text-[#2F5A43]">
                 <div>Balance: {(pkg.lessons_added || 0) - (pkg.lessons_used || 0)}</div>
                 <div>Purchase: {pkg.transaction_name}</div>
                 <div>Purchased on: {formatDate(pkg.purchase_date)}</div>
@@ -157,19 +167,19 @@ export default function CoachClientPackages({ packages }: Props) {
             <button
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={page === 1}
-              className="rounded-lg border border-[#8D857A] bg-[#FEFDFC] px-4 py-2 text-[13px] font-light tracking-[0.06em] text-black transition hover:bg-[#F7F3EE] disabled:opacity-50"
+              className="rounded-lg border border-[#3A5D49] bg-[#FEFDFC] px-4 py-2 text-[13px] font-light tracking-[0.06em] text-[#2F5A43] transition hover:bg-[#F7F3EE] disabled:opacity-50"
             >
               Previous
             </button>
 
-            <span>
+            <span className="text-[15px] font-light text-[#2F5A43]">
               {page} of {totalPages}
             </span>
 
             <button
               onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
               disabled={page === totalPages}
-              className="rounded-lg border border-[#8D857A] bg-[#FEFDFC] px-4 py-2 text-[13px] font-light tracking-[0.06em] text-black transition hover:bg-[#F7F3EE] disabled:opacity-50"
+              className="rounded-lg border border-[#3A5D49] bg-[#FEFDFC] px-4 py-2 text-[13px] font-light tracking-[0.06em] text-[#2F5A43] transition hover:bg-[#F7F3EE] disabled:opacity-50"
             >
               Next
             </button>
@@ -181,36 +191,54 @@ export default function CoachClientPackages({ packages }: Props) {
       <div className="hidden overflow-hidden rounded-2xl border border-[#3A5D49] lg:block">
         <table className="w-full">
           <thead>
-            <tr className="border-b border-[#B9B2A8] bg-[#F3F0EA]">
-              <th className="dashboard-label p-3 text-left">Balance</th>
-              <th className="dashboard-label p-3 text-left">Expiry</th>
-              <th className="dashboard-label p-3 text-left">Method</th>
-              <th className="dashboard-label p-3 text-center">Receipt</th>
-              <th className="dashboard-label p-3 text-center"></th>
+            <tr className="border-b border-[#3A5D49] bg-[#F3F0EA]">
+              <th className="dashboard-label border-b border-[#3A5D49] p-3 text-left">
+                Balance
+              </th>
+
+              <th className="dashboard-label border-b border-[#3A5D49] p-3 text-left">
+                Expiry
+              </th>
+
+              <th className="dashboard-label border-b border-[#3A5D49] p-3 text-left">
+                Method
+              </th>
+
+              <th className="dashboard-label border-b border-[#3A5D49] p-3 text-center">
+                Receipt
+              </th>
+
+              <th className="dashboard-label border-b border-[#3A5D49] p-3 text-center">
+              </th>
             </tr>
           </thead>
 
           <tbody>
             {paginatedPackages.map((pkg) => (
               <React.Fragment key={pkg.id}>
-                <tr className="border-b border-[#B9B2A8] transition-colors hover:bg-[#F7F3EE]">
-                  <td className="dashboard-value p-3">
+                <tr className="border-b border-[#3A5D49] transition-colors hover:bg-[#F7F3EE] last:border-b-0">
+                  <td className="p-3 text-[15px] font-light text-[#2F5A43]">
                     {(pkg.lessons_added || 0) - (pkg.lessons_used || 0)}
                   </td>
 
-                  <td className="dashboard-value p-3">
+                  <td className="p-3 text-[15px] font-light text-[#2F5A43]">
                     {formatDate(pkg.expiration_date)}
                   </td>
 
-                  <td className="dashboard-value p-3">
+                  <td className="p-3 text-[15px] font-light text-[#2F5A43]">
                     {pkg.payment_method}
                   </td>
 
-                  <td className="dashboard-value p-3 text-center">
+                  <td className="p-3 text-center">
                     {pkg.receipt_url ? (
-                      <button onClick={() => viewReceipt(pkg.receipt_url)}>📷</button>
+                      <button
+                        onClick={() => viewReceipt(pkg.receipt_url)}
+                        className="text-[#2F5A43]"
+                      >
+                        📷
+                      </button>
                     ) : (
-                      <label className="cursor-pointer rounded-lg border border-[#8D857A] bg-[#FEFDFC] px-3 py-2 text-[13px] font-light tracking-[0.06em] text-black transition hover:bg-[#F7F3EE]">
+                      <label className="cursor-pointer rounded-lg border border-[#8D857A] bg-[#FEFDFC] px-3 py-2 text-[13px] font-light tracking-[0.06em] text-[#2F5A43] transition hover:bg-[#F7F3EE]">
                         Upload
                         <input
                           type="file"
@@ -228,16 +256,21 @@ export default function CoachClientPackages({ packages }: Props) {
                   </td>
 
                   <td className="p-3 text-center">
-                    <button onClick={() => setExpandedPackageId(expandedPackageId === pkg.id ? null : pkg.id)}>
+                    <button
+                      className="text-[#2F5A43]"
+                      onClick={() =>
+                        setExpandedPackageId(expandedPackageId === pkg.id ? null : pkg.id)
+                      }
+                    >
                       {expandedPackageId === pkg.id ? "▲" : "▼"}
                     </button>
                   </td>
                 </tr>
 
                 {expandedPackageId === pkg.id && (
-                  <tr className="border-b border-[#B9B2A8] bg-[#F7F3EE]">
+                  <tr className="border-b border-[#3A5D49] transition-colors hover:bg-[#F7F3EE] last:border-b-0">
                     <td colSpan={5} className="p-4">
-                      <div className="dashboard-value space-y-2">
+                      <div className="space-y-2 text-[15px] font-light text-[#2F5A43]">
                         <div>Balance: {(pkg.lessons_added || 0) - (pkg.lessons_used || 0)}</div>
                         <div>Purchase: {pkg.transaction_name}</div>
                         <div>Purchased on: {formatDate(pkg.purchase_date)}</div>

@@ -89,7 +89,8 @@ export default async function CoachClientProfilePage({ params }: Props) {
       <DashboardContainer>
         <Link
           href="/coach/clients"
-          className="mb-3 sm:mb-6 inline-block rounded-xl border border-[#3A5D49] bg-white px-5 py-2 text-[13px] font-medium tracking-[0.04em] text-[#1F3327] shadow-sm transition hover:bg-[#F6FAF6]"
+          className="mb-4 inline-block rounded-xl border border-[#3A5D49] bg-white px-5 py-2 text-[15px] font-light tracking-[0.04em] text-[#2F5A43] shadow-sm transition hover:bg-[#F6FAF6] hover:text-[#2F5A43]"
+          style={{ color: "#2F5A43" }}
         >
           ← Back to Clients
         </Link>
@@ -99,7 +100,7 @@ export default async function CoachClientProfilePage({ params }: Props) {
             <details>
               <summary className="relative flex cursor-pointer items-center justify-center list-none px-6 py-2">
                 <div className="flex items-center justify-center gap-5">
-                  <h1 className="dashboard-heading text-[20px]">
+                  <h1 className="dashboard-heading text-[px]">
                     {client.preferred_name
                       ? `${client.preferred_name} ${client.last_name}`
                       : `${client.first_name} ${client.last_name}`}
@@ -197,7 +198,7 @@ export default async function CoachClientProfilePage({ params }: Props) {
               ))}
 
               {(!upcomingLessons || upcomingLessons.length === 0) && (
-                <p className="dashboard-value text-[#6D7F72]">
+                <p className="text-[15px] font-light text-[#2F5A43]">
                   No upcoming lessons.
                 </p>
               )}

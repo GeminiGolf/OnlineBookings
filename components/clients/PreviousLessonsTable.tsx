@@ -85,9 +85,15 @@ export default function PreviousLessonsTable({ lessons }: Props) {
                   key={lesson.id}
                   className="hover:bg-[#F6FAF6]"
                 >
-                  <td className="dashboard-value p-4">{formattedDate}</td>
-                  <td className="dashboard-value p-4">{method}</td>
-                  <td className="dashboard-value p-4">
+                  <td className="p-4 text-[15px] font-light text-[#2F5A43]">
+                    {formattedDate}
+                  </td>
+
+                  <td className="p-4 text-[15px] font-light text-[#2F5A43]">
+                    {method}
+                  </td>
+
+                  <td className="p-4">
                     <button
                       onClick={() => {
                         setSelectedLesson(lesson)
@@ -111,12 +117,12 @@ export default function PreviousLessonsTable({ lessons }: Props) {
             setPage((p) => Math.max(1, p - 1))
           }
           disabled={page === 1}
-          className="rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[13px] font-light tracking-[0.04em] text-[#1F3327] shadow-sm transition hover:bg-[#F6FAF6] disabled:opacity-50"
+          className="rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[13px] font-light tracking-[0.04em] text-[#2F5A43] shadow-sm transition hover:bg-[#F6FAF6] disabled:opacity-50"
         >
           Previous
         </button>
 
-        <span className="dashboard-value">
+        <span className="text-[15px] font-light text-[#2F5A43]">
           Page {page} of {totalPages}
         </span>
 
@@ -125,7 +131,7 @@ export default function PreviousLessonsTable({ lessons }: Props) {
             setPage((p) => Math.min(totalPages, p + 1))
           }
           disabled={page === totalPages}
-          className="rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[13px] font-light tracking-[0.04em] text-[#1F3327] shadow-sm transition hover:bg-[#F6FAF6] disabled:opacity-50"
+          className="rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[13px] font-light tracking-[0.04em] text-[#2F5A43] shadow-sm transition hover:bg-[#F6FAF6] disabled:opacity-50"
         >
           Next
         </button>

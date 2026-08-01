@@ -81,23 +81,25 @@ export default function ClientsSearch({ clients }: Props) {
             key={client.id}
             className="overflow-hidden rounded-2xl border border-[#3A5D49] bg-white"
           >
-            <summary className="cursor-pointer list-none p-3 text-[14px] font-light tracking-[0.06em] text-[#1F3327]">
+            <summary className="cursor-pointer list-none p-3 text-[14px] font-light tracking-[0.06em] text-[#2F5A43]">
               {client.preferred_name
                 ? `(${client.preferred_name}) ${client.last_name}`
                 : `${client.first_name} ${client.last_name}`}
             </summary>
 
-            <div className="border-t border-[#3A5D49] p-3 text-[14px] font-light tracking-[0.05em] text-[#1F3327]">
+            <div className="border-t border-[#3A5D49] p-3 text-[14px] font-light tracking-[0.05em] text-[#2F5A43]">
               <p>
-                <span className="font-medium">Phone:</span>{" "}
+                <span className="font-medium text-[#2F5A43]">Phone:</span>{" "}
                 {client.phone || "-"}
               </p>
+
               <p className="mt-2">
-                <span className="font-medium">Email:</span>{" "}
+                <span className="font-medium text-[#2F5A43]">Email:</span>{" "}
                 {client.email || "-"}
               </p>
+
               <p className="mt-2">
-                <span className="font-medium">Lessons Remaining:</span>{" "}
+                <span className="font-medium text-[#2F5A43]">Lessons Remaining:</span>{" "}
                 {client.lessons_remaining}
               </p>
 
@@ -131,20 +133,29 @@ export default function ClientsSearch({ clients }: Props) {
 
           <tbody>
             {paginatedClients.map((client) => (
-              <tr key={client.id} className="border-b border-[#3A5D49] transition hover:bg-[#F6FAF6]">
-                <td className="dashboard-value p-4 text-[#1F3327]">
+              <tr className="border-b border-[#3A5D49] transition hover:bg-[#F6FAF6]" key={client.id}>
+                <td className="p-4 text-[15px] font-light text-[#2F5A43]">
                   <Link
                     href={`/coach/clients/${client.id}`}
-                    className="block w-full"
+                    className="block w-full text-[#2F5A43]"
                   >
                     {client.preferred_name
                       ? `(${client.preferred_name}) ${client.last_name}`
                       : `${client.first_name} ${client.last_name}`}
                   </Link>
                 </td>
-                <td className="dashboard-value p-4 text-[#1F3327]">{client.phone || "-"}</td>
-                <td className="dashboard-value p-4 text-[#1F3327]">{client.email || "-"}</td>
-                <td className="dashboard-value p-4 text-[#1F3327]">{client.lessons_remaining}</td>
+
+                <td className="p-4 text-[15px] font-light text-[#2F5A43]">
+                  {client.phone || "-"}
+                </td>
+
+                <td className="p-4 text-[15px] font-light text-[#2F5A43]">
+                  {client.email || "-"}
+                </td>
+
+                <td className="p-4 text-[15px] font-light text-[#2F5A43]">
+                  {client.lessons_remaining}
+                </td>
               </tr>
             ))}
 

@@ -22,7 +22,8 @@ export default async function CoachClientsPage() {
       <DashboardContainer>
                 <Link
                   href="/coach/dashboard"
-                  className="mb-3 sm:mb-6 inline-block rounded-xl border border-[#3A5D49] bg-white px-5 py-2 text-[13px] font-light tracking-[0.04em] text-[#1F3327] shadow-sm transition hover:bg-[#F6FAF6]"
+                  className="mb-3 inline-block rounded-xl border border-[#3A5D49] bg-white px-5 py-2 text-[15px] font-light text-[#2F5A43] shadow-sm transition hover:bg-[#F6FAF6] hover:text-[#2F5A43] sm:mb-6"
+                  style={{ color: "#2F5A43" }}
                 >
                   ← Back to Dashboard
                 </Link>
