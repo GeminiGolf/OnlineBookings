@@ -100,11 +100,15 @@ body {
   @apply text-[15px] font-light text-[#1F3327];
 }
 
-.coach-calendar .rdp-caption_label {
+.coach-calendar .rdp-month_caption {
   font-size: 1rem;
   font-weight: 300;
   letter-spacing: 0.12em;
   text-transform: uppercase;
+  color: #2F5A43 !important;
+}
+
+.coach-calendar .rdp-month_caption span {
   color: #2F5A43 !important;
 }
 

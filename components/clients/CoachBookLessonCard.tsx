@@ -150,7 +150,7 @@ export default function CoachBookLessonCard({
 
       <div className="mx-auto w-fit overflow-hidden rounded-2xl border border-[#3A5D49] bg-[#FBF8F3] px-2 pt-2 pb-0 text-sm">
         <DayPicker
-          className="mt-2 -mb-8 origin-top scale-90 lg:scale-[0.82]"
+          className="coach-calendar mt-2 -mb-8 origin-top scale-90 lg:scale-[0.82]"
           mode="single"
           selected={selectedDate}
           onSelect={(date) => {

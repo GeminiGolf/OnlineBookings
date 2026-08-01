@@ -715,6 +715,20 @@ export default function ClientDashboard() {
             <div className="mx-auto w-fit overflow-hidden rounded-2xl border border-[#3A5D49] bg-[#FBF8F3] px-2 pt-2 pb-0 text-sm">
               <DayPicker
                 className="mt-2 -mb-8 scale-90 lg:scale-[0.82] origin-top"
+                styles={{
+                  weekday: {
+                    color: "#2F5A43",
+                  },
+                  day: {
+                    color: "#2F5A43",
+                  },
+                  caption_label: {
+                    color: "#2F5A43",
+                  },
+                  chevron: {
+                    fill: "#2F5A43",
+                  },
+                }}
                 mode="single"
                 selected={selectedDate}
                 onSelect={(date) => {
@@ -931,19 +945,19 @@ export default function ClientDashboard() {
                   {paginatedPrevious.map((lesson) => (
                     <tr
                       key={lesson.id}
-                      className="border-b border-[#3A5D49] hover:bg-[#F6FAF6]"
+                      className="last:border-b-0 border-b border-[#3A5D49] hover:bg-[#F6FAF6]"
                     >
-                      <td className="dashboard-value p-4">
+                      <td className="dashboard-value p-4 text-[#2F5A43]">
                         {formatDate(lesson.lesson_date)}
                       </td>
 
-                      <td className="dashboard-value p-4">
+                      <td className="dashboard-value p-4 text-[#2F5A43]">
                         {lesson.lesson_packages?.transaction_name ||
                           lesson.payment_method ||
                           "Other"}
                       </td>
 
-                      <td className="dashboard-value p-4">
+                      <td className="dashboard-value p-4 text-[#2F5A43]">
                         {lesson.status === "no_show" ? (
                           "No Show"
                         ) : lesson.lesson_notes ? (
