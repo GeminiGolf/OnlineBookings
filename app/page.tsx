@@ -26,24 +26,41 @@ export default function Home() {
         <source src="/hero-video2.mp4" type="video/mp4" />
       </video>
 
-      <div className="absolute inset-0 bg-black/50" />
+      <div className="absolute inset-0 bg-black/60" />
 
-      <div className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center text-white">
+      <div className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center text-[#F6F2EA]">
+
         <Image
-          src="/images/gemini-logo.png"
+          src="/images/gemini-logo-warm.png"
           alt="Gemini Golf Academy"
           width={420}
           height={420}
           priority
-          className="w-[260px] md:w-[380px] lg:w-[450px] h-auto"
+          className="h-auto w-[230px] md:w-[320px] lg:w-[360px]"
         />
+
+
+        <div className="my-5 flex items-center gap-4">
+          <div className="h-px w-20 bg-[#D8CCB7]" />
+          <div className="h-2 w-2 rotate-45 bg-[#D8CCB7]" />
+          <div className="h-px w-20 bg-[#D8CCB7]" />
+        </div>
+
+        <p className="mb-8 text-sm uppercase tracking-[0.45em] text-[#D8CCB7] md:text-base">
+          PRECISION · PERFORMANCE · PURPOSE
+        </p>
 
         <a
           href="/CoachAvailability"
-          className="mt-6 rounded-full border border-white bg-white/10 px-7 py-3 text-base font-semibold backdrop-blur-sm transition hover:bg-white hover:text-black md:mt-8 md:px-10 md:py-4 md:text-lg"
+          className="rounded-full border border-[#D8CCB7] bg-[#102418]/80 px-14 py-4 text-lg font-light uppercase tracking-[0.18em] text-[#F6F2EA] backdrop-blur-md transition hover:bg-[#183525]"
         >
-          Book a Lesson
+          BOOK A LESSON
         </a>
+
+        <p className="mt-10 max-w-xl text-lg font-light leading-8 text-[#E9E2D8]">
+
+        </p>
+
       </div>
 
     </main>

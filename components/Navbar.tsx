@@ -669,10 +669,10 @@ export default function Navbar() {
 
             {!loggedIn && (
               <>
-                <Link href="/login" className="text-sm font-light uppercase tracking-[0.15em] text-white/80">
+                <Link href="/login" className="text-sm font-light uppercase tracking-[0.22em] text-[#E7DED1] transition hover:text-white">
                   <span className="inline-block scale-x-90">LOGIN</span>
                 </Link>
-                <Link href="/signup" className="text-sm font-light uppercase tracking-[0.15em] text-white/80">
+                <Link href="/signup" className="text-sm font-light uppercase tracking-[0.22em] text-[#E7DED1] transition hover:text-white">
                   <span className="inline-block scale-x-90">SIGN UP</span>
                 </Link>
               </>
