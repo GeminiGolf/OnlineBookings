@@ -81,7 +81,7 @@ export default function CoachAvailabilityPage() {
 	}, [selectedCoach, selectedDate])
 
   return (
-    <main className="min-h-screen bg-[#F2EEE8] p-3 sm:p-10 text-black">
+    <main className="min-h-screen bg-[#F2EEE8] px-3 pt-10 pb-3 sm:p-10 text-black">
       <DashboardContainer>
         <h1 className="dashboard-heading mb-6 text-center lg:text-left">
           Coach Availability

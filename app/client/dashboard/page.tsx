@@ -764,7 +764,7 @@ export default function ClientDashboard() {
               </h3>
 
               {timeSlots.length === 0 ? (
-                <p className="dashboard-value text-[#6D7F72]">
+                <p className="text-[15px] font-light text-[#2F5A43]">
                   No available slots.
                 </p>
               ) : (
@@ -884,7 +884,7 @@ export default function ClientDashboard() {
               ))}
 
               {upcomingLessons.length === 0 && (
-                <p className="dashboard-value text-[#6D7F72]">
+                <p className="text-[15px] font-light text-[#2F5A43]">
                   No upcoming lessons.
                 </p>
               )}
@@ -977,7 +977,7 @@ export default function ClientDashboard() {
               </table>
 
               {previousLessons.length === 0 && (
-                <div className="dashboard-value p-4 text-[#6D7F72]">
+                <div className="p-4 text-[15px] font-light text-[#2F5A43]">
                   No previous lessons.
                 </div>
               )}
@@ -1071,7 +1071,7 @@ export default function ClientDashboard() {
 
               {paginatedPackages.length === 0 && (
                 <div className="rounded-xl border border-[#3A5D49] bg-[#FBF8F3] p-4">
-                  <p className="dashboard-value text-[#6D7F72]">
+                  <p className="text-[15px] font-light text-[#2F5A43]">
                     No active lessons remaining.
                   </p>
                 </div>
