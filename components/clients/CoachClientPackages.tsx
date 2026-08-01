@@ -178,7 +178,7 @@ export default function CoachClientPackages({ packages }: Props) {
       </div>
 
       {/* Desktop */}
-      <div className="hidden overflow-hidden rounded-3xl border border-[#B9B2A8] bg-[#FEFDFC] shadow-xl lg:block">
+      <div className="hidden overflow-hidden rounded-2xl border border-[#3A5D49] lg:block">
         <table className="w-full">
           <thead>
             <tr className="border-b border-[#B9B2A8] bg-[#F3F0EA]">

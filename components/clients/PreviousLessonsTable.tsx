@@ -47,10 +47,10 @@ export default function PreviousLessonsTable({ lessons }: Props) {
 
   return (
     <div>
-      <div className="overflow-hidden rounded-xl border">
-        <table className="w-full">
+      <div className="overflow-hidden rounded-2xl border border-[#3A5D49]">
+        <table className="w-full border-collapse text-sm">
           <thead>
-            <tr className="border-b bg-gray-50">
+            <tr className="border-b border-[#3A5D49] bg-[#F3F0EA]">
               <th className="dashboard-label px-4 py-4 text-left align-middle">
                 Date
               </th>
@@ -81,18 +81,21 @@ export default function PreviousLessonsTable({ lessons }: Props) {
                 "Other"
 
               return (
-                <tr key={lesson.id} className="border-b">
-                  <td className="p-3 text-sm lg:text-[14px]">{formattedDate}</td>
-                  <td className="p-3 text-sm lg:text-[14px]">{method}</td>
-                  <td className="p-3 text-sm lg:text-[14px]">
+                <tr
+                  key={lesson.id}
+                  className="hover:bg-[#F6FAF6]"
+                >
+                  <td className="dashboard-value p-4">{formattedDate}</td>
+                  <td className="dashboard-value p-4">{method}</td>
+                  <td className="dashboard-value p-4">
                     <button
                       onClick={() => {
                         setSelectedLesson(lesson)
                         setNoteText(lesson.lesson_notes || "")
                       }}
-                      className="rounded px-2 py-1 text-base hover:bg-gray-100"
+                      className="rounded-xl border border-[#4E6FA8] bg-[#4E6FA8] px-3 py-1.5 text-[14px] font-light text-white shadow-sm transition hover:bg-[#3F5E92]"
                     >
-                      ✏️
+                      View Note
                     </button>
                   </td>
                 </tr>
@@ -108,12 +111,12 @@ export default function PreviousLessonsTable({ lessons }: Props) {
             setPage((p) => Math.max(1, p - 1))
           }
           disabled={page === 1}
-          className="rounded border px-3 py-1 disabled:opacity-50"
+          className="rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[13px] font-light tracking-[0.04em] text-[#1F3327] shadow-sm transition hover:bg-[#F6FAF6] disabled:opacity-50"
         >
           Previous
         </button>
 
-        <span>
+        <span className="dashboard-value">
           Page {page} of {totalPages}
         </span>
 
@@ -122,7 +125,7 @@ export default function PreviousLessonsTable({ lessons }: Props) {
             setPage((p) => Math.min(totalPages, p + 1))
           }
           disabled={page === totalPages}
-          className="rounded border px-3 py-1 disabled:opacity-50"
+          className="rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[13px] font-light tracking-[0.04em] text-[#1F3327] shadow-sm transition hover:bg-[#F6FAF6] disabled:opacity-50"
         >
           Next
         </button>

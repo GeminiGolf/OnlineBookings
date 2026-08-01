@@ -94,66 +94,84 @@ export default async function CoachClientProfilePage({ params }: Props) {
           ← Back to Clients
         </Link>
 
-        <div className="rounded-3xl border border-[#3A5D49] bg-white p-4 sm:p-5 shadow-md">
-          <details>
-            <summary className="relative flex cursor-pointer items-center justify-center list-none">
-              <div className="flex items-center gap-4">
-                <h1 className="text-[20px] font-light normal-case tracking-[0.02em] text-[#2F5A43]">
-                  {client.preferred_name
-                    ? `(${client.preferred_name}) ${client.first_name} ${client.last_name}`
-                    : `${client.first_name} ${client.last_name}`}
-                </h1>
+        <div className="mt-0">
+          <div className="rounded-3xl border border-[#3A5D49] bg-white shadow-md">
+            <details>
+              <summary className="relative flex cursor-pointer items-center justify-center list-none px-6 py-2">
+                <div className="flex items-center justify-center gap-5">
+                  <h1 className="dashboard-heading text-[20px]">
+                    {client.preferred_name
+                      ? `${client.preferred_name} ${client.last_name}`
+                      : `${client.first_name} ${client.last_name}`}
+                  </h1>
 
-                <ClientIDTransactionForm
-                  clientId={client.id}
-                  lessonsRemaining={client.lessons_remaining}
-                />
+                  <ClientIDTransactionForm
+                    clientId={client.id}
+                    lessonsRemaining={client.lessons_remaining}
+                  />
+                </div>
+
+                <span className="absolute right-6 text-[18px] text-[#2F5A43]">
+                  ▼
+                </span>
+              </summary>
+
+              <div className="px-6 pb-5">
+                <div className="space-y-4 text-black">
+                  <div>
+                    <p className="dashboard-label">Name</p>
+                    <p className="dashboard-value">
+                      {client.preferred_name
+                        ? `${client.preferred_name} ${client.last_name}`
+                        : `${client.first_name} ${client.last_name}`}
+                    </p>
+                  </div>
+
+                  <div>
+                    <p className="dashboard-label">Phone</p>
+                    <p className="dashboard-value">
+                      {client.phone || "Not Provided"}
+                    </p>
+                  </div>
+
+                  <div>
+                    <p className="dashboard-label">Email</p>
+                    <p className="dashboard-value">
+                      {client.email || "Not Provided"}
+                    </p>
+                  </div>
+
+                  <div>
+                    <p className="dashboard-label">Coach</p>
+                    <p className="dashboard-value">
+                      {primaryCoach?.preferred_name || primaryCoach?.name}
+                    </p>
+                  </div>
+
+                  <div>
+                    <p className="dashboard-label">Lessons Remaining</p>
+                    <p className="dashboard-value">
+                      {client.lessons_remaining}
+                    </p>
+                  </div>
+
+                  <ClientNotesCard
+                    clientId={client.id}
+                    initialNotes={client.notes}
+                  />
+                </div>
               </div>
-
-              <span className="absolute right-0 text-[#8D857A]">▼</span>
-            </summary>
-
-            <div className="mt-4">
-              <div className="mt-2 grid gap-4 md:grid-cols-2">
-                <div>
-                  <p className="dashboard-label">Phone</p>
-                  <p className="dashboard-value">
-                    {client.phone || "Not provided"}
-                  </p>
-                </div>
-
-                <div>
-                  <p className="dashboard-label">Email</p>
-                  <p className="dashboard-value">
-                    {client.email || "Not provided"}
-                  </p>
-                </div>
-
-                <div>
-                  <p className="dashboard-label">
-                    Lessons Remaining
-                  </p>
-                  <p className="text-[18px] font-light text-[#1F3327]">
-                    {client.lessons_remaining}
-                  </p>
-                </div>
-              </div>
-
-              <ClientNotesCard
-                clientId={client.id}
-                initialNotes={client.notes}
-              />
-            </div>
-          </details>
+            </details>
+          </div>
         </div>
 
-        <div className="mt-4 grid gap-2 lg:gap-4 lg:grid-cols-2">
+        <div className="mt-4 grid gap-4 lg:mt-8 lg:grid-cols-2">
           <CoachBookLessonCard
             clientId={client.id}
             coachId={coach.id}
           />
 
-          <div className="rounded-3xl border border-[#3A5D49] bg-white p-5 shadow-md">
+          <div className="rounded-3xl border border-[#3A5D49] bg-white p-3 shadow-md lg:px-6 lg:py-5">
             <h2 className="dashboard-heading mb-4">
               Upcoming Lessons
             </h2>
@@ -187,8 +205,8 @@ export default async function CoachClientProfilePage({ params }: Props) {
           </div>
         </div>
 
-        <div className="mt-2 grid gap-2 lg:gap-4 lg:grid-cols-2">
-          <div className="rounded-3xl border border-[#3A5D49] bg-white p-5 shadow-md">
+        <div className="mt-4 grid gap-4 lg:mt-8 lg:grid-cols-2">
+          <div className="rounded-3xl border border-[#3A5D49] bg-white p-3 shadow-md lg:px-6 lg:py-5">
             <h2 className="dashboard-heading mb-4">
               Previous Lessons
             </h2>
@@ -196,7 +214,7 @@ export default async function CoachClientProfilePage({ params }: Props) {
             <PreviousLessonsTable lessons={previousLessons || []} />
           </div>
 
-          <div className="rounded-3xl border border-[#3A5D49] bg-white p-5 shadow-md">
+          <div className="rounded-3xl border border-[#3A5D49] bg-white p-3 shadow-md lg:px-6 lg:py-5">
             <h2 className="dashboard-heading mb-4">
               Lessons Remaining
             </h2>
