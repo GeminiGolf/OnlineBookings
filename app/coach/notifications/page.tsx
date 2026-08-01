@@ -6,6 +6,7 @@ import { useEffect, useState } from "react"
 import { supabase } from "@/lib/supabaseClient"
 import { useRouter } from "next/navigation"
 import DashboardContainer from "@/components/layout/DashboardContainer"
+import LoadingScreen from "@/components/ui/LoadingScreen";
 
 type Notification = {
   id: number
@@ -442,12 +443,7 @@ export default function NotificationsPage() {
   const olderHasNext = olderEnd < filteredOlderNotifications.length
 
   if (loading) {
-    return (
-      <main className="min-h-screen bg-gray-100 p-8">
-        <h1 className="text-4xl font-bold text-[#2F5A43]">Notifications</h1>
-        <p className="mt-4 text-[#2F5A43]">Loading...</p>
-      </main>
-    )
+    return <LoadingScreen />;
   }
 
   return (

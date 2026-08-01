@@ -7,6 +7,8 @@ import { useRouter } from "next/navigation"
 import RequireAdmin from "@/components/auth/RequireAdmin"
 import PushNotificationsModal from "@/components/admin/PushNotificationsModal"
 import DashboardContainer from "@/components/layout/DashboardContainer"
+import LoadingScreen from "@/components/ui/LoadingScreen";
+
 type Notification = {
   id: number
   coach_id: number | null
@@ -400,12 +402,7 @@ export default function NotificationsPage() {
   const olderHasNext = olderEnd < filteredOlderNotifications.length
 
   if (loading) {
-    return (
-      <main className="min-h-screen bg-gray-100 p-8">
-        <h1 className="text-4xl font-bold text-black">Notifications</h1>
-        <p className="mt-4 text-black">Loading...</p>
-      </main>
-    )
+    return <LoadingScreen />;
   }
 
   return (

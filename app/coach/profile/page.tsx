@@ -5,6 +5,7 @@ import { supabase } from "@/lib/supabaseClient"
 import Link from "next/link"
 import RequireCoach from "@/components/auth/RequireCoach"
 import DashboardContainer from "@/components/layout/DashboardContainer"
+import LoadingScreen from "@/components/ui/LoadingScreen";
 
 type Coach = {
   id: number
@@ -72,11 +73,7 @@ export default function CoachProfilePage() {
   }
 
   if (loading) {
-    return (
-      <main className="min-h-screen bg-gray-100 p-4 text-black">
-        Loading...
-      </main>
-    )
+    return <LoadingScreen />;
   }
 
   return (
