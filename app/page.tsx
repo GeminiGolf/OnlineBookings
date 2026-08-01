@@ -29,12 +29,21 @@ export default function Home() {
 
       <div className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center text-[#F6F2EA]">
         <Image
-          src="/images/gemini-logo-warm.png"
+          src="/images/logo-warm.png"
           alt="Gemini Golf Academy"
           width={420}
           height={420}
           priority
-          className="mt-[clamp(2rem,5vh,4rem)] h-auto w-[clamp(180px,26vw,420px)] opacity-75"
+          className="mt-[clamp(3rem,7vh,6rem)] h-auto w-[clamp(100px,14vw,180px)] opacity-75"
+        />
+
+        <Image
+          src="/images/gemini-logo-text-warm.png"
+          alt="Gemini Golf Academy"
+          width={420}
+          height={420}
+          priority
+          className="mt-[clamp(0.5rem,1.2vh,1rem)] h-auto w-[clamp(180px,26vw,420px)] opacity-75"
         />
 
         <div className="mt-[clamp(0.25rem,0.8vh,0.75rem)] mb-[clamp(0.75rem,2vh,1.25rem)] flex items-center gap-[clamp(0.5rem,1vw,0.75rem)]">
