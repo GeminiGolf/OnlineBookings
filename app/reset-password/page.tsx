@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { supabase } from "@/lib/supabaseClient"
-import DashboardContainer from "@/components/layout/DashboardContainer"
 
 export default function ResetPasswordPage() {
   const router = useRouter()
@@ -69,22 +68,27 @@ export default function ResetPasswordPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-100 p-3 sm:p-10 text-black">
-      <DashboardContainer>
-        <h1 className="mb-6 text-2xl font-bold">
+    <main className="flex min-h-screen -translate-y-6 items-center justify-center bg-[#F2EEE8] px-6 py-10 sm:translate-y-0">
+      <div className="w-full max-w-md rounded-3xl border border-[#3A5D49] bg-[#F2ECE3] p-6 shadow-md sm:p-8">
+        <h1 className="mb-0 text-center text-[20px] font-light uppercase tracking-[0.12em] text-[#2F5A43]">
           Reset Password
         </h1>
 
+        <p className="mb-5 text-center text-[14px] font-light tracking-[0.08em] text-[#2F5A43]">
+          Choose a new password
+        </p>
+
         {success && (
-          <div className="mb-6 rounded-lg bg-green-100 p-3 text-green-700">
+          <div className="mb-5 rounded-xl border border-[#3A5D49] bg-[#F6FAF6] p-4 text-center text-[14px] font-light text-[#2F5A43]">
             ✓ Password reset successfully.
             <br />
             Redirecting to login...
           </div>
         )}
-        <form onSubmit={handleResetPassword} className="space-y-5">
+
+        <form onSubmit={handleResetPassword} className="space-y-3">
           <div>
-            <label className="mb-2 block font-semibold">
+            <label className="dashboard-label mb-2 block">
               New Password
             </label>
 
@@ -92,13 +96,13 @@ export default function ResetPasswordPage() {
               type={showPasswords ? "text" : "password"}
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
-              className="w-full rounded-lg border p-3"
               autoComplete="new-password"
+              className="w-full rounded-xl border border-[#3A5D49] bg-[#FCFAF6] px-5 py-2.5 text-[15px] font-light text-[#1F3327] placeholder:text-[#6D7F72] focus:border-[#2F5A43] focus:outline-none"
             />
           </div>
 
           <div>
-            <label className="mb-2 block font-semibold">
+            <label className="dashboard-label mb-2 block">
               Confirm New Password
             </label>
 
@@ -106,37 +110,29 @@ export default function ResetPasswordPage() {
               type={showPasswords ? "text" : "password"}
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className="w-full rounded-lg border p-3"
               autoComplete="new-password"
+              className="w-full rounded-xl border border-[#3A5D49] bg-[#FCFAF6] px-5 py-2.5 text-[15px] font-light text-[#1F3327] placeholder:text-[#6D7F72] focus:border-[#2F5A43] focus:outline-none"
             />
           </div>
 
-          <div className="flex items-center gap-3">
+          <label className="flex items-center gap-2 text-[13px] font-light uppercase tracking-[0.08em] text-[#2F5A43]">
             <input
-              id="show-passwords"
               type="checkbox"
               checked={showPasswords}
               onChange={(e) => setShowPasswords(e.target.checked)}
-              className="h-4 w-4"
             />
-
-            <label
-              htmlFor="show-passwords"
-              className="cursor-pointer select-none"
-            >
-              Show passwords
-            </label>
-          </div>
+            Show Password
+          </label>
 
           <button
             type="submit"
             disabled={loading}
-            className="mx-auto block w-4/5 rounded-xl bg-blue-600 p-3 text-[16px] font-bold text-white transition hover:bg-blue-700 sm:w-64 sm:text-lg"
+            className="mx-auto block w-56 rounded-xl border border-[#3A5D49] bg-[#2F5A43] px-5 py-2 text-[13px] font-light uppercase tracking-[0.12em] text-white shadow-sm transition hover:bg-[#244634]"
           >
             {loading ? "Resetting Password..." : "Reset Password"}
           </button>
         </form>
-      </DashboardContainer>
+      </div>
     </main>
   )
 }

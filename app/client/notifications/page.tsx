@@ -7,6 +7,7 @@ import Link from "next/link"
 import { Settings } from "lucide-react"
 import RequireClient from "@/components/auth/RequireClient"
 import DashboardContainer from "@/components/layout/DashboardContainer"
+import LoadingScreen from "@/components/ui/LoadingScreen"
 export default function ClientNotificationsPage() {
   const [notifications, setNotifications] = useState<any[]>([])
   const [olderNotifications, setOlderNotifications] = useState<any[]>([])
@@ -16,11 +17,13 @@ export default function ClientNotificationsPage() {
   const ITEMS_PER_PAGE = 5
   const [notificationsPage, setNotificationsPage] = useState(1)
   const [olderNotificationsPage, setOlderNotificationsPage] = useState(1)
+const [loadingPage, setLoadingPage] = useState(true)
   useEffect(() => {
     loadNotifications()
   }, [])
 
-  async function loadNotifications() {
+	async function loadNotifications() {
+		setLoadingPage(true)
     const {
       data: { session },
     } = await supabase.auth.getSession()
@@ -140,6 +143,7 @@ export default function ClientNotificationsPage() {
     const read = enrichedNotifications.filter((n) => n.client_read_at)
     setNotifications(unread)
     setOlderNotifications(read)
+    setLoadingPage(false)
   }
 
   async function markAsRead(id: number) {
@@ -194,31 +198,35 @@ export default function ClientNotificationsPage() {
   function toggleNotification(id: number) {
     setExpandedNotifications((prev) => (prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]))
   }
+  if (loadingPage) {
+    return <LoadingScreen text="Loading notifications..." />
+  }
+
   return (
     <RequireClient>
-      <main className="min-h-screen bg-gray-100 p-3 sm:p-10 text-black">
-       <DashboardContainer>
-        <div className="w-full">
-          <div className="mb-6 flex items-center gap-3">
-            <Link
-              href="/client/dashboard"
-              className="rounded-lg border border-black bg-white px-5 py-2.5 text-[13px] font-light tracking-[0.06em] text-black transition hover:bg-gray-100"
-            >
-              ← Back to Dashboard
-            </Link>
+      <main className="min-h-screen bg-[#F2EEE8] px-4 pt-8 pb-3 sm:p-10 text-[#1F3327]">
+        <DashboardContainer>
+          <div className="w-full">
+            <div className="mb-3 flex items-center gap-3 sm:mb-6">
+              <Link
+                href="/client/dashboard"
+                className="rounded-xl border border-[#3A5D49] bg-white px-5 py-2 text-[13px] font-light tracking-[0.04em] text-[#1F3327] shadow-sm transition hover:bg-[#F6FAF6]"
+              >
+                ← Back to Dashboard
+              </Link>
 
-            <Link
-              href="/client/notifications/settings"
-              className="flex h-10 w-10 items-center justify-center rounded-lg border border-black bg-white text-black transition hover:bg-gray-100"
-              title="Notification Settings"
-            >
-              <Settings className="h-5 w-5 stroke-[1.25]" />
-            </Link>
-          </div>
+              <Link
+                href="/client/notifications/settings"
+                className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#3A5D49] bg-white text-[#1F3327] shadow-sm transition hover:bg-[#F6FAF6]"
+                title="Notification Settings"
+              >
+                <Settings className="h-5 w-5 stroke-[1.25]" />
+              </Link>
+            </div>
 
-          <h2 className="mb-4 text-[18px] font-light uppercase tracking-[0.12em] text-black">
-            Notifications ({notifications.length})
-          </h2>
+            <h2 className="dashboard-heading mb-4">
+              Notifications ({notifications.length})
+            </h2>
           <div className="space-y-1">
             <div className="dashboard-label hidden lg:grid grid-cols-[60px_180px_220px_1fr_220px] gap-4 px-4">
               <div></div>
@@ -231,7 +239,7 @@ export default function ClientNotificationsPage() {
             {paginatedNotifications.map((notification) => (
               <div key={notification.id}>
                 {/* Desktop */}
-                <div className="hidden lg:grid grid-cols-[60px_180px_220px_1fr_220px] items-center gap-4 rounded-xl bg-white p-4 shadow">
+                <div className="hidden lg:grid grid-cols-[60px_180px_220px_1fr_220px] items-center gap-4 rounded-xl border border-[#3A5D49] bg-[#FBF8F3] px-4 py-3 transition hover:bg-[#F6FAF6]">
                   <div>
                     <input type="checkbox" onChange={() => markAsRead(notification.id)} />
                   </div>
@@ -258,7 +266,7 @@ export default function ClientNotificationsPage() {
                 </div>
 
                 {/* Mobile */}
-                <div className="lg:hidden rounded-xl bg-white p-4 shadow">
+                <div className="lg:hidden rounded-xl border border-[#3A5D49] bg-[#FBF8F3] px-4 py-5">
                   <div className="flex items-center gap-3">
                     <input type="checkbox" onChange={() => markAsRead(notification.id)} />
 
@@ -307,7 +315,13 @@ export default function ClientNotificationsPage() {
               </div>
             ))}
 
-            {notifications.length === 0 && <div className="rounded-xl bg-white p-6 shadow">No notifications.</div>}
+            {notifications.length === 0 && (
+							<div className="rounded-2xl border border-[#3A5D49] bg-white p-6 shadow-md">
+								<p className="dashboard-value text-[#6D7F72]">
+									No notifications.
+								</p>
+							</div>
+						)}
 
             {notifications.length > ITEMS_PER_PAGE && (
               <div className="flex items-center justify-center gap-4 pt-4">
@@ -335,7 +349,10 @@ export default function ClientNotificationsPage() {
           </div>
 
           <div className="mt-10">
-            <button onClick={() => setShowOlder(!showOlder)} className="text-[18px] font-light uppercase tracking-[0.12em] text-black">
+            <button
+              onClick={() => setShowOlder(!showOlder)}
+              className="dashboard-heading"
+            >
               Older Notifications {showOlder ? "▲" : "▼"}
             </button>
 
@@ -344,7 +361,7 @@ export default function ClientNotificationsPage() {
                 {paginatedOlderNotifications.map((notification) => (
                   <div key={notification.id}>
                     {/* Desktop */}
-                    <div className="hidden lg:grid grid-cols-[60px_180px_220px_1fr_220px] items-center gap-4 rounded-xl bg-white p-4 shadow">
+                    <div className="hidden lg:grid grid-cols-[60px_180px_220px_1fr_220px] items-center gap-4 rounded-xl border border-[#3A5D49] bg-[#FBF8F3] px-4 py-3 transition hover:bg-[#F6FAF6]">
                       <div>✓</div>
 
                       <div
@@ -370,7 +387,7 @@ export default function ClientNotificationsPage() {
                     </div>
 
                     {/* Mobile */}
-                    <div className="lg:hidden rounded-xl bg-white p-4 shadow">
+                    <div className="lg:hidden rounded-xl border border-[#3A5D49] bg-[#FBF8F3] px-4 py-5">
                       <button onClick={() => toggleNotification(notification.id)} className="flex-1 text-left">
                         <div
                           className={`dashboard-value ${

@@ -105,17 +105,16 @@ export default function SignupPage() {
   }
 
   return (
-    <main className="flex min-h-screen items-start justify-center bg-gray-100 px-6 pt-10 sm:items-center sm:p-10">
-      <div className="w-full max-w-md rounded-2xl bg-white p-4 shadow-lg sm:p-8">
-        <h1 className="mb-2 text-3xl font-light uppercase tracking-[0.12em] text-black">
+    <main className="flex min-h-screen items-center justify-center bg-[#F2EEE8] px-6 py-10 sm:p-10">
+      <div className="w-full max-w-md rounded-3xl border border-[#3A5D49] bg-[#F2ECE3] p-4 shadow-md sm:p-8">
+        <h1 className="mb-0 text-center text-[20px] font-light uppercase tracking-[0.12em] text-[#2F5A43]">
           Client Signup
         </h1>
 
-        <p className="mb-6 text-sm uppercase tracking-[0.15em] text-gray-500">
-          CREATE YOUR ACCOUNT
+        <p className="mb-4 text-center text-[14px] font-light tracking-[0.08em] text-[#2F5A43]">
+          Create Your Account
         </p>
-
-        <div className="space-y-3">
+        <div className="space-y-2">
           <select
             value={selectedCoach ?? ""}
             onChange={(e) =>
@@ -123,7 +122,7 @@ export default function SignupPage() {
                 e.target.value ? Number(e.target.value) : null
               )
             }
-            className="w-full rounded-xl border border-gray-300 bg-white px-5 py-3 text-base font-light tracking-[0.08em] text-black placeholder:text-gray-500 focus:border-black focus:outline-none"
+            className="w-full rounded-xl border border-[#3A5D49] bg-[#FCFAF6] px-5 py-2.5 text-[15px] font-light text-[#1F3327] placeholder:text-[#6D7F72] focus:border-[#2F5A43] focus:outline-none"
           >
             <option value="">Choose Coach *</option>
 
@@ -139,7 +138,7 @@ export default function SignupPage() {
             placeholder="Preferred Name (Optional)"
             value={preferredName}
             onChange={(e) => setPreferredName(e.target.value)}
-            className="w-full rounded-xl border border-gray-300 bg-white px-5 py-3 text-base font-light tracking-[0.08em] text-black placeholder:text-gray-500 focus:border-black focus:outline-none"
+            className="w-full rounded-xl border border-[#3A5D49] bg-[#FCFAF6] px-5 py-2.5 text-[15px] font-light text-[#1F3327] placeholder:text-[#6D7F72] focus:border-[#2F5A43] focus:outline-none"
           />
 
           <input
@@ -147,7 +146,7 @@ export default function SignupPage() {
             placeholder="Given Name *"
             value={givenName}
             onChange={(e) => setGivenName(e.target.value)}
-            className="w-full rounded-xl border border-gray-300 bg-white px-5 py-3 text-base font-light tracking-[0.08em] text-black placeholder:text-gray-500 focus:border-black focus:outline-none"
+            className="w-full rounded-xl border border-[#3A5D49] bg-[#FCFAF6] px-5 py-2.5 text-[15px] font-light text-[#1F3327] placeholder:text-[#6D7F72] focus:border-[#2F5A43] focus:outline-none"
           />
 
           <input
@@ -155,7 +154,7 @@ export default function SignupPage() {
             placeholder="Family Name *"
             value={familyName}
             onChange={(e) => setFamilyName(e.target.value)}
-            className="w-full rounded-xl border border-gray-300 bg-white px-5 py-3 text-base font-light tracking-[0.08em] text-black placeholder:text-gray-500 focus:border-black focus:outline-none"
+            className="w-full rounded-xl border border-[#3A5D49] bg-[#FCFAF6] px-5 py-2.5 text-[15px] font-light text-[#1F3327] placeholder:text-[#6D7F72] focus:border-[#2F5A43] focus:outline-none"
           />
 
           <input
@@ -163,7 +162,7 @@ export default function SignupPage() {
             placeholder="Phone Number *"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
-            className="w-full rounded-xl border border-gray-300 bg-white px-5 py-3 text-base font-light tracking-[0.08em] text-black placeholder:text-gray-500 focus:border-black focus:outline-none"
+            className="w-full rounded-xl border border-[#3A5D49] bg-[#FCFAF6] px-5 py-2.5 text-[15px] font-light text-[#1F3327] placeholder:text-[#6D7F72] focus:border-[#2F5A43] focus:outline-none"
           />
 
           <input
@@ -171,7 +170,7 @@ export default function SignupPage() {
             placeholder="Email *"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full rounded-xl border border-gray-300 bg-white px-5 py-3 text-base font-light tracking-[0.08em] text-black placeholder:text-gray-500 focus:border-black focus:outline-none"
+            className="w-full rounded-xl border border-[#3A5D49] bg-[#FCFAF6] px-5 py-2.5 text-[15px] font-light text-[#1F3327] placeholder:text-[#6D7F72] focus:border-[#2F5A43] focus:outline-none"
           />
 
           <input
@@ -179,7 +178,7 @@ export default function SignupPage() {
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full rounded-xl border border-gray-300 bg-white px-5 py-3 text-base font-light tracking-[0.08em] text-black placeholder:text-gray-500 focus:border-black focus:outline-none"
+            className="w-full rounded-xl border border-[#3A5D49] bg-[#FCFAF6] px-5 py-2.5 text-[15px] font-light text-[#1F3327] placeholder:text-[#6D7F72] focus:border-[#2F5A43] focus:outline-none"
           />
 
           <input
@@ -187,10 +186,10 @@ export default function SignupPage() {
             placeholder="Confirm Password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
-            className="w-full rounded-xl border border-gray-300 bg-white px-5 py-3 text-base font-light tracking-[0.08em] text-black placeholder:text-gray-500 focus:border-black focus:outline-none"
+            className="w-full rounded-xl border border-[#3A5D49] bg-[#FCFAF6] px-5 py-2.5 text-[15px] font-light text-[#1F3327] placeholder:text-[#6D7F72] focus:border-[#2F5A43] focus:outline-none"
           />
 
-          <label className="flex items-center gap-3 text-sm font-light uppercase tracking-[0.12em] text-gray-700">
+          <label className="flex items-center gap-3 text-[13px] font-light uppercase tracking-[0.08em] text-[#2F5A43]">
             <input
               type="checkbox"
               checked={showPassword}
@@ -201,7 +200,7 @@ export default function SignupPage() {
 
           <button
             onClick={handleSignup}
-            className="mx-auto block w-64 rounded-xl bg-emerald-900 px-6 py-3 text-sm font-light uppercase tracking-[0.18em] text-white transition hover:bg-emerald-800"
+            className="mx-auto block w-56 rounded-xl bg-emerald-900 px-6 py-2 text-[13px] font-light uppercase tracking-[0.18em] text-white transition hover:bg-emerald-800"
           >
             Create Account
           </button>
@@ -210,7 +209,7 @@ export default function SignupPage() {
             Already a client?{" "}
             <a
               href="/login"
-              className="font-semibold text-blue-500 hover:text-blue-400"
+              className="font-light text-[#5874A6] underline decoration-[#5874A6] underline-offset-2 transition hover:text-[#45628F]"
             >
               Login here
             </a>

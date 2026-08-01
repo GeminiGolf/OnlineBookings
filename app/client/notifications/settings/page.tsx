@@ -153,33 +153,35 @@ export default function CoachNotificationSettingsPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-100 p-3 sm:p-10 text-black">
-     <DashboardContainer>
-      <Link
-        href="/client/notifications"
-        className="mb-8 inline-flex items-center gap-2 rounded-lg border border-black bg-white px-5 py-2.5 text-[13px] font-light tracking-[0.06em] text-black transition hover:bg-gray-100"
-      >
-        <ArrowLeft className="h-4 w-4 stroke-[1.75]" />
-        Back to Notifications
-      </Link>
+    <main className="min-h-screen bg-[#F2EEE8] px-4 pt-8 pb-3 sm:p-10 text-[#1F3327]">
+      <DashboardContainer>
 
-      <h1 className="text-[18px] font-light uppercase tracking-[0.12em] text-black">
-        Push Notification Settings
-      </h1>
+        <Link
+          href="/client/notifications"
+          className="mb-3 inline-flex items-center gap-2 rounded-xl border border-[#3A5D49] bg-white px-5 py-2 text-[13px] font-light tracking-[0.04em] text-[#1F3327] shadow-sm transition hover:bg-[#F6FAF6] sm:mb-8"
+        >
+          <ArrowLeft className="h-4 w-4 stroke-[1.75]" />
+          Back to Notifications
+        </Link>
 
-      <p className="dashboard-value mt-2 mb-6 text-[13px]">
-        Choose which push notifications you'd like to receive on your devices.
-      </p>
+        <h1 className="dashboard-heading">
+          Push Notification Settings
+        </h1>
 
-      <div className="max-w-3xl rounded-xl bg-white shadow">
+        <p className="dashboard-value mt-2 mb-6 text-[13px] text-[#6D7F72]">
+          Choose which push notifications you'd like to receive on your devices.
+        </p>
 
-        <div className="border-b p-4 sm:p-6">
+      <div className="max-w-3xl overflow-hidden rounded-3xl border border-[#3A5D49] bg-white shadow-md">
+
+        <div className="border-b border-[#3A5D49] p-4 sm:p-6">
           <div className="flex items-start justify-between">
             <div>
-              <h2 className="dashboard-label">
+              <h2 className="text-[19px] font-light tracking-[0.02em] text-[#2F5A43]">
                 Coach Cancelled
               </h2>
-              <p className="dashboard-value mt-2 text-[13px]">
+
+              <p className="dashboard-value mt-2 text-[14px] text-[#1F3327]">
                 Receive a push notification when your coach cancels an appointment.
               </p>
             </div>
@@ -196,12 +198,12 @@ export default function CoachNotificationSettingsPage() {
         </div>
 
         {SHOW_APPOINTMENT_REMINDERS && (
-          <div className="border-b p-4 sm:p-6">
-            <h2 className="text-lg font-semibold text-black">
+          <div className="border-b border-[#3A5D49] p-4 sm:p-6">
+            <h2 className="text-[19px] font-light tracking-[0.02em] text-[#2F5A43]">
               Appointment Reminders
             </h2>
 
-            <p className="mt-1 mb-4 text-sm text-gray-600">
+            <p className="dashboard-value mt-2 mb-4 text-[14px] text-[#1F3327]">
               Choose when you'd like to receive reminders before your lesson.
             </p>
 
@@ -210,7 +212,7 @@ export default function CoachNotificationSettingsPage() {
               {[24, 12, 6, 2].map((hour) => (
                 <label
                   key={hour}
-                  className="flex items-center justify-between rounded-lg border px-4 py-3 hover:bg-gray-50"
+                  className="flex items-center justify-between rounded-xl border border-[#3A5D49] bg-[#FBF8F3] px-4 py-3 transition hover:bg-[#F6FAF6]"
                 >
                   <span className="text-black">
                     {hour} hour{hour === 1 ? "" : "s"} before

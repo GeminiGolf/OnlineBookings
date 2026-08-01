@@ -1,20 +1,19 @@
 import Link from "next/link"
 import ChangePassword from "@/components/auth/ChangePassword"
-import DashboardContainer from "@/components/layout/DashboardContainer"
 
 export default function ClientChangePasswordPage() {
   return (
-    <main className="min-h-screen bg-gray-100 p-3 sm:p-10 text-black">
-     <DashboardContainer>
+    <main className="flex min-h-screen items-center justify-center bg-[#F2EEE8] px-6 py-6">
+      <div className="w-full max-w-md -translate-y-6">
         <Link
           href="/client/dashboard"
-          className="mb-8 inline-block rounded-lg border border-black bg-white px-5 py-2.5 text-[13px] font-light tracking-[0.06em] text-black no-underline transition hover:bg-gray-100"
+          className="mb-4 inline-flex items-center rounded-xl border border-[#3A5D49] bg-[#F7F4EF] px-5 py-2 text-[13px] font-light tracking-[0.04em] text-[#1F3327] shadow-sm transition hover:bg-[#F2ECE3]"
         >
           ← Back to Profile
         </Link>
-      </DashboardContainer>
 
-      <ChangePassword />
+        <ChangePassword />
+      </div>
     </main>
   )
 }

@@ -38,7 +38,7 @@ body {
 }
 
 .dashboard-heading {
-  @apply text-[18px] font-light uppercase tracking-[0.12em] text-[#2F5A43];
+  @apply text-[16px] font-light uppercase tracking-[0.12em] text-[#2F5A43];
 }
 
 .dashboard-label {

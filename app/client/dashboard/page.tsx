@@ -8,6 +8,7 @@ import Link from "next/link"
 import RequireClient from "@/components/auth/RequireClient"
 import { getMalaysiaDate } from "@/lib/date"
 import DashboardContainer from "@/components/layout/DashboardContainer"
+import LoadingScreen from "@/components/ui/LoadingScreen"
 type Coach = {
   id: number
   name: string
@@ -37,6 +38,7 @@ export default function ClientDashboard() {
   const [timeSlots, setTimeSlots] = useState<string[]>([])
   const [selectedTime, setSelectedTime] = useState("")
   const [loading, setLoading] = useState(false)
+  const [loadingPage, setLoadingPage] = useState(true)
   const [upcomingLessons, setUpcomingLessons] = useState<any[]>([])
   const [previousLessons, setPreviousLessons] = useState<any[]>([])
   const [packages, setPackages] = useState<any[]>([])
@@ -87,15 +89,25 @@ export default function ClientDashboard() {
   }, [selectedDate, selectedCoach])
   
   async function loadDashboardData() {
+    setLoadingPage(true)
+
     const { data: { session } } = await supabase.auth.getSession()
-    if (!session) return
+
+    if (!session) {
+      setLoadingPage(false)
+      return
+    }
 
     const { data: clientRecord } = await supabase
       .from("clients")
       .select("*")
       .eq("profile_id", session.user.id)
       .maybeSingle()
-    if (!clientRecord) return
+
+    if (!clientRecord) {
+      setLoadingPage(false)
+      return
+    }
 
     const today = getMalaysiaDate()
     const { data: missedLessons } = await supabase.from("bookings").select("id, coach_id, client_id").eq("status", "booked").lt("lesson_date", today)
@@ -148,6 +160,8 @@ export default function ClientDashboard() {
     if (allCoaches) {
       setCoaches(allCoaches.filter((coach) => coach.id !== 3))
     }
+
+    setLoadingPage(false)
   }
 
   function timeTo24Hour(time: string) {
@@ -548,26 +562,30 @@ export default function ClientDashboard() {
     .filter((pkg) => (pkg.lessons_added || 0) - (pkg.lessons_used || 0) > 0)
     .sort((a, b) => new Date(a.expiration_date).getTime() - new Date(b.expiration_date).getTime())
     .slice((packagesPage - 1) * ITEMS_PER_PAGE, packagesPage * ITEMS_PER_PAGE)
+
+
   return (
     <RequireClient>
-      <main className="min-h-screen bg-gray-100 p-3 sm:p-10 text-black">
+      <main className="min-h-screen bg-[#F2EEE8] px-4 pt-8 pb-3 sm:p-10 text-[#1F3327]">
         <DashboardContainer>
         <div className="mt-8">
           {/* Mobile / Small Screen */}
-          <div className="lg:hidden rounded-2xl bg-white shadow">
-            <button onClick={() => setShowClientInfo(!showClientInfo)} className="w-full p-4 lg:p-6 text-left">
+          <div className="lg:hidden rounded-3xl border border-[#3A5D49] bg-white shadow-md">
+            <button onClick={() => setShowClientInfo(!showClientInfo)} className="w-full px-4 py-3 lg:px-6 lg:py-2 text-left">
               <div className="flex items-center justify-between">
-                <h2 className="text-[18px] font-light uppercase tracking-[0.12em] text-black">
+                <h2 className="dashboard-heading text-[20px]">
 
                   Profile
                 </h2>
-                <span className="text-[2xl]">{showClientInfo ? "▲" : "▼"}</span>
+                <span className="text-[18px] text-[#2F5A43]">
+                 {showClientInfo ? "▲" : "▼"}
+                </span> 
               </div>
             </button>
 
             {showClientInfo && (
-              <div className="px-4 pb-4 lg:px-8 lg:pb-8">
-                <div className="space-y-3 text-sm lg:text-base text-black">
+              <div className="px-4 pb-3 lg:px-6 lg:pb-5">
+                <div className="space-y-4 text-[#1F3327]">
                   <div>
                     <p className="dashboard-label">Name</p>
                     <p className="dashboard-value">
@@ -601,7 +619,7 @@ export default function ClientDashboard() {
 
                     <Link
                       href="/client/changepassword"
-                      className="dashboard-value mt-4 inline-block hover:underline"
+                      className="dashboard-value mt-4 inline-block text-[#5874A6] underline decoration-[#5874A6] underline-offset-2 transition hover:text-[#45628F]"
                     >
                       Change Password
                     </Link>
@@ -612,21 +630,21 @@ export default function ClientDashboard() {
           </div>
 
           {/* Desktop */}
-          <div className="order-1 lg:order-2 hidden lg:block rounded-2xl bg-white shadow">
-            <button onClick={() => setShowClientInfo(!showClientInfo)} className="w-full p-3 text-left">
+          <div className="order-1 hidden rounded-3xl border border-[#3A5D49] bg-white shadow-md lg:order-2 lg:block">
+            <button onClick={() => setShowClientInfo(!showClientInfo)} className="w-full px-6 py-2 text-left">
               <div className="flex items-center justify-center gap-8">
-                <h2 className="text-[2xl] text-[18px] font-light uppercase tracking-[0.12em] text-black text-black">
+                <h2 className="dashboard-heading text-[20px]">
                   Profile
                 </h2>
 
-                <span className="text-[18px]">
+                <span className="text-[18px] text-[#2F5A43]">
                   {showClientInfo ? "▲" : "▼"}
                 </span>
               </div>
             </button>
 
             {showClientInfo && (
-              <div className="px-8 pb-8">
+              <div className="px-6 pb-5">
                 <div className="space-y-4 text-black">
                   <div>
                     <p className="dashboard-label">Name</p>
@@ -661,7 +679,7 @@ export default function ClientDashboard() {
 
                     <Link
                       href="/client/changepassword"
-                      className="dashboard-value mt-4 inline-block hover:underline"
+                      className="dashboard-value mt-4 inline-block text-[#5874A6] underline decoration-[#5874A6] underline-offset-2 transition hover:text-[#45628F]"
                     >
                       Change Password
                     </Link>
@@ -673,14 +691,16 @@ export default function ClientDashboard() {
         </div>
 
         <div className="mt-4 grid gap-4 lg:mt-8 lg:grid-cols-2">
-          <div className="rounded-2xl bg-white p-3 lg:p-8 shadow">
-            <h2 className="mb-3 text-[18px] text-[18px] font-light uppercase tracking-[0.12em] text-black text-black">Book A Lesson</h2>
+          <div className="rounded-3xl border border-[#3A5D49] bg-white p-3 shadow-md lg:px-6 lg:py-5">
+            <h2 className="dashboard-heading mb-3">
+              Book A Lesson
+            </h2>
 
             {!client?.primary_coach_id && (
               <select
                 value={selectedCoach ?? ""}
                 onChange={(e) => setSelectedCoach(e.target.value ? Number(e.target.value) : null)}
-                className="mb-6 w-full rounded-xl border p-4"
+                className="mb-6 w-full rounded-xl border border-[#3A5D49] bg-white px-4 py-3 text-[15px] font-light text-[#1F3327] shadow-sm focus:border-[#2F5A43] focus:outline-none"
               >
                 <option value="">Choose Coach</option>
 
@@ -692,9 +712,9 @@ export default function ClientDashboard() {
               </select>
             )}
 
-            <div className="mx-auto w-fit rounded-xl border px-3 pt-3 pb-0 text-sm overflow-hidden">
+            <div className="mx-auto w-fit overflow-hidden rounded-2xl border border-[#3A5D49] bg-[#FBF8F3] px-2 pt-2 pb-0 text-sm">
               <DayPicker
-                className="mt-4 -mb-4 scale-90 lg:scale-90 origin-top"
+                className="mt-2 -mb-8 scale-90 lg:scale-[0.82] origin-top"
                 mode="single"
                 selected={selectedDate}
                 onSelect={(date) => {
@@ -724,21 +744,25 @@ export default function ClientDashboard() {
               />
             </div>
 
-            <div className="mt-6">
-              <h3 className="mb-3 text-medium text-[18px] font-light uppercase tracking-[0.12em] text-black text-black">Available Time Slots</h3>
+            <div className="mt-3">
+              <h3 className="dashboard-heading mb-3">
+                Available Time Slots
+              </h3>
 
               {timeSlots.length === 0 ? (
-                <p className="text-black">No available slots.</p>
+                <p className="dashboard-value text-[#6D7F72]">
+                  No available slots.
+                </p>
               ) : (
                 <div className="flex flex-wrap gap-2">
                   {timeSlots.map((time) => (
                     <button
                       key={time}
                       onClick={() => setSelectedTime(time)}
-                      className={`rounded-lg px-3 py-1 text-sm font-medium text-white transition ${
+                      className={`rounded-xl border px-4 py-2 text-[15px] font-light transition ${
                         selectedTime === time
-                          ? "bg-[#3C6A50]"
-                          : "bg-[#3C6A50] hover:bg-[#4A7D61]"
+                          ? "border-[#2F5A43] bg-[#2F5A43] text-white"
+                          : "border-[#3A5D49] bg-[#FBF8F3] text-[#1F3327] hover:bg-[#F6FAF6]"
                       }`}
                     >
                       {time}
@@ -749,31 +773,48 @@ export default function ClientDashboard() {
             </div>
 
             {selectedTime && (
-              <div className="mt-6 rounded-xl bg-gray-100 p-4">
-                <p className="text-[18px] font-light uppercase tracking-[0.12em] text-black">Date: {selectedDate?.toLocaleDateString()}</p>
+              <div className="mt-6 rounded-2xl border border-[#3A5D49] bg-white p-5 shadow-sm">
+                <p className="dashboard-label">
+                  Date
+                </p>
 
-                <p className="text-[18px] font-light uppercase tracking-[0.12em] text-black">Time: {selectedTime}</p>
+                <p className="dashboard-value mb-4">
+                  {selectedDate?.toLocaleDateString()}
+                </p>
+
+                <p className="dashboard-label">
+                  Time
+                </p>
+
+                <p className="dashboard-value">
+                  {selectedTime}
+                </p>
 
                 <button
                   onClick={confirmBooking}
                   disabled={loading}
-                  className="mt-4 rounded-lg bg-black px-6 py-3 text-white"
+                  className="mt-5 rounded-xl border border-[#3A5D49] bg-[#2F5A43] px-6 py-3 text-[15px] font-light text-white shadow-sm transition hover:bg-[#244634]"
                 >
                   {loading ? "Booking..." : "Confirm Booking"}
                 </button>
               </div>
             )}
           </div>
-          <div className="rounded-2xl bg-white p-3 lg:p-8 shadow">
-            <h2 className="mb-3 text-[17px] text-[18px] font-light uppercase tracking-[0.12em] text-black text-black">Upcoming Lessons</h2>
+          <div className="rounded-3xl border border-[#3A5D49] bg-white p-3 shadow-md lg:px-6 lg:py-5">
+            <h2 className="dashboard-heading mb-3">
+              Upcoming Lessons
+            </h2>
 
             <div className="space-y-2">
               {paginatedUpcoming.map((lesson) => (
-                <div key={lesson.id} className="rounded-lg border p-3">
+                <div
+                  key={lesson.id}
+                  className="rounded-xl border border-[#3A5D49] bg-white p-3 transition hover:bg-[#F6FAF6]"
+                >
                   {/* Mobile */}
                   <div className="lg:hidden">
                     <div className="flex items-center justify-between">
-                      <div>
+                      <div className="dashboard-value">
                         {formatDate(lesson.lesson_date)} - {formatLessonTime(lesson.lesson_time)}
                         {lesson.booked_by === "coach" && " [Coach]"}
                         {lesson.booked_by === "admin" && " [Admin]"}
@@ -781,7 +822,7 @@ export default function ClientDashboard() {
 
                       <button
                         onClick={() => setExpandedLessonId(expandedLessonId === lesson.id ? null : lesson.id)}
-                        className="rounded bg-blue-600 px-3 py-1 text-white"
+                        className="rounded-xl border border-[#4E6FA8] bg-[#4E6FA8] px-3 py-1.5 text-[14px] font-light text-white shadow-sm transition hover:bg-[#3F5E92]"
                       >
                         Edit
                       </button>
@@ -791,22 +832,22 @@ export default function ClientDashboard() {
                       <div className="mt-3 flex gap-2">
                         <button
                           onClick={() => openReschedule(lesson)}
-                          className="rounded-lg bg-[#3C6A50] px-3 py-1.5 text-sm font-light text-white transition hover:bg-[#4A7D61]"
+                          className="rounded-xl border border-[#3A5D49] bg-[#2F5A43] px-4 py-2 text-[14px] font-light text-white shadow-sm transition hover:bg-[#244634]"
                         >
                           Reschedule
                         </button>
 
                         <button
                           onClick={() => cancelLesson(lesson)}
-                          className="rounded-lg bg-[#A34A4A] px-3 py-1.5 text-sm font-light text-white transition hover:bg-[#B95B5B]"
+                          className="rounded-xl border border-[#7F2E2E] bg-[#9B3B3B] px-4 py-2 text-[14px] font-light text-white shadow-sm transition hover:bg-[#842F2F]"
                         >
                           Cancel
                         </button>
                       </div>
                     )}
                   </div>
-                  <div className="hidden lg:flex items-center justify-between text-sm">
-                    <div>
+                  <div className="hidden items-center justify-between lg:flex">
+                    <div className="dashboard-value">
                       {formatDate(lesson.lesson_date)} - {formatLessonTime(lesson.lesson_time)}
                       {lesson.booked_by === "coach" && " [Coach]"}
                       {lesson.booked_by === "admin" && " [Admin]"}
@@ -815,7 +856,7 @@ export default function ClientDashboard() {
                     <div className="flex gap-2">
                       <button
                         onClick={() => openReschedule(lesson)}
-                        className="rounded-lg bg-[#3C6A50] px-3 py-1.5 text-sm font-light text-white transition hover:bg-[#4A7D61]"
+                        className="rounded-xl border border-[#3A5D49] bg-[#2F5A43] px-4 py-2 text-[14px] font-light text-white shadow-sm transition hover:bg-[#244634]"
                       >
                         Reschedule
                       </button>
@@ -828,18 +869,22 @@ export default function ClientDashboard() {
                 </div>
               ))}
 
-              {upcomingLessons.length === 0 && <p>No upcoming lessons.</p>}
+              {upcomingLessons.length === 0 && (
+                <p className="dashboard-value text-[#6D7F72]">
+                  No upcoming lessons.
+                </p>
+              )}
               {upcomingLessons.length > ITEMS_PER_PAGE && (
                 <div className="flex h-16 items-center justify-center gap-4">
                   <button
                     onClick={() => setUpcomingPage((p) => Math.max(1, p - 1))}
                     disabled={upcomingPage === 1}
-                    className="rounded border px-3 py-1 disabled:opacity-50"
+                    className="rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[13px] font-light tracking-[0.04em] text-[#1F3327] shadow-sm transition hover:bg-[#F6FAF6] disabled:opacity-50"
                   >
                     Previous
                   </button>
 
-                  <span>
+                  <span className="dashboard-value">
                     {upcomingPage} of {Math.ceil(upcomingLessons.length / ITEMS_PER_PAGE)}
                   </span>
 
@@ -848,7 +893,7 @@ export default function ClientDashboard() {
                       setUpcomingPage((p) => Math.min(Math.ceil(upcomingLessons.length / ITEMS_PER_PAGE), p + 1))
                     }
                     disabled={upcomingPage >= Math.ceil(upcomingLessons.length / ITEMS_PER_PAGE)}
-                    className="rounded border px-3 py-1 disabled:opacity-50"
+                    className="rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[13px] font-light tracking-[0.04em] text-[#1F3327] shadow-sm transition hover:bg-[#F6FAF6] disabled:opacity-50"
                   >
                     Next
                   </button>
@@ -859,22 +904,24 @@ export default function ClientDashboard() {
         </div>
 
         <div className="mt-4 grid gap-4 lg:mt-8 lg:grid-cols-2">
-          <div className="rounded-2xl bg-white p-3 lg:p-8 shadow">
-            <h2 className="mb-3 text-[18px] text-[18px] font-light uppercase tracking-[0.12em] text-black text-black">Previous Lessons</h2>
+          <div className="rounded-3xl border border-[#3A5D49] bg-white p-3 shadow-md lg:px-6 lg:py-5">
+            <h2 className="dashboard-heading mb-3">
+              Previous Lessons
+            </h2>
 
-            <div className="overflow-hidden rounded-xl border">
+            <div className="overflow-hidden rounded-2xl border border-[#3A5D49]">
               <table className="w-full border-collapse text-sm">
                 <thead>
-                  <tr className="border-b bg-gray-50">
-                    <th className="dashboard-label p-3 text-left font-light">
+                  <tr className="border-b border-[#3A5D49] bg-[#F3F0EA]">
+                    <th className="dashboard-label p-4 text-left">
                       Date
                     </th>
 
-                    <th className="dashboard-label p-3 text-left font-light">
+                    <th className="dashboard-label p-4 text-left">
                       Method
                     </th>
 
-                    <th className="dashboard-label p-3 text-left font-light">
+                    <th className="dashboard-label p-4 text-left">
                       Notes
                     </th>
                   </tr>
@@ -882,22 +929,27 @@ export default function ClientDashboard() {
 
                 <tbody>
                   {paginatedPrevious.map((lesson) => (
-                    <tr key={lesson.id} className="border-b">
-                      <td className="p-3">{formatDate(lesson.lesson_date)}</td>
+                    <tr
+                      key={lesson.id}
+                      className="border-b border-[#3A5D49] hover:bg-[#F6FAF6]"
+                    >
+                      <td className="dashboard-value p-4">
+                        {formatDate(lesson.lesson_date)}
+                      </td>
 
-                      <td className="p-3">
+                      <td className="dashboard-value p-4">
                         {lesson.lesson_packages?.transaction_name ||
                           lesson.payment_method ||
                           "Other"}
                       </td>
 
-                      <td className="p-3">
+                      <td className="dashboard-value p-4">
                         {lesson.status === "no_show" ? (
                           "No Show"
                         ) : lesson.lesson_notes ? (
                           <button
                             onClick={() => setSelectedLessonNote(lesson)}
-                            className="rounded bg-blue-600 px-2 py-1 text-sm text-white"
+                            className="rounded-xl border border-[#4E6FA8] bg-[#4E6FA8] px-3 py-1.5 text-[14px] font-light text-white shadow-sm transition hover:bg-[#3F5E92]"
                           >
                             View Note
                           </button>
@@ -910,18 +962,23 @@ export default function ClientDashboard() {
                 </tbody>
               </table>
 
-              {previousLessons.length === 0 && <div className="p-4">No previous lessons.</div>}
+              {previousLessons.length === 0 && (
+                <div className="dashboard-value p-4 text-[#6D7F72]">
+                  No previous lessons.
+                </div>
+              )}
+
               {previousLessons.length > ITEMS_PER_PAGE && (
                 <div className="flex h-16 items-center justify-center gap-4">
                   <button
                     onClick={() => setPreviousPage((p) => Math.max(1, p - 1))}
                     disabled={previousPage === 1}
-                    className="rounded border px-3 py-1 disabled:opacity-50"
+                    className="rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[13px] font-light tracking-[0.04em] text-[#1F3327] shadow-sm transition hover:bg-[#F6FAF6] disabled:opacity-50"
                   >
                     Previous
                   </button>
 
-                  <span>
+                  <span className="dashboard-value">
                     {previousPage} of {Math.ceil(previousLessons.length / ITEMS_PER_PAGE)}
                   </span>
 
@@ -930,7 +987,7 @@ export default function ClientDashboard() {
                       setPreviousPage((p) => Math.min(Math.ceil(previousLessons.length / ITEMS_PER_PAGE), p + 1))
                     }
                     disabled={previousPage >= Math.ceil(previousLessons.length / ITEMS_PER_PAGE)}
-                    className="rounded border px-3 py-1 disabled:opacity-50"
+                    className="rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[13px] font-light tracking-[0.04em] text-[#1F3327] shadow-sm transition hover:bg-[#F6FAF6] disabled:opacity-50"
                   >
                     Next
                   </button>
@@ -938,14 +995,17 @@ export default function ClientDashboard() {
               )}
             </div>
           </div>
-          <div className="rounded-2xl bg-white p-3 lg:p-8 shadow">
-            <h2 className="mb-3 text-[18px] text-[18px] font-light uppercase tracking-[0.12em] text-black text-black">
+          <div className="rounded-3xl border border-[#3A5D49] bg-white p-3 shadow-md lg:px-6 lg:py-5">
+            <h2 className="dashboard-heading mb-3">
               Lessons Remaining ({client?.lessons_remaining ?? 0})
             </h2>
 
             <div className="mx-auto max-w-md space-y-3">
               {paginatedPackages.map((pkg) => (
-                <div key={pkg.id} className="rounded-xl border p-3 text-sm">
+                <div
+                  key={pkg.id}
+                  className="rounded-xl border border-[#3A5D49] bg-[#FBF8F3] p-4 transition hover:bg-[#F6FAF6]"
+                >
                   <button
                     onClick={() =>
                       setExpandedPackageId(
@@ -955,36 +1015,40 @@ export default function ClientDashboard() {
                     className="flex w-full items-center justify-between"
                   >
                     <div>
-                      <div className="text-xs font-semibold text-gray-600">
+                      <div className="dashboard-label">
                         Balance
                       </div>
 
-                      <div className="text-[18px] text-[18px] font-light uppercase tracking-[0.12em] text-black">
+                      <div className="dashboard-value text-[22px]">
                         {(pkg.lessons_added || 0) - (pkg.lessons_used || 0)}
                       </div>
                     </div>
 
-                    <span className="text-[18px]">
+                    <span className="text-[18px] text-[#2F5A43]">
                       {expandedPackageId === pkg.id ? "▲" : "▼"}
                     </span>
                   </button>
 
                   {expandedPackageId === pkg.id && (
-                    <div className="mt-4 space-y-2 border-t pt-4">
-                      <div className="dashboard-value text-[13px]">
-                        Purchase: {pkg.transaction_name}
+                    <div className="mt-4 space-y-3 border-t border-[#3A5D49] pt-4">
+                      <div>
+                        <p className="dashboard-label">Package</p>
+                        <p className="dashboard-value">{pkg.transaction_name}</p>
                       </div>
 
-                      <div className="dashboard-value text-[13px]">
-                        Purchased: {formatDate(pkg.purchase_date)}
+                      <div>
+                        <p className="dashboard-label">Purchased</p>
+                        <p className="dashboard-value">{formatDate(pkg.purchase_date)}</p>
                       </div>
 
-                      <div className="dashboard-value text-[13px]">
-                        Expiry: {formatDate(pkg.expiration_date)}
+                      <div>
+                        <p className="dashboard-label">Expiry</p>
+                        <p className="dashboard-value">{formatDate(pkg.expiration_date)}</p>
                       </div>
 
-                      <div className="dashboard-value text-[13px]">
-                        Method: {pkg.payment_method}
+                      <div>
+                        <p className="dashboard-label">Method</p>
+                        <p className="dashboard-value">{pkg.payment_method}</p>
                       </div>
                     </div>
                   )}
@@ -992,8 +1056,10 @@ export default function ClientDashboard() {
               ))}
 
               {paginatedPackages.length === 0 && (
-                <div className="rounded-xl border p-4">
-                  No active lessons remaining.
+                <div className="rounded-xl border border-[#3A5D49] bg-[#FBF8F3] p-4">
+                  <p className="dashboard-value text-[#6D7F72]">
+                    No active lessons remaining.
+                  </p>
                 </div>
               )}
 
@@ -1011,12 +1077,12 @@ export default function ClientDashboard() {
                       )
                     }
                     disabled={packagesPage === 1}
-                    className="rounded border px-3 py-1 disabled:opacity-50"
+                    className="rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[13px] font-light tracking-[0.04em] text-[#1F3327] shadow-sm transition hover:bg-[#F6FAF6] disabled:opacity-50"
                   >
                     Previous
                   </button>
 
-                  <span>
+                  <span className="dashboard-value">
                     {packagesPage} of{" "}
                     {Math.ceil(
                       packages.filter(
@@ -1055,7 +1121,7 @@ export default function ClientDashboard() {
                         ).length / ITEMS_PER_PAGE
                       )
                     }
-                    className="rounded border px-3 py-1 disabled:opacity-50"
+                    className="rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[13px] font-light tracking-[0.04em] text-[#1F3327] shadow-sm transition hover:bg-[#F6FAF6] disabled:opacity-50"
                   >
                     Next
                   </button>

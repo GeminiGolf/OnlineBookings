@@ -10,9 +10,7 @@ export default function ForgotPasswordPage() {
   async function handleForgotPassword(e: React.FormEvent) {
     e.preventDefault()
 
-    if (!email.trim()) {
-      return
-    }
+    if (!email.trim()) return
 
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: `${window.location.origin}/reset-password`,
@@ -29,24 +27,25 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-100 p-8">
-      <div className="mx-auto max-w-md rounded-2xl bg-white p-8 text-black shadow">
-        <h1 className="mb-2 text-2xl font-bold">Forgot Password</h1>
+    <main className="flex min-h-screen -translate-y-6 items-center justify-center bg-[#F2EEE8] px-6 py-10 sm:translate-y-0">
+      <div className="w-full max-w-md rounded-3xl border border-[#3A5D49] bg-[#F2ECE3] p-6 shadow-sm sm:p-8">
+        <h1 className="mb-2 text-center text-[22px] font-light uppercase tracking-[0.12em] text-[#2F5A43]">
+          Forgot Password?
+        </h1>
 
-        <p className="mb-6 text-sm text-gray-600">
-          Enter your email address and we'll send you a password reset link if
-          an account exists.
+        <p className="mb-8 text-center text-[12px] font-light tracking-[0.08em] text-[#2F5A43]">
+          Enter your email address and we'll send you a password reset link if an account exists.
         </p>
 
         {successMessage && (
-          <div className="mb-6 rounded-lg bg-green-100 p-3 text-green-700">
+          <div className="mb-5 rounded-xl border border-[#3A5D49] bg-[#F6FAF6] p-4 text-center text-[14px] font-light text-[#2F5A43]">
             {successMessage}
           </div>
         )}
 
-        <form onSubmit={handleForgotPassword} className="space-y-5">
+        <form onSubmit={handleForgotPassword} className="space-y-6">
           <div>
-            <label className="mb-2 block font-semibold">
+            <label className="dashboard-label mb-2 block">
               Email Address
             </label>
 
@@ -54,16 +53,16 @@ export default function ForgotPasswordPage() {
               type="email"
               disabled={!!successMessage}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-lg border p-3"
               autoComplete="email"
               required
+              className="w-full rounded-xl border border-[#3A5D49] bg-[#FCFAF6] px-5 py-2.5 text-[15px] font-light text-[#1F3327] placeholder:text-[#6D7F72] focus:border-[#2F5A43] focus:outline-none"
             />
           </div>
 
           <button
             type="submit"
             disabled={!!successMessage}
-            className="mx-auto block w-4/5 rounded-xl bg-blue-600 p-3 text-[16px] font-bold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50 sm:w-64 sm:text-lg"
+            className="mx-auto block w-56 rounded-xl border border-[#3A5D49] bg-[#2F5A43] px-5 py-2 text-[13px] font-light uppercase tracking-[0.12em] text-white shadow-sm transition hover:bg-[#244634] disabled:cursor-not-allowed disabled:opacity-50"
           >
             {successMessage ? "Reset Link Sent" : "Send Reset Link"}
           </button>

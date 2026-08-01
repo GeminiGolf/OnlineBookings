@@ -73,22 +73,27 @@ export default function ChangePassword() {
   }
 
   return (
-    <div className="mx-auto max-w-md rounded-2xl bg-white p-8 text-black shadow">
-      <h1 className="mb-6 text-[18px] font-light uppercase tracking-[0.12em] text-black">
+    <div className="rounded-3xl border border-[#3A5D49] bg-[#F2ECE3] p-6 shadow-sm sm:p-8">
+      <h1 className="mb-2 text-center text-[20px] font-light uppercase tracking-[0.12em] text-[#2F5A43]">
         Change Password
       </h1>
 
-      <form onSubmit={handleChangePassword} className="space-y-5">
+      <p className="mb-5 text-center text-[15px] font-light tracking-[0.08em] text-[#2F5A43]">
+        Update your password to keep your account secure.
+      </p>
+
+      <form onSubmit={handleChangePassword} className="space-y-3">
         <div>
           <label className="dashboard-label mb-2 block">
             Current Password
           </label>
+
           <input
             type={showPasswords ? "text" : "password"}
             value={currentPassword}
             onChange={(e) => setCurrentPassword(e.target.value)}
-            className="w-full rounded-lg border p-3"
             autoComplete="current-password"
+            className="w-full rounded-xl border border-[#55725F] bg-white px-5 py-2.5 text-[15px] font-light text-[#1F3327] placeholder:text-[#7B867D] focus:border-[#2F5A43] focus:outline-none"
           />
         </div>
 
@@ -101,8 +106,8 @@ export default function ChangePassword() {
             type={showPasswords ? "text" : "password"}
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
-            className="w-full rounded-lg border p-3"
             autoComplete="new-password"
+            className="w-full rounded-xl border border-[#55725F] bg-white px-5 py-2.5 text-[15px] font-light text-[#1F3327] placeholder:text-[#7B867D] focus:border-[#2F5A43] focus:outline-none"
           />
         </div>
 
@@ -115,48 +120,33 @@ export default function ChangePassword() {
             type={showPasswords ? "text" : "password"}
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
-            className="w-full rounded-lg border p-3"
             autoComplete="new-password"
+            className="w-full rounded-xl border border-[#55725F] bg-white px-5 py-2.5 text-[15px] font-light text-[#1F3327] placeholder:text-[#7B867D] focus:border-[#2F5A43] focus:outline-none"
           />
         </div>
-				
-        <div className="flex items-center gap-3">
+
+        <label className="flex items-center gap-2 text-[13px] font-light uppercase tracking-[0.08em] text-[#2F5A43]">
           <input
-            id="show-passwords"
             type="checkbox"
             checked={showPasswords}
             onChange={(e) => setShowPasswords(e.target.checked)}
-            className="h-4 w-4"
           />
+          Show Password
+        </label>
 
-          <label
-            htmlFor="show-passwords"
-            className="dashboard-value cursor-pointer select-none text-[13px]"
-          >
-            Show passwords
-          </label>
-        </div>
+        <label className="flex items-center gap-2 text-[13px] font-light uppercase tracking-[0.08em] text-[#2F5A43]">
+          <input
+            type="checkbox"
+            checked={logoutOtherDevices}
+            onChange={(e) => setLogoutOtherDevices(e.target.checked)}
+          />
+          Log out of other devices
+        </label>
 
-        <div className="flex items-center gap-3">
-					<input
-						id="logout-other-devices"
-						type="checkbox"
-						checked={logoutOtherDevices}
-						onChange={(e) => setLogoutOtherDevices(e.target.checked)}
-						className="h-4 w-4"
-					/>
-
-					<label
-            htmlFor="logout-other-devices"
-            className="dashboard-value cursor-pointer select-none text-[13px]"
-          >
-            Log out of other devices
-          </label>
-				</div>
         <button
           type="submit"
           disabled={loading}
-          className="mx-auto block w-4/5 rounded-xl bg-[#3C6A50] p-3 text-[13px] font-light tracking-[0.06em] text-white transition hover:bg-[#4A7D61] sm:w-64"
+          className="mx-auto mt-4 block w-56 rounded-xl border border-[#3A5D49] bg-[#2F5A43] px-5 py-2 text-[13px] font-light uppercase tracking-[0.12em] text-white shadow-sm transition hover:bg-[#244634]"
         >
           {loading ? "Changing Password..." : "Change Password"}
         </button>
