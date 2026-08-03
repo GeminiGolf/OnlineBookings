@@ -768,17 +768,17 @@ export default function ClientDashboard() {
               />
             </div>
 
-            <div className="mt-3">
-              <h3 className="dashboard-heading mb-3">
+            <div className="mt-3 flex flex-col items-center">
+              <h3 className="dashboard-heading mb-3 text-center">
                 Available Time Slots
               </h3>
 
               {timeSlots.length === 0 ? (
-                <p className="text-[15px] font-light text-[#2F5A43]">
+                <p className="text-center text-[15px] font-light text-[#2F5A43]">
                   No available slots.
                 </p>
               ) : (
-                <div className="flex flex-wrap gap-2">
+                <div className="flex w-fit flex-wrap justify-center gap-2">
                   {timeSlots.map((time) => (
                     <button
                       key={time}
@@ -1157,24 +1157,49 @@ export default function ClientDashboard() {
 
         {showRescheduleModal && rescheduleLesson && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-6">
-            <div className="w-full max-w-2xl rounded-2xl bg-white p-6">
-              <h2 className="mb-4 text-2xl text-[18px] font-light uppercase tracking-[0.12em] text-black">Reschedule Lesson</h2>
+            <div className="w-full max-w-2xl rounded-2xl bg-white px-4 pt-4 pb-0 sm:p-6">
+              <div className="origin-top -mb-4 scale-[0.94] sm:mb-0 sm:scale-100">
+              <div className="mb-2 sm:mb-5 flex items-center justify-between">
+                <h2 className="text-[16px] font-bold uppercase tracking-[0.12em] text-[#2F5A43] sm:text-[20px]">
+                  <span className="sm:hidden">Reschedule Lesson [RS]</span>
+                  <span className="hidden sm:inline">Reschedule Lesson</span>
+                </h2>
 
-              <div className="mb-4">
-                <p>
-                  <strong>Current Lesson:</strong> {formatDate(rescheduleLesson.lesson_date)}
-                  {" - "}
-                  {formatLessonTime(rescheduleLesson.lesson_time)}
-                </p>
-
-                <p className="mt-2">
-                  <strong>Reschedules Used:</strong> {rescheduleLesson.client_reschedules || 0}
-                  {" / 3"}
-                </p>
+                <button
+                  onClick={() => setShowRescheduleModal(false)}
+                  className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#3A5D49] bg-[#FBF8F3] text-[22px] font-light leading-none text-[#2F5A43] transition hover:bg-[#F6FAF6]"
+                >
+                  ×
+                </button>
               </div>
 
-              <DayPicker
-                className="mt-2 -mb-8 origin-top scale-90 lg:scale-[0.82]"
+              <div className="mb-5">
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <p className="mb-1 text-[13px] font-bold uppercase tracking-[0.12em] text-[#2F5A43]">
+                      Current Lesson
+                    </p>
+
+                    <p className="text-[15px] font-light text-[#2F5A43]">
+                      {formatDate(rescheduleLesson.lesson_date)} — {formatLessonTime(rescheduleLesson.lesson_time)}
+                    </p>
+                  </div>
+
+                  <div className="text-right">
+                    <p className="mb-1 text-[13px] font-bold uppercase tracking-[0.12em] text-[#2F5A43]">
+                      RS Used
+                    </p>
+
+                    <p className="text-[15px] font-light text-[#2F5A43]">
+                      {rescheduleLesson.client_reschedules || 0} / 3
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mx-auto w-fit overflow-hidden rounded-2xl border border-[#3A5D49] bg-[#FBF8F3] px-2 pt-2 pb-0 text-sm">
+                <DayPicker
+                  className="mt-2 -mb-8 origin-top scale-90 lg:scale-[0.82]"
                 mode="single"
                 selected={rescheduleDate}
                 onSelect={async (date) => {
@@ -1208,30 +1233,44 @@ export default function ClientDashboard() {
                     borderRadius: "9999px",
                   },
                 }}
-              />
-
-              <div className="mt-6 flex flex-wrap gap-2">
-                {rescheduleSlots.map((time) => (
-                  <button
-                    key={time}
-                    onClick={() => setRescheduleTime(time)}
-                    className={`rounded px-3 py-2 text-white ${
-                      rescheduleTime === time ? "bg-green-700" : "bg-green-600"
-                    }`}
-                  >
-                    {time}
-                  </button>
-                ))}
+                />
               </div>
 
-              <div className="mt-6 flex gap-3">
-                <button onClick={() => setShowRescheduleModal(false)} className="rounded border px-4 py-2">
-                  Close
-                </button>
+              <div className="mt-2 flex flex-col items-center">
+                <h3 className="dashboard-heading mb-2 text-center">
+                  Available Time Slots
+                </h3>
 
-                <button onClick={confirmReschedule} className="rounded bg-black px-4 py-2 text-white">
+                <div className="flex max-w-[280px] flex-wrap justify-center gap-1 sm:max-w-none sm:gap-2">
+                  {rescheduleSlots.map((time) => (
+                    <button
+                      key={time}
+                      onClick={() => setRescheduleTime(time)}
+                      className={`rounded-xl border px-3.5 py-1.5 sm:px-4 sm:py-2 text-[14px] sm:text-[15px] font-light transition ${
+                        rescheduleTime === time
+                          ? "border-[#2F5A43] bg-[#2F5A43] text-white"
+                          : "border-[#3A5D49] bg-[#FBF8F3] text-[#2F5A43] hover:bg-[#F6FAF6]"
+                      }`}
+                    >
+                      {time}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="mt-4 flex justify-end">
+                <button
+                  onClick={confirmReschedule}
+                  disabled={!rescheduleTime}
+                  className={`rounded-xl border px-4 py-2 text-[15px] font-light transition ${
+                    rescheduleTime
+                      ? "border-[#2F5A43] bg-[#2F5A43] text-white hover:bg-[#244634]"
+                      : "cursor-not-allowed border-[#2F5A43] bg-[#D9DDD8] text-[#7A867E]"
+                  }`}
+                >
                   Confirm
                 </button>
+              </div>
               </div>
             </div>
           </div>
