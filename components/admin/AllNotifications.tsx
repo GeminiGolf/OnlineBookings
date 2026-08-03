@@ -290,7 +290,7 @@ export default function AllNotifications() {
       </div>
 
       <div className="overflow-hidden rounded-3xl border border-[#3A5D49] bg-[#FEFDFC] shadow-md">
-        <table className="w-full text-[#2F5A43]">
+        <table className="w-full table-fixed text-[#2F5A43] md:table-auto">
           <thead>
             <tr className="border-b border-[#D8D2C8] bg-[#F3F0EA] text-left">
               <th className="dashboard-label p-4">Date</th>
@@ -409,18 +409,18 @@ export default function AllNotifications() {
                               onClick={() => toggleNotification(notification.id)}
                               className="flex w-full items-center gap-3 px-3 py-3 text-left"
                             >
-                              <span className="flex h-10 w-[58px] shrink-0 items-center justify-center rounded-xl bg-[#4E6FA8] text-[12px] font-light uppercase tracking-[0.08em] text-white transition hover:bg-[#3F5F93]">
-                                Edit
+                              <span className="shrink-0 text-[#4E6FA8] transition hover:text-[#3F5F93]">
+                                ✏️
                               </span>
 
-                              <div className="w-[110px] shrink-0">
+                              <div className="w-[70px] shrink-0">
                                 <p className="dashboard-label">Client</p>
                                 <p className="truncate text-[15px] font-light text-[#2F5A43]">
                                   {notification.recipient}
                                 </p>
                               </div>
 
-                              <div className="min-w-0 flex-1">
+                              <div className="min-w-0 flex-1 pl-4">
                                 <p className="dashboard-label">Notifs</p>
                                 <p className="truncate text-[15px] font-light text-[#2F5A43]">
                                   {notification.type}
