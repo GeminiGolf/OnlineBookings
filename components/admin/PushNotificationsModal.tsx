@@ -209,15 +209,15 @@ export default function PushNotificationsModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-6">
-      <div className="flex max-h-[75vh] md:max-h-[90vh] w-full max-w-3xl flex-col rounded-2xl bg-white shadow-2xl">
+      <div className="flex w-full max-w-4xl max-h-[90vh] flex-col overflow-hidden rounded-3xl border border-[#3A5D49] bg-white shadow-xl">
         <div className="mb-1 flex items-center justify-between px-6 pt-4">
-          <h2 className="text-xl font-bold text-black">
+          <h2 className="text-[20px] font-light uppercase tracking-[0.12em] text-[#2F5A43]">
             Push Notification
           </h2>
 
           <button
             onClick={onClose}
-            className="text-3xl font-bold text-gray-500 hover:text-black"
+            className="text-3xl font-light text-[#55725F] transition hover:text-[#2F5A43]"
           >
             ×
           </button>
@@ -226,7 +226,7 @@ export default function PushNotificationsModal({
         <div className="flex-1 space-y-2 overflow-y-auto px-6 pb-8 pt-1">
 
           <div className="flex items-center gap-3">
-            <h3 className="whitespace-nowrap text-[16px] font-semibold text-black">
+            <h3 className="dashboard-label whitespace-nowrap">
               Send to:
             </h3>
 
@@ -235,21 +235,22 @@ export default function PushNotificationsModal({
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search clients or coaches..."
-              className="flex-1 rounded-md border border-gray-300 px-3 py-1 text-black placeholder:text-gray-400 focus:border-sky-500 focus:outline-none"
+              className="flex-1 rounded-2xl border border-[#3A5D49] bg-[#FCFAF6] px-4 py-2 text-[15px] font-light text-[#2F5A43] placeholder:text-[#8A9A8F] focus:border-[#2F5A43] focus:outline-none"
+              style={{ accentColor: "#2F5A43" }}
             />
           </div>
 
           <div className="pt-2">
 
-            <div className="rounded-lg border bg-gray-50 p-2">
+            <div className="rounded-2xl border border-[#3A5D49] bg-[#FEFDFC] p-3">
 
-              <p className="font-medium text-black">
+              <p className="dashboard-label">
                 Recipients
               </p>
 
-              <div className="mt-1 max-h-62 overflow-y-auto rounded-md border bg-white">
+              <div className="mt-2 max-h-72 overflow-y-auto rounded-2xl border border-[#3A5D49] bg-white">
 
-                <label className="flex cursor-pointer items-center gap-2 border-b bg-gray-50 px-3 py-1 font-medium">
+                <label className="flex cursor-pointer items-center gap-3 border-b border-[#3A5D49] bg-[#F8F5F0] px-4 py-2 text-[15px] font-light text-[#2F5A43]">
                   <input
                     type="checkbox"
                     checked={
@@ -281,12 +282,12 @@ export default function PushNotificationsModal({
                     }}
                   />
 
-                  <span className="text-black">
+                  <span className="text-[15px] font-light text-[#2F5A43]">
                     Select All
                   </span>
                 </label>
 
-                <div className="border-b bg-gray-100 px-3 py-0 text-sm font-semibold text-gray-600">
+                <div className="border-b border-[#3A5D49] bg-[#F2EEE8] px-4 py-2 text-[13px] font-medium uppercase tracking-[0.12em] text-[#2F5A43]">
                   Coaches
                 </div>
 
@@ -296,7 +297,7 @@ export default function PushNotificationsModal({
                   return (
                     <label
                       key={coach.id}
-                      className="flex cursor-pointer items-center gap-2 border-b px-3 py-1 hover:bg-gray-50"
+                      className="flex cursor-pointer items-center gap-3 border-b border-[#3A5D49] px-4 py-2 text-[15px] font-light text-[#2F5A43] transition hover:bg-[#F8FBF8]"
                     >
                       <input
                         type="checkbox"
@@ -319,7 +320,7 @@ export default function PushNotificationsModal({
                   )
                 })}
 
-                <div className="border-b bg-gray-100 px-3 py-0 text-sm font-semibold text-gray-600">
+                <div className="border-b border-[#3A5D49] bg-[#F2EEE8] px-4 py-2 text-[13px] font-medium uppercase tracking-[0.12em] text-[#2F5A43]">
                   Clients
                 </div>
 
@@ -329,7 +330,7 @@ export default function PushNotificationsModal({
                   return (
                     <label
                       key={client.id}
-                      className="flex cursor-pointer items-center gap-2 border-b px-3 py-1 hover:bg-gray-50"
+                      className="flex cursor-pointer items-center gap-3 border-b border-[#3A5D49] px-4 py-2 text-[15px] font-light text-[#2F5A43] transition hover:bg-[#F8FBF8]"
                     >
                       <input
                         type="checkbox"
@@ -345,7 +346,7 @@ export default function PushNotificationsModal({
                         }}
                       />
 
-                      <span className="text-black">
+                      <span className="text-[15px] font-light text-[#2F5A43]">
                         {client.preferred_name &&
                         client.preferred_name.trim() !== ""
                           ? `(${client.preferred_name}) ${client.first_name ?? ""} ${client.last_name ?? ""}`.trim()
@@ -359,15 +360,15 @@ export default function PushNotificationsModal({
 
             </div>
 
-            <div className="mt-4 rounded-md bg-sky-50 px-2 py-1 text-sm font-medium text-sky-700">
+            <div className="mt-4 rounded-2xl border border-[#3A5D49] bg-[#F6FAF6] px-4 py-3 text-[15px] font-light text-[#2F5A43]">
               {selectedRecipients.length} recipient
               {selectedRecipients.length === 1 ? "" : "s"} selected
             </div>
 
-            <div className="mt-3 space-y-3 border-t pt-3">
+            <div className="mt-5 space-y-5 border-t border-[#3A5D49] pt-5">
 
               <div>
-                <label className="mb-0 block font-medium text-black">
+                <label className="dashboard-label mb-2 block">
                   Subject
                 </label>
 
@@ -376,12 +377,12 @@ export default function PushNotificationsModal({
                   value={subject}
                   onChange={(e) => setSubject(e.target.value)}
                   placeholder="Notification subject..."
-                  className="w-full rounded-md border border-gray-300 px-3 py-1 text-black focus:border-sky-500 focus:outline-none"
+                  className="w-full rounded-2xl border border-[#3A5D49] bg-[#FCFAF6] px-4 py-2 text-[15px] font-light text-[#2F5A43] focus:border-[#2F5A43] focus:ring-[#2F5A43]/15"
                 />
               </div>
 
               <div>
-                <label className="mb-0 block font-medium text-black">
+                <label className="dashboard-label mb-2 block">
                   Message
                 </label>
 
@@ -390,7 +391,7 @@ export default function PushNotificationsModal({
                   onChange={(e) => setMessage(e.target.value)}
                   rows={4}
                   placeholder="Notification message..."
-                  className="w-full resize-none rounded-md border border-gray-300 px-3 py-1 text-black focus:border-sky-500 focus:outline-none"
+                  className="w-full resize-none rounded-2xl border border-[#3A5D49] bg-[#FCFAF6] px-4 py-3 text-[15px] font-light text-[#2F5A43] focus:border-[#2F5A43] focus:ring-[#2F5A43]/15"
                 />
               </div>
 
@@ -398,7 +399,7 @@ export default function PushNotificationsModal({
 
                 <button
                   onClick={onClose}
-                  className="rounded-md bg-gray-300 px-3 py-2 font-medium text-black hover:bg-gray-400"
+                  className="rounded-xl border border-[#9D3E3E] bg-white px-6 py-3 text-[13px] font-light uppercase tracking-[0.12em] text-[#9D3E3E] transition hover:bg-[#FDF4F4]"
                 >
                   Close
                 </button>
@@ -418,9 +419,12 @@ export default function PushNotificationsModal({
                     !message.trim() ||
                     selectedRecipients.length === 0
                   }
-                  className="rounded-md bg-sky-600 px-4 py-2 font-medium text-white hover:bg-sky-700 disabled:cursor-not-allowed disabled:bg-gray-400"
+                  className="rounded-xl bg-[#2F5A43] px-6 py-3 text-[13px] font-light uppercase tracking-[0.12em] text-white transition hover:bg-[#244634] disabled:cursor-not-allowed disabled:bg-[#A7B3AC]"
                 >
-                  Send Notification
+                  <>
+                    <span className="sm:hidden">Send</span>
+                    <span className="hidden sm:inline">Send Notification</span>
+                  </>
                 </button>
 
               </div>

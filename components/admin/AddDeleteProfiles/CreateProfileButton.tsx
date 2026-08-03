@@ -14,7 +14,7 @@ export default function CreateProfileButton() {
       <div className="relative">
         <button
           onClick={() => setShowMenu(!showMenu)}
-          className="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+          className="rounded-xl bg-[#4E6FA8] px-4 py-2 text-[13px] font-light uppercase tracking-[0.12em] text-white transition hover:bg-[#3F5F93]"
         >
           Create
         </button>

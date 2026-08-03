@@ -61,10 +61,10 @@ export default async function AdminProfilesPage() {
     return a.name.localeCompare(b.name)
   })
   return (
-    <main className="min-h-screen bg-gray-100 p-3 sm:p-10 text-black">
+    <main className="min-h-screen bg-[#F2EEE8] px-4 pt-8 pb-3 sm:p-10 text-[#2F5A43]">
       <DashboardContainer>
         <div className="mb-6 flex items-center justify-between">
-          <h1 className="text-3xl font-bold sm:text-4xl">
+          <h1 className="text-[20px] font-light uppercase tracking-[0.12em] text-[#2F5A43]">
             Profiles
           </h1>
 
