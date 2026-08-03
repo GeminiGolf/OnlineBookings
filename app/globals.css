@@ -75,3 +75,28 @@ body {
   color: #2F5A43 !important;
   fill: #2F5A43 !important;
 }
+
+/* ---------- React Day Picker ---------- */
+
+.rdp-root {
+  --rdp-accent-color: #55725F;
+  --rdp-accent-background-color: #E8F2EB;
+}
+
+.rdp-selected .rdp-day_button,
+.rdp-day_button[aria-selected="true"] {
+  background-color: #55725F !important;
+  color: #ffffff !important;
+  border: none !important;
+}
+
+.rdp-day_button:hover {
+  background-color: #E8F2EB !important;
+  color: #2F5A43 !important;
+}
+
+.rdp-day_button:focus,
+.rdp-day_button:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}

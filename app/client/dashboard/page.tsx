@@ -728,6 +728,11 @@ export default function ClientDashboard() {
                   chevron: {
                     fill: "#2F5A43",
                   },
+                  selected: {
+                    backgroundColor: "#2F5A43",
+                    color: "#FFFFFF",
+                    borderRadius: "9999px",
+                  },
                 }}
                 mode="single"
                 selected={selectedDate}
@@ -1164,24 +1169,20 @@ export default function ClientDashboard() {
               </div>
 
               <DayPicker
-                className="scale-90 lg:scale-100 origin-top"
-                mode="single"
-                selected={rescheduleDate}
-                onSelect={(date) => {
-                  setRescheduleDate(date)
-
-                  setRescheduleTime("")
-
-                  if (date) {
-                    generateRescheduleSlots(date)
-                  }
-                }}
-                disabled={(date) => {
-                  const start = new Date()
-                  start.setHours(0, 0, 0, 0)
-                  const end = new Date(rescheduleLesson.lesson_date)
-                  end.setDate(end.getDate() + 7)
-                  return date < start || date > end
+                className="mt-2 -mb-8 scale-90 lg:scale-[0.82] origin-top [--rdp-accent-color:#55725F] [--rdp-accent-background-color:#E8F2EB]"
+                styles={{
+                  weekday: {
+                    color: "#2F5A43",
+                  },
+                  day: {
+                    color: "#2F5A43",
+                  },
+                  caption_label: {
+                    color: "#2F5A43",
+                  },
+                  chevron: {
+                    fill: "#2F5A43",
+                  },
                 }}
               />
 
