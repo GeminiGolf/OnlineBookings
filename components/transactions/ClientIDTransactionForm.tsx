@@ -235,22 +235,24 @@ export default function ClientIDTransactionForm({ clientId, lessonsRemaining }: 
           setShowModal(true)
           updateTransaction("PPV")
         }}
-        className="rounded-lg bg-[#5C7896] px-3 py-2 text-sm font-light tracking-[0.06em] text-white transition hover:bg-[#6E89A5] sm:px-4 sm:text-sm"
+        className="rounded-2xl bg-[#4E6FA8] px-6 py-3 text-[13px] font-light uppercase tracking-[0.12em] text-white transition hover:bg-[#3F5F93]"
       >
         Add Transaction
       </button>
 
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-6">
-          <div className="w-full max-w-lg rounded-2xl bg-white p-6 text-black">
-            <h2 className="mb-2 text-[20px] font-light tracking-[0.08em] text-black">New Transaction</h2>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-6">
+          <div className="w-full max-w-[460px] rounded-3xl bg-[#FEFDFC] p-8 shadow-2xl">
+            <h2 className="mb-6 text-[20px] font-light uppercase tracking-[0.12em] text-[#2F5A43]">
+              Add Transaction
+            </h2>
             <div className="space-y-2">
               <div>
-                <label className="mb-1 block dashboard-label">Transaction Type</label>
+                <label className="mb-2 block text-[13px] font-medium uppercase tracking-[0.12em] text-[#2F5A43]">Transaction Type</label>
                 <select
                   value={transactionType}
                   onChange={(e) => updateTransaction(e.target.value)}
-                  className="w-full rounded-xl border border-[#B9B2A8] bg-[#FEFDFC] px-3 py-2 text-[15px] font-light text-black focus:border-[#5C7896] focus:outline-none"
+                  className="w-full rounded-2xl border border-[#3A5D49] bg-[#FCFAF6] px-4 py-2 text-[15px] font-light text-[#2F5A43] outline-none transition focus:border-[#2F5A43] focus:ring-2 focus:ring-[#2F5A43]/15"
                 >
                   <option>PPV</option>
                   <option>5 Lessons</option>
@@ -261,29 +263,30 @@ export default function ClientIDTransactionForm({ clientId, lessonsRemaining }: 
 
               {isOther && (
                 <div>
-                  <label className="mb-1 block dashboard-label">Transaction Name</label>
+                  <label className="mb-2 block text-[13px] font-medium uppercase tracking-[0.12em] text-[#2F5A43]">Transaction Name</label>
                   <input
                     value={transactionName}
                     onChange={(e) => setTransactionName(e.target.value)}
                     placeholder="Describe the purchase"
-                    className="w-full rounded-xl border border-[#B9B2A8] bg-[#FEFDFC] px-3 py-2 text-[15px] font-light text-black focus:border-[#5C7896] focus:outline-none"
+                    className="w-full rounded-2xl border border-[#3A5D49] bg-[#FCFAF6] px-4 py-2 text-[15px] font-light text-[#2F5A43] outline-none transition focus:border-[#2F5A43] focus:ring-2 focus:ring-[#2F5A43]/15"
                   />
                 </div>
               )}
 
               <div>
-                <label className="mb-1 block dashboard-label">Lessons Adding</label>
+                <label className="mb-2 block text-[13px] font-medium uppercase tracking-[0.12em] text-[#2F5A43]">Lessons Adding</label>
                 <input
                   type="number"
                   value={lessonsAdded}
                   disabled={!isOther}
+                  onFocus={(e) => e.target.select()}
                   onChange={(e) => setLessonsAdded(Number(e.target.value))}
-                  className="w-full rounded-xl border border-[#B9B2A8] bg-[#FEFDFC] px-3 py-2 text-[15px] font-light text-black focus:border-[#5C7896] focus:outline-none disabled:bg-gray-100"
+                  className="w-full rounded-2xl border border-[#3A5D49] bg-[#FCFAF6] px-4 py-2 text-[15px] font-light text-[#2F5A43] disabled:bg-[#F3F0EA]"
                 />
               </div>
 
               <div>
-                <label className="mb-1 block dashboard-label">Price</label>
+                <label className="mb-2 block text-[13px] font-medium uppercase tracking-[0.12em] text-[#2F5A43]">Price</label>
                 <input
                   type="number"
                   value={
@@ -292,16 +295,17 @@ export default function ClientIDTransactionForm({ clientId, lessonsRemaining }: 
                       : price
                   }
                   disabled={!isOther}
+                  onFocus={(e) => e.target.select()}
                   onChange={(e) => setPrice(Number(e.target.value))}
-                  className="w-full rounded-xl border border-[#B9B2A8] bg-[#FEFDFC] px-3 py-2 text-[15px] font-light text-black focus:border-[#5C7896] focus:outline-none disabled:bg-gray-100"
+                  className="w-full rounded-2xl border border-[#3A5D49] bg-[#FCFAF6] px-4 py-2 text-[15px] font-light text-[#2F5A43] disabled:bg-[#F3F0EA]"
                 />
               </div>
               <div>
-                <label className="mb-1 block dashboard-label">Payment Method</label>
+                <label className="mb-2 block text-[13px] font-medium uppercase tracking-[0.12em] text-[#2F5A43]">Payment Method</label>
                 <select
                   value={paymentMethod}
                   onChange={(e) => setPaymentMethod(e.target.value)}
-                  className="w-full rounded-xl border border-[#B9B2A8] bg-[#FEFDFC] px-3 py-2 text-[15px] font-light text-black focus:border-[#5C7896] focus:outline-none"
+                  className="w-full rounded-2xl border border-[#3A5D49] bg-[#FCFAF6] px-4 py-2 text-[15px] font-light text-[#2F5A43] outline-none transition focus:border-[#2F5A43] focus:ring-2 focus:ring-[#2F5A43]/15"
                 >
                   <option value="">Select payment method</option>
                   <option value="cash">Cash</option>
@@ -314,7 +318,7 @@ export default function ClientIDTransactionForm({ clientId, lessonsRemaining }: 
 
               {showReceiptUpload && (
                 <div>
-                  <label className="mb-1 block dashboard-label">
+                  <label className="mb-2 block text-[13px] font-medium uppercase tracking-[0.12em] text-[#2F5A43]">
                     Upload Receipt
                   </label>
 
@@ -330,7 +334,7 @@ export default function ClientIDTransactionForm({ clientId, lessonsRemaining }: 
 
                   <label
                     htmlFor="receipt-upload"
-                    className="block w-full cursor-pointer rounded-xl border border-[#B9B2A8] bg-[#FEFDFC] px-3 py-2 text-[15px] font-light text-black transition hover:bg-[#F7F3EE]"
+                    className="block w-full cursor-pointer rounded-2xl border border-[#3A5D49] bg-[#FCFAF6] px-4 py-2 text-[15px] font-light text-[#2F5A43] transition hover:bg-[#F6FAF6]"
                   >
                     {receiptFile ? receiptFile.name : "Choose File"}
                   </label>
@@ -338,7 +342,7 @@ export default function ClientIDTransactionForm({ clientId, lessonsRemaining }: 
               )}
 
               <div>
-                <label className="mb-1 block dashboard-label">
+                <label className="mb-2 block text-[13px] font-medium uppercase tracking-[0.12em] text-[#2F5A43]">
                   Package Expiration Date
                 </label>
 
@@ -350,14 +354,14 @@ export default function ClientIDTransactionForm({ clientId, lessonsRemaining }: 
                       e.target.value
                     )
                   }
-                  className="w-77 rounded-xl border border-[#B9B2A8] bg-[#FEFDFC] px-3 py-2 text-[15px] font-light text-black focus:border-[#5C7896] focus:outline-none"
+                  className="w-[150px] rounded-2xl border border-[#3A5D49] bg-[#FCFAF6] px-4 py-2 text-[15px] font-light text-[#2F5A43]"
                 />
               </div>
 
               <div className="flex gap-3 pt-2">
                 <button
                   onClick={() => setShowModal(false)}
-                  className="rounded-lg bg-[#8F3434] px-4 py-2 font-light tracking-[0.06em] text-white transition hover:bg-[#A34A4A]"
+                  className="rounded-2xl border border-[#9D3E3E] bg-white px-6 py-2 text-[13px] font-light uppercase tracking-[0.12em] text-[#9D3E3E] transition hover:bg-[#FDF4F4]"
                 >
                   Cancel
                 </button>
@@ -365,7 +369,7 @@ export default function ClientIDTransactionForm({ clientId, lessonsRemaining }: 
                 <button
                   onClick={saveTransaction}
                   disabled={saving}
-                  className="rounded-lg bg-[#5C7896] px-4 py-2 font-light tracking-[0.06em] text-white transition hover:bg-[#6E89A5] disabled:cursor-not-allowed disabled:opacity-50"
+                  className="rounded-2xl bg-[#2F5A43] px-6 py-2 text-[13px] font-light uppercase tracking-[0.12em] text-white transition hover:bg-[#244634] disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {saving ? "Saving..." : "Save"}
                 </button>

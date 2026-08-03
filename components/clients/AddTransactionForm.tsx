@@ -288,13 +288,13 @@ export default function AddTransactionForm({
 
   return (
     <>
-      <h3 className="mb-2 text-xl font-bold">
+      <h3 className="mb-6 text-[20px] font-light uppercase tracking-[0.12em] text-[#2F5A43]">
         Add Transaction
       </h3>
 
       <div className="space-y-2">
         <div>
-          <label className="mb-1 block text-sm font-medium">
+          <label className="mb-1 block text-[13px] font-medium uppercase tracking-[0.12em] text-[#2F5A43]">
             Transaction Type
           </label>
 
@@ -305,7 +305,7 @@ export default function AddTransactionForm({
                 e.target.value
               )
             }
-            className="w-full rounded border p-2"
+            className="w-full rounded-2xl border border-[#3A5D49] bg-[#FCFAF6] px-4 py-2 text-[15px] font-light text-[#2F5A43] outline-none transition focus:border-[#2F5A43] focus:ring-2 focus:ring-[#2F5A43]/15"
           >
             <option>PPV</option>
             <option>5 Lessons</option>
@@ -316,7 +316,7 @@ export default function AddTransactionForm({
 
         {isOther && (
           <div>
-            <label className="mb-1 block text-sm font-medium">
+            <label className="mb-1 block text-[13px] font-medium uppercase tracking-[0.12em] text-[#2F5A43]">
               Transaction Name
             </label>
 
@@ -328,13 +328,13 @@ export default function AddTransactionForm({
                 )
               }
               placeholder="Describe the purchase"
-              className="w-full rounded border p-2"
+              className="w-full rounded-2xl border border-[#3A5D49] bg-[#FCFAF6] px-4 py-2 text-[15px] font-light text-[#2F5A43] outline-none transition focus:border-[#2F5A43] focus:ring-2 focus:ring-[#2F5A43]/15"
             />
           </div>
         )}
 
         <div>
-          <label className="mb-1 block text-sm font-medium">
+          <label className="mb-1 block text-[13px] font-medium uppercase tracking-[0.12em] text-[#2F5A43]">
             Lessons Adding
           </label>
 
@@ -342,17 +342,18 @@ export default function AddTransactionForm({
             type="number"
             value={lessonsAdded}
             disabled={!isOther}
+            onFocus={(e) => e.target.select()}
             onChange={(e) =>
               setLessonsAdded(
                 Number(e.target.value)
               )
             }
-            className="w-full rounded border p-2 disabled:bg-gray-100"
+            className="w-full rounded-2xl border border-[#3A5D49] bg-[#FCFAF6] px-4 py-2 text-[15px] font-light text-[#2F5A43] disabled:bg-[#F3F0EA]"
           />
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-medium">
+          <label className="mb-1 block text-[13px] font-medium uppercase tracking-[0.12em] text-[#2F5A43]">
             Price
           </label>
 
@@ -364,15 +365,16 @@ export default function AddTransactionForm({
                 : price
             }
             disabled={!isOther}
+            onFocus={(e) => e.target.select()}
             onChange={(e) =>
               setPrice(Number(e.target.value))
             }
-            className="w-full rounded border p-2 disabled:bg-gray-100"
+            className="w-full rounded-2xl border border-[#3A5D49] bg-[#FCFAF6] px-4 py-2 text-[15px] font-light text-[#2F5A43] disabled:bg-[#F3F0EA]"
           />
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-medium">
+          <label className="mb-1 block text-[13px] font-medium uppercase tracking-[0.12em] text-[#2F5A43]">
             Payment Method
           </label>
 
@@ -383,7 +385,7 @@ export default function AddTransactionForm({
                 e.target.value
               )
             }
-            className="w-full rounded border p-2"
+            className="w-full rounded-2xl border border-[#3A5D49] bg-[#FCFAF6] px-4 py-2 text-[15px] font-light text-[#2F5A43] outline-none transition focus:border-[#2F5A43] focus:ring-2 focus:ring-[#2F5A43]/15"
           >
             <option value="">
               Select payment method
@@ -408,7 +410,7 @@ export default function AddTransactionForm({
 
         {showReceiptUpload && (
           <div>
-            <label className="mb-1 block text-sm font-medium">
+            <label className="mb-1 block text-[13px] font-medium uppercase tracking-[0.12em] text-[#2F5A43]">
               Upload Receipt
             </label>
 
@@ -426,7 +428,7 @@ export default function AddTransactionForm({
 
             <label
               htmlFor="receipt-upload"
-              className="block w-full cursor-pointer rounded border p-2"
+              className="block w-full cursor-pointer rounded-2xl border border-[#3A5D49] bg-[#FCFAF6] px-4 py-2 text-[15px] font-light text-[#2F5A43] transition hover:bg-[#F6FAF6]"
             >
               {receiptFile
                 ? receiptFile.name
@@ -436,7 +438,7 @@ export default function AddTransactionForm({
         )}
 
         <div>
-          <label className="mb-1 block text-sm font-medium">
+          <label className="mb-1 block text-[13px] font-medium uppercase tracking-[0.12em] text-[#2F5A43]">
             Package Expiration Date
           </label>
 
@@ -448,14 +450,14 @@ export default function AddTransactionForm({
                 e.target.value
               )
             }
-            className="w-full rounded border p-1"
+           className="w-[150px] rounded-2xl border border-[#3A5D49] bg-[#FCFAF6] px-4 py-2 text-[15px] font-light text-[#2F5A43]"
           />
         </div>
 
         <div className="flex gap-3 pt-2">
           <button
             onClick={onCancel}
-            className="rounded border px-4 py-2"
+            className="rounded-2xl border border-[#9D3E3E] bg-white px-6 py-2 text-[13px] font-light uppercase tracking-[0.12em] text-[#9D3E3E] transition hover:bg-[#FDF4F4]"
           >
             Cancel
           </button>
@@ -463,7 +465,7 @@ export default function AddTransactionForm({
           <button
             onClick={saveTransaction}
             disabled={saving}
-            className="rounded-lg bg-[#5C7896] px-4 py-2 text-white transition hover:bg-[#6E89A5] disabled:cursor-not-allowed disabled:opacity-50"
+            className="rounded-2xl bg-[#2F5A43] px-6 py-2 text-[13px] font-light uppercase tracking-[0.12em] text-white transition hover:bg-[#244634] disabled:cursor-not-allowed disabled:opacity-50"
           >
             {saving ? "Saving..." : "Save"}
           </button>

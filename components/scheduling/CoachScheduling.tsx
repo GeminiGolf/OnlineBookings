@@ -737,7 +737,7 @@ export default function CoachDashboard({
 
       {selectedBooking && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-6">
-          <div className="w-full max-w-xl rounded-3xl border border-[#B9B2A8] bg-[#FEFDFC] p-8 shadow-xl">
+          <div className="w-full max-w-[760px] rounded-3xl border border-[#B9B2A8] bg-[#FEFDFC] p-8 shadow-xl sm:max-w-[620px] sm:p-7">
             <div className="mb-8 flex items-center justify-between">
               <h2 className="text-[20px] font-light uppercase tracking-[0.12em] text-[#2F5A43]">
                 Client Details
