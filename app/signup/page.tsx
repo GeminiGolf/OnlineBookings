@@ -8,6 +8,7 @@ export default function SignupPage() {
   const [preferredName, setPreferredName] = useState("")
   const [givenName, setGivenName] = useState("")
   const [familyName, setFamilyName] = useState("")
+  const [countryCode, setCountryCode] = useState("+60")
   const [phone, setPhone] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -71,6 +72,16 @@ export default function SignupPage() {
       return
     }
 
+    const cleanedPhone = phone.trim()
+
+    const digitCount = cleanedPhone.replace(/\D/g, "").length
+
+    if (digitCount < 8) {
+      alert("Invalid phone number")
+      return
+    }
+    const fullPhone = `${countryCode} ${cleanedPhone.replace(/[^\d+]/g, "")}`
+
     const response = await fetch("/api/signup", {
       method: "POST",
       headers: {
@@ -78,7 +89,7 @@ export default function SignupPage() {
       },
       body: JSON.stringify({
         email: email.trim(),
-        phone: phone.trim(),
+        phone: fullPhone,
       }),
     })
 
@@ -111,7 +122,7 @@ export default function SignupPage() {
           given_name: givenName.trim(),
           family_name: familyName.trim(),
           preferred_name: preferredName.trim() || null,
-          phone: phone.trim(),
+          phone: fullPhone,
           primary_coach_id: selectedCoach,
         },
       },
@@ -189,13 +200,28 @@ export default function SignupPage() {
             className="w-full rounded-xl border border-[#3A5D49] bg-[#FCFAF6] px-5 py-2.5 text-[14px] font-light tracking-[0.08em] text-[#2F5A43] placeholder:text-[#6D7F72] focus:border-[#2F5A43] focus:outline-none"
           />
 
-          <input
-            type="tel"
-            placeholder="Phone Number *"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            className="w-full rounded-xl border border-[#3A5D49] bg-[#FCFAF6] px-5 py-2.5 text-[14px] font-light tracking-[0.08em] text-[#2F5A43] placeholder:text-[#6D7F72] focus:border-[#2F5A43] focus:outline-none"
-          />
+          <div className="flex gap-2">
+            <select
+              value={countryCode}
+              onChange={(e) => setCountryCode(e.target.value)}
+              className="w-28 rounded-xl border border-[#3A5D49] bg-[#FCFAF6] px-3 py-2.5 text-[14px] font-light tracking-[0.08em] text-[#2F5A43] focus:border-[#2F5A43] focus:outline-none"
+            >
+              <option value="+60">🇲🇾 +60</option>
+              <option value="+65">🇸🇬 +65</option>
+              <option value="+61">🇦🇺 +61</option>
+              <option value="+64">🇳🇿 +64</option>
+              <option value="+44">🇬🇧 +44</option>
+              <option value="+1">🇺🇸 +1</option>
+            </select>
+
+            <input
+              type="tel"
+              placeholder="Phone Number *"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              className="flex-1 rounded-xl border border-[#3A5D49] bg-[#FCFAF6] px-5 py-2.5 text-[14px] font-light tracking-[0.08em] text-[#2F5A43] placeholder:text-[#6D7F72] focus:border-[#2F5A43] focus:outline-none"
+            />
+          </div>
 
           <input
             type="email"
