@@ -332,26 +332,123 @@ export default function AllNotifications() {
 
                 {expandedDates.includes(group.date) && (
                   <tr>
-                    <td colSpan={3} className="border-t bg-white p-4">
-                      
-                      <table className="w-full text-[15px] font-light text-[#2F5A43]">
-                        <thead>
-                          <tr className="border-b border-[#D8D2C8] bg-[#FEFDFC]">
-                            <th className="dashboard-label p-3 text-[#2F5A43]">✏️</th>
-                            <th className="p-2 text-left">Recipient</th>
-                            <th className="p-2 text-left">Notification Type</th>
-                            <th className="p-2 text-left">Subject</th>
-                            <th className="p-2 text-left">Note</th>
-                          </tr>
-                        </thead>
+                    <td colSpan={3} className="border-t border-[#D8D2C8] bg-white p-4">
 
-                        <tbody>
-                          {group.notifications.map((notification) => (
-                            <tr
-                              key={notification.id}
-                              className="border-b border-[#D8D2C8] last:border-0"
+                      {/* Desktop */}
+                      <div className="hidden md:block">
+                        <table className="w-full text-[15px] font-light text-[#2F5A43]">
+                          <thead>
+                            <tr className="border-b border-[#D8D2C8] bg-[#FEFDFC]">
+                              <th className="dashboard-label p-3 text-center">Edit</th>
+                              <th className="dashboard-label p-3 text-left">Client</th>
+                              <th className="dashboard-label p-3 text-left">Notifs</th>
+                              <th className="dashboard-label p-3 text-left">Subject</th>
+                              <th className="dashboard-label p-3 text-left">Note</th>
+                            </tr>
+                          </thead>
+
+                          <tbody>
+                            {group.notifications.map((notification) => (
+                              <tr
+                                key={notification.id}
+                                className="border-b border-[#D8D2C8] last:border-0"
+                              >
+                                <td className="p-2 text-center">
+                                  <button
+                                    onClick={() => {
+                                      setSelectedNotification(notification)
+                                      setEditSubject(notification.subject ?? "")
+                                      setEditMessage(notification.message)
+                                      setEditIsRead(notification.is_read)
+                                    }}
+                                    className="rounded-xl bg-[#4E6FA8] px-3 py-2 text-[13px] font-light uppercase tracking-[0.12em] text-white transition hover:bg-[#3F5F93]"
+                                  >
+                                    Edit
+                                  </button>
+                                </td>
+
+                                <td className="p-3 text-[15px] font-light text-[#2F5A43]">
+                                  <a
+                                    href={
+                                      notification.client_id
+                                        ? `/admin/clients/${notification.client_id}`
+                                        : `/admin/profiles/coach/${notification.coach_id}`
+                                    }
+                                    className="text-[#4E6FA8] hover:underline"
+                                  >
+                                    {notification.recipient}
+                                  </a>
+                                </td>
+
+                                <td className="p-3 text-[15px] font-light text-[#2F5A43]">
+                                  {notification.type}
+                                </td>
+
+                                <td className="p-3 text-[15px] font-light text-[#2F5A43]">
+                                  {notification.subject || "-"}
+                                </td>
+
+                                <td className="p-3 text-[15px] font-light text-[#2F5A43]">
+                                  {notification.message}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+
+                      {/* Mobile */}
+                      <div className="space-y-2 md:hidden">
+                        {group.notifications.map((notification) => (
+                          <div
+                            key={notification.id}
+                            className="overflow-hidden rounded-2xl border border-[#3A5D49] bg-[#FEFDFC]"
+                          >
+                            <button
+                              type="button"
+                              onClick={() => toggleNotification(notification.id)}
+                              className="flex w-full items-center gap-3 px-3 py-3 text-left"
                             >
-                              <td className="p-2 text-center">
+                              <span className="flex h-10 w-[58px] shrink-0 items-center justify-center rounded-xl bg-[#4E6FA8] text-[12px] font-light uppercase tracking-[0.08em] text-white transition hover:bg-[#3F5F93]">
+                                Edit
+                              </span>
+
+                              <div className="w-[110px] shrink-0">
+                                <p className="dashboard-label">Client</p>
+                                <p className="truncate text-[15px] font-light text-[#2F5A43]">
+                                  {notification.recipient}
+                                </p>
+                              </div>
+
+                              <div className="min-w-0 flex-1">
+                                <p className="dashboard-label">Notifs</p>
+                                <p className="truncate text-[15px] font-light text-[#2F5A43]">
+                                  {notification.type}
+                                </p>
+                              </div>
+
+                              <span className="w-6 shrink-0 text-center text-[#2F5A43]">
+                                {expandedNotifications.includes(notification.id) ? "▲" : "▼"}
+                              </span>
+                            </button>
+
+                            {expandedNotifications.includes(notification.id) && (
+                              <div className="border-t border-[#D8D2C8] px-4 py-3 space-y-3">
+
+                                <div>
+                                  <p className="dashboard-label">Subject</p>
+                                  <p className="text-[15px] font-light text-[#2F5A43]">
+                                    {notification.subject || "-"}
+                                  </p>
+                                </div>
+
+                                <div>
+                                  <p className="dashboard-label">Note</p>
+                                  <p className="text-[15px] font-light text-[#2F5A43] whitespace-pre-wrap">
+                                    {notification.message}
+                                  </p>
+                                </div>
+
                                 <button
                                   onClick={() => {
                                     setSelectedNotification(notification)
@@ -359,40 +456,17 @@ export default function AllNotifications() {
                                     setEditMessage(notification.message)
                                     setEditIsRead(notification.is_read)
                                   }}
-                                  className="rounded-lg p-2 transition hover:bg-[#F3F0EA] hover:scale-110"
+                                  className="w-full rounded-xl bg-[#4E6FA8] py-2 text-[13px] font-light uppercase tracking-[0.12em] text-white transition hover:bg-[#3F5F93]"
                                 >
-                                  ✏️
+                                  Edit Notification
                                 </button>
-                              </td>
 
-                              <td className="dashboard-label p-3 text-[#2F5A43]">
-                                <a
-                                  href={
-                                    notification.client_id
-                                      ? `/admin/clients/${notification.client_id}`
-                                      : `/admin/profiles/coach/${notification.coach_id}`
-                                  }
-                                  className="text-[#4E6FA8] hover:underline"
-                                >
-                                  {notification.recipient}
-                                </a>
-                              </td>
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
 
-                              <td className="dashboard-label p-3 text-[#2F5A43]">
-                                {notification.type}
-                              </td>
-
-                              <td className="dashboard-label p-3 text-[#2F5A43]">
-                                {notification.subject || "-"}
-                              </td>
-
-                              <td className="dashboard-label p-3 text-[#2F5A43]">
-                                {notification.message}
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
                     </td>
                   </tr>
                 )}
