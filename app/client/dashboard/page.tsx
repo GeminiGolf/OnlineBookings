@@ -201,7 +201,6 @@ export default function ClientDashboard() {
 
     return new Date() <= cutoff
   }
-
   async function generateRescheduleSlots(date: Date) {
     if (!rescheduleLesson) {
       return
@@ -224,17 +223,23 @@ export default function ClientDashboard() {
 
     let slots = await response.json()
 
-    // Allow the lesson's current time when rescheduling
-    if (
-      formattedDate === rescheduleLesson.lesson_date &&
-      !slots.includes(rescheduleLesson.lesson_time)
-    ) {
-      slots.push(rescheduleLesson.lesson_time)
-      slots.sort()
-    }
+    slots.sort((a: string, b: string) => {
+      const to24Hour = (time: string) => {
+        const [hourString, period] = time.split(" ")
+        let hour = parseInt(hourString, 10)
+
+        if (period === "PM" && hour !== 12) hour += 12
+        if (period === "AM" && hour === 12) hour = 0
+
+        return hour
+      }
+
+      return to24Hour(a) - to24Hour(b)
+    })
 
     setRescheduleSlots(slots)
   }
+
 
   async function openReschedule(lesson: any) {
     if ((lesson.client_reschedules || 0) >= 3) {
@@ -1169,7 +1174,21 @@ export default function ClientDashboard() {
               </div>
 
               <DayPicker
-                className="mt-2 -mb-8 scale-90 lg:scale-[0.82] origin-top [--rdp-accent-color:#55725F] [--rdp-accent-background-color:#E8F2EB]"
+                className="mt-2 -mb-8 origin-top scale-90 lg:scale-[0.82]"
+                mode="single"
+                selected={rescheduleDate}
+                onSelect={async (date) => {
+                  if (!date) return
+
+                  setRescheduleDate(date)
+                  setRescheduleTime("")
+                  await generateRescheduleSlots(date)
+                }}
+                disabled={[
+                  {
+                    before: new Date(),
+                  },
+                ]}
                 styles={{
                   weekday: {
                     color: "#2F5A43",
@@ -1182,6 +1201,11 @@ export default function ClientDashboard() {
                   },
                   chevron: {
                     fill: "#2F5A43",
+                  },
+                  selected: {
+                    backgroundColor: "#2F5A43",
+                    color: "#FFFFFF",
+                    borderRadius: "9999px",
                   },
                 }}
               />
