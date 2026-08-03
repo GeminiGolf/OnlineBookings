@@ -125,7 +125,7 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
             setSearch(e.target.value)
             setPage(1)
           }}
-          className="w-[100px] sm:w-[180px] rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[15px] font-light text-[#1F3327] placeholder:text-[#6D7F72] shadow-sm focus:border-[#2F5A43] focus:outline-none"
+          className="w-[100px] sm:w-[180px] rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[15px] font-light text-[#2F5A43] placeholder:text-[#6D7F72] shadow-sm focus:border-[#2F5A43] focus:outline-none"
         />
 
         <div className="relative">
@@ -248,7 +248,7 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 						{paginatedGroups.map((group) => (
 							<Fragment key={group.date}>
 								<tr className="border-b border-[#3A5D49] last:border-0 hover:bg-[#F6FAF6]">
-									<td className="dashboard-value p-4">
+									<td className="text-[15px] font-light text-[#2F5A43] p-4">
 										{new Date(group.date).toLocaleDateString("en-GB", {
 											day: "2-digit",
 											month: "2-digit",
@@ -256,14 +256,14 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 										})}
 									</td>
 
-									<td className="dashboard-value p-4">
+									<td className="text-[15px] font-light text-[#2F5A43] p-4">
 										RM {(group.total).toFixed(2)}
 									</td>
 
 									<td className="p-4 text-center">
 										<button
 											type="button"
-											className="text-[#2F5A43] transition hover:text-[#1F3327]"
+											className="text-[#2F5A43] transition hover:text-[#2F5A43]"
 											onClick={() => toggleRow(group.date)}
 										>
 											{expandedDates.includes(group.date) ? (
@@ -295,15 +295,15 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 																key={transaction.id}
 																className="border-b border-[#3A5D49] last:border-0 hover:bg-[#F6FAF6]"
 															>
-																<td className="dashboard-value px-4 py-2">
+																<td className="text-[15px] font-light text-[#2F5A43] px-4 py-2">
 																	${(transaction.price ?? 0).toFixed(0)}
 																</td>
 
-																<td className="dashboard-value px-4 py-2">
+																<td className="text-[15px] font-light text-[#2F5A43] px-4 py-2">
 																	{transaction.transaction_name}
 																</td>
 
-																<td className="dashboard-value px-4 py-2">
+																<td className="text-[15px] font-light text-[#2F5A43] px-4 py-2">
 																	<div className="flex items-center gap-2">
 																		{transaction.receipt_url && (
 																			<button
@@ -320,7 +320,7 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 																	</div>
 																</td>
 
-																<td className="dashboard-value px-4 py-2">
+																<td className="text-[15px] font-light text-[#2F5A43] px-4 py-2">
 																	{transaction.client_name}
 																</td>
 															</tr>
@@ -338,7 +338,9 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 					<tfoot>
 						<tr className="border-t text-sm font-bold">
 							<td className="p-4" />
-							<td className="p-4 font-bold">Total: ${totalAmount.toFixed(0)}</td>
+							<td className="p-4 text-[15px] font-light text-[#2F5A43]">
+								Total: ${totalAmount.toFixed(0)}
+							</td>
 							<td className="p-4" />
 						</tr>
 					</tfoot>
@@ -358,9 +360,9 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 							<div key={group.date} className="border-b border-[#3A5D49] last:border-0">
 								<button
 									onClick={() => toggleRow(group.date)}
-									className="dashboard-value grid w-full grid-cols-[120px_1fr_24px] items-center gap-3 p-4 text-left"
+									className="text-[15px] font-light text-[#2F5A43] grid w-full grid-cols-[120px_1fr_24px] items-center gap-3 p-4 text-left"
 								>
-									<span className="font-medium">
+									<span className="text-[15px] font-light text-[#2F5A43]">
 										{new Date(group.date).toLocaleDateString("en-GB", {
 											day: "2-digit",
 											month: "2-digit",
@@ -368,7 +370,7 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 										})}
 									</span>
 
-									<span className="text-sm text-gray-600">
+									<span className="text-[15px] font-light text-[#2F5A43]">
 										${group.total.toFixed(0)}
 									</span>
 
@@ -391,15 +393,15 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 												<tbody>
 													{group.transactions.map((transaction) => (
 														<tr key={transaction.id} className="border-b last:border-0">
-															<td className="dashboard-value px-2 py-2">
+															<td className="text-[15px] font-light text-[#2F5A43] px-2 py-2">
 																RM {(transaction.price ?? 0).toFixed(2)}
 															</td>
 
-															<td className="dashboard-value px-2 py-2">
+															<td className="text-[15px] font-light text-[#2F5A43] px-2 py-2">
 																{transaction.transaction_name}
 															</td>
 
-															<td className="dashboard-value px-2 py-2">
+															<td className="text-[15px] font-light text-[#2F5A43] px-2 py-2">
 																<div className="flex items-center gap-2">
 																	{transaction.receipt_url && (
 																		<button
@@ -430,7 +432,7 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 						)
 					})}
 
-          <div className="grid grid-cols-[120px_1fr_24px] border-t bg-gray-100 p-4 text-[13px] font-bold">
+          <div className="grid grid-cols-[120px_1fr_24px] border-t border-[#3A5D49] bg-[#F3F0EA] p-4 text-[15px] font-light text-[#2F5A43]">
             <div />
             <div>Total: ${totalAmount.toFixed(0)}</div>
             <div />
@@ -442,19 +444,19 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
         <button
           onClick={() => setPage((p) => Math.max(1, p - 1))}
           disabled={page === 1}
-          className="rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[13px] font-light tracking-[0.04em] text-[#1F3327] shadow-sm transition hover:bg-[#F6FAF6] disabled:opacity-50"
+          className="rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[13px] font-light tracking-[0.04em] text-[#2F5A43] shadow-sm transition hover:bg-[#F6FAF6] disabled:opacity-50"
         >
           Previous
         </button>
 
-        <span className="dashboard-value">
+        <span className="text-[15px] font-light text-[#2F5A43]">
           Page {page} of {totalPages}
         </span>
 
         <button
           onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
           disabled={page === totalPages}
-          className="rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[13px] font-light tracking-[0.04em] text-[#1F3327] shadow-sm transition hover:bg-[#F6FAF6] disabled:opacity-50"
+          className="rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[13px] font-light tracking-[0.04em] text-[#2F5A43] shadow-sm transition hover:bg-[#F6FAF6] disabled:opacity-50"
         >
           Next
         </button>

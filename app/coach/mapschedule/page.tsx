@@ -127,11 +127,11 @@ export default function CoachPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#F2EEE8] px-4 pt-8 pb-3 sm:p-10 text-[#1F3327]">
+    <main className="min-h-screen bg-[#F2EEE8] px-4 pt-8 pb-3 sm:p-10 text-[#2F5A43]">
       <DashboardContainer>
         <Link
           href="/coach/dashboard"
-          className="mb-3 sm:mb-6 inline-flex items-center gap-2 rounded-xl border border-[#3A5D49] bg-white px-5 py-2 text-[13px] font-light tracking-[0.04em] text-[#1F3327] shadow-sm transition hover:bg-[#F6FAF6]"
+          className="mb-3 sm:mb-6 inline-flex items-center gap-2 rounded-xl border border-[#3A5D49] bg-white px-5 py-2 text-[13px] font-light uppercase tracking-[0.12em] text-[#2F5A43] shadow-sm transition hover:bg-[#F6FAF6]"
         >
           ← Back to Dashboard
         </Link>
@@ -141,7 +141,7 @@ export default function CoachPage() {
             Coach Availability
           </h1>
 
-          <p className="mt-2 text-[15px] font-light tracking-[0.02em] text-[#1F3327]">
+          <p className="mt-2 text-[15px] font-light tracking-[0.02em] text-[#2F5A43]">
             Configure your weekly lesson schedule.
           </p>
         </div>
@@ -243,7 +243,7 @@ function DayAvailabilityRow({ dayLabel, dayValue, coachId, existing, weeklyBreak
               step="3600"
               value={start}
               onChange={(e) => setStart(e.target.value)}
-              className="rounded-xl border border-[#3A5D49] bg-white px-3 py-2 text-[15px] font-light text-[#1F3327] focus:border-[#2F5A43] focus:outline-none"
+              className="rounded-xl border border-[#3A5D49] bg-white px-3 py-2 text-[15px] font-light text-[#2F5A43] focus:border-[#2F5A43] focus:outline-none"
             />
           </div>
 
@@ -257,7 +257,7 @@ function DayAvailabilityRow({ dayLabel, dayValue, coachId, existing, weeklyBreak
               step="3600"
               value={end}
               onChange={(e) => setEnd(e.target.value)}
-              className="rounded-xl border border-[#3A5D49] bg-white px-3 py-2 text-[15px] font-light text-[#1F3327] focus:border-[#2F5A43] focus:outline-none"
+              className="rounded-xl border border-[#3A5D49] bg-white px-3 py-2 text-[15px] font-light text-[#2F5A43] focus:border-[#2F5A43] focus:outline-none"
             />
           </div>
 
@@ -342,7 +342,7 @@ function DayAvailabilityRow({ dayLabel, dayValue, coachId, existing, weeklyBreak
                   step="3600"
                   value={start}
                   onChange={(e) => setStart(e.target.value)}
-                  className="w-full appearance-none rounded-xl border border-[#3A5D49] bg-white px-3 py-2 text-[15px] font-light text-[#1F3327] focus:border-[#2F5A43] focus:outline-none"
+                  className="w-full appearance-none rounded-xl border border-[#3A5D49] bg-white px-3 py-2 text-[15px] font-light text-[#2F5A43] focus:border-[#2F5A43] focus:outline-none"
                 />
               </div>
 
@@ -356,7 +356,7 @@ function DayAvailabilityRow({ dayLabel, dayValue, coachId, existing, weeklyBreak
                   step="3600"
                   value={end}
                   onChange={(e) => setEnd(e.target.value)}
-                  className="w-full appearance-none rounded-xl border border-[#3A5D49] bg-white px-3 py-2 text-[15px] font-light text-[#1F3327] focus:border-[#2F5A43] focus:outline-none"
+                  className="w-full appearance-none rounded-xl border border-[#3A5D49] bg-white px-3 py-2 text-[15px] font-light text-[#2F5A43] focus:border-[#2F5A43] focus:outline-none"
                 />
               </div>
             </div>

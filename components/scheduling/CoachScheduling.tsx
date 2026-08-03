@@ -491,7 +491,7 @@ export default function CoachDashboard({
         <div className="mb-3 sm:mb-3 flex flex-wrap items-center gap-3">
           <button
             onClick={previousDay}
-            className="rounded-lg border border-[#3A5D49] bg-[#FBF8F3] px-3 py-2 text-[13px] font-light tracking-[0.06em] text-[#1F3327] transition sm:px-5"
+            className="rounded-lg border border-[#3A5D49] bg-[#FBF8F3] px-3 py-2 text-[13px] font-light tracking-[0.06em] text-[#2F5A43] transition sm:px-5"
           >
             <span className="hidden sm:inline">← Previous</span>
             <span className="sm:hidden">←</span>
@@ -499,14 +499,14 @@ export default function CoachDashboard({
 
           <button
             onClick={today}
-            className="rounded-lg border border-[#3A5D49] bg-[#FBF8F3] px-3 py-2 text-[13px] font-light tracking-[0.06em] text-[#1F3327] transition sm:px-5"
+            className="rounded-lg border border-[#3A5D49] bg-[#FBF8F3] px-3 py-2 text-[13px] font-light tracking-[0.06em] text-[#2F5A43] transition sm:px-5"
           >
             Today
           </button>
 
           <button
             onClick={nextDay}
-            className="rounded-lg border border-[#3A5D49] bg-[#FBF8F3] px-3 py-2 text-[13px] font-light tracking-[0.06em] text-[#1F3327] transition sm:px-5"
+            className="rounded-lg border border-[#3A5D49] bg-[#FBF8F3] px-3 py-2 text-[13px] font-light tracking-[0.06em] text-[#2F5A43] transition sm:px-5"
           >
             <span className="hidden sm:inline">Next →</span>
             <span className="sm:hidden">→</span>
@@ -516,7 +516,7 @@ export default function CoachDashboard({
             type="date"
             value={selectedDate}
             onChange={(e) => goToDate(e.target.value)}
-            className="rounded-lg border border-[#3A5D49] bg-[#FBF8F3] px-3 py-2 text-[13px] font-light tracking-[0.06em] text-[#1F3327] sm:px-5"
+            className="rounded-lg border border-[#3A5D49] bg-[#FBF8F3] px-3 py-2 text-[13px] font-light tracking-[0.06em] text-[#2F5A43] sm:px-5"
           />
 
           <button
@@ -613,7 +613,7 @@ export default function CoachDashboard({
 
             return (
               <div key={hour} className="grid grid-cols-[82px_1fr] border-b border-[#3A5D49]">
-                <div className="flex items-center whitespace-nowrap border-r border-[#3A5D49] bg-[#FBF8F3] px-3 py-2 text-[14px] font-light text-[#1F3327]">
+                <div className="flex items-center whitespace-nowrap border-r border-[#3A5D49] bg-[#FBF8F3] px-3 py-2 text-[14px] font-light text-[#2F5A43]">
                   {formatHour(hour)}
                 </div>
 
@@ -623,13 +623,13 @@ export default function CoachDashboard({
                 >
                   {booking ? (
                     <div className="flex flex-col justify-center gap-0.5 leading-tight">
-                      <p className="text-[16px] font-light tracking-[0.02em] leading-none text-[#1F3327]">
+                      <p className="text-[16px] font-light tracking-[0.02em] leading-none text-[#2F5A43]">
                         {booking.clients?.preferred_name
                           ? `(${booking.clients.preferred_name}) ${booking.clients.first_name} ${booking.clients.last_name}`
                           : `${booking.clients?.first_name} ${booking.clients?.last_name}`}
                       </p>
 
-                      <p className="text-[13px] font-light tracking-[0.02em] leading-none text-[#1F3327]">
+                      <p className="text-[13px] font-light tracking-[0.02em] leading-none text-[#2F5A43]">
                         {booking.status === "completed"
                           ? "Completed Lesson"
                           : booking.status === "no_show"
@@ -638,23 +638,23 @@ export default function CoachDashboard({
                       </p>
                     </div>
                   ) : overrideClosed ? (
-                    <p className="text-[14px] font-light tracking-[0.02em] text-[#1F3327]">
+                    <p className="text-[14px] font-light tracking-[0.02em] text-[#2F5A43]">
                       Closed (Override)
                     </p>
                   ) : overrideOpen ? (
-                    <p className="text-[14px] font-light tracking-[0.02em] text-[#1F3327]">
+                    <p className="text-[14px] font-light tracking-[0.02em] text-[#2F5A43]">
                       Available (Override)
                     </p>
                   ) : breakHour ? (
-                    <p className="text-[14px] font-light tracking-[0.02em] text-[#1F3327]">
+                    <p className="text-[14px] font-light tracking-[0.02em] text-[#2F5A43]">
                       Break
                     </p>
                   ) : available ? (
-                    <p className="text-[14px] font-light tracking-[0.02em] text-[#1F3327]">
+                    <p className="text-[14px] font-light tracking-[0.02em] text-[#2F5A43]">
                       Available
                     </p>
                   ) : (
-                    <p className="text-[14px] font-light tracking-[0.02em] text-[#1F3327]">
+                    <p className="text-[14px] font-light tracking-[0.02em] text-[#2F5A43]">
                       Closed
                     </p>
                   )}
@@ -739,24 +739,24 @@ export default function CoachDashboard({
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-6">
           <div className="w-full max-w-xl rounded-3xl border border-[#B9B2A8] bg-[#FEFDFC] p-8 shadow-xl">
             <div className="mb-8 flex items-center justify-between">
-              <h2 className="text-[26px] font-light tracking-[0.04em] text-black">
+              <h2 className="text-[20px] font-light uppercase tracking-[0.12em] text-[#2F5A43]">
                 Client Details
               </h2>
 
               <button
                 onClick={() => setSelectedBooking(null)}
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-[#3A5D49] bg-[#FEFDFC] text-xl transition hover:bg-[#F7F3EE]"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-[#3A5D49] bg-[#FEFDFC] text-[#2F5A43] text-xl transition hover:bg-[#F7F3EE]"
               >
                 ×
               </button>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-5">
               <div>
                 <div className="flex items-center gap-4">
-                  <p className="dashboard-label">Client</p>
+                  <p className="dashboard-label font-normal">Client</p>
 
-                  <label className="flex items-center gap-2 text-sm cursor-pointer">
+                  <label className="dashboard-label flex items-center gap-2 cursor-pointer normal-case">
                     <input
                       type="checkbox"
                       checked={selectedBooking.is_new}
@@ -780,14 +780,15 @@ export default function CoachDashboard({
 
                         router.refresh()
                       }}
+                      className="h-4 w-4 accent-[#2F5A43]"
                     />
-                    New
+                    <span className="normal-case">New</span>
                   </label>
                 </div>
 
                 <Link
                   href={`/coach/clients/${selectedBooking.clients?.id}`}
-                  className="text-[18px] font-light text-[#2F5A43] underline transition hover:text-[#3C6A50]"
+                  className="mt-1 block text-[18px] font-light text-[#2F5A43] underline transition hover:text-[#3C6A50]"
                 >
                   {selectedBooking.clients?.preferred_name
                     ? `(${selectedBooking.clients.preferred_name}) ${selectedBooking.clients.first_name} ${selectedBooking.clients.last_name}`
@@ -796,29 +797,29 @@ export default function CoachDashboard({
               </div>
 
               <div>
-                <p className="dashboard-label">Phone</p>
-                <p className="dashboard-value">
+                <p className="dashboard-label font-normal">Phone</p>
+                <p className="text-[15px] font-light text-[#2F5A43]">
                   {selectedBooking.clients?.phone || "No phone added"}
                 </p>
               </div>
 
               <div>
-                <p className="dashboard-label">Email</p>
-                <p className="dashboard-value">
+                <p className="dashboard-label font-normal">Email</p>
+                <p className="text-[15px] font-light text-[#2F5A43]">
                   {selectedBooking.clients?.email || "No email added"}
                 </p>
               </div>
 
               <div>
-                <p className="dashboard-label">Notes</p>
-                <p className="dashboard-value">
+                <p className="dashboard-label font-normal">Notes</p>
+                <p className="text-[15px] font-light text-[#2F5A43]">
                   {selectedBooking.clients?.notes || "No notes"}
                 </p>
               </div>
 
               <div>
-                <p className="dashboard-label">Lessons Remaining</p>
-                <p className="dashboard-value">
+                <p className="dashboard-label font-normal">Lessons Remaining</p>
+                <p className="text-[15px] font-light text-[#2F5A43]">
                   {selectedBooking.clients?.lessons_remaining}
                 </p>
               </div>
@@ -884,7 +885,7 @@ export default function CoachDashboard({
                     onClick={() => {
                       setShowTransactionForm(true)
                     }}
-                    className="rounded-xl bg-[#3B82F6] px-4 py-2 text-[14px] font-light tracking-[0.03em] text-white transition hover:bg-[#2563EB]"
+                    className="rounded-xl bg-[#4E6FA8] px-4 py-2 text-[14px] font-light tracking-[0.03em] text-white transition hover:bg-[#3F5D90]"
                   >
                     Add Transaction
                   </button>

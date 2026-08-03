@@ -85,7 +85,7 @@ export default function CoachPreviousLessonsTable({ lessons }: Props) {
             setSearch(e.target.value)
             setPage(1)
           }}
-          className="w-[95px] sm:w-[180px] rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[15px] font-light text-[#1F3327] placeholder:text-[#6D7F72] shadow-sm focus:border-[#2F5A43] focus:outline-none"
+          className="w-[95px] sm:w-[180px] rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[15px] font-light text-[#2F5A43] placeholder:text-[#6D7F72] shadow-sm focus:border-[#2F5A43] focus:outline-none"
         />
 
         <div className="flex gap-3">
@@ -249,7 +249,7 @@ export default function CoachPreviousLessonsTable({ lessons }: Props) {
       </div>
 
       <div className="md:hidden">
-        <div className="mb-2 grid grid-cols-[120px_1fr_24px] px-4 text-sm font-semibold">
+        <div className="dashboard-label mb-2 grid grid-cols-[120px_1fr_24px] px-4">
           <div>Date</div>
           <div className="-ml-4">Client Name</div>
           <div />
@@ -262,7 +262,7 @@ export default function CoachPreviousLessonsTable({ lessons }: Props) {
                 onClick={() => setExpandedId(expandedId === lesson.id ? null : lesson.id)}
                 className="dashboard-value grid w-full grid-cols-[120px_1fr_24px] items-center gap-3 p-4 text-left"
               >
-                <span>
+                <span className="text-[#2F5A43]">
                   {new Date(lesson.lesson_date).toLocaleDateString("en-GB", {
                     day: "2-digit",
                     month: "2-digit",
@@ -273,7 +273,7 @@ export default function CoachPreviousLessonsTable({ lessons }: Props) {
                   {lesson.clients ? (
                     <a
                       href={`/coach/clients/${lesson.clients.id}`}
-                      className="dashboard-value text-[#5874A6] underline decoration-[#5874A6] underline-offset-2 hover:text-[#45628F]"
+                      className="dashboard-value !text-[#2F5A43] underline decoration-[#2F5A43] underline-offset-2 hover:!text-[#2F5A43]"
                       onClick={(e) => e.stopPropagation()}
                     >
                       {lesson.clients.preferred_name
@@ -285,11 +285,13 @@ export default function CoachPreviousLessonsTable({ lessons }: Props) {
                     "-"
                   )}
                 </span>
-                <span>{expandedId === lesson.id ? "▲" : "▼"}</span>
+                <span className="text-[#2F5A43]">
+                  {expandedId === lesson.id ? "▲" : "▼"}
+                </span>
               </button>
 
               {expandedId === lesson.id && (
-                <div className="border-t p-3 text-sm">
+                <div className="border-t border-[#3A5D49] p-3 text-[15px] font-light text-[#2F5A43]">
                   <p>
                     <strong>Time:</strong> {lesson.lesson_time}
                   </p>
@@ -302,7 +304,7 @@ export default function CoachPreviousLessonsTable({ lessons }: Props) {
                         setSelectedLesson(lesson)
                         setNoteText(lesson.lesson_notes || "")
                       }}
-                      className="rounded px-2 py-1 text-base hover:bg-gray-100"
+                      className="rounded px-2 py-1 text-base text-[#2F5A43] hover:bg-[#F6FAF6]"
                     >
                       ✏️
                     </button>
@@ -320,19 +322,19 @@ export default function CoachPreviousLessonsTable({ lessons }: Props) {
         <button
           onClick={() => setPage((p) => Math.max(1, p - 1))}
           disabled={page === 1}
-          className="rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[13px] font-light tracking-[0.04em] text-[#1F3327] shadow-sm transition hover:bg-[#F6FAF6] disabled:opacity-50"
+          className="rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[13px] font-light tracking-[0.04em] text-[#2F5A43] shadow-sm transition hover:bg-[#F6FAF6] disabled:opacity-50"
         >
           Previous
         </button>
 
-        <span className="dashboard-value">
+        <span className="text-[15px] font-light text-[#2F5A43]">
           Page {page} of {totalPages}
         </span>
 
         <button
           onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
           disabled={page === totalPages}
-          className="rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[13px] font-light tracking-[0.04em] text-[#1F3327] shadow-sm transition hover:bg-[#F6FAF6] disabled:opacity-50"
+          className="rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[13px] font-light tracking-[0.04em] text-[#2F5A43] shadow-sm transition hover:bg-[#F6FAF6] disabled:opacity-50"
         >
           Next
         </button>

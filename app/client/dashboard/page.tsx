@@ -566,7 +566,7 @@ export default function ClientDashboard() {
 
   return (
     <RequireClient>
-      <main className="min-h-screen bg-[#F2EEE8] px-4 pt-8 pb-3 sm:p-10 text-[#1F3327]">
+      <main className="min-h-screen bg-[#F2EEE8] px-4 pt-8 pb-3 sm:p-10 text-[#2F5A43]">
         <DashboardContainer>
         <div className="mt-8">
           {/* Mobile / Small Screen */}
@@ -585,7 +585,7 @@ export default function ClientDashboard() {
 
             {showClientInfo && (
               <div className="px-4 pb-3 lg:px-6 lg:pb-5">
-                <div className="space-y-4 text-[#1F3327]">
+                <div className="space-y-4 text-[#2F5A43]">
                   <div>
                     <p className="dashboard-label">Name</p>
                     <p className="dashboard-value">
@@ -700,7 +700,7 @@ export default function ClientDashboard() {
               <select
                 value={selectedCoach ?? ""}
                 onChange={(e) => setSelectedCoach(e.target.value ? Number(e.target.value) : null)}
-                className="mb-6 w-full rounded-xl border border-[#3A5D49] bg-white px-4 py-3 text-[15px] font-light text-[#1F3327] shadow-sm focus:border-[#2F5A43] focus:outline-none"
+                className="mb-6 w-full rounded-xl border border-[#3A5D49] bg-white px-4 py-3 text-[15px] font-light text-[#2F5A43] shadow-sm focus:border-[#2F5A43] focus:outline-none"
               >
                 <option value="">Choose Coach</option>
 
@@ -776,7 +776,7 @@ export default function ClientDashboard() {
                       className={`rounded-xl border px-4 py-2 text-[15px] font-light transition ${
                         selectedTime === time
                           ? "border-[#2F5A43] bg-[#2F5A43] text-white"
-                          : "border-[#3A5D49] bg-[#FBF8F3] text-[#1F3327] hover:bg-[#F6FAF6]"
+                          : "border-[#3A5D49] bg-[#FBF8F3] text-[#2F5A43] hover:bg-[#F6FAF6]"
                       }`}
                     >
                       {time}
@@ -893,7 +893,7 @@ export default function ClientDashboard() {
                   <button
                     onClick={() => setUpcomingPage((p) => Math.max(1, p - 1))}
                     disabled={upcomingPage === 1}
-                    className="rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[13px] font-light tracking-[0.04em] text-[#1F3327] shadow-sm transition hover:bg-[#F6FAF6] disabled:opacity-50"
+                    className="rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[13px] font-light tracking-[0.04em] text-[#2F5A43] shadow-sm transition hover:bg-[#F6FAF6] disabled:opacity-50"
                   >
                     Previous
                   </button>
@@ -907,7 +907,7 @@ export default function ClientDashboard() {
                       setUpcomingPage((p) => Math.min(Math.ceil(upcomingLessons.length / ITEMS_PER_PAGE), p + 1))
                     }
                     disabled={upcomingPage >= Math.ceil(upcomingLessons.length / ITEMS_PER_PAGE)}
-                    className="rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[13px] font-light tracking-[0.04em] text-[#1F3327] shadow-sm transition hover:bg-[#F6FAF6] disabled:opacity-50"
+                    className="rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[13px] font-light tracking-[0.04em] text-[#2F5A43] shadow-sm transition hover:bg-[#F6FAF6] disabled:opacity-50"
                   >
                     Next
                   </button>
@@ -987,7 +987,7 @@ export default function ClientDashboard() {
                   <button
                     onClick={() => setPreviousPage((p) => Math.max(1, p - 1))}
                     disabled={previousPage === 1}
-                    className="rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[13px] font-light tracking-[0.04em] text-[#1F3327] shadow-sm transition hover:bg-[#F6FAF6] disabled:opacity-50"
+                    className="rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[13px] font-light tracking-[0.04em] text-[#2F5A43] shadow-sm transition hover:bg-[#F6FAF6] disabled:opacity-50"
                   >
                     Previous
                   </button>
@@ -1001,7 +1001,7 @@ export default function ClientDashboard() {
                       setPreviousPage((p) => Math.min(Math.ceil(previousLessons.length / ITEMS_PER_PAGE), p + 1))
                     }
                     disabled={previousPage >= Math.ceil(previousLessons.length / ITEMS_PER_PAGE)}
-                    className="rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[13px] font-light tracking-[0.04em] text-[#1F3327] shadow-sm transition hover:bg-[#F6FAF6] disabled:opacity-50"
+                    className="rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[13px] font-light tracking-[0.04em] text-[#2F5A43] shadow-sm transition hover:bg-[#F6FAF6] disabled:opacity-50"
                   >
                     Next
                   </button>
@@ -1091,7 +1091,7 @@ export default function ClientDashboard() {
                       )
                     }
                     disabled={packagesPage === 1}
-                    className="rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[13px] font-light tracking-[0.04em] text-[#1F3327] shadow-sm transition hover:bg-[#F6FAF6] disabled:opacity-50"
+                    className="rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[13px] font-light tracking-[0.04em] text-[#2F5A43] shadow-sm transition hover:bg-[#F6FAF6] disabled:opacity-50"
                   >
                     Previous
                   </button>
@@ -1135,7 +1135,7 @@ export default function ClientDashboard() {
                         ).length / ITEMS_PER_PAGE
                       )
                     }
-                    className="rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[13px] font-light tracking-[0.04em] text-[#1F3327] shadow-sm transition hover:bg-[#F6FAF6] disabled:opacity-50"
+                    className="rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[13px] font-light tracking-[0.04em] text-[#2F5A43] shadow-sm transition hover:bg-[#F6FAF6] disabled:opacity-50"
                   >
                     Next
                   </button>

@@ -158,7 +158,7 @@ export default function CoachNotificationSettingsPage() {
 
         <Link
           href="/client/notifications"
-          className="mb-3 inline-flex items-center gap-2 rounded-xl border border-[#3A5D49] bg-white px-5 py-2 text-[13px] font-light tracking-[0.04em] text-[#1F3327] shadow-sm transition hover:bg-[#F6FAF6] sm:mb-8"
+          className="mb-3 inline-flex items-center gap-2 rounded-xl border border-[#3A5D49] bg-white px-5 py-2 text-[13px] font-light uppercase tracking-[0.12em] text-[#2F5A43] shadow-sm transition hover:bg-[#F6FAF6] sm:mb-8"
         >
           <ArrowLeft className="h-4 w-4 stroke-[1.75]" />
           Back to Notifications
@@ -168,7 +168,7 @@ export default function CoachNotificationSettingsPage() {
           Push Notification Settings
         </h1>
 
-        <p className="dashboard-value mt-2 mb-6 text-[13px] text-[#6D7F72]">
+        <p className="mt-2 text-[14px] font-light text-[#2F5A43]">
           Choose which push notifications you'd like to receive on your devices.
         </p>
 
@@ -181,7 +181,7 @@ export default function CoachNotificationSettingsPage() {
                 Coach Cancelled
               </h2>
 
-              <p className="dashboard-value mt-2 text-[14px] text-[#1F3327]">
+              <p className="mt-2 text-[14px] font-light text-[#2F5A43]">
                 Receive a push notification when your coach cancels an appointment.
               </p>
             </div>
@@ -192,7 +192,7 @@ export default function CoachNotificationSettingsPage() {
               onChange={(e) =>
                 updatePreference("late_booking_rejected", e.target.checked)
               }
-              className="mt-1 h-5 w-5"
+              className="mt-1 h-5 w-5 accent-[#2F5A43]"
             />
           </div>
         </div>
@@ -214,7 +214,7 @@ export default function CoachNotificationSettingsPage() {
                   key={hour}
                   className="flex items-center justify-between rounded-xl border border-[#3A5D49] bg-[#FBF8F3] px-4 py-3 transition hover:bg-[#F6FAF6]"
                 >
-                  <span className="text-black">
+                  <span className="text-[#2F5A43] font-light">
                     {hour} hour{hour === 1 ? "" : "s"} before
                   </span>
 
@@ -222,7 +222,7 @@ export default function CoachNotificationSettingsPage() {
                     type="checkbox"
                     checked={preferences.appointment_reminder_hours.includes(hour)}
                     onChange={() => toggleReminder(hour)}
-                    className="h-5 w-5"
+                    className="h-5 w-5 accent-[#2F5A43]"
                   />
                 </label>
               ))}

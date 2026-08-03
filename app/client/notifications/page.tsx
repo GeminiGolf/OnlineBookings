@@ -210,14 +210,14 @@ const [loadingPage, setLoadingPage] = useState(true)
             <div className="mb-3 flex items-center gap-3 sm:mb-6">
               <Link
                 href="/client/dashboard"
-                className="rounded-xl border border-[#3A5D49] bg-white px-5 py-2 text-[13px] font-light tracking-[0.04em] text-[#1F3327] shadow-sm transition hover:bg-[#F6FAF6]"
+                className="rounded-xl border border-[#3A5D49] bg-white px-5 py-2 text-[13px] font-light uppercase tracking-[0.12em] text-[#2F5A43] shadow-sm transition hover:bg-[#F6FAF6]"
               >
                 ← Back to Dashboard
               </Link>
 
               <Link
                 href="/client/notifications/settings"
-                className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#3A5D49] bg-white text-[#1F3327] shadow-sm transition hover:bg-[#F6FAF6]"
+                className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#3A5D49] bg-white text-[#2F5A43] shadow-sm transition hover:bg-[#F6FAF6]"
                 title="Notification Settings"
               >
                 <Settings className="h-5 w-5 stroke-[1.25]" />
@@ -244,23 +244,23 @@ const [loadingPage, setLoadingPage] = useState(true)
                     <input type="checkbox" onChange={() => markAsRead(notification.id)} />
                   </div>
                   <div
-                    className={`dashboard-value ${
+                    className={`text-[15px] font-light ${
                       notification.type === "admin_message_client"
-                        ? "text-red-600"
-                        : ""
+                        ? "text-[#8f3434]"
+                        : "!text-[#2F5A43]"
                     }`}
                   >
                     {getTypeLabel(notification)}
                   </div>
-                  <div className="dashboard-value">
+                  <div className="dashboard-value !text-[#2F5A43]">
                     {notification.type === "admin_message_client"
                       ? ""
                       : notification.original_datetime}
                   </div>
-                  <div className="dashboard-value whitespace-pre-line">
+                  <div className="dashboard-value whitespace-pre-line !text-[#2F5A43]">
                     {notification.details}
                   </div>
-                  <div className="dashboard-value">
+                  <div className="dashboard-value !text-[#2F5A43]">
                     {formatDateTime(notification.created_at)}
                   </div>
                 </div>
@@ -272,10 +272,10 @@ const [loadingPage, setLoadingPage] = useState(true)
 
                     <button onClick={() => toggleNotification(notification.id)} className="flex-1 text-left">
                       <div
-                        className={`dashboard-value ${
+                        className={`text-[15px] font-light ${
                           notification.type === "admin_message_client"
-                            ? "text-red-600"
-                            : ""
+                            ? "text-[#8f3434]"
+                            : "text-[#2F5A43]"
                         }`}
                       >
                         {getTypeLabel(notification)}{" "}
@@ -283,7 +283,7 @@ const [loadingPage, setLoadingPage] = useState(true)
                       </div>
 
                       {notification.type !== "admin_message_client" && (
-                        <div className="text-sm text-gray-600">
+                        <div className="text-sm font-light text-[#2F5A43]">
                           {notification.original_datetime}
                         </div>
                       )}
@@ -293,11 +293,11 @@ const [loadingPage, setLoadingPage] = useState(true)
                   {expandedNotifications.includes(notification.id) && (
                     <div className="mt-4 space-y-4">
                       {notification.type === "admin_message_client" ? (
-                        <p className="dashboard-value">{notification.message}</p>
+                        <p className="dashboard-value !text-[#2F5A43]">{notification.message}</p>
                       ) : (
                         <div>
                           <p className="dashboard-label">Notes</p>
-                          <p className="dashboard-value whitespace-pre-line">
+                          <p className="dashboard-value whitespace-pre-line !text-[#2F5A43]">
                             {notification.message}
                           </p>
                         </div>
@@ -305,7 +305,7 @@ const [loadingPage, setLoadingPage] = useState(true)
 
                       <div>
                         <p className="dashboard-label">Created</p>
-                        <p className="dashboard-value">
+                        <p className="dashboard-value !text-[#2F5A43]">
                           {formatDateTime(notification.created_at)}
                         </p>
                       </div>
@@ -317,7 +317,7 @@ const [loadingPage, setLoadingPage] = useState(true)
 
             {notifications.length === 0 && (
 							<div className="rounded-2xl border border-[#3A5D49] bg-white p-6 shadow-md">
-								<p className="dashboard-value text-[#6D7F72]">
+								<p className="dashboard-value !text-[#2F5A43]">
 									No notifications.
 								</p>
 							</div>
@@ -351,7 +351,7 @@ const [loadingPage, setLoadingPage] = useState(true)
           <div className="mt-10">
             <button
               onClick={() => setShowOlder(!showOlder)}
-              className="dashboard-heading"
+              className="text-[20px] font-light uppercase tracking-[0.12em] text-[#2F5A43] transition hover:text-[#244634]"
             >
               Older Notifications {showOlder ? "▲" : "▼"}
             </button>
@@ -365,23 +365,23 @@ const [loadingPage, setLoadingPage] = useState(true)
                       <div>✓</div>
 
                       <div
-                        className={`dashboard-value ${
+                        className={`text-[15px] font-light ${
                           notification.type === "admin_message_client"
-                            ? "text-red-600"
-                            : ""
+                            ? "text-[#8f3434]"
+                            : "!text-[#2F5A43]"
                         }`}
                       >
                         {getTypeLabel(notification)}
                       </div>
-                      <div className="dashboard-value">
+                      <div className="dashboard-value !text-[#2F5A43]">
                         {notification.type === "admin_message_client"
                           ? ""
                           : notification.original_datetime}
                       </div>
-                      <div className="dashboard-value whitespace-pre-line">
+                      <div className="dashboard-value whitespace-pre-line !text-[#2F5A43]">
                         {notification.details}
                       </div>
-                      <div className="dashboard-value">
+                      <div className="dashboard-value !text-[#2F5A43]">
                         {formatDateTime(notification.created_at)}
                       </div>
                     </div>
@@ -390,17 +390,17 @@ const [loadingPage, setLoadingPage] = useState(true)
                     <div className="lg:hidden rounded-xl border border-[#3A5D49] bg-[#FBF8F3] px-4 py-5">
                       <button onClick={() => toggleNotification(notification.id)} className="flex-1 text-left">
                         <div
-                          className={`dashboard-value ${
+                          className={`text-[15px] font-light ${
                             notification.type === "admin_message_client"
-                              ? "text-red-600"
-                              : ""
+                              ? "text-[#8f3434]"
+                              : "text-[#2F5A43]"
                           }`}
                         >
                           {getTypeLabel(notification)}
                           {expandedNotifications.includes(notification.id) ? "▲" : "▼"}
                         </div>
                         {notification.type !== "admin_message_client" && (
-                          <div className="text-sm text-gray-600">
+                          <div className="text-sm font-light text-[#2F5A43]">
                             {notification.original_datetime}
                           </div>
                         )}
@@ -413,7 +413,7 @@ const [loadingPage, setLoadingPage] = useState(true)
                           ) : (
                             <div>
                               <p className="dashboard-label">Notes</p>
-                              <p className="dashboard-value whitespace-pre-line">
+                              <p className="dashboard-value whitespace-pre-line !text-[#2F5A43]">
                                 {notification.message}
                               </p>
                             </div>
@@ -421,7 +421,7 @@ const [loadingPage, setLoadingPage] = useState(true)
 
                           <div>
                             <p className="dashboard-label">Created</p>
-                            <p className="dashboard-value">
+                            <p className="dashboard-value !text-[#2F5A43]">
                               {formatDateTime(notification.created_at)}
                             </p>
                           </div>

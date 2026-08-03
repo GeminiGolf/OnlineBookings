@@ -100,11 +100,11 @@ export default function CoachNotificationSettingsPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#F2EEE8] px-4 pt-8 pb-3 sm:p-10 text-[#1F3327]">
+    <main className="min-h-screen bg-[#F2EEE8] px-4 pt-8 pb-3 sm:p-10 text-[#2F5A43]">
       <DashboardContainer>
       <Link
         href="/coach/notifications"
-        className="mb-3 sm:mb-6 inline-flex items-center gap-2 rounded-xl border border-[#3A5D49] bg-white px-5 py-2 text-[13px] font-light tracking-[0.04em] text-[#1F3327] shadow-sm transition hover:bg-[#F6FAF6]"
+        className="mb-3 sm:mb-6 inline-flex items-center gap-2 rounded-xl border border-[#3A5D49] bg-white px-5 py-2 text-[13px] font-light uppercase tracking-[0.12em] text-[#2F5A43] shadow-sm transition hover:bg-[#F6FAF6]"
       >
         <ArrowLeft className="h-4 w-4" />
         Back to Notifications
@@ -114,7 +114,7 @@ export default function CoachNotificationSettingsPage() {
         Push Notification Settings
       </h1>
 
-      <p className="mt-2 mb-6 text-[15px] font-light tracking-[0.02em] text-[#1F3327]">
+      <p className="mt-2 mb-6 text-[15px] font-light tracking-[0.02em] text-[#2F5A43]">
         Choose which push notifications you'd like to receive on your devices.
       </p>
 
@@ -125,7 +125,7 @@ export default function CoachNotificationSettingsPage() {
               <h2 className="text-[18px] sm:text-[20px] font-light tracking-[0.02em] text-[#2F5A43]">
                 Late Bookings
               </h2>
-              <p className="mt-2 text-[15px] font-light tracking-[0.02em] text-[#1F3327]">
+              <p className="mt-2 text-[15px] font-light tracking-[0.02em] text-[#2F5A43]">
                 (Client books a slot that extends today by 2+ hours, or the earliest new slot of the next day)
               </p>
             </div>
@@ -146,7 +146,7 @@ export default function CoachNotificationSettingsPage() {
               <h2 className="text-[18px] sm:text-[20px] font-light tracking-[0.02em] text-[#2F5A43]">
                 Client Cancellations
               </h2>
-              <p className="mt-2 text-[15px] font-light tracking-[0.02em] text-[#1F3327]">
+              <p className="mt-2 text-[15px] font-light tracking-[0.02em] text-[#2F5A43]">
                 (Client cancels an appointment that changes today/tomorrow.)
               </p>
             </div>
@@ -167,7 +167,7 @@ export default function CoachNotificationSettingsPage() {
               <h2 className="text-[18px] sm:text-[20px] font-light tracking-[0.02em] text-[#2F5A43]">
                 Double Bookings
               </h2>
-              <p className="mt-2 text-[15px] font-light tracking-[0.02em] text-[#1F3327]">
+              <p className="mt-2 text-[15px] font-light tracking-[0.02em] text-[#2F5A43]">
                 Receive a push notification when there's a scheduling conflict detected.
               </p>
             </div>
