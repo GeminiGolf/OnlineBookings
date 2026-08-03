@@ -483,20 +483,21 @@ export default function AdminDashboard({
   return (
     <main className="min-h-screen bg-[#ECE8E1] px-4 pt-8 pb-3 sm:p-10 text-black">
       <DashboardContainer>
-        <h1 className="text-[20px] font-light uppercase tracking-[0.12em] text-[#2F5A43]">
-          Schedule
-        </h1>
-        <div className="mb-1 mt-1">
+        <div className="mb- mt-1 flex flex-wrap items-center gap-4">
+          <h1 className="text-[20px] font-light uppercase tracking-[0.12em] text-[#2F5A43]">
+            Schedule
+          </h1>
+
           {headerContent ?? (
-            <p className="mt-1 text-[15px] font-light tracking-[0.02em] text-[#2F5A43]">
+            <p className="text-[15px] font-light tracking-[0.02em] text-[#2F5A43]">
               Welcome back, {coachName}
             </p>
           )}
         </div>
-        <div className="mb-6 mt-4 flex flex-wrap items-center gap-3">
+        <div className="mb-6 mt-2 flex flex-wrap items-center gap-2">
           <button
             onClick={previousDay}
-            className="rounded-2xl border border-[#3A5D49] bg-white px-5 py-2 text-[15px] font-light text-[#2F5A43] shadow-sm transition hover:bg-[#F6FAF6]"
+            className="rounded-2xl border border-[#3A5D49] bg-white px-3 sm:px-5 py-2 text-[15px] font-light text-[#2F5A43] shadow-sm transition hover:bg-[#F6FAF6]"
           >
             <span className="hidden sm:inline">← Previous</span>
             <span className="sm:hidden">←</span>
@@ -511,7 +512,7 @@ export default function AdminDashboard({
 
           <button
             onClick={nextDay}
-            className="rounded-2xl border border-[#3A5D49] bg-white px-5 py-2 text-[15px] font-light text-[#2F5A43] shadow-sm transition hover:bg-[#F6FAF6]"
+            className="rounded-2xl border border-[#3A5D49] bg-white px-3 sm:px-5 py-2 text-[15px] font-light text-[#2F5A43] shadow-sm transition hover:bg-[#F6FAF6]"
           >
             <span className="hidden sm:inline">Next →</span>
             <span className="sm:hidden">→</span>
@@ -528,14 +529,16 @@ export default function AdminDashboard({
             onClick={closeDay}
             className="rounded-2xl bg-[#9D3E3E] px-5 py-2 text-[13px] font-light uppercase tracking-[0.12em] text-white transition hover:bg-[#8F3434]"
           >
-            Close Day
+            <span className="hidden sm:inline">Close Day</span>
+            <span className="sm:hidden">Close</span>
           </button>
 
           <button
             onClick={() => setShowExtendModal(true)}
             className="rounded-2xl bg-[#2F5A43] px-5 py-2 text-[13px] font-light uppercase tracking-[0.12em] text-white transition hover:bg-[#244634]"
           >
-            Extend Day
+            <span className="hidden sm:inline">Extend Day</span>
+            <span className="sm:hidden">Extend</span>
           </button>
         </div>
 
@@ -618,12 +621,12 @@ export default function AdminDashboard({
                 key={hour}
                 className="grid grid-cols-[82px_1fr] border-b border-[#3A5D49]"
               >
-                <div className="flex items-center border-r border-[#3A5D49] bg-[#FBF8F3] px-3 py-2 text-[14px] font-light text-[#2F5A43]">
+                <div className="flex items-center border-r border-[#3A5D49] bg-[#FBF8F3] px-3 py-1.5 text-[14px] font-light text-[#2F5A43]">
                   {formatHour(hour)}
                 </div>
                 <button
                   onClick={() => toggleSlot(hour)}
-                  className={`min-h-[64px] w-full px-4 py-3 text-left transition hover:brightness-[0.98] ${bgClass}`}
+                  className={`min-h-[52px] w-full px-4 py-2 text-left transition hover:brightness-[0.98] ${bgClass}`}
                 >
                   {booking ? (
                     <div>
