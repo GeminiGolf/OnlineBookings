@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, type ReactNode } from "react"
 import { supabase } from "@/lib/supabaseClient"
 import { getMalaysiaDate } from "@/lib/date"
 type CoachDefaults = {
@@ -15,10 +15,17 @@ type CoachDefaults = {
 type Props = {
   clientId: number
   lessonsRemaining: number
+  buttonLabel?: ReactNode
+  buttonClassName?: string
 }
 
 
-export default function ClientIDTransactionForm({ clientId, lessonsRemaining }: Props) {
+export default function ClientIDTransactionForm({
+  clientId,
+  lessonsRemaining,
+  buttonLabel = "Add Transaction",
+  buttonClassName,
+}: Props) {
   const [showModal, setShowModal] = useState(false)
   const [transactionType, setTransactionType] = useState("PPV")
   const [transactionName, setTransactionName] = useState("PPV")
@@ -241,9 +248,12 @@ export default function ClientIDTransactionForm({ clientId, lessonsRemaining }: 
           setShowModal(true)
           updateTransaction("PPV")
         }}
-        className="rounded-2xl bg-[#4E6FA8] px-6 py-3 text-[13px] font-light uppercase tracking-[0.12em] text-white transition hover:bg-[#3F5F93]"
+        className={
+          buttonClassName ??
+          "rounded-2xl bg-[#4E6FA8] px-6 py-3 text-[13px] font-light uppercase tracking-[0.12em] text-white transition hover:bg-[#3F5F93]"
+        }
       >
-        Add Transaction
+        {buttonLabel}
       </button>
 
       {showModal && (

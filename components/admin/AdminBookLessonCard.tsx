@@ -153,10 +153,14 @@ export default function CoachBookLessonCard({
   }
 
   return (
-    <div>
-      <div className="mx-auto w-fit rounded-xl border px-3 pt-3 pb-0 text-sm overflow-hidden">
+    <div className="rounded-3xl border border-[#3A5D49] bg-white p-3 shadow-md lg:px-6 lg:py-5">
+      <h2 className="dashboard-heading mb-3">
+        Book A Lesson
+      </h2>
+
+      <div className="mx-auto w-fit overflow-hidden rounded-2xl border border-[#3A5D49] bg-[#FBF8F3] px-2 pt-2 pb-0 text-sm">
         <DayPicker
-          className="mt-4 -mb-4 scale-90 lg:scale-90 origin-top"
+          className="coach-calendar mt-2 -mb-8 origin-top scale-90 lg:scale-[0.82]"
           mode="single"
           selected={selectedDate}
           onSelect={(date) => {
@@ -182,12 +186,12 @@ export default function CoachBookLessonCard({
       </div>
 
       <div className="mt-6">
-        <h3 className="mb-3 font-bold text-black">
+        <h3 className="dashboard-heading mb-3">
           Available Time Slots
         </h3>
 
         {timeSlots.length === 0 ? (
-          <p className="text-black">
+          <p className="text-[15px] font-light text-[#2F5A43]">
             No available slots.
           </p>
         ) : (
@@ -196,10 +200,10 @@ export default function CoachBookLessonCard({
               <button
                 key={time}
                 onClick={() => setSelectedTime(time)}
-                className={`rounded-lg px-3 py-1 text-sm font-medium text-white transition ${
+                className={`rounded-xl border px-4 py-2 text-[15px] font-light transition ${
                   selectedTime === time
-                    ? "bg-green-700"
-                    : "bg-green-600"
+                    ? "border-[#2F5A43] bg-[#2F5A43] text-white"
+                    : "border-[#3A5D49] bg-[#FBF8F3] text-[#2F5A43] hover:bg-[#F6FAF6]"
                 }`}
               >
                 {time}
@@ -210,19 +214,27 @@ export default function CoachBookLessonCard({
       </div>
 
       {selectedTime && (
-        <div className="mt-6 rounded-xl bg-gray-100 p-4">
-          <p className="font-bold">
-            Date: {selectedDate?.toLocaleDateString()}
+        <div className="mt-6 rounded-2xl border border-[#3A5D49] bg-white p-5 shadow-sm">
+          <p className="dashboard-label">
+            Date
           </p>
 
-          <p className="font-bold">
-            Time: {selectedTime}
+          <p className="dashboard-value mb-4">
+            {selectedDate?.toLocaleDateString()}
+          </p>
+
+          <p className="dashboard-label">
+            Time
+          </p>
+
+          <p className="dashboard-value">
+            {selectedTime}
           </p>
 
           <button
             onClick={confirmBooking}
             disabled={loading}
-            className="mt-4 rounded-lg bg-black px-6 py-3 text-white"
+            className="mt-5 rounded-xl border border-[#3A5D49] bg-[#2F5A43] px-6 py-3 text-[15px] font-light text-white shadow-sm transition hover:bg-[#244634]"
           >
             {loading
               ? "Booking..."

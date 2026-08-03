@@ -26,12 +26,12 @@ export default function AdminClientProfileClient({
   )
 
   return (
-    <div className="rounded-2xl bg-white p-4 shadow">
-      <h2 className="mb-4 text-[19px] font-bold">
+    <div className="rounded-3xl border border-[#3A5D49] bg-white p-3 shadow-md lg:px-6 lg:py-5">
+      <h2 className="dashboard-heading mb-3">
         Book A Lesson
       </h2>
       <div className="mb-4">
-        <p className="mb-1 text-sm text-gray-500">
+        <p className="dashboard-label mb-2">
           Coach
         </p>
         <AdminCoachSelector
@@ -46,8 +46,8 @@ export default function AdminClientProfileClient({
           coachId={selectedCoachId}
         />
       ) : (
-        <div className="rounded-lg border p-4">
-          <p className="text-gray-500">
+        <div className="rounded-2xl border border-[#3A5D49] bg-[#FCFAF6] p-5">
+          <p className="dashboard-value">
             Select a coach to view availability.
           </p>
         </div>

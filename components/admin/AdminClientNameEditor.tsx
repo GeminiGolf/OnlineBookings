@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { Pencil } from "lucide-react"
 import { supabase } from "@/lib/supabaseClient"
 
 type Props = {
@@ -55,20 +56,21 @@ export default function AdminClientNameEditor({
   if (!editing) {
     return (
       <div>
-        <div className="flex items-center gap-2">
-          <span className="text-gray-600">
-            Change Name
-          </span>
+        <div className="mb-1 flex items-center gap-2">
+          <p className="dashboard-label">
+            Name
+          </p>
 
           <button
             onClick={() => setEditing(true)}
-            className="text-sm"
+            type="button"
+            className="text-[#2F5A43] transition hover:text-[#55725F]"
           >
-            ✏️
+            <Pencil size={14} />
           </button>
         </div>
 
-        <p className="font-semibold">
+        <p className="dashboard-value">
           {preferredName
             ? `(${preferredName}) ${firstName} ${lastName}`
             : `${firstName} ${lastName}`}
@@ -78,9 +80,9 @@ export default function AdminClientNameEditor({
   }
 
   return (
-    <div className="space-y-4 rounded-xl border p-4">
+    <div className="space-y-4 rounded-2xl border border-[#3A5D49] bg-white p-5 shadow-sm">
       <div>
-        <label className="mb-1 block font-semibold">
+        <label className="dashboard-label mb-2 block">
           Preferred Name
         </label>
 
@@ -89,12 +91,12 @@ export default function AdminClientNameEditor({
           onChange={(e) =>
             setPreferredName(e.target.value)
           }
-          className="w-full rounded border p-2"
+          className="w-full rounded-2xl border border-[#3A5D49] bg-[#FCFAF6] px-4 py-2 text-[15px] font-light text-[#2F5A43] focus:border-[#2F5A43] focus:outline-none"
         />
       </div>
 
       <div>
-        <label className="mb-1 block font-semibold">
+        <label className="dashboard-label mb-2 block">
           First Name
         </label>
 
@@ -103,12 +105,12 @@ export default function AdminClientNameEditor({
           onChange={(e) =>
             setFirstName(e.target.value)
           }
-          className="w-full rounded border p-2"
+          className="w-full rounded-2xl border border-[#3A5D49] bg-[#FCFAF6] px-4 py-2 text-[15px] font-light text-[#2F5A43] focus:border-[#2F5A43] focus:outline-none"
         />
       </div>
 
       <div>
-        <label className="mb-1 block font-semibold">
+        <label className="dashboard-label mb-2 block">
           Last Name
         </label>
 
@@ -117,15 +119,15 @@ export default function AdminClientNameEditor({
           onChange={(e) =>
             setLastName(e.target.value)
           }
-          className="w-full rounded border p-2"
+          className="w-full rounded-2xl border border-[#3A5D49] bg-[#FCFAF6] px-4 py-2 text-[15px] font-light text-[#2F5A43] focus:border-[#2F5A43] focus:outline-none"
         />
       </div>
 
-      <div className="flex gap-2">
+      <div className="flex flex-wrap gap-2">
         <button
           onClick={save}
           disabled={loading}
-          className="rounded bg-blue-600 px-4 py-2 text-white"
+          className="rounded-xl bg-[#2F5A43] px-4 py-2 text-[13px] font-light uppercase tracking-[0.12em] text-white transition hover:bg-[#244634]"
         >
           {loading ? "Saving..." : "Save"}
         </button>
@@ -137,7 +139,7 @@ export default function AdminClientNameEditor({
             setLastName(initialLastName ?? "")
             setEditing(false)
           }}
-          className="rounded border px-4 py-2"
+          className="rounded-xl border border-[#9D3E3E] bg-white px-4 py-2 text-[13px] font-light uppercase tracking-[0.12em] text-[#9D3E3E] transition hover:bg-[#FDF4F4]"
         >
           Cancel
         </button>

@@ -27,7 +27,7 @@ export default function AdminCoachSelector({
             : null
         )
       }
-      className="w-full rounded-lg border bg-white px-3 py-2 text-black"
+      className="w-full rounded-2xl border border-[#3A5D49] bg-[#FCFAF6] px-4 py-2 text-[15px] font-light text-[#2F5A43] focus:border-[#2F5A43] focus:outline-none focus:ring-2 focus:ring-[#2F5A43]/15"
     >
       <option value="">
         Select Coach

@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { Pencil } from "lucide-react"
 import { supabase } from "@/lib/supabaseClient"
 
 type Props = {
@@ -44,35 +45,38 @@ export default function ClientNotesCard({
   return (
     <div>
       <div className="mb-1 flex items-center gap-2">
-        <p className="text-gray-500">Notes</p>
+        <p className="dashboard-label">
+          Notes
+        </p>
 
         {!editing && (
           <button
             onClick={() => setEditing(true)}
-            className="text-sm text-blue-600 hover:text-blue-800"
+            type="button"
+            className="text-[#2F5A43] transition hover:text-[#55725F]"
           >
-            ✏️
+            <Pencil size={14} />
           </button>
         )}
       </div>
 
       {editing ? (
-        <div className="space-y-2">
+        <div className="space-y-4 rounded-2xl border border-[#3A5D49] bg-white p-5 shadow-sm">
           <textarea
             value={notes}
             onChange={(e) =>
               setNotes(e.target.value)
             }
             rows={4}
-            className="w-full rounded border p-2"
+            className="w-full rounded-2xl border border-[#3A5D49] bg-[#FCFAF6] px-4 py-3 text-[15px] font-light text-[#2F5A43] focus:border-[#2F5A43] focus:outline-none"
             placeholder="Enter notes..."
           />
 
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <button
               onClick={saveNotes}
               disabled={saving}
-              className="rounded bg-green-600 px-3 py-1 text-white hover:bg-green-700 disabled:opacity-50"
+              className="rounded-xl bg-[#2F5A43] px-4 py-2 text-[13px] font-light uppercase tracking-[0.12em] text-white transition hover:bg-[#244634] disabled:opacity-50"
             >
               {saving ? "Saving..." : "Save"}
             </button>
@@ -82,15 +86,15 @@ export default function ClientNotesCard({
                 setNotes(initialNotes || "")
                 setEditing(false)
               }}
-              className="rounded bg-gray-300 px-3 py-1 text-black hover:bg-gray-400"
+              className="rounded-xl border border-[#9D3E3E] bg-white px-4 py-2 text-[13px] font-light uppercase tracking-[0.12em] text-[#9D3E3E] transition hover:bg-[#FDF4F4]"
             >
               Cancel
             </button>
           </div>
         </div>
       ) : (
-        <p className="text-[14px] font-light uppercase tracking-[0.12em] text-black">
-        {notes || "No notes"}
+        <p className="dashboard-value">
+          {notes || "No Notes"}
         </p>
       )}
     </div>

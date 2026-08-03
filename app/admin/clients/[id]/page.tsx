@@ -93,59 +93,75 @@ export default async function AdminClientProfilePage({ params }: Props) {
     .order("purchase_date", { ascending: false })
 
   return (
-    <main className="min-h-screen bg-gray-100 p-3 sm:p-10 text-black">
+    <main className="min-h-screen bg-[#F2EEE8] px-4 pt-8 pb-3 sm:p-10 text-black">
       <DashboardContainer>
         <Link
           href="/admin/profiles"
-          className="mb-6 inline-block rounded-lg border bg-white px-4 py-2"
+          className="mb-4 inline-block rounded-xl border border-[#3A5D49] bg-white px-5 py-2 text-[15px] font-light tracking-[0.04em] text-[#2F5A43] shadow-sm transition hover:bg-[#F6FAF6] hover:text-[#2F5A43]"
         >
           ← Back to Profiles
         </Link>
 
-        <div className="rounded-2xl bg-white p-5 sm:p-6 shadow">
-          <h1 className="text-[22px] font-bold">
-            {client.preferred_name
-              ? `(${client.preferred_name}) ${client.last_name}`
-              : client.name}
-          </h1>
+        <div className="mt-0">
+          <div className="rounded-3xl border border-[#3A5D49] bg-white shadow-md">
+            <details open>
+              <summary className="relative flex cursor-pointer items-center list-none px-6 py-4">
+                <h1 className="dashboard-heading min-w-0 flex-1 break-words pr-24">
+                  {client.preferred_name
+                    ? `${client.preferred_name} ${client.last_name}`
+                    : `${client.first_name} ${client.last_name}`}
+                </h1>
 
-          <div className="mt-2 grid gap-4 md:grid-cols-2">
-            <AdminClientNameEditor
-              clientId={client.id}
-              initialPreferredName={client.preferred_name}
-              initialFirstName={client.first_name}
-              initialLastName={client.last_name}
-            />
-            
-            <AdminClientContactEditor
-              clientId={client.id}
-              profileId={client.profile_id}
-              initialPhone={client.phone}
-              initialEmail={client.email}
-            />
+                <div className="absolute right-12 top-1/2 -translate-y-1/2">
+                  <ClientIDTransactionForm
+                    clientId={client.id}
+                    lessonsRemaining={client.lessons_remaining}
+                    buttonLabel="$$$"
+                    buttonClassName="rounded-2xl bg-[#2F5A43] px-4 py-2 text-[13px] font-light uppercase tracking-[0.12em] text-white transition hover:bg-[#244634]"
+                  />
+                </div>
 
-            <AdminLessonsRemainingEditor
-              clientId={client.id}
-              initialLessonsRemaining={client.lessons_remaining}
-            />
+                <span className="absolute right-6 top-1/2 -translate-y-1/2 text-[18px] text-[#2F5A43]">
+                  ▼
+                </span>
+              </summary>
 
-            <AdminCoachEditor
-              clientId={client.id}
-              coaches={coaches || []}
-              initialCoachId={primaryCoach?.id ?? null}
-            />
-          </div>
+              <div className="px-6 pb-5">
+                <div className="grid gap-4 lg:grid-cols-2">
+                  <AdminClientNameEditor
+                    clientId={client.id}
+                    initialPreferredName={client.preferred_name}
+                    initialFirstName={client.first_name}
+                    initialLastName={client.last_name}
+                  />
 
-          <ClientNotesCard
-            clientId={client.id}
-            initialNotes={client.notes}
-          />
+                  <AdminClientContactEditor
+                    clientId={client.id}
+                    profileId={client.profile_id}
+                    initialPhone={client.phone}
+                    initialEmail={client.email}
+                  />
 
-          <div className="mt-8 flex flex-wrap gap-3">
-            <ClientIDTransactionForm
-              clientId={client.id}
-              lessonsRemaining={client.lessons_remaining}
-            />
+                  <AdminLessonsRemainingEditor
+                    clientId={client.id}
+                    initialLessonsRemaining={client.lessons_remaining}
+                  />
+
+                  <AdminCoachEditor
+                    clientId={client.id}
+                    coaches={coaches || []}
+                    initialCoachId={primaryCoach?.id ?? null}
+                  />
+                </div>
+
+                <div className="mt-4">
+                  <ClientNotesCard
+                    clientId={client.id}
+                    initialNotes={client.notes}
+                  />
+                </div>
+              </div>
+            </details>
           </div>
         </div>
 
@@ -156,8 +172,8 @@ export default async function AdminClientProfilePage({ params }: Props) {
             initialCoachId={primaryCoach?.id}
           />
 
-          <div className="rounded-2xl bg-white p-4 shadow">
-            <h2 className="mb-4 text-[19px] font-bold">
+          <div className="rounded-3xl border border-[#3A5D49] bg-white p-3 shadow-md lg:px-6 lg:py-5">
+            <h2 className="dashboard-heading mb-4">
               Upcoming Lessons
             </h2>
 
@@ -165,7 +181,7 @@ export default async function AdminClientProfilePage({ params }: Props) {
               {(upcomingLessons || []).map((lesson) => (
                 <div
                   key={lesson.id}
-                  className="rounded-lg border p-3 text-sm sm:text-[14px]"
+                  className="dashboard-value rounded-xl border border-[#3A5D49] bg-white p-3 transition hover:bg-[#F6FAF6]"
                 >
                   {new Date(
                     lesson.lesson_date
@@ -194,8 +210,8 @@ export default async function AdminClientProfilePage({ params }: Props) {
         </div>
 
         <div className="mt-4 grid gap-4 lg:grid-cols-2">
-          <div className="rounded-2xl bg-white p-4 shadow">
-            <h2 className="mb-4 text-[19px] font-bold">
+          <div className="rounded-3xl border border-[#3A5D49] bg-white p-3 shadow-md lg:px-6 lg:py-5">
+            <h2 className="dashboard-heading mb-4">
               Previous Lessons
             </h2>
 
@@ -204,8 +220,8 @@ export default async function AdminClientProfilePage({ params }: Props) {
             />
           </div>
 
-          <div className="rounded-2xl bg-white p-4 shadow">
-            <h2 className="mb-4 text-[19px] font-bold">
+          <div className="rounded-3xl border border-[#3A5D49] bg-white p-3 shadow-md lg:px-6 lg:py-5">
+            <h2 className="dashboard-heading mb-4">
               Lessons Remaining
             </h2>
 

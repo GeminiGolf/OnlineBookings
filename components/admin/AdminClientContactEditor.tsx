@@ -80,8 +80,8 @@ export default function AdminClientContactEditor({
   return (
     <>
       <div>
-        <div className="flex items-center gap-2">
-          <p className="text-sm text-gray-500">
+        <div className="mb-1 flex items-center gap-2">
+          <p className="dashboard-label">
             Phone
           </p>
 
@@ -90,30 +90,31 @@ export default function AdminClientContactEditor({
               setEditingPhone(true)
             }
             type="button"
+            className="text-[#2F5A43] transition hover:text-[#55725F]"
           >
             <Pencil size={14} />
           </button>
         </div>
 
         {!editingPhone ? (
-          <p className="text-sm sm:text-base">
-            {phone || "Not provided"}
+          <p className="dashboard-value">
+            {phone || "Not Provided"}
           </p>
         ) : (
-          <div className="mt-2 flex items-center gap-2">
+          <div className="mt-2 flex flex-wrap items-center gap-2">
             <input
               type="text"
               value={phone}
               onChange={(e) =>
                 setPhone(e.target.value)
               }
-              className="rounded border px-2 py-1"
+              className="rounded-2xl border border-[#3A5D49] bg-[#FCFAF6] px-4 py-2 text-[15px] font-light text-[#2F5A43] focus:border-[#2F5A43] focus:outline-none"
             />
 
             <button
               onClick={savePhone}
               disabled={saving}
-              className="rounded bg-black px-3 py-1 text-white"
+              className="rounded-xl bg-[#2F5A43] px-4 py-2 text-[13px] font-light uppercase tracking-[0.12em] text-white transition hover:bg-[#244634]"
             >
               Save
             </button>
@@ -122,7 +123,7 @@ export default function AdminClientContactEditor({
               onClick={() =>
                 setEditingPhone(false)
               }
-              className="rounded border px-3 py-1"
+              className="rounded-xl border border-[#9D3E3E] bg-white px-4 py-2 text-[13px] font-light uppercase tracking-[0.12em] text-[#9D3E3E] transition hover:bg-[#FDF4F4]"
             >
               Cancel
             </button>
@@ -131,8 +132,8 @@ export default function AdminClientContactEditor({
       </div>
 
       <div>
-        <div className="flex items-center gap-2">
-          <p className="text-sm text-gray-500">
+        <div className="mb-1 flex items-center gap-2">
+          <p className="dashboard-label">
             Email
           </p>
 
@@ -141,30 +142,31 @@ export default function AdminClientContactEditor({
               setEditingEmail(true)
             }
             type="button"
+            className="text-[#2F5A43] transition hover:text-[#55725F]"
           >
             <Pencil size={14} />
           </button>
         </div>
 
         {!editingEmail ? (
-          <p className="text-sm sm:text-base">
-            {email || "Not provided"}
+          <p className="dashboard-value">
+            {email || "Not Provided"}
           </p>
         ) : (
-          <div className="mt-2 flex items-center gap-2">
+          <div className="mt-2 flex flex-wrap items-center gap-2">
             <input
               type="email"
               value={email}
               onChange={(e) =>
                 setEmail(e.target.value)
               }
-              className="rounded border px-2 py-1"
+              className="rounded-2xl border border-[#3A5D49] bg-[#FCFAF6] px-4 py-2 text-[15px] font-light text-[#2F5A43] focus:border-[#2F5A43] focus:outline-none"
             />
 
             <button
               onClick={saveEmail}
               disabled={saving}
-              className="rounded bg-black px-3 py-1 text-white"
+              className="rounded-xl bg-[#2F5A43] px-4 py-2 text-[13px] font-light uppercase tracking-[0.12em] text-white transition hover:bg-[#244634]"
             >
               Save
             </button>
@@ -173,7 +175,7 @@ export default function AdminClientContactEditor({
               onClick={() =>
                 setEditingEmail(false)
               }
-              className="rounded border px-3 py-1"
+              className="rounded-xl border border-[#9D3E3E] bg-white px-4 py-2 text-[13px] font-light uppercase tracking-[0.12em] text-[#9D3E3E] transition hover:bg-[#FDF4F4]"
             >
               Cancel
             </button>
