@@ -71,6 +71,38 @@ export default function SignupPage() {
       return
     }
 
+    const response = await fetch("/api/signup", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: email.trim(),
+        phone: phone.trim(),
+      }),
+    })
+
+    if (!response.ok) {
+      alert("Unable to verify your account details. Please try again.")
+      return
+    }
+
+    const { emailExists, phoneExists } = await response.json()
+
+    if (emailExists) {
+      alert(
+        "This email address is already in use.\n\nPlease contact admin@geminigolfacademy.com for assistance."
+      )
+      return
+    }
+
+    if (phoneExists) {
+      alert(
+        "This phone number is already in use.\n\nPlease contact admin@geminigolfacademy.com for assistance."
+      )
+      return
+    }
+
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
