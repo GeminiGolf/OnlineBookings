@@ -407,63 +407,92 @@ export default function NotificationsPage() {
 
   return (
     <RequireAdmin>
-      <main className="min-h-screen bg-gray-100 p-3 sm:p-10 text-black">
-      <DashboardContainer>
+      <main className="min-h-screen bg-[#F2EEE8] px-4 pt-8 pb-3 sm:p-10 text-[#2F5A43]">
+        <DashboardContainer>
+        <div className="mb-3 flex items-center justify-between gap-3 sm:mb-6">
+          <Link
+            href="/admin"
+            className="rounded-xl border border-[#3A5D49] bg-white px-5 py-2 text-[13px] font-light uppercase tracking-[0.12em] text-[#2F5A43] shadow-sm transition hover:bg-[#F6FAF6]"
+          >
+            <>
+              <span className="sm:hidden">←</span>
+              <span className="hidden sm:inline">← Back to Dashboard</span>
+            </>
+          </Link>
+
+          <div className="flex items-center gap-2">
+            <Link
+              href="/admin/notifications/sent"
+              className="rounded-xl border border-[#3A5D49] bg-white px-5 py-2 text-[13px] font-light uppercase tracking-[0.12em] text-[#2F5A43] shadow-sm transition hover:bg-[#F6FAF6]"
+            >
+              Sent
+            </Link>
+
+            <button
+              onClick={() => setShowPushModal(true)}
+              className="rounded-xl bg-[#4E6FA8] px-5 py-2 text-[13px] font-light uppercase tracking-[0.12em] text-white transition hover:bg-[#3F5F93]"
+            >
+              <>
+                <span className="sm:hidden">Push</span>
+                <span className="hidden sm:inline">Push Notification</span>
+              </>
+            </button>
+          </div>
+        </div>
+
         {/* URGENT */}
         <div className="mb-10">
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-2xl font-bold text-red-700">Urgent</h2>
-
-            <div className="flex items-center gap-2">
-              <Link
-                href="/admin/notifications/sent"
-                className="rounded-md bg-blue-900 px-4 py-2 font-medium text-white transition hover:bg-blue-950"
-              >
-                Sent
-              </Link>
-
-              <button
-                onClick={() => setShowPushModal(true)}
-                className="rounded-md bg-sky-500 px-4 py-2 font-medium text-white transition hover:bg-sky-600"
-              >
-                Push Notification
-              </button>
-            </div>
-          </div>
+          <h2 className="mb-5 text-[20px] font-light uppercase tracking-[0.08em] text-[#8F3434]">
+            Urgent
+          </h2>
 
           {urgentNotifications.length === 0 ? (
-            <div className="rounded-xl bg-white p-6 shadow">
-              <p className="text-black">No urgent notifications.</p>
+            <div className="rounded-2xl border border-[#3A5D49] bg-[#FEFDFC] p-10 text-center shadow-xl">
+              <p className="text-[15px] font-light text-[#2F5A43]">
+                No urgent notifications.
+              </p>
             </div>
           ) : (
-            <div className="space-y-4">
+            <div className="space-y-1">
               {urgentNotifications.map((notification) => (
-                <div key={notification.id} className="rounded-xl border border-red-300 bg-red-100 p-4 shadow">
+                <div
+                  key={notification.id}
+                  className="rounded-2xl border border-[#8F3434] bg-[#FBF4F3] p-5 shadow-xl"
+                >
                   {notification.type === "late_booking" ? (
                     <>
-                      <h3 className="text-lg font-bold text-red-700">LATE BOOKING</h3>
+                      <h3 className="text-[20px] font-light uppercase tracking-[0.12em] text-[#8F3434]">
+                        Late Booking
+                      </h3>
 
-                      <p className="mt-1 text-black">
-                        <strong>Client:</strong> {notification.client_name}
-                      </p>
+                      <div className="mt-4 space-y-3">
+                        <div>
+                          <p className="dashboard-label font-normal">Client</p>
+                          <p className="text-[15px] font-light text-[#2F5A43]">
+                            {notification.client_name}
+                          </p>
+                        </div>
 
-                      <p className="mt-1 text-black">
-                        <strong>Time:</strong>{" "}
-                        {(notification.lesson_date ?? "").split("-").reverse().slice(0, 2).join("/")} @{" "}
-                        {(notification.lesson_time ?? "").replace(":00", "").toLowerCase()}
-                      </p>
+                        <div>
+                          <p className="dashboard-label font-normal">Lesson</p>
+                          <p className="text-[15px] font-light text-[#2F5A43]">
+                            {(notification.lesson_date ?? "").split("-").reverse().slice(0, 2).join("/")} @{" "}
+                            {(notification.lesson_time ?? "").replace(":00", "").toLowerCase()}
+                          </p>
+                        </div>
+                      </div>
 
-                      <div className="mt-1 flex gap-1">
+                      <div className="mt-5 flex gap-3">
                         <button
                           onClick={() => handleApprove(notification)}
-                          className="rounded bg-green-600 px-2 py-2 text-white"
+                          className="rounded-xl bg-[#2F5A43] px-5 py-2 text-[13px] font-light uppercase tracking-[0.12em] text-white transition hover:bg-[#244634]"
                         >
                           Approve
                         </button>
 
                         <button
                           onClick={() => handleReject(notification)}
-                          className="rounded bg-red-600 px-4 py-2 text-white"
+                          className="rounded-xl bg-[#8F3434] px-5 py-2 text-[13px] font-light uppercase tracking-[0.12em] text-white transition hover:bg-[#742A2A]"
                         >
                           Reject
                         </button>
@@ -514,35 +543,44 @@ export default function NotificationsPage() {
         </div>
         {/* STANDARD */}
         <div>
-          <h2 className="mb-4 text-2xl font-bold text-black">Notifications ({activeNotifications.length})</h2>
-          <div className="hidden lg:grid mb-3 ml-16 grid-cols-[140px_180px_180px_1fr_140px] gap-4 text-sm font-bold text-gray-600">
-            <span>Type</span>
-            <span>Original Date</span>
-            <span>New Date</span>
-            <span>Notes</span>
-            <span>Created</span>
+          <h2 className="mb-5 text-[20px] font-light uppercase tracking-[0.08em] text-[#2F5A43]">
+            Notifications ({activeNotifications.length})
+          </h2>
+          <div className="dashboard-label mb-3 hidden lg:grid grid-cols-[40px_40px_140px_180px_180px_1fr_140px] items-center rounded-xl border border-[#3A5D49] bg-[#F3F0EA] px-5 py-3">
+            <span></span>
+            <span></span>
+            <span className="dashboard-label text-center">Type</span>
+            <span className="dashboard-label text-center">Original Date</span>
+            <span className="dashboard-label text-center">New Date</span>
+            <span className="dashboard-label text-center">Notes</span>
+            <span className="dashboard-label text-center">Created</span>
           </div>
           {activeNotifications.length === 0 ? (
-            <div className="rounded-xl bg-white p-6 shadow">
-              <p className="text-black">No notifications.</p>
+            <div className="rounded-2xl border border-[#3A5D49] bg-[#FEFDFC] p-10 text-center shadow-xl">
+              <p className="text-[15px] font-light text-[#2F5A43]">
+                No notifications.
+              </p>
             </div>
           ) : (
             <>
-              <div className="space-y-4">
+              <div className="space-y-1">
                 {paginatedActiveNotifications.map((notification) => (
                   <div key={notification.id}>
                     <div
-                      className={`hidden lg:block rounded-xl p-4 shadow ${
-                        notification.is_read ? "bg-gray-200" : "bg-white"
+                      className={`hidden lg:block rounded-2xl border border-[#3A5D49] px-5 py-1 shadow-sm ${
+                        notification.is_read
+                          ? "bg-[#F3F0EA]"
+                          : "bg-[#FEFDFC]"
                       }`}
                     >
-                      <div className="flex items-center justify-between gap-4">
-                        <div className="flex items-center gap-3">
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2">
                           <input
                             type="checkbox"
                             checked={notification.is_read}
                             onChange={(e) => toggleNotification(notification.id, e.target.checked)}
-                            className="h-5 w-5"
+                            className="h-5 w-5 cursor-pointer"
+                            style={{ accentColor: "#2F5A43" }}
                           />
 
                           <button
@@ -552,7 +590,7 @@ export default function NotificationsPage() {
                             👤
                           </button>
 
-                          <div className="grid grid-cols-[120px_180px_180px_1fr] gap-4 text-sm text-black">
+                          <div className="grid grid-cols-[120px_180px_180px_1fr] gap-4 text-[15px] font-light text-[#2F5A43]">
                             <span>{notification.type_label || "-"}</span>
                             <span>{notification.original_datetime || "-"}</span>
                             <span>{notification.new_datetime || "-"}</span>
@@ -586,7 +624,7 @@ export default function NotificationsPage() {
                           </div>
                         </div>
 
-                        <span className="text-sm text-gray-600 whitespace-nowrap">
+                        <span className="whitespace-nowrap text-[15px] font-light text-[#2F5A43]">
                           {new Date(notification.created_at).toLocaleDateString("en-GB", {
                             day: "2-digit",
                             month: "2-digit",
@@ -600,13 +638,14 @@ export default function NotificationsPage() {
                       </div>
                     </div>
 
-                    <div className="lg:hidden rounded-xl bg-white p-4 shadow mb-3 text-black">
-                      <div className="flex items-center gap-3">
+                    <div className="mb-2 rounded-2xl border border-[#3A5D49] bg-[#FEFDFC] px-4 py-2 shadow-sm lg:hidden text-[#2F5A43]">
+                      <div className="flex items-center gap-2">
                         <input
                           type="checkbox"
                           checked={notification.is_read}
                           onChange={(e) => toggleNotification(notification.id, e.target.checked)}
-                          className="h-5 w-5"
+                          className="h-5 w-5 cursor-pointer"
+                          style={{ accentColor: "#2F5A43" }}
                         />
 
                         <button
@@ -617,36 +656,42 @@ export default function NotificationsPage() {
                         </button>
 
                         <button onClick={() => toggleExpanded(notification.id)} className="flex-1 text-left">
-                          <div className="font-semibold">
+                          <div className="dashboard-label font-normal text-[#2F5A43]">
                             {notification.type_label || "-"}{" "}
                             {expandedNotifications.includes(notification.id) ? "▲" : "▼"}
                           </div>
 
-                          <div className="text-sm text-black">{notification.original_datetime || "-"}</div>
+                          <div className="text-[15px] font-light text-[#2F5A43]">{notification.original_datetime || "-"}</div>
                         </button>
                       </div>
 
                       {expandedNotifications.includes(notification.id) && (
-                        <div className="mt-4 space-y-3 text-sm">
+                        <div className="mt-2 space-y-2 text-sm">
                           <div>
-                            <p className="font-semibold">Original Date</p>
-                            <p>{notification.original_datetime || "-"}</p>
+                            <p className="dashboard-label font-normal">Original Date</p>
+                            <p className="text-[15px] font-light text-[#2F5A43]">
+                              {notification.original_datetime || "-"}
+                            </p>
                           </div>
 
                           {notification.new_datetime && (
                             <div>
-                              <p className="font-semibold">New Date</p>
-                              <p>{notification.new_datetime}</p>
+                              <p className="dashboard-label font-normal">New Date</p>
+                              <p className="text-[15px] font-light text-[#2F5A43]">
+                                {notification.new_datetime}
+                              </p>
                             </div>
                           )}
 
                           <div>
-                            <p className="font-semibold">Notes</p>
-                            <p className="whitespace-pre-wrap">{notification.notes || "-"}</p>
+                            <p className="dashboard-label font-normal">Notes</p>
+                            <p className="whitespace-pre-wrap text-[15px] font-light text-[#2F5A43]">
+                              {notification.notes || "-"}
+                            </p>
                           </div>
 
                           <div>
-                            <p className="font-semibold">Created</p>
+                            <p className="dashboard-label font-normal">Created</p>
                             <p>
                               {new Date(notification.created_at).toLocaleDateString("en-GB", {
                                 day: "2-digit",
@@ -666,24 +711,24 @@ export default function NotificationsPage() {
                 ))}
               </div>
 
-              <div className="mt-4 flex items-center gap-3">
+              <div className="mt-1 flex items-center gap-3">
                 {activePage > 1 && (
                   <button
                     onClick={() => setActivePage((p) => p - 1)}
-                    className="rounded bg-gray-300 px-4 py-2"
+                    className="rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[13px] font-light uppercase tracking-[0.12em] text-[#2F5A43] transition hover:bg-[#F6FAF6]"
                   >
                     Previous
                   </button>
                 )}
 
-                <span className="font-medium text-black">
+                <span className="text-[15px] font-light text-[#2F5A43]">
                   Page {activePage}
                 </span>
 
                 {activeHasNext && (
                   <button
                     onClick={() => setActivePage((p) => p + 1)}
-                    className="rounded bg-gray-300 px-4 py-2"
+                    className="rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[13px] font-light uppercase tracking-[0.12em] text-[#2F5A43] transition hover:bg-[#F6FAF6]"
                   >
                     Next
                   </button>
@@ -694,7 +739,10 @@ export default function NotificationsPage() {
         </div>
 
         <div className="mt-10">
-          <button onClick={() => setShowOlder(!showOlder)} className="mb-4 text-xl font-bold text-black">
+          <button
+            onClick={() => setShowOlder(!showOlder)}
+            className="mb-5 text-[20px] font-light uppercase tracking-[0.08em] text-[#2F5A43]"
+          >
             Older Notifications {showOlder ? " ▲" : " ▼"}
           </button>
 
@@ -704,7 +752,7 @@ export default function NotificationsPage() {
                 <select
                   value={olderFilter}
                   onChange={(e) => setOlderFilter(e.target.value)}
-                  className="rounded border px-3 py-2 text-black bg-white"
+                  className="rounded-2xl border border-[#3A5D49] bg-[#FCFAF6] px-4 py-2 text-[15px] font-light text-[#2F5A43] focus:border-[#2F5A43] focus:ring-[#2F5A43]/15"
                 >
                   <option value="all">All</option>
                   <option value="Cancelled">Cancelled</option>
@@ -714,13 +762,15 @@ export default function NotificationsPage() {
                   <option value="No Show">No Show</option>
                 </select>
               </div>
-              <div className="hidden lg:grid mb-3 ml-16 grid grid-cols-[140px_180px_180px_1fr_140px_140px] gap-4 text-sm font-bold text-gray-600">
-                <span>Type</span>
-                <span>Original Date</span>
-                <span>New Date</span>
-                <span>Notes</span>
-                <span>Done At</span>
-                <span>Created</span>
+              <div className="dashboard-label mb-3 hidden lg:grid grid-cols-[40px_40px_140px_180px_180px_1fr_140px_140px] items-center rounded-xl border border-[#3A5D49] bg-[#F3F0EA] px-5 py-3">
+                <span></span>
+                <span></span>
+                <span className="dashboard-label text-center">Type</span>
+                <span className="dashboard-label text-center">Original Date</span>
+                <span className="dashboard-label text-center">New Date</span>
+                <span className="dashboard-label text-center">Notes</span>
+                <span className="dashboard-label text-center">Done At</span>
+                <span className="dashboard-label text-center">Created</span>
               </div>
 
               {olderNotifications.length === 0 ? (
@@ -729,16 +779,17 @@ export default function NotificationsPage() {
                 </div>
               ) : (
                 <>
-                  <div className="overflow-hidden rounded-xl border border-gray-300 bg-white">
+                  <div className="space-y-1">
                     {paginatedOlderNotifications.map((notification) => (
                       <div key={notification.id}>
-                        <div className="hidden lg:block border-b border-gray-300 bg-white">
+                        <div className="hidden lg:block rounded-2xl border border-[#3A5D49] bg-[#FEFDFC] px-5 py-1 shadow-sm">
                           <div className="grid grid-cols-[40px_40px_140px_180px_180px_1fr_140px_140px] items-center">
                             <input
                               type="checkbox"
                               checked={notification.is_read}
                               onChange={(e) => toggleNotification(notification.id, e.target.checked)}
-                              className="h-5 w-5"
+                              className="h-5 w-5 cursor-pointer"
+                              style={{ accentColor: "#2F5A43" }}
                             />
 
                             <button
@@ -748,18 +799,18 @@ export default function NotificationsPage() {
                               👤
                             </button>
 
-                            <div className="contents text-sm text-black">
-                              <span className="border-l border-gray-300 px-3 py-3">
+                            <div className="contents text-[15px] font-light text-[#2F5A43]">
+                              <span className="border-l border-[#D8D2C8] px-3 py-1 text-[15px] font-light text-[#2F5A43]">
                                 {notification.type_label || "-"}
                               </span>
-                              <span className="border-l border-gray-300 px-3 py-3">
+                              <span className="border-l border-[#D8D2C8] px-3 py-1 text-[15px] font-light text-[#2F5A43]">
                                 {notification.original_datetime || "-"}
                               </span>
-                              <span className="border-l border-gray-300 px-3 py-3">
+                              <span className="border-l border-[#D8D2C8] px-3 py-1 text-[15px] font-light text-[#2F5A43]">
                                 {notification.new_datetime || "-"}
                               </span>
-                              <span className="border-l border-gray-300 px-3 py-3">{notification.notes || "-"}</span>
-                              <span className="border-l border-gray-300 px-3 py-3">
+                              <span className="border-l border-[#D8D2C8] px-3 py-1 text-[15px] font-light text-[#2F5A43]">{notification.notes || "-"}</span>
+                              <span className="border-l border-[#D8D2C8] px-3 py-1 text-[15px] font-light text-[#2F5A43]">
                                 {notification.resolved_at
                                   ? `${new Date(notification.resolved_at).toLocaleDateString("en-GB", {
                                       day: "2-digit",
@@ -770,7 +821,7 @@ export default function NotificationsPage() {
                                     })}`
                                   : "-"}
                               </span>
-                              <span className="border-l border-gray-300 px-3 py-3">
+                              <span className="border-l border-[#D8D2C8] px-3 py-1 text-[15px] font-light text-[#2F5A43]">
                                 {new Date(notification.created_at).toLocaleDateString("en-GB", {
                                   day: "2-digit",
                                   month: "2-digit",
@@ -785,13 +836,14 @@ export default function NotificationsPage() {
                           </div>
                         </div>
 
-                        <div className="lg:hidden rounded-xl bg-white p-4 shadow mb-3 text-black">
-                          <div className="flex items-center gap-3">
+                        <div className="lg:hidden mb-2 rounded-2xl border border-[#3A5D49] bg-[#FEFDFC] px-4 py-2 shadow-sm text-[#2F5A43]">
+                          <div className="flex items-center gap-2">
                             <input
                               type="checkbox"
                               checked={notification.is_read}
                               onChange={(e) => toggleNotification(notification.id, e.target.checked)}
-                              className="h-5 w-5"
+                              className="h-5 w-5 cursor-pointer"
+                              style={{ accentColor: "#2F5A43" }}
                             />
 
                             <button
@@ -802,36 +854,42 @@ export default function NotificationsPage() {
                             </button>
 
                             <button onClick={() => toggleExpanded(notification.id)} className="flex-1 text-left">
-                              <div className="font-semibold">
+                              <div className="dashboard-label font-normal text-[#2F5A43]">
                                 {notification.type_label || "-"}{" "}
                                 {expandedNotifications.includes(notification.id) ? "▲" : "▼"}
                               </div>
 
-                              <div className="text-sm text-black">{notification.original_datetime || "-"}</div>
+                              <div className="text-[15px] font-light text-[#2F5A43]">{notification.original_datetime || "-"}</div>
                             </button>
                           </div>
 
                           {expandedNotifications.includes(notification.id) && (
-                            <div className="mt-4 space-y-3 text-sm">
+                            <div className="mt-2 space-y-2 text-sm">
                               <div>
-                                <p className="font-semibold">Original Date</p>
-                                <p>{notification.original_datetime || "-"}</p>
+                                <p className="dashboard-label font-normal">Original Date</p>
+                                <p className="text-[15px] font-light text-[#2F5A43]">
+                                  {notification.original_datetime || "-"}
+                                </p>
                               </div>
 
                               {notification.new_datetime && (
                                 <div>
-                                  <p className="font-semibold">New Date</p>
-                                  <p>{notification.new_datetime}</p>
+                                  <p className="dashboard-label font-normal">New Date</p>
+                                  <p className="text-[15px] font-light text-[#2F5A43]">
+                                    {notification.new_datetime}
+                                  </p>
                                 </div>
                               )}
 
                               <div>
-                                <p className="font-semibold">Notes</p>
-                                <p className="whitespace-pre-wrap">{notification.notes || "-"}</p>
+                                <p className="dashboard-label font-normal">Notes</p>
+                                <p className="whitespace-pre-wrap text-[15px] font-light text-[#2F5A43]">
+                                  {notification.notes || "-"}
+                                </p>
                               </div>
 
                               <div>
-                                <p className="font-semibold">Done At</p>
+                                <p className="dashboard-label font-normal">Done At</p>
                                 <p>
                                   {notification.resolved_at
                                     ? `${new Date(notification.resolved_at).toLocaleDateString("en-GB", {
@@ -846,7 +904,7 @@ export default function NotificationsPage() {
                               </div>
 
                               <div>
-                                <p className="font-semibold">Created</p>
+                                <p className="dashboard-label font-normal">Created</p>
                                 <p>
                                   {new Date(notification.created_at).toLocaleDateString("en-GB", {
                                     day: "2-digit",
@@ -866,24 +924,24 @@ export default function NotificationsPage() {
                     ))}
                   </div>
 
-                  <div className="mt-4 flex items-center gap-3">
+                  <div className="mt-1 flex items-center gap-3">
                     {activePage > 1 && (
                       <button
                         onClick={() => setActivePage((p) => p - 1)}
-                        className="rounded bg-gray-300 px-4 py-2"
+                        className="rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[13px] font-light uppercase tracking-[0.12em] text-[#2F5A43] transition hover:bg-[#F6FAF6]"
                       >
                         Previous
                       </button>
                     )}
 
-                    <span className="font-medium text-black">
+                    <span className="text-[15px] font-light text-[#2F5A43]">
                       Page {activePage}
                     </span>
 
                     {activeHasNext && (
                       <button
                         onClick={() => setActivePage((p) => p + 1)}
-                        className="rounded bg-gray-300 px-4 py-2"
+                        className="rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[13px] font-light uppercase tracking-[0.12em] text-[#2F5A43] transition hover:bg-[#F6FAF6]"
                       >
                         Next
                       </button>
@@ -906,7 +964,7 @@ export default function NotificationsPage() {
               </button>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-1">
               <div>
                 <p className="text-sm text-gray-500">Client</p>
                 <Link

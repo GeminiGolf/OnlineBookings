@@ -21,6 +21,7 @@ type NotificationRow = {
 export default function AllNotifications() {
   const [notifications, setNotifications] = useState<NotificationRow[]>([])
   const [expandedDates, setExpandedDates] = useState<string[]>([])
+  const [expandedNotifications, setExpandedNotifications] = useState<number[]>([])
   const [selectedNotification, setSelectedNotification] =
     useState<NotificationRow | null>(null)
   const [editSubject, setEditSubject] = useState("")
@@ -168,18 +169,25 @@ export default function AllNotifications() {
     )
   }
 
+  function toggleNotification(id: number) {
+    setExpandedNotifications((prev) =>
+      prev.includes(id)
+        ? prev.filter((n) => n !== id)
+        : [...prev, id]
+    )
+  }
+
   return (
-    <div className="mx-auto max-w-5xl text-black">
-      <h1 className="mb-4 text-[22px] font-bold">
-        Sent Notifications
-      </h1>
+    <div className="mx-auto max-w-5xl text-[#2F5A43]">
+      <>
+      </>
       <div className="mb-4 flex items-center gap-3">
         <input
           type="text"
           placeholder="Search..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-[105px] md:w-[110px] rounded-lg border p-2"
+          className="w-[120px] rounded-2xl border border-[#3A5D49] bg-[#FCFAF6] px-4 py-2 text-[15px] font-light text-[#2F5A43] focus:border-[#2F5A43] focus:ring-[#2F5A43]/15 md:w-[180px]"
         />
 
         <div className="relative">
@@ -189,9 +197,16 @@ export default function AllNotifications() {
               setShowStartCalendar(!showStartCalendar)
               setShowEndCalendar(false)
             }}
-            className="rounded-lg border border-black bg-green-100 px-4 py-2 hover:bg-green-200"
+            className="rounded-xl border border-[#55725F] bg-[#EEF5EF] px-4 py-2 text-[13px] font-light uppercase tracking-[0.12em] text-[#2F5A43] transition hover:bg-[#E5F0E6]"
           >
-            {startDate ? format(new Date(startDate), "dd/MM/yy") : "Start Date"}
+            {startDate ? (
+              format(new Date(startDate), "dd/MM/yy")
+            ) : (
+              <>
+                <span className="sm:hidden">Start</span>
+                <span className="hidden sm:inline">Start Date</span>
+              </>
+            )}
           </button>
 
           {showStartCalendar && (
@@ -231,9 +246,16 @@ export default function AllNotifications() {
               setShowEndCalendar(!showEndCalendar)
               setShowStartCalendar(false)
             }}
-            className="rounded-lg border border-black bg-red-100 px-4 py-2 hover:bg-red-200"
+            className="rounded-xl border border-[#B07A7A] bg-[#F9F1F1] px-4 py-2 text-[13px] font-light uppercase tracking-[0.12em] text-[#8F3434] transition hover:bg-[#F5E6E6]"
           >
-            {endDate ? format(new Date(endDate), "dd/MM/yy") : "End Date"}
+            {endDate ? (
+              format(new Date(endDate), "dd/MM/yy")
+            ) : (
+              <>
+                <span className="sm:hidden">End</span>
+                <span className="hidden sm:inline">End Date</span>
+              </>
+            )}
           </button>
 
           {showEndCalendar && (
@@ -267,27 +289,38 @@ export default function AllNotifications() {
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-2xl border bg-white">
-        <table className="w-full text-black">
+      <div className="overflow-hidden rounded-3xl border border-[#3A5D49] bg-[#FEFDFC] shadow-md">
+        <table className="w-full text-[#2F5A43]">
           <thead>
-            <tr className="border-b text-left">
-              <th className="p-4">Date</th>
-              <th className="p-4">Notifications</th>
-              <th className="p-4 text-center">Details</th>
+            <tr className="border-b border-[#D8D2C8] bg-[#F3F0EA] text-left">
+              <th className="dashboard-label p-4">Date</th>
+              <th className="dashboard-label p-4">
+                <span className="sm:hidden">Notifs</span>
+                <span className="hidden sm:inline">Notifications</span>
+              </th>
+              <th className="dashboard-label p-4 text-center">
+                Details
+              </th>
             </tr>
           </thead>
 
           <tbody>
             {groupedNotifications.map((group) => (
               <Fragment key={group.date}>
-                <tr className="border-b">
-                  <td className="p-4">
+                <tr className="border-b border-[#D8D2C8] bg-[#FEFDFC]">
+                  <td className="dashboard-label p-4">
                     {new Date(group.date).toLocaleDateString("en-GB")}
                   </td>
 
-                  <td className="p-4">
-                    {group.notifications.length} notification
-                    {group.notifications.length !== 1 && "s"}
+                  <td className="dashboard-label p-4">
+                    <>
+                      <span className="sm:hidden">{group.notifications.length}</span>
+
+                      <span className="hidden sm:inline">
+                        {group.notifications.length} notification
+                        {group.notifications.length !== 1 && "s"}
+                      </span>
+                    </>
                   </td>
 
                   <td className="p-4 text-center">
@@ -300,10 +333,11 @@ export default function AllNotifications() {
                 {expandedDates.includes(group.date) && (
                   <tr>
                     <td colSpan={3} className="border-t bg-white p-4">
-                      <table className="w-full text-sm text-black">
+                      
+                      <table className="w-full text-[15px] font-light text-[#2F5A43]">
                         <thead>
-                          <tr className="border-b">
-                            <th className="p-2">✏️</th>
+                          <tr className="border-b border-[#D8D2C8] bg-[#FEFDFC]">
+                            <th className="dashboard-label p-3 text-[#2F5A43]">✏️</th>
                             <th className="p-2 text-left">Recipient</th>
                             <th className="p-2 text-left">Notification Type</th>
                             <th className="p-2 text-left">Subject</th>
@@ -315,7 +349,7 @@ export default function AllNotifications() {
                           {group.notifications.map((notification) => (
                             <tr
                               key={notification.id}
-                              className="border-b last:border-0"
+                              className="border-b border-[#D8D2C8] last:border-0"
                             >
                               <td className="p-2 text-center">
                                 <button
@@ -325,34 +359,34 @@ export default function AllNotifications() {
                                     setEditMessage(notification.message)
                                     setEditIsRead(notification.is_read)
                                   }}
-                                  className="hover:scale-110"
+                                  className="rounded-lg p-2 transition hover:bg-[#F3F0EA] hover:scale-110"
                                 >
                                   ✏️
                                 </button>
                               </td>
 
-                              <td className="p-2">
+                              <td className="dashboard-label p-3 text-[#2F5A43]">
                                 <a
                                   href={
                                     notification.client_id
                                       ? `/admin/clients/${notification.client_id}`
                                       : `/admin/profiles/coach/${notification.coach_id}`
                                   }
-                                  className="text-blue-600 hover:underline"
+                                  className="text-[#4E6FA8] hover:underline"
                                 >
                                   {notification.recipient}
                                 </a>
                               </td>
 
-                              <td className="p-2">
+                              <td className="dashboard-label p-3 text-[#2F5A43]">
                                 {notification.type}
                               </td>
 
-                              <td className="p-2">
+                              <td className="dashboard-label p-3 text-[#2F5A43]">
                                 {notification.subject || "-"}
                               </td>
 
-                              <td className="p-2">
+                              <td className="dashboard-label p-3 text-[#2F5A43]">
                                 {notification.message}
                               </td>
                             </tr>
@@ -369,10 +403,10 @@ export default function AllNotifications() {
       </div>
           {selectedNotification && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-6">
-          <div className="w-full max-w-2xl rounded-2xl bg-white p-8 shadow-2xl">
+          <div className="w-full max-w-2xl rounded-3xl border border-[#3A5D49] bg-white p-8 shadow-xl">
 
             <div className="mb-6 flex items-center justify-between">
-              <h2 className="text-3xl font-bold">
+              <h2 className="text-[20px] font-light uppercase tracking-[0.12em] text-[#2F5A43]">
                 Edit Notification
               </h2>
 
@@ -387,7 +421,7 @@ export default function AllNotifications() {
             <div className="space-y-5 text-black">
 
               <div>
-                <p className="mb-1 font-semibold">
+                <p className="dashboard-label mb-1 font-normal">
                   Recipient
                 </p>
 
@@ -395,7 +429,7 @@ export default function AllNotifications() {
               </div>
 
               <div>
-                <p className="mb-1 font-semibold">
+                <p className="dashboard-label mb-1 font-normal">
                   Notification Type
                 </p>
 
@@ -403,7 +437,7 @@ export default function AllNotifications() {
               </div>
 
               <div>
-                <p className="mb-1 font-semibold">
+                <p className="dashboard-label mb-1 font-normal">
                   Subject
                 </p>
 
@@ -412,12 +446,12 @@ export default function AllNotifications() {
                   onChange={(e) =>
                     setEditSubject(e.target.value)
                   }
-                  className="w-full rounded border p-2"
+                  className="w-full rounded-2xl border border-[#3A5D49] bg-[#FCFAF6] px-4 py-2 text-[15px] font-light text-[#2F5A43] focus:border-[#2F5A43] focus:ring-[#2F5A43]/15"
                 />
               </div>
 
               <div>
-                <p className="mb-1 font-semibold">
+                <p className="dashboard-label mb-1 font-normal">
                   Read Status
                 </p>
 
@@ -426,7 +460,7 @@ export default function AllNotifications() {
                   onChange={(e) =>
                     setEditIsRead(e.target.value === "read")
                   }
-                  className="w-full rounded border p-2"
+                  className="w-full rounded-2xl border border-[#3A5D49] bg-[#FCFAF6] px-4 py-2 text-[15px] font-light text-[#2F5A43] focus:border-[#2F5A43] focus:ring-[#2F5A43]/15"
                 >
                   <option value="unread">Unread</option>
                   <option value="read">Read</option>
@@ -434,7 +468,7 @@ export default function AllNotifications() {
               </div>
 
               <div>
-                <p className="mb-1 font-semibold">
+                <p className="dashboard-label mb-1 font-normal">
                   Note
                 </p>
 
@@ -444,7 +478,7 @@ export default function AllNotifications() {
                   onChange={(e) =>
                     setEditMessage(e.target.value)
                   }
-                  className="w-full rounded border p-2"
+                  className="w-full rounded-2xl border border-[#3A5D49] bg-[#FCFAF6] px-4 py-2 text-[15px] font-light text-[#2F5A43] focus:border-[#2F5A43] focus:ring-[#2F5A43]/15"
                 />
               </div>
 
@@ -452,14 +486,14 @@ export default function AllNotifications() {
 
                 <button
                   onClick={deleteNotification}
-                  className="rounded bg-red-600 px-6 py-3 font-medium text-white"
+                  className="rounded-xl border border-[#9D3E3E] bg-white px-6 py-3 text-[13px] font-light uppercase tracking-[0.12em] text-[#9D3E3E] transition hover:bg-[#FDF4F4]"
                 >
                   Delete
                 </button>
 
                 <button
                   onClick={saveNotification}
-                  className="rounded bg-blue-600 px-6 py-3 font-medium text-white"
+                  className="rounded-xl bg-[#2F5A43] px-6 py-3 text-[13px] font-light uppercase tracking-[0.12em] text-white transition hover:bg-[#244634]"
                 >
                   Save
                 </button>
