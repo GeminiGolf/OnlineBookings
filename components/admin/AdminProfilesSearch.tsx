@@ -12,6 +12,7 @@ type Profile = {
   last_name?: string | null
   email?: string | null
   phone?: string | null
+  coach_name?: string | null
 }
 
 type Props = {
@@ -45,6 +46,9 @@ export default function AdminProfilesSearch({
             .includes(term) ||
           (profile.phone ?? "")
             .toLowerCase()
+            .includes(term) ||
+          (profile.coach_name ?? "")
+            .toLowerCase()
             .includes(term)
         )
   }, [profiles, search])
@@ -71,7 +75,7 @@ export default function AdminProfilesSearch({
           setSearch(e.target.value)
           setPage(1)
         }}
-        className="w-full rounded-xl border border-[#3A5D49] bg-white px-4 py-3 text-[15px] font-light tracking-[0.02em] text-[#2F5A43] placeholder:text-[#6D7F72] shadow-sm focus:border-[#2F5A43] focus:outline-none"
+        className="w-full rounded-xl border border-[#3A5D49] bg-[#FCFAF6] px-4 py-3 text-[15px] font-light text-[#2F5A43] placeholder:text-[#6D7F72] shadow-sm focus:border-[#2F5A43] focus:outline-none"
       />
 
       <div className="mt-4 space-y-3 md:hidden">
@@ -83,7 +87,7 @@ export default function AdminProfilesSearch({
                 ? `/admin/profiles/coach/${profile.id}`
                 : `/admin/clients/${profile.id}`
             }
-            className="block overflow-hidden rounded-2xl border border-[#3A5D49] bg-white"
+            className="block overflow-hidden rounded-2xl border border-[#3A5D49] bg-[#FCFAF6] shadow-sm"
           >
             <div className="p-3">
               <div className="text-[14px] font-light tracking-[0.06em] text-[#2F5A43]">
@@ -102,16 +106,16 @@ export default function AdminProfilesSearch({
         ))}
 
         {filteredProfiles.length === 0 && (
-          <div className="rounded-xl border border-[#3A5D49] bg-white p-4 text-[15px] font-light text-[#2F5A43]">
+          <div className="rounded-2xl border border-[#3A5D49] bg-[#FCFAF6] p-4 text-[15px] font-light text-[#2F5A43] shadow-sm">
             No matching profiles found.
           </div>
         )}
       </div>
 
-      <div className="mt-6 hidden overflow-x-auto rounded-3xl border border-[#3A5D49] bg-white shadow-md md:block">
+      <div className="mt-6 hidden overflow-x-auto rounded-3xl border border-[#3A5D49] bg-white shadow-sm md:block">
         <table className="w-full">
           <thead>
-            <tr className="border-b border-[#3A5D49] bg-white">
+            <tr className="border-b border-[#3A5D49] bg-[#F3F0EA]">
               <th className="dashboard-label p-4 text-left">
                 Type
               </th>
@@ -126,7 +130,7 @@ export default function AdminProfilesSearch({
             {paginatedProfiles.map((profile) => (
               <tr
                 key={`${profile.type}-${profile.id}`}
-                className="border-b border-[#3A5D49] transition hover:bg-[#F6FAF6]"
+                className="border-b border-[#3A5D49] transition hover:bg-[#FCFAF6]"
               >
                 <td className="p-4 text-[15px] font-light text-[#2F5A43]">
                   {profile.type}
@@ -171,7 +175,7 @@ export default function AdminProfilesSearch({
             setPage((p) => Math.max(1, p - 1))
           }
           disabled={page === 1}
-          className="rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[13px] font-light tracking-[0.04em] text-[#2F5A43] shadow-sm transition hover:bg-[#F6FAF6] disabled:opacity-50"
+          className="rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[13px] font-light tracking-[0.04em] text-[#2F5A43] shadow-sm transition hover:bg-[#FCFAF6] disabled:opacity-50"
         >
           Previous
         </button>
@@ -187,7 +191,7 @@ export default function AdminProfilesSearch({
             )
           }
           disabled={page === totalPages}
-          className="rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[13px] font-light tracking-[0.04em] text-[#2F5A43] shadow-sm transition hover:bg-[#F6FAF6] disabled:opacity-50"
+          className="rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[13px] font-light tracking-[0.04em] text-[#2F5A43] shadow-sm transition hover:bg-[#FCFAF6] disabled:opacity-50"
         >
           Next
         </button>
