@@ -84,6 +84,12 @@ export default function AddTransactionForm({
     setCoachDefaults(coachData)
   }
 
+  function updateExpiryMonths(months: number) {
+    const expiry = new Date()
+    expiry.setMonth(expiry.getMonth() + months)
+    setExpirationDate(expiry.toISOString().split("T")[0])
+  }
+
   function updateTransaction(type: string) {
     setTransactionType(type)
 
@@ -439,19 +445,29 @@ export default function AddTransactionForm({
 
         <div>
           <label className="mb-1 block text-[13px] font-medium uppercase tracking-[0.12em] text-[#2F5A43]">
-            Package Expiration Date
+            Package Expiry
           </label>
 
-          <input
-            type="date"
-            value={expirationDate}
-            onChange={(e) =>
-              setExpirationDate(
-                e.target.value
-              )
+          <select
+            value={
+              (() => {
+                const today = new Date()
+                const expiry = new Date(expirationDate)
+
+                return (
+                  (expiry.getFullYear() - today.getFullYear()) * 12 +
+                  (expiry.getMonth() - today.getMonth())
+                ).toString()
+              })()
             }
-           className="w-[150px] rounded-2xl border border-[#3A5D49] bg-[#FCFAF6] px-4 py-2 text-[15px] font-light text-[#2F5A43]"
-          />
+            onChange={(e) => updateExpiryMonths(Number(e.target.value))}
+            className="w-full rounded-2xl border border-[#3A5D49] bg-[#FCFAF6] px-4 py-2 text-[15px] font-light text-[#2F5A43] outline-none transition focus:border-[#2F5A43] focus:ring-2 focus:ring-[#2F5A43]/15"
+          >
+            <option value="3">3 Months</option>
+            <option value="6">6 Months</option>
+            <option value="12">12 Months</option>
+            <option value="18">18 Months</option>
+          </select>
         </div>
 
         <div className="flex gap-3 pt-2">
