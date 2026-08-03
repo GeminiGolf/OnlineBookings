@@ -481,32 +481,37 @@ export default function AdminDashboard({
   }
 
   return (
-    <main className="min-h-screen bg-gray-100 p-3 sm:p-10 text-black">
+    <main className="min-h-screen bg-[#ECE8E1] px-4 pt-8 pb-3 sm:p-10 text-black">
       <DashboardContainer>
-        <h1 className="text-2xl font-bold">Schedule</h1>
-        <div className="mb-2 mt-1">
+        <h1 className="text-[20px] font-light uppercase tracking-[0.12em] text-[#2F5A43]">
+          Schedule
+        </h1>
+        <div className="mb-1 mt-1">
           {headerContent ?? (
-            <p className="text-gray-600">
+            <p className="mt-1 text-[15px] font-light tracking-[0.02em] text-[#2F5A43]">
               Welcome back, {coachName}
             </p>
           )}
         </div>
-        <div className="mb-3 sm:mb-6 flex flex-wrap items-center gap-3">
+        <div className="mb-6 mt-4 flex flex-wrap items-center gap-3">
           <button
             onClick={previousDay}
-            className="rounded-lg border bg-white px-4 py-2 shadow-sm"
+            className="rounded-2xl border border-[#3A5D49] bg-white px-5 py-2 text-[15px] font-light text-[#2F5A43] shadow-sm transition hover:bg-[#F6FAF6]"
           >
             <span className="hidden sm:inline">← Previous</span>
             <span className="sm:hidden">←</span>
           </button>
 
-          <button onClick={today} className="rounded-lg border bg-white px-4 py-2 shadow-sm">
+          <button
+            onClick={today}
+            className="rounded-2xl border border-[#3A5D49] bg-white px-5 py-2 text-[15px] font-light text-[#2F5A43] shadow-sm transition hover:bg-[#F6FAF6]"
+          >
             Today
           </button>
 
           <button
             onClick={nextDay}
-            className="rounded-lg border bg-white px-4 py-2 shadow-sm"
+            className="rounded-2xl border border-[#3A5D49] bg-white px-5 py-2 text-[15px] font-light text-[#2F5A43] shadow-sm transition hover:bg-[#F6FAF6]"
           >
             <span className="hidden sm:inline">Next →</span>
             <span className="sm:hidden">→</span>
@@ -516,30 +521,39 @@ export default function AdminDashboard({
             type="date"
             value={selectedDate}
             onChange={(e) => goToDate(e.target.value)}
-            className="rounded-lg border bg-white px-4 py-2"
+            className="rounded-2xl border border-[#3A5D49] bg-[#FCFAF6] px-4 py-2 text-[15px] font-light text-[#2F5A43] focus:border-[#2F5A43] focus:outline-none focus:ring-2 focus:ring-[#2F5A43]/15"
           />
 
-          <button onClick={closeDay} className="rounded-lg bg-red-600 px-4 py-2 text-white hover:bg-red-700">
+          <button
+            onClick={closeDay}
+            className="rounded-2xl bg-[#9D3E3E] px-5 py-2 text-[13px] font-light uppercase tracking-[0.12em] text-white transition hover:bg-[#8F3434]"
+          >
             Close Day
           </button>
 
           <button
             onClick={() => setShowExtendModal(true)}
-            className="rounded-lg bg-green-600 px-4 py-2 text-white hover:bg-green-700"
+            className="rounded-2xl bg-[#2F5A43] px-5 py-2 text-[13px] font-light uppercase tracking-[0.12em] text-white transition hover:bg-[#244634]"
           >
             Extend Day
           </button>
         </div>
 
         {(rescheduleBooking || moveBooking) && (
-          <div className="mb-4 rounded-xl border border-green-300 bg-green-100 p-4">
-            <p className="font-bold">
+          <div className="mb-4 rounded-3xl border border-[#3A5D49] bg-[#FBF8F3] p-5 shadow-sm">
+            <p className="dashboard-label mb-2">
               {moveBooking
-                ? `Moving Completed Lesson: ${moveBooking.clients?.name}`
-                : `Rescheduling: ${rescheduleBooking?.clients?.name}`}
+                ? "Moving Completed Lesson"
+                : "Rescheduling Lesson"}
             </p>
 
-            <p className="text-sm">
+            <p className="text-[15px] font-light text-[#2F5A43]">
+              {moveBooking
+                ? `Moving ${moveBooking.clients?.name}`
+                : `Rescheduling ${rescheduleBooking?.clients?.name}`}
+            </p>
+
+            <p className="mt-2 text-[15px] font-light text-[#2F5A43]">
               {moveBooking
                 ? "Choose an empty slot on today's schedule."
                 : "Navigate to any day and click an available slot."}
@@ -550,17 +564,22 @@ export default function AdminDashboard({
                 setRescheduleBooking(null)
                 setMoveBooking(null)
               }}
-              className="mt-2 rounded bg-gray-700 px-3 py-1 text-white"
+              className="mt-4 rounded-2xl border border-[#9D3E3E] bg-white px-5 py-2 text-[13px] font-light uppercase tracking-[0.12em] text-[#9D3E3E] transition hover:bg-[#FDF4F4]"
             >
               Cancel
             </button>
           </div>
         )}
 
-        <div className="overflow-hidden rounded-2xl border bg-white shadow-lg">
-          <div className="grid grid-cols-[80px_1fr] border-b bg-gray-50">
-            <div className="border-r p-4 font-bold">Time</div>
-            <div className="p-4 font-bold">Schedule</div>
+        <div className="overflow-hidden rounded-3xl border border-[#3A5D49] bg-[#FEFDFC] shadow-md">
+          <div className="grid grid-cols-[82px_1fr] border-b border-[#3A5D49] bg-[#E8E1D8]">
+            <div className="dashboard-label flex items-center border-r border-[#3A5D49] bg-[#E8E1D8] p-4">
+              Time
+            </div>
+
+            <div className="dashboard-label flex items-center bg-[#E8E1D8] p-4">
+              Schedule
+            </div>
           </div>
 
           {hours.map((hour) => {
@@ -595,20 +614,25 @@ export default function AdminDashboard({
             }
 
             return (
-              <div key={hour} className="grid grid-cols-[80px_1fr] border-b">
-                <div className="flex items-center border-r bg-gray-50 p-3 font-semibold">{formatHour(hour)}</div>
+              <div
+                key={hour}
+                className="grid grid-cols-[82px_1fr] border-b border-[#3A5D49]"
+              >
+                <div className="flex items-center border-r border-[#3A5D49] bg-[#FBF8F3] px-3 py-2 text-[14px] font-light text-[#2F5A43]">
+                  {formatHour(hour)}
+                </div>
                 <button
                   onClick={() => toggleSlot(hour)}
-                  className={`h-14 w-full px-4 text-left transition hover:brightness-95 ${bgClass}`}
+                  className={`min-h-[64px] w-full px-4 py-3 text-left transition hover:brightness-[0.98] ${bgClass}`}
                 >
                   {booking ? (
                     <div>
-                      <p className="font-bold">
+                      <p className="text-[15px] font-light text-[#2F5A43]">
                         {booking.clients?.preferred_name
                           ? `(${booking.clients.preferred_name}) ${booking.clients.first_name} ${booking.clients.last_name}`
                           : `${booking.clients?.first_name} ${booking.clients?.last_name}`}
                       </p>
-                      <p className="text-sm text-gray-700">
+                      <p className="mt-1 text-[13px] font-light uppercase tracking-[0.08em] text-[#55725F]">
                         {booking.status === "completed"
                           ? "Completed Lesson"
                           : booking.status === "no_show"
@@ -617,15 +641,25 @@ export default function AdminDashboard({
                       </p>
                     </div>
                   ) : overrideClosed ? (
-                    <p className="text-gray-600">Closed (Override)</p>
+                    <p className="text-[15px] font-light text-[#2F5A43]">
+                      Closed (Override)
+                    </p>
                   ) : overrideOpen ? (
-                    <p className="text-gray-500">Available (Override)</p>
+                    <p className="text-[15px] font-light text-[#2F5A43]">
+                      Available (Override)
+                    </p>
                   ) : breakHour ? (
-                    <p className="text-gray-600">Break</p>
+                    <p className="text-[15px] font-light text-[#2F5A43]">
+                      Break
+                    </p>
                   ) : available ? (
-                    <p className="text-gray-500">Available</p>
+                    <p className="text-[15px] font-light text-[#2F5A43]">
+                      Available
+                    </p>
                   ) : (
-                    <p className="text-gray-600">Closed</p>
+                    <p className="text-[15px] font-light text-[#2F5A43]">
+                      Closed
+                    </p>
                   )}
                 </button>
               </div>
@@ -636,16 +670,21 @@ export default function AdminDashboard({
 
       {showExtendModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-6">
-          <div className="w-full max-w-md rounded-2xl bg-white p-6">
-            <h2 className="mb-4 text-2xl font-bold">Extend Day</h2>
-            <div className="space-y-4">
+          <div className="w-full max-w-md rounded-3xl border border-[#3A5D49] bg-white p-8 shadow-xl">
+            <h2 className="dashboard-heading mb-6">
+              Extend Day
+            </h2>
+            <div className="space-y-6">
               <div>
-                <p className="mb-2 font-medium">Start Time</p>
-                <div className="flex gap-2">
+                <p className="dashboard-label mb-2">
+                  Start Time
+                </p>
+
+                <div className="grid grid-cols-2 gap-3">
                   <select
                     value={extendStartHour}
                     onChange={(e) => setExtendStartHour(e.target.value)}
-                    className="rounded border p-2"
+                    className="rounded-2xl border border-[#3A5D49] bg-[#FCFAF6] px-4 py-2 text-[15px] font-light text-[#2F5A43] focus:border-[#2F5A43] focus:outline-none"
                   >
                     {Array.from({ length: 12 }, (_, i) => i + 1).map((hour) => (
                       <option key={hour} value={String(hour)}>
@@ -653,10 +692,11 @@ export default function AdminDashboard({
                       </option>
                     ))}
                   </select>
+
                   <select
                     value={extendStartPeriod}
                     onChange={(e) => setExtendStartPeriod(e.target.value)}
-                    className="rounded border p-2"
+                    className="rounded-2xl border border-[#3A5D49] bg-[#FCFAF6] px-4 py-2 text-[15px] font-light text-[#2F5A43] focus:border-[#2F5A43] focus:outline-none"
                   >
                     <option value="AM">AM</option>
                     <option value="PM">PM</option>
@@ -665,12 +705,15 @@ export default function AdminDashboard({
               </div>
 
               <div>
-                <p className="mb-2 font-medium">End Time</p>
-                <div className="flex gap-2">
+                <p className="dashboard-label mb-2">
+                  End Time
+                </p>
+
+                <div className="grid grid-cols-2 gap-3">
                   <select
                     value={extendEndHour}
                     onChange={(e) => setExtendEndHour(e.target.value)}
-                    className="rounded border p-2"
+                    className="rounded-2xl border border-[#3A5D49] bg-[#FCFAF6] px-4 py-2 text-[15px] font-light text-[#2F5A43] focus:border-[#2F5A43] focus:outline-none"
                   >
                     {Array.from({ length: 12 }, (_, i) => i + 1).map((hour) => (
                       <option key={hour} value={String(hour)}>
@@ -682,7 +725,7 @@ export default function AdminDashboard({
                   <select
                     value={extendEndPeriod}
                     onChange={(e) => setExtendEndPeriod(e.target.value)}
-                    className="rounded border p-2"
+                    className="rounded-2xl border border-[#3A5D49] bg-[#FCFAF6] px-4 py-2 text-[15px] font-light text-[#2F5A43] focus:border-[#2F5A43] focus:outline-none"
                   >
                     <option value="AM">AM</option>
                     <option value="PM">PM</option>
@@ -690,12 +733,18 @@ export default function AdminDashboard({
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3 pt-4 sm:flex">
-                <button onClick={() => setShowExtendModal(false)} className="rounded border px-4 py-2">
+              <div className="flex justify-end gap-3 pt-2">
+                <button
+                  onClick={() => setShowExtendModal(false)}
+                  className="rounded-2xl border border-[#9D3E3E] bg-white px-5 py-2 text-[13px] font-light uppercase tracking-[0.12em] text-[#9D3E3E] transition hover:bg-[#FDF4F4]"
+                >
                   Cancel
                 </button>
 
-                <button onClick={extendDay} className="rounded bg-green-600 px-4 py-2 text-white">
+                <button
+                  onClick={extendDay}
+                  className="rounded-2xl bg-[#2F5A43] px-5 py-2 text-[13px] font-light uppercase tracking-[0.12em] text-white transition hover:bg-[#244634]"
+                >
                   Save
                 </button>
               </div>
@@ -705,22 +754,29 @@ export default function AdminDashboard({
       )}
 
       {selectedBooking && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/50 p-6">
-          <div className="w-full max-w-lg rounded-2xl bg-white p-8 shadow-2xl">
-            <div className="mb-6 flex items-center justify-between">
-              <h2 className="text-3xl font-bold">Client Details</h2>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-6 backdrop-blur-sm">
+          <div className="w-full max-w-2xl rounded-3xl border border-[#3A5D49] bg-white p-8 shadow-xl">
+            <div className="mb-8 flex items-center justify-between">
+              <h2 className="dashboard-heading">
+                Client Details
+              </h2>
 
-              <button onClick={() => setSelectedBooking(null)} className="text-2xl font-bold">
+              <button
+                onClick={() => setSelectedBooking(null)}
+                className="text-[28px] font-light text-[#2F5A43] transition hover:text-[#55725F]"
+              >
                 ×
               </button>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-6">
               <div>
-                <div className="flex items-center gap-4">
-                  <p className="text-sm text-gray-500">Client</p>
+                <div className="mb-2 flex items-center gap-4">
+                  <p className="dashboard-label">
+                    Client
+                  </p>
 
-                  <label className="flex items-center gap-2 text-sm cursor-pointer">
+                  <label className="flex cursor-pointer items-center gap-2 text-[13px] font-light uppercase tracking-[0.12em] text-[#2F5A43]">
                     <input
                       type="checkbox"
                       checked={selectedBooking.is_new}
@@ -748,49 +804,74 @@ export default function AdminDashboard({
                     New
                   </label>
                 </div>
+              </div>
 
+              <div>
                 <Link
                   href={`/admin/clients/${selectedBooking.clients?.id}`}
-                  className="text-xl font-semibold underline text-blue-600 hover:text-blue-800"
+                  className="text-[18px] font-light text-[#4E6FA8] underline transition hover:text-[#3F5F93]"
                 >
                   {selectedBooking.clients?.preferred_name
                     ? `(${selectedBooking.clients.preferred_name}) ${selectedBooking.clients.first_name} ${selectedBooking.clients.last_name}`
                     : `${selectedBooking.clients?.first_name} ${selectedBooking.clients?.last_name}`}
                 </Link>
+
+                <div className="grid gap-6 sm:grid-cols-2">
+                  <div>
+                    <p className="dashboard-label">
+                      Phone
+                    </p>
+
+                    <p className="text-[15px] font-light text-[#2F5A43]">
+                      {selectedBooking.clients?.phone || "No Phone Added"}
+                    </p>
+                  </div>
+
+                  <div>
+                    <p className="dashboard-label">
+                      Email
+                    </p>
+
+                    <p className="break-all text-[15px] font-light text-[#2F5A43]">
+                      {selectedBooking.clients?.email || "No Email Added"}
+                    </p>
+                  </div>
+
+                  <div className="sm:col-span-2">
+                    <p className="dashboard-label">
+                      Notes
+                    </p>
+
+                    <p className="text-[15px] font-light text-[#2F5A43]">
+                      {selectedBooking.clients?.notes || "No Notes"}
+                    </p>
+                  </div>
+
+                  <div>
+                    <p className="dashboard-label">
+                      Lessons Remaining
+                    </p>
+
+                    <p className="text-[15px] font-light text-[#2F5A43]">
+                      {selectedBooking.clients?.lessons_remaining}
+                    </p>
+                  </div>
+                </div>
               </div>
 
-              <div>
-                <p className="text-sm text-gray-500">Phone</p>
-                <p>{selectedBooking.clients?.phone || "No phone added"}</p>
-              </div>
-
-              <div>
-                <p className="text-sm text-gray-500">Email</p>
-                <p>{selectedBooking.clients?.email || "No email added"}</p>
-              </div>
-
-              <div>
-                <p className="text-sm text-gray-500">Notes</p>
-                <p>{selectedBooking.clients?.notes || "No notes"}</p>
-              </div>
-
-              <div>
-                <p className="text-sm text-gray-500">Lessons Remaining</p>
-                <p className="font-bold">{selectedBooking.clients?.lessons_remaining}</p>
-              </div>
-
-              {selectedBooking.status === "completed" ? (
+              <div className="border-t border-[#E5DDD3] pt-6">
+                {selectedBooking.status === "completed" ? (
                 <button
                   onClick={() => {
                     setMoveBooking(selectedBooking)
                     setSelectedBooking(null)
                   }}
-                  className="rounded-lg bg-sky-400 px-4 py-2 text-white hover:bg-sky-500"
+                  className="rounded-2xl bg-[#4E6FA8] px-5 py-2 text-[13px] font-light uppercase tracking-[0.12em] text-white transition hover:bg-[#3F5F93]"
                 >
                   Move Lesson
                 </button>
               ) : (
-                <div className="flex gap-3 pt-4">
+                <div className="flex flex-wrap gap-3 pt-6">
                   <button
                     onClick={() => {
                       const today = new Date()
@@ -803,44 +884,52 @@ export default function AdminDashboard({
                         alert("Future lessons cannot be marked as completed.")
                         return
                       }
+
                       const lessonTime = selectedBooking.lesson_time.trim().toUpperCase()
                       let lessonHour = parseInt(lessonTime)
+
                       if (lessonTime.includes("PM") && lessonHour !== 12) {
                         lessonHour += 12
                       }
+
                       if (lessonTime.includes("AM") && lessonHour === 12) {
                         lessonHour = 0
                       }
+
                       const lessonStart = new Date()
                       lessonStart.setHours(lessonHour, 0, 0, 0)
-                      const completionAllowedTime = new Date(lessonStart.getTime() + 30 * 60 * 1000)
+
+                      const completionAllowedTime = new Date(
+                        lessonStart.getTime() + 30 * 60 * 1000
+                      )
+
                       if (today < completionAllowedTime) {
-                        const confirmed = window.confirm(`This lesson starts at ${selectedBooking.lesson_time}`)
+                        const confirmed = window.confirm(
+                          `This lesson starts at ${selectedBooking.lesson_time}`
+                        )
+
                         if (!confirmed) {
                           return
                         }
                       }
-                      if (
-                        selectedBooking.clients?.lessons_remaining === 0
-                      ) {
-                        alert(
-                          "No lessons remaining. Please add a transaction first."
-                        )
+
+                      if (selectedBooking.clients?.lessons_remaining === 0) {
+                        alert("No lessons remaining. Please add a transaction first.")
                         return
                       }
 
                       setShowCompleteModal(true)
                     }}
-                    className="rounded-lg bg-sky-400 px-2 py-2 text-sm text-white hover:bg-sky-500"
+                    className="rounded-2xl bg-[#4E6FA8] px-5 py-2 text-[13px] font-light uppercase tracking-[0.12em] text-white transition hover:bg-[#3F5F93]"
                   >
-                    Completed
+                    Complete Lesson
                   </button>
 
                   <button
                     onClick={() => {
                       setShowTransactionForm(true)
                     }}
-                    className="rounded-lg bg-blue-600 px-2 py-2 text-sm text-white hover:bg-blue-700"
+                    className="rounded-2xl bg-[#4E6FA8] px-5 py-2 text-[13px] font-light uppercase tracking-[0.12em] text-white transition hover:bg-[#3F5F93]"
                   >
                     Add Transaction
                   </button>
@@ -850,22 +939,22 @@ export default function AdminDashboard({
                       setRescheduleBooking(selectedBooking)
                       setSelectedBooking(null)
                     }}
-                    className="rounded-lg bg-green-600 px-2 py-2 text-sm text-white hover:bg-green-700"
+                    className="rounded-2xl bg-[#2F5A43] px-5 py-2 text-[13px] font-light uppercase tracking-[0.12em] text-white transition hover:bg-[#244634]"
                   >
                     Reschedule Lesson
                   </button>
 
                   <button
                     onClick={() => setShowCancelModal(true)}
-                    className="rounded-lg bg-red-600 px-2 py-2 text-sm text-white hover:bg-red-700"
+                    className="rounded-2xl bg-[#9D3E3E] px-5 py-2 text-[13px] font-light uppercase tracking-[0.12em] text-white transition hover:bg-[#8F3434]"
                   >
                     Cancel Lesson
                   </button>
                 </div>
               )}
               {showTransactionForm && (
-                <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/30 p-6">
-                  <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl">
+                <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 p-6 backdrop-blur-sm">
+                  <div className="w-full max-w-xl rounded-3xl border border-[#3A5D49] bg-white p-8 shadow-xl">
                     <AddTransactionForm
                       clientId={selectedBooking.clients!.id}
                       lessonsRemaining={
@@ -882,24 +971,23 @@ export default function AdminDashboard({
                   </div>
                 </div>
               )}
+              </div>
             </div>
           </div>
         </div>
       )}
 
       {showCompleteModal && selectedBooking && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-6">
-          <div className="w-full max-w-lg rounded-2xl bg-white p-6">
-            <h2 className="mb-4 text-2xl font-bold">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-6 backdrop-blur-sm">
+          <div className="w-full max-w-lg rounded-3xl border border-[#3A5D49] bg-white p-8 shadow-xl">
+            <h2 className="dashboard-heading mb-6">
               Complete Lesson
             </h2>
 
-            <div className="flex gap-3">
+            <div className="flex justify-end gap-3">
               <button
-                onClick={() =>
-                  setShowCompleteModal(false)
-                }
-                className="rounded-lg border px-4 py-2"
+                onClick={() => setShowCompleteModal(false)}
+                className="rounded-2xl border border-[#9D3E3E] bg-white px-5 py-2 text-[13px] font-light uppercase tracking-[0.12em] text-[#9D3E3E] transition hover:bg-[#FDF4F4]"
               >
                 Close
               </button>
@@ -1002,7 +1090,7 @@ export default function AdminDashboard({
 
                   window.location.reload()
                 }}
-                className="rounded-lg bg-sky-500 px-4 py-2 text-white"
+                className="rounded-2xl bg-[#4E6FA8] px-5 py-2 text-[13px] font-light uppercase tracking-[0.12em] text-white transition hover:bg-[#3F5F93]"
               >
                 Confirm
               </button>
@@ -1012,26 +1100,31 @@ export default function AdminDashboard({
       )}
 
       {showCancelModal && selectedBooking && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-6">
-          <div className="w-full max-w-lg rounded-2xl bg-white p-6">
-            <h2 className="mb-4 text-2xl font-bold">Cancel Lesson</h2>
-            <p className="mb-4 text-gray-600">A cancellation reason is required.</p>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-6 backdrop-blur-sm">
+          <div className="w-full max-w-lg rounded-3xl border border-[#3A5D49] bg-white p-8 shadow-xl">
+            <h2 className="dashboard-heading mb-3">
+              Cancel Lesson
+            </h2>
+
+            <p className="mb-5 text-[15px] font-light text-[#2F5A43]">
+              A cancellation reason is required.
+            </p>
 
             <textarea
               value={cancellationReason}
               onChange={(e) => setCancellationReason(e.target.value)}
               rows={4}
-              className="w-full rounded-lg border p-3"
+              className="w-full rounded-2xl border border-[#3A5D49] bg-[#FCFAF6] p-4 text-[15px] font-light text-[#2F5A43] placeholder:text-[#55725F] focus:border-[#2F5A43] focus:outline-none focus:ring-2 focus:ring-[#2F5A43]/15"
               placeholder="Enter cancellation reason..."
             />
 
-            <div className="mt-4 flex gap-3">
+            <div className="mt-6 flex justify-end gap-3">
               <button
                 onClick={() => {
                   setShowCancelModal(false)
                   setCancellationReason("")
                 }}
-                className="rounded-lg border px-4 py-2"
+                className="rounded-2xl border border-[#9D3E3E] bg-white px-5 py-2 text-[13px] font-light uppercase tracking-[0.12em] text-[#9D3E3E] transition hover:bg-[#FDF4F4]"
               >
                 Close
               </button>
@@ -1067,7 +1160,7 @@ export default function AdminDashboard({
                   setCancellationReason("")
                   window.location.reload()
                 }}
-                className="rounded-lg bg-red-600 px-4 py-2 text-white"
+                className="rounded-2xl bg-[#9D3E3E] px-5 py-2 text-[13px] font-light uppercase tracking-[0.12em] text-white transition hover:bg-[#8F3434]"
               >
                 Confirm Cancellation
               </button>
