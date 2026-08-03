@@ -292,7 +292,7 @@ export default function AllNotifications() {
       <div className="overflow-hidden rounded-3xl border border-[#3A5D49] bg-[#FEFDFC] shadow-md">
         <table className="w-full table-fixed text-[#2F5A43] md:table-auto">
           <thead>
-            <tr className="border-b border-[#D8D2C8] bg-[#F3F0EA] text-left">
+            <tr className="border-b border-[#3A5D49] bg-[#F3F0EA] text-left">
               <th className="dashboard-label p-4">Date</th>
               <th className="dashboard-label p-4">
                 <span className="sm:hidden">Notifs</span>
@@ -307,7 +307,7 @@ export default function AllNotifications() {
           <tbody>
             {groupedNotifications.map((group) => (
               <Fragment key={group.date}>
-                <tr className="border-b border-[#D8D2C8] bg-[#FEFDFC]">
+                <tr className="border-y border-[#3A5D49] bg-[#FEFDFC]">
                   <td className="dashboard-label p-4">
                     {new Date(group.date).toLocaleDateString("en-GB")}
                   </td>
@@ -332,13 +332,13 @@ export default function AllNotifications() {
 
                 {expandedDates.includes(group.date) && (
                   <tr>
-                    <td colSpan={3} className="border-t border-[#D8D2C8] bg-white p-4">
+                    <td colSpan={3} className="border-t border-[#3A5D49] bg-white p-4">
 
                       {/* Desktop */}
                       <div className="hidden md:block">
-                        <table className="w-full text-[15px] font-light text-[#2F5A43]">
+                        <table className="w-full border-x border-[#3A5D49] text-[15px] font-light text-[#2F5A43]">
                           <thead>
-                            <tr className="border-b border-[#D8D2C8] bg-[#FEFDFC]">
+                            <tr className="border-y border-[#3A5D49] bg-[#FEFDFC]">
                               <th className="dashboard-label p-3 text-center">Edit</th>
                               <th className="dashboard-label p-3 text-left">Client</th>
                               <th className="dashboard-label p-3 text-left">Notifs</th>
@@ -351,9 +351,9 @@ export default function AllNotifications() {
                             {group.notifications.map((notification) => (
                               <tr
                                 key={notification.id}
-                                className="border-b border-[#D8D2C8] last:border-0"
+                                className="border-b border-[#3A5D49] last:border-0"
                               >
-                                <td className="p-2 text-center">
+                                <td className="border-b border-[#3A5D49] p-2 text-center">
                                   <button
                                     onClick={() => {
                                       setSelectedNotification(notification)
@@ -367,7 +367,7 @@ export default function AllNotifications() {
                                   </button>
                                 </td>
 
-                                <td className="p-3 text-[15px] font-light text-[#2F5A43]">
+                                <td className="border-b border-[#3A5D49] p-3 text-[15px] font-light text-[#2F5A43]">
                                   <a
                                     href={
                                       notification.client_id
@@ -380,15 +380,15 @@ export default function AllNotifications() {
                                   </a>
                                 </td>
 
-                                <td className="p-3 text-[15px] font-light text-[#2F5A43]">
+                                <td className="border-b border-[#3A5D49] p-3 text-[15px] font-light text-[#2F5A43]">
                                   {notification.type}
                                 </td>
 
-                                <td className="p-3 text-[15px] font-light text-[#2F5A43]">
+                                <td className="border-b border-[#3A5D49] p-3 text-[15px] font-light text-[#2F5A43]">
                                   {notification.subject || "-"}
                                 </td>
 
-                                <td className="p-3 text-[15px] font-light text-[#2F5A43]">
+                                <td className="border-b border-[#3A5D49] p-3 text-[15px] font-light text-[#2F5A43]">
                                   {notification.message}
                                 </td>
                               </tr>
@@ -433,7 +433,7 @@ export default function AllNotifications() {
                             </button>
 
                             {expandedNotifications.includes(notification.id) && (
-                              <div className="border-t border-[#D8D2C8] px-4 py-3 space-y-3">
+                              <div className="border-t border-[#3A5D49] px-4 py-3 space-y-3">
 
                                 <div>
                                   <p className="dashboard-label">Subject</p>
