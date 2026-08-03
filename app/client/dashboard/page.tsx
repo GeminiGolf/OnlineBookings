@@ -778,7 +778,7 @@ export default function ClientDashboard() {
                   No available slots.
                 </p>
               ) : (
-                <div className="flex w-fit flex-wrap justify-center gap-2">
+                <div className="mx-auto grid max-w-fit grid-cols-3 gap-2">
                   {timeSlots.map((time) => (
                     <button
                       key={time}
