@@ -7,7 +7,7 @@ export default function ClientChangePasswordPage() {
       <div className="w-full max-w-md -translate-y-6">
         <Link
           href="/client/dashboard"
-          className="mb-4 inline-flex items-center rounded-xl border border-[#3A5D49] bg-[#F7F4EF] px-5 py-2 text-[13px] font-light tracking-[0.04em] text-[#1F3327] shadow-sm transition hover:bg-[#F2ECE3]"
+          className="mb-4 inline-flex items-center rounded-xl border border-[#3A5D49] bg-[#F7F4EF] px-5 py-2 text-[13px] font-light tracking-[0.04em] text-[#2F5A43] shadow-sm transition hover:bg-[#F2ECE3]"
         >
           ← Back to Profile
         </Link>

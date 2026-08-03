@@ -193,7 +193,7 @@ export default function CoachBookLessonCard({
                 className={`rounded-xl border px-4 py-2 text-[15px] font-light transition ${
                   selectedTime === time
                     ? "border-[#2F5A43] bg-[#2F5A43] text-white"
-                    : "border-[#3A5D49] bg-[#FBF8F3] text-[#1F3327] hover:bg-[#F6FAF6]"
+                    : "border-[#3A5D49] bg-[#FBF8F3] text-[#2F5A43] hover:bg-[#F6FAF6]"
                 }`}
               >
                 {time}

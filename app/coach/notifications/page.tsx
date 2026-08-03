@@ -527,7 +527,7 @@ export default function NotificationsPage() {
                     <>
                       <h3 className="text-lg font-bold text-red-700">DOUBLE BOOKING</h3>
 
-                      <div className="mt-3 space-y-1 text-[#1F3327]">
+                      <div className="mt-3 space-y-1 text-[#2F5A43]">
                         {notification.message.split("\n").map((line, index) => {
                           if (line.includes("|")) {
                             const [name, clientId] = line.split("|")
@@ -829,7 +829,7 @@ export default function NotificationsPage() {
                 {activePage > 1 && (
                   <button
                     onClick={() => setActivePage((p) => p - 1)}
-                    className="rounded-lg border border-[#3A5D49] bg-white px-4 py-2 text-[#1F3327] shadow-sm transition hover:border-[#2F5A43] hover:bg-[#F8FBF8]"
+                    className="rounded-lg border border-[#3A5D49] bg-white px-4 py-2 text-[#2F5A43] shadow-sm transition hover:border-[#2F5A43] hover:bg-[#F8FBF8]"
                   >
                     Previous
                   </button>
@@ -842,7 +842,7 @@ export default function NotificationsPage() {
                 {activeHasNext && (
                   <button
                     onClick={() => setActivePage((p) => p + 1)}
-                    className="rounded-lg border border-[#3A5D49] bg-white px-4 py-2 text-[#1F3327] shadow-sm transition hover:border-[#2F5A43] hover:bg-[#F8FBF8]"
+                    className="rounded-lg border border-[#3A5D49] bg-white px-4 py-2 text-[#2F5A43] shadow-sm transition hover:border-[#2F5A43] hover:bg-[#F8FBF8]"
                   >
                     Next
                   </button>
@@ -889,7 +889,7 @@ export default function NotificationsPage() {
               </div>
               {olderNotifications.length === 0 ? (
                 <div className="rounded-xl bg-white p-6 shadow">
-                  <p className="text-[#1F3327]">No older notifications.</p>
+                  <p className="text-[#2F5A43]">No older notifications.</p>
                 </div>
               ) : (
                 <>
@@ -1112,7 +1112,7 @@ export default function NotificationsPage() {
                     {activePage > 1 && (
                       <button
                         onClick={() => setActivePage((p) => p - 1)}
-                        className="rounded-lg border border-[#3A5D49] bg-white px-4 py-2 text-[#1F3327] shadow-sm transition hover:border-[#2F5A43] hover:bg-[#F8FBF8]"
+                        className="rounded-lg border border-[#3A5D49] bg-white px-4 py-2 text-[#2F5A43] shadow-sm transition hover:border-[#2F5A43] hover:bg-[#F8FBF8]"
                       >
                         Previous
                       </button>
@@ -1125,7 +1125,7 @@ export default function NotificationsPage() {
                     {activeHasNext && (
                       <button
                         onClick={() => setActivePage((p) => p + 1)}
-                        className="rounded-lg border border-[#3A5D49] bg-white px-4 py-2 text-[#1F3327] shadow-sm transition hover:border-[#2F5A43] hover:bg-[#F8FBF8]"
+                        className="rounded-lg border border-[#3A5D49] bg-white px-4 py-2 text-[#2F5A43] shadow-sm transition hover:border-[#2F5A43] hover:bg-[#F8FBF8]"
                       >
                         Next
                       </button>
@@ -1139,7 +1139,7 @@ export default function NotificationsPage() {
       </DashboardContainer>
       {selectedClient && (
         <div className="fixed inset-0 flex items-center justify-center bg-black/50 p-6">
-          <div className="w-full max-w-lg rounded-2xl bg-white p-8 shadow-2xl text-[#1F3327]">
+          <div className="w-full max-w-lg rounded-2xl bg-white p-8 shadow-2xl text-[#2F5A43]">
             <div className="mb-6 flex items-center justify-between">
               <h2 className="text-3xl font-bold">Client Details</h2>
 

@@ -46,7 +46,7 @@ body {
 }
 
 .dashboard-value {
-  @apply text-[15px] font-light text-[#1F3327];
+  @apply text-[15px] font-light text-[#2F5A43];
 }
 
 .coach-calendar .rdp-month_caption {

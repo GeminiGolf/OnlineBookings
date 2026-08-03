@@ -153,7 +153,7 @@ export default function CoachNotificationSettingsPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#F2EEE8] px-4 pt-8 pb-3 sm:p-10 text-[#1F3327]">
+    <main className="min-h-screen bg-[#F2EEE8] px-4 pt-8 pb-3 sm:p-10 text-[#2F5A43]">
       <DashboardContainer>
 
         <Link
@@ -203,7 +203,7 @@ export default function CoachNotificationSettingsPage() {
               Appointment Reminders
             </h2>
 
-            <p className="dashboard-value mt-2 mb-4 text-[14px] text-[#1F3327]">
+            <p className="dashboard-value mt-2 mb-4 text-[14px] text-[#2F5A43]">
               Choose when you'd like to receive reminders before your lesson.
             </p>
 

@@ -204,7 +204,7 @@ const [loadingPage, setLoadingPage] = useState(true)
 
   return (
     <RequireClient>
-      <main className="min-h-screen bg-[#F2EEE8] px-4 pt-8 pb-3 sm:p-10 text-[#1F3327]">
+      <main className="min-h-screen bg-[#F2EEE8] px-4 pt-8 pb-3 sm:p-10 text-[#2F5A43]">
         <DashboardContainer>
           <div className="w-full">
             <div className="mb-3 flex items-center gap-3 sm:mb-6">

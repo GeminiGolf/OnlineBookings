@@ -158,7 +158,7 @@ export default function CoachPackagesTable({ packages }: Props) {
             setActivePage(1)
             setInactivePage(1)
           }}
-          className="w-[120px] sm:w-[160px] rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[15px] font-light text-[#1F3327] placeholder:text-[#6D7F72] shadow-sm focus:border-[#2F5A43] focus:outline-none"
+          className="w-[120px] sm:w-[160px] rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[15px] font-light text-[#2F5A43] placeholder:text-[#6D7F72] shadow-sm focus:border-[#2F5A43] focus:outline-none"
         />
 
         <div className="relative">
@@ -378,7 +378,7 @@ export default function CoachPackagesTable({ packages }: Props) {
               <button
                 onClick={() => setActivePage((p) => Math.max(1, p - 1))}
                 disabled={activePage === 1}
-                className="rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[13px] font-light tracking-[0.04em] text-[#1F3327] shadow-sm hover:bg-[#F6FAF6] disabled:opacity-50"
+                className="rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[13px] font-light tracking-[0.04em] text-[#2F5A43] shadow-sm hover:bg-[#F6FAF6] disabled:opacity-50"
               >
                 Previous
               </button>
@@ -390,7 +390,7 @@ export default function CoachPackagesTable({ packages }: Props) {
               <button
                 onClick={() => setActivePage((p) => Math.min(activeTotalPages, p + 1))}
                 disabled={activePage === activeTotalPages}
-                className="rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[13px] font-light tracking-[0.04em] text-[#1F3327] shadow-sm hover:bg-[#F6FAF6] disabled:opacity-50"
+                className="rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[13px] font-light tracking-[0.04em] text-[#2F5A43] shadow-sm hover:bg-[#F6FAF6] disabled:opacity-50"
               >
                 Next
               </button>
@@ -523,7 +523,7 @@ export default function CoachPackagesTable({ packages }: Props) {
               <button
                 onClick={() => setInactivePage((p) => Math.max(1, p - 1))}
                 disabled={inactivePage === 1}
-                className="rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[13px] font-light tracking-[0.04em] text-[#1F3327] shadow-sm hover:bg-[#F6FAF6] disabled:opacity-50"
+                className="rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[13px] font-light tracking-[0.04em] text-[#2F5A43] shadow-sm hover:bg-[#F6FAF6] disabled:opacity-50"
               >
                 Previous
               </button>
@@ -535,7 +535,7 @@ export default function CoachPackagesTable({ packages }: Props) {
               <button
                 onClick={() => setInactivePage((p) => Math.min(inactiveTotalPages, p + 1))}
                 disabled={inactivePage === inactiveTotalPages}
-                className="rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[13px] font-light tracking-[0.04em] text-[#1F3327] shadow-sm hover:bg-[#F6FAF6] disabled:opacity-50"
+                className="rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[13px] font-light tracking-[0.04em] text-[#2F5A43] shadow-sm hover:bg-[#F6FAF6] disabled:opacity-50"
               >
                 Next
               </button>

@@ -91,7 +91,7 @@ export default function CoachDashboardPage() {
               My Clients
             </h2>
 
-            <p className="mt-2 text-[15px] font-light tracking-[0.02em] text-[#1F3327]">
+            <p className="mt-2 text-[15px] font-light tracking-[0.02em] text-[#2F5A43]">
               View and manage assigned clients.
             </p>
           </Link>
@@ -110,7 +110,7 @@ export default function CoachDashboardPage() {
               )}
             </h2>
 
-            <p className="mt-2 text-[15px] font-light tracking-[0.02em] text-[#1F3327]">
+            <p className="mt-2 text-[15px] font-light tracking-[0.02em] text-[#2F5A43]">
               View unread notifications.
             </p>
           </Link>
@@ -123,7 +123,7 @@ export default function CoachDashboardPage() {
               Client Packages
             </h2>
 
-            <p className="mt-2 text-[15px] font-light tracking-[0.02em] text-[#1F3327]">
+            <p className="mt-2 text-[15px] font-light tracking-[0.02em] text-[#2F5A43]">
               View all client packages
             </p>
           </Link>
@@ -136,7 +136,7 @@ export default function CoachDashboardPage() {
               Transactions
             </h2>
 
-            <p className="mt-2 text-[15px] font-light tracking-[0.02em] text-[#1F3327]">
+            <p className="mt-2 text-[15px] font-light tracking-[0.02em] text-[#2F5A43]">
               View transactions
             </p>
           </Link>
@@ -149,7 +149,7 @@ export default function CoachDashboardPage() {
               Previous Lessons
             </h2>
 
-            <p className="mt-2 text-[15px] font-light tracking-[0.02em] text-[#1F3327]">
+            <p className="mt-2 text-[15px] font-light tracking-[0.02em] text-[#2F5A43]">
               View lesson history and past clients.
             </p>
           </Link>
@@ -162,7 +162,7 @@ export default function CoachDashboardPage() {
               Map Schedule
             </h2>
 
-            <p className="mt-2 text-[15px] font-light tracking-[0.02em] text-[#1F3327]">
+            <p className="mt-2 text-[15px] font-light tracking-[0.02em] text-[#2F5A43]">
               Edit your weekly coaching availability.
             </p>
           </Link>
@@ -175,7 +175,7 @@ export default function CoachDashboardPage() {
               My Profile
             </h2>
 
-            <p className="mt-2 text-[15px] font-light tracking-[0.02em] text-[#1F3327]">
+            <p className="mt-2 text-[15px] font-light tracking-[0.02em] text-[#2F5A43]">
               View details
             </p>
           </Link>
