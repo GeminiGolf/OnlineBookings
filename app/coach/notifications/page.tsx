@@ -486,15 +486,15 @@ export default function NotificationsPage() {
                         }
                         className="flex w-full items-center justify-between text-left"
                       >
-                        <h3 className="text-[16px] font-light text-[#8F3434]">
+                        <h3 className="text-[13px] font-semibold uppercase tracking-[0.12em] text-[#8F3434]">
                           <Link
                             href={`/coach/clients/${notification.client_id}`}
                             onClick={(e) => e.stopPropagation()}
-                            className="text-[#5874A6] underline underline-offset-2 transition hover:text-[#45628F]"
+                            className="font-semibold text-[#5874A6] underline underline-offset-2 transition hover:text-[#45628F]"
                           >
                             {notification.client_name}
                           </Link>{" "}
-                          Late Booking
+                          <span className="font-semibold">LATE BOOKING</span>
                         </h3>
 
                         <span className="text-lg text-[#8F3434]">
@@ -506,13 +506,13 @@ export default function NotificationsPage() {
                         <>
                           <div className="mt-3">
                             <p className="dashboard-label">LESSON</p>
-                            <p className="dashboard-value">
+                            <p className="text-[13px] font-semibold uppercase tracking-[0.12em] text-[#2F5A43]">
                               {(notification.lesson_date ?? "")
                                 .split("-")
                                 .reverse()
                                 .slice(0, 2)
-                                .join("/")}{" "}
-                              @{" "}
+                                .join("/")}
+                              {" - "}
                               {(notification.lesson_time ?? "").replace(":00", "")}
                             </p>
                           </div>
@@ -520,14 +520,14 @@ export default function NotificationsPage() {
                           <div className="mt-4 flex gap-3">
                             <button
                               onClick={() => handleApprove(notification)}
-                              className="rounded-xl bg-[#2F5A43] px-5 py-2 text-[13px] font-light uppercase tracking-[0.12em] text-white transition hover:bg-[#244634]"
+                              className="rounded-xl bg-[#2F5A43] px-4 py-1.5 text-[13px] font-light uppercase tracking-[0.12em] text-white transition hover:bg-[#244634]"
                             >
                               Approve
                             </button>
 
                             <button
                               onClick={() => handleReject(notification)}
-                              className="rounded-xl bg-[#8F3434] px-5 py-2 text-[13px] font-light uppercase tracking-[0.12em] text-white transition hover:bg-[#742A2A]"
+                              className="rounded-xl bg-[#8F3434] px-4 py-1.5 text-[13px] font-light uppercase tracking-[0.12em] text-white transition hover:bg-[#742A2A]"
                             >
                               Reject
                             </button>
@@ -792,53 +792,55 @@ export default function NotificationsPage() {
                               onClick={() => toggleExpanded(notification.id)}
                               className="flex-1 text-left"
                             >
-                              <div
-                                className={`flex items-center justify-between text-[15px] font-light ${
-                                  notification.type === "admin_message_coach"
-                                    ? "text-[#8F3434]"
-                                    : "text-[#2F5A43]"
-                                }`}
-                              >
-                                <div>
+                              <div className="flex items-center justify-between">
+                                <div className="text-[13px] font-light uppercase tracking-[0.12em]">
                                   {notification.type === "client_rescheduled" ? (
                                     <>
                                       <Link
                                         href={`/coach/clients/${notification.client_id}`}
                                         onClick={(e) => e.stopPropagation()}
-                                        className="text-[#5874A6] underline underline-offset-2 transition hover:text-[#45628F] mr-2"
+                                        className="text-[#5874A6] underline underline-offset-2 transition hover:text-[#45628F] mr-2 normal-case tracking-normal"
                                       >
                                         {notification.client_name}
-                                      </Link>{"  "}
-                                      <span>Rescheduled</span>
+                                      </Link>{" "}
+                                      <span className="text-[#2F5A43]">RESCHEDULED</span>
                                     </>
                                   ) : notification.type === "missing_receipt" ? (
                                     <>
                                       <Link
                                         href={`/coach/clients/${notification.client_id}`}
                                         onClick={(e) => e.stopPropagation()}
-                                        className="text-[#5874A6] underline underline-offset-2 transition hover:text-[#45628F] mr-2"
+                                        className="text-[#5874A6] underline underline-offset-2 transition hover:text-[#45628F] mr-2 normal-case tracking-normal"
                                       >
                                         {notification.client_name}
-                                      </Link>{"  "}
-                                      <span>Missing Receipt</span>
+                                      </Link>{" "}
+                                      <span className="text-[#2F5A43]">MISSING RECEIPT</span>
                                     </>
                                   ) : notification.type === "client_cancelled" ? (
                                     <>
                                       <Link
                                         href={`/coach/clients/${notification.client_id}`}
                                         onClick={(e) => e.stopPropagation()}
-                                        className="text-[#5874A6] underline underline-offset-2 transition hover:text-[#45628F] mr-2"
+                                        className="text-[#5874A6] underline underline-offset-2 transition hover:text-[#45628F] mr-2 normal-case tracking-normal"
                                       >
                                         {notification.client_name}
-                                      </Link>{"  "}
-                                      <span>Cancelled</span>
+                                      </Link>{" "}
+                                      <span className="text-[#2F5A43]">CANCELLED</span>
                                     </>
                                   ) : (
-                                    <>{notification.type_label || "-"}</>
+                                    <span
+                                      className={
+                                        notification.type === "admin_message_coach"
+                                          ? "text-[#8F3434]"
+                                          : "text-[#2F5A43]"
+                                      }
+                                    >
+                                      {(notification.type_label || "-").toUpperCase()}
+                                    </span>
                                   )}
                                 </div>
 
-                                <span>
+                                <span className="text-[#2F5A43]">
                                   {expandedNotifications.includes(notification.id) ? "▲" : "▼"}
                                 </span>
                               </div>
