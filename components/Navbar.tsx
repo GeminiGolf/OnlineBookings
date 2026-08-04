@@ -423,20 +423,22 @@ export default function Navbar() {
                   </button>
 
                   {showUrgentDropdown && (
-                    <div className="absolute left-0 top-10 z-50 w-[420px] rounded-xl border bg-white p-3 shadow-xl">
+                    <div className="absolute left-0 top-10 z-50 w-[430px] rounded-2xl border border-[#D8CCB7] bg-[#F2EEE8] p-3 shadow-2xl">
                       {urgentNotifications.length === 0 ? (
-                        <p className="text-sm text-black">No urgent notifications.</p>
+                        <p className="rounded-xl border border-[#D8CCB7] bg-white px-5 py-4 text-center text-sm font-light text-[#2F5A43]">
+                          No urgent notifications.
+                        </p>
                       ) : (
-                        <div className="space-y-3">
+                        <div className="space-y-2">
                           {urgentNotifications.map((notification) => (
-                            <div key={notification.id} className="rounded-lg border border-red-200 bg-red-50 p-3">
+                            <div key={notification.id} className="rounded-2xl border border-[#D8CCB7] bg-white p-4 shadow-sm">
                               {notification.type === "double_booking" ? (
                                 <>
-                                  <div className="mb-2 text-sm font-bold text-red-700">
+                                  <div className="mb-3 border-b border-[#E7DDD1] pb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8F3434]">
                                     DOUBLE BOOKING
                                   </div>
 
-                                  <div className="mb-3 space-y-1 text-sm text-black">
+                                  <div className="space-y-2 text-[13px] text-[#2F2F2F]">
                                     {notification.message.split("\n").map((line, index) => {
                                       if (line.includes("|")) {
                                         const [name, clientId] = line.split("|")
@@ -445,7 +447,7 @@ export default function Navbar() {
                                           <Link
                                             key={index}
                                             href={`/coach/clients/${clientId}`}
-                                            className="block text-blue-600 hover:underline font-medium"
+                                            className="block font-medium text-[#2F5A43] transition hover:text-[#214434] hover:underline"
                                           >
                                             {name}
                                           </Link>
@@ -462,18 +464,24 @@ export default function Navbar() {
 
                                   <button
                                     onClick={() => markNotificationRead(notification.id)}
-                                    className="rounded bg-blue-600 px-3 py-1 text-sm text-white"
+                                    className="rounded-xl bg-[#2F5A43] px-4 py-2 text-[12px] font-light uppercase tracking-[0.15em] text-white transition hover:bg-[#254937]"
                                   >
-                                    Mark as Read
+                                    Mark as Done
                                   </button>
                                 </>
                               ) : (
                                 <>
-                                  <div className="mb-2 text-sm font-bold text-black">
-                                    Late Booking - {notification.client_name}
+                                  <div className="mb-3 border-b border-[#E7DDD1] pb-2">
+                                    <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8F3434]">
+                                      LATE BOOKING
+                                    </p>
+
+                                    <p className="mt-1 text-[14px] font-medium text-[#2F5A43]">
+                                      {notification.client_name}
+                                    </p>
                                   </div>
 
-                                  <div className="mb-3 text-xs text-gray-700">
+                                  <div className="mb-4 text-[13px] text-[#555555]">
                                     {new Date(notification.lesson_date).toLocaleDateString("en-GB", {
                                       day: "2-digit",
                                       month: "2-digit",
@@ -482,17 +490,17 @@ export default function Navbar() {
                                     {notification.lesson_time.replace(":00", "").toLowerCase()}
                                   </div>
 
-                                  <div className="flex gap-2">
+                                  <div className="flex gap-3 pt-1">
                                     <button
                                       onClick={() => handleApprove(notification.id)}
-                                      className="rounded bg-green-600 px-3 py-1 text-sm text-white"
+                                      className="rounded-xl bg-[#2F5A43] px-4 py-2 text-[12px] font-light uppercase tracking-[0.15em] text-white transition hover:bg-[#254937]"
                                     >
                                       Approve
                                     </button>
 
                                     <button
                                       onClick={() => handleReject(notification.id, notification.booking_id)}
-                                      className="rounded bg-red-600 px-3 py-1 text-sm text-white"
+                                      className="rounded-xl bg-[#8F3434] px-4 py-2 text-[12px] font-light uppercase tracking-[0.15em] text-white transition hover:bg-[#742A2A]"
                                     >
                                       Reject
                                     </button>
