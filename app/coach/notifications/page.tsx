@@ -514,7 +514,7 @@ export default function NotificationsPage() {
                           <>
                             <div className="mt-3">
                               <p className="dashboard-label">LESSON</p>
-                              <p className="dashboard-value">
+                              <p className="text-[13px] font-semibold uppercase tracking-[0.12em] text-[#2F5A43]">
                                 {new Date(date).toLocaleDateString("en-GB")} - {time.replace(":00", "")}
                               </p>
                             </div>
@@ -536,7 +536,7 @@ export default function NotificationsPage() {
                             </div>
 
                             <div className="mt-3">
-                              <p className="dashboard-value">
+                              <p className="text-[13px] font-semibold uppercase tracking-[0.12em] text-[#2F5A43]">
                                 Contact your clients immediately.
                               </p>
                             </div>
@@ -623,33 +623,33 @@ export default function NotificationsPage() {
                                       <Link
                                         href={`/coach/clients/${notification.client_id}`}
                                         onClick={(e) => e.stopPropagation()}
-                                        className="text-[#5874A6] underline underline-offset-2 transition hover:text-[#45628F] mr-2 normal-case tracking-normal"
+                                        className="font-semibold text-[#5874A6] underline underline-offset-2 transition hover:text-[#45628F] mr-2 normal-case tracking-normal"
                                       >
                                         {notification.client_name}
                                       </Link>{" "}
-                                      <span className="text-[#2F5A43]">RESCHEDULED</span>
+                                      <span className="font-semibold text-[#2F5A43]">RESCHEDULED</span>
                                     </>
                                   ) : notification.type === "missing_receipt" ? (
                                     <>
                                       <Link
                                         href={`/coach/clients/${notification.client_id}`}
                                         onClick={(e) => e.stopPropagation()}
-                                        className="text-[#5874A6] underline underline-offset-2 transition hover:text-[#45628F] mr-2 normal-case tracking-normal"
+                                        className="font-semibold text-[#5874A6] underline underline-offset-2 transition hover:text-[#45628F] mr-2 normal-case tracking-normal"
                                       >
                                         {notification.client_name}
                                       </Link>{" "}
-                                      <span className="text-[#2F5A43]">MISSING RECEIPT</span>
+                                      <span className="font-semibold text-[#2F5A43]">MISSING RECEIPT</span>
                                     </>
                                   ) : notification.type === "client_cancelled" ? (
                                     <>
                                       <Link
                                         href={`/coach/clients/${notification.client_id}`}
                                         onClick={(e) => e.stopPropagation()}
-                                        className="text-[#5874A6] underline underline-offset-2 transition hover:text-[#45628F] mr-2 normal-case tracking-normal"
+                                        className="font-semibold text-[#5874A6] underline underline-offset-2 transition hover:text-[#45628F] mr-2 normal-case tracking-normal"
                                       >
                                         {notification.client_name}
                                       </Link>{" "}
-                                      <span className="text-[#2F5A43]">CANCELLED</span>
+                                      <span className="font-semibold text-[#2F5A43]">CANCELLED</span>
                                     </>
                                   ) : (
                                     <span
@@ -668,15 +668,6 @@ export default function NotificationsPage() {
                                   {expandedNotifications.includes(notification.id) ? "▲" : "▼"}
                                 </span>
                               </div>
-
-                              {notification.type !== "admin_message_coach" &&
-                                notification.type !== "client_rescheduled" &&
-                                notification.type !== "missing_receipt" &&
-                                notification.type !== "client_cancelled" && (
-                                  <div className="dashboard-label mt-1">
-                                    {notification.original_datetime || "-"}
-                                  </div>
-                                )}
                             </button>
                           </div>
 
@@ -686,21 +677,21 @@ export default function NotificationsPage() {
                                 <>
                                   <div>
                                     <p className="dashboard-label">OLD</p>
-                                    <p className="dashboard-value">
+                                    <p className="text-[13px] font-semibold uppercase tracking-[0.12em] text-[#2F5A43]">
                                       {notification.original_datetime}
                                     </p>
                                   </div>
 
                                   <div>
                                     <p className="dashboard-label">NEW</p>
-                                    <p className="dashboard-value">
+                                    <p className="text-[13px] font-semibold uppercase tracking-[0.12em] text-[#2F5A43]">
                                       {notification.new_datetime}
                                     </p>
                                   </div>
 
                                   <div>
                                     <p className="dashboard-label">CREATED</p>
-                                    <p className="dashboard-value">
+                                    <p className="text-[13px] font-semibold uppercase tracking-[0.12em] text-[#2F5A43]">
                                       {new Date(notification.created_at).toLocaleDateString("en-GB", {
                                         day: "2-digit",
                                         month: "2-digit",
@@ -715,7 +706,7 @@ export default function NotificationsPage() {
                                 </>
                               ) : notification.type === "client_cancelled" ? (
                                 <>
-                                  <p className="dashboard-value">
+                                  <p className="text-[13px] font-semibold uppercase tracking-[0.12em] text-[#2F5A43]">
                                     <span className="dashboard-label">Lesson:</span>{" "}
                                     {notification.original_datetime || "-"}
                                   </p>
@@ -730,7 +721,7 @@ export default function NotificationsPage() {
                                   {notification.type !== "admin_message_coach" && (
                                     <div>
                                       <p className="dashboard-label">Original Date</p>
-                                      <p className="dashboard-value">
+                                      <p className="text-[13px] font-semibold uppercase tracking-[0.12em] text-[#2F5A43]">
                                         {notification.original_datetime || "-"}
                                       </p>
                                     </div>
@@ -739,7 +730,7 @@ export default function NotificationsPage() {
                                   {notification.new_datetime && (
                                     <div>
                                       <p className="dashboard-label">New Date</p>
-                                      <p className="dashboard-value">
+                                      <p className="text-[13px] font-semibold uppercase tracking-[0.12em] text-[#2F5A43]">
                                         {notification.new_datetime}
                                       </p>
                                     </div>
@@ -882,40 +873,57 @@ export default function NotificationsPage() {
                                       <Link
                                         href={`/coach/clients/${notification.client_id}`}
                                         onClick={(e) => e.stopPropagation()}
-                                        className="text-[#5874A6] underline underline-offset-2 transition hover:text-[#45628F]"
+                                        className="text-[#5874A6] underline underline-offset-2 transition hover:text-[#45628F] normal-case tracking-normal"
                                       >
                                         {notification.client_name}
                                       </Link>{" "}
-                                      <span>Rescheduled</span>
+                                      <span className="font-semibold uppercase tracking-[0.12em] text-[#2F5A43]">
+                                        RESCHEDULED
+                                      </span>
                                     </>
                                   ) : notification.type === "missing_receipt" ? (
                                     <>
                                       <Link
                                         href={`/coach/clients/${notification.client_id}`}
                                         onClick={(e) => e.stopPropagation()}
-                                        className="text-[#5874A6] underline underline-offset-2 transition hover:text-[#45628F]"
+                                        className="text-[#5874A6] underline underline-offset-2 transition hover:text-[#45628F] normal-case tracking-normal"
                                       >
                                         {notification.client_name}
                                       </Link>{" "}
-                                      <span>Missing Receipt</span>
+                                      <span className="font-semibold uppercase tracking-[0.12em] text-[#2F5A43]">
+                                        MISSING RECEIPT
+                                      </span>
                                     </>
                                   ) : notification.type === "client_cancelled" ? (
                                     <>
                                       <Link
                                         href={`/coach/clients/${notification.client_id}`}
                                         onClick={(e) => e.stopPropagation()}
-                                        className="text-[#5874A6] underline underline-offset-2 transition hover:text-[#45628F]"
+                                        className="text-[#5874A6] underline underline-offset-2 transition hover:text-[#45628F] normal-case tracking-normal"
                                       >
                                         {notification.client_name}
                                       </Link>{" "}
-                                      <span>Cancelled</span>
+                                      <span className="font-semibold uppercase tracking-[0.12em] text-[#2F5A43]">
+                                        CANCELLED
+                                      </span>
                                     </>
                                   ) : notification.type === "double_booking" ? (
-                                    <span className="font-semibold uppercase text-[#8F3434]">
+                                    <span className="font-semibold uppercase tracking-[0.12em] text-[#8F3434]">
                                       DOUBLE BOOKING
                                     </span>
                                   ) : (
-                                    <>{notification.type_label || "-"}</>
+                                    <>
+                                      <Link
+                                        href={`/coach/clients/${notification.client_id}`}
+                                        onClick={(e) => e.stopPropagation()}
+                                        className="text-[#5874A6] underline underline-offset-2 transition hover:text-[#45628F] mr-2 normal-case tracking-normal"
+                                      >
+                                        {notification.client_name}
+                                      </Link>{" "}
+                                      <span className="font-semibold uppercase tracking-[0.12em] text-[#2F5A43]">
+                                        LATE BOOKING
+                                      </span>
+                                    </>
                                   )}
                                 </div>
 
@@ -923,16 +931,6 @@ export default function NotificationsPage() {
                                   {expandedNotifications.includes(notification.id) ? "▲" : "▼"}
                                 </span>
                               </div>
-
-                              {notification.type !== "admin_message_coach" &&
-                                notification.type !== "client_rescheduled" &&
-                                notification.type !== "missing_receipt" &&
-                                notification.type !== "client_cancelled" &&
-                                notification.type !== "double_booking" && (
-                                  <div className="dashboard-label mt-1">
-                                    {notification.original_datetime || "-"}
-                                  </div>
-                                )}
                             </button>
                           </div>
 
@@ -942,21 +940,21 @@ export default function NotificationsPage() {
                                 <>
                                   <div>
                                     <p className="dashboard-label">OLD</p>
-                                    <p className="dashboard-value">
+                                    <p className="text-[13px] font-semibold uppercase tracking-[0.12em] text-[#2F5A43]">
                                       {notification.original_datetime}
                                     </p>
                                   </div>
 
                                   <div>
                                     <p className="dashboard-label">NEW</p>
-                                    <p className="dashboard-value">
+                                    <p className="text-[13px] font-semibold uppercase tracking-[0.12em] text-[#2F5A43]">
                                       {notification.new_datetime}
                                     </p>
                                   </div>
 
                                   <div>
                                     <p className="dashboard-label">DONE AT</p>
-                                    <p className="dashboard-value">
+                                    <p className="text-[13px] font-semibold uppercase tracking-[0.12em] text-[#2F5A43]">
                                       {notification.resolved_at
                                         ? `${new Date(notification.resolved_at).toLocaleDateString("en-GB", {
                                             day: "2-digit",
@@ -971,7 +969,7 @@ export default function NotificationsPage() {
 
                                   <div>
                                     <p className="dashboard-label">CREATED</p>
-                                    <p className="dashboard-value">
+                                    <p className="text-[13px] font-semibold uppercase tracking-[0.12em] text-[#2F5A43]">
                                       {new Date(notification.created_at).toLocaleDateString("en-GB", {
                                         day: "2-digit",
                                         month: "2-digit",
@@ -988,21 +986,21 @@ export default function NotificationsPage() {
                                 <>
                                   <div>
                                     <p className="dashboard-label">PURCHASE</p>
-                                    <p className="dashboard-value">
+                                    <p className="text-[13px] font-semibold uppercase tracking-[0.12em] text-[#2F5A43]">
                                       {notification.notes || "-"}
                                     </p>
                                   </div>
 
                                   <div>
                                     <p className="dashboard-label">DATE</p>
-                                    <p className="dashboard-value">
+                                    <p className="text-[13px] font-semibold uppercase tracking-[0.12em] text-[#2F5A43]">
                                       {notification.original_datetime || "-"}
                                     </p>
                                   </div>
 
                                   <div>
                                     <p className="dashboard-label">DONE AT</p>
-                                    <p className="dashboard-value">
+                                    <p className="text-[13px] font-semibold uppercase tracking-[0.12em] text-[#2F5A43]">
                                       {notification.resolved_at
                                         ? `${new Date(notification.resolved_at).toLocaleDateString("en-GB", {
                                             day: "2-digit",
@@ -1017,7 +1015,7 @@ export default function NotificationsPage() {
 
                                   <div>
                                     <p className="dashboard-label">CREATED</p>
-                                    <p className="dashboard-value">
+                                    <p className="text-[13px] font-semibold uppercase tracking-[0.12em] text-[#2F5A43]">
                                       {new Date(notification.created_at).toLocaleDateString("en-GB", {
                                         day: "2-digit",
                                         month: "2-digit",
@@ -1050,7 +1048,7 @@ export default function NotificationsPage() {
 
                                   return (
                                     <>
-                                      <p className="dashboard-value">
+                                      <p className="text-[13px] font-semibold uppercase tracking-[0.12em] text-[#2F5A43]">
                                         <span className="dashboard-label">Lesson:</span>{" "}
                                         {new Date(date).toLocaleDateString("en-GB")} - {time.replace(":00", "")}
                                       </p>
@@ -1073,7 +1071,7 @@ export default function NotificationsPage() {
                                 })()
                               ) : notification.type === "client_cancelled" ? (
                                 <>
-                                  <p className="dashboard-value">
+                                  <p className="text-[13px] font-semibold uppercase tracking-[0.12em] text-[#2F5A43]">
                                     <span className="dashboard-label">Lesson:</span>{" "}
                                     {notification.original_datetime || "-"}
                                   </p>
@@ -1083,7 +1081,7 @@ export default function NotificationsPage() {
                                     {notification.notes || "-"}
                                   </p>
 
-                                  <p className="dashboard-value">
+                                  <p className="text-[13px] font-semibold uppercase tracking-[0.12em] text-[#2F5A43]">
                                     <span className="dashboard-label">Done At:</span>{" "}
                                     {notification.resolved_at
                                       ? `${new Date(notification.resolved_at).toLocaleDateString("en-GB", {
@@ -1096,7 +1094,7 @@ export default function NotificationsPage() {
                                       : "-"}
                                   </p>
 
-                                  <p className="dashboard-value">
+                                  <p className="text-[13px] font-semibold uppercase tracking-[0.12em] text-[#2F5A43]">
                                     <span className="dashboard-label">Created:</span>{" "}
                                     {new Date(notification.created_at).toLocaleDateString("en-GB", {
                                       day: "2-digit",
@@ -1111,32 +1109,31 @@ export default function NotificationsPage() {
                                 </>
                               ) : (
                                 <>
-                                  {notification.type !== "admin_message_coach" && (
+                                  <div>
+                                    <p className="dashboard-label">LESSON</p>
+                                    <p className="text-[13px] font-semibold uppercase tracking-[0.12em] text-[#2F5A43]">
+                                      {(notification.lesson_date ?? "")
+                                        .split("-")
+                                        .reverse()
+                                        .slice(0, 2)
+                                        .join("/")}
+                                      {" - "}
+                                      {(notification.lesson_time ?? "").replace(":00", "")}
+                                    </p>
+                                  </div>
+
+                                  {notification.notes && (
                                     <div>
-                                      <p className="dashboard-label">Original Date</p>
-                                      <p className="text-[15px] font-light text-[#2F5A43]">
-                                        {notification.original_datetime || "-"}
+                                      <p className="dashboard-label">NOTES</p>
+                                      <p className="text-[13px] font-semibold uppercase tracking-[0.12em] text-[#2F5A43] whitespace-pre-wrap">
+                                        {notification.notes}
                                       </p>
                                     </div>
                                   )}
-
-                                  {notification.new_datetime && (
-                                    <div>
-                                      <p className="dashboard-label">New Date</p>
-                                      <p className="text-[15px] font-light text-[#2F5A43]">
-                                        {notification.new_datetime}
-                                      </p>
-                                    </div>
-                                  )}
-
-                                  <p className="dashboard-label">Notes</p>
-                                  <p className="dashboard-value whitespace-pre-wrap">
-                                    {notification.notes || "-"}
-                                  </p>
 
                                   <div>
-                                    <p className="dashboard-label">Done At</p>
-                                    <p className="dashboard-value">
+                                    <p className="dashboard-label">DONE AT</p>
+                                    <p className="text-[13px] font-semibold uppercase tracking-[0.12em] text-[#2F5A43]">
                                       {notification.resolved_at
                                         ? `${new Date(notification.resolved_at).toLocaleDateString("en-GB", {
                                             day: "2-digit",
@@ -1150,8 +1147,8 @@ export default function NotificationsPage() {
                                   </div>
 
                                   <div>
-                                    <p className="dashboard-label">Created</p>
-                                    <p className="dashboard-value">
+                                    <p className="dashboard-label">CREATED</p>
+                                    <p className="text-[13px] font-semibold uppercase tracking-[0.12em] text-[#2F5A43]">
                                       {new Date(notification.created_at).toLocaleDateString("en-GB", {
                                         day: "2-digit",
                                         month: "2-digit",
