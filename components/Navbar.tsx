@@ -17,7 +17,8 @@ export default function Navbar() {
   const [urgentNotifications, setUrgentNotifications] = useState<
     {
       id: number
-      booking_id: number |null
+      booking_id: number | null
+      client_id: number | null
       type: string
       message: string
       client_name: string
@@ -157,12 +158,15 @@ export default function Navbar() {
             let lesson_date = ""
             let lesson_time = ""
 
+            let client_id: number | null = notification.client_id
+
             if (notification.client_id) {
               const { data: client } = await supabase
                 .from("clients")
                 .select("name")
                 .eq("id", notification.client_id)
                 .single()
+
               client_name = client?.name || "Unknown Client"
             }
             if (notification.booking_id) {
@@ -177,6 +181,7 @@ export default function Navbar() {
             return {
               id: notification.id,
               booking_id: notification.booking_id,
+              client_id: notification.client_id,
               type: notification.type,
               message: notification.message,
               client_name,
@@ -231,6 +236,8 @@ export default function Navbar() {
           let client_name = ""
           let lesson_date = ""
           let lesson_time = ""
+          let client_id: number | null = notification.client_id
+
           if (notification.client_id) {
             const { data: client } = await supabase
               .from("clients")
@@ -252,6 +259,7 @@ export default function Navbar() {
           return {
             id: notification.id,
             booking_id: notification.booking_id,
+            client_id: notification.client_id,
             type: notification.type,
             message: notification.message,
             client_name,
@@ -423,87 +431,122 @@ export default function Navbar() {
                   </button>
 
                   {showUrgentDropdown && (
-                    <div className="absolute left-0 top-10 z-50 w-[430px] rounded-2xl border border-[#D8CCB7] bg-[#F2EEE8] p-3 shadow-2xl">
+                    <div className="absolute left-0 top-10 z-50 w-[420px] rounded-xl border bg-white p-3 shadow-xl">
                       {urgentNotifications.length === 0 ? (
-                        <p className="rounded-xl border border-[#D8CCB7] bg-white px-5 py-4 text-center text-sm font-light text-[#2F5A43]">
-                          No urgent notifications.
+                        <p className="text-[13px] font-light uppercase tracking-[0.12em] text-[#2F5A43]">
+                          No Urgent Notifications
                         </p>
                       ) : (
-                        <div className="space-y-2">
+                        <div className="space-y-3">
                           {urgentNotifications.map((notification) => (
-                            <div key={notification.id} className="rounded-2xl border border-[#D8CCB7] bg-white p-4 shadow-sm">
+                            <div key={notification.id} className="rounded-lg border border-red-200 bg-red-50 p-3">
                               {notification.type === "double_booking" ? (
                                 <>
-                                  <div className="mb-3 border-b border-[#E7DDD1] pb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8F3434]">
-                                    DOUBLE BOOKING
-                                  </div>
+                                  {(() => {
+                                    const lines = notification.message
+                                      .split("\n")
+                                      .filter((line) => line.trim() !== "")
 
-                                  <div className="space-y-2 text-[13px] text-[#2F2F2F]">
-                                    {notification.message.split("\n").map((line, index) => {
-                                      if (line.includes("|")) {
-                                        const [name, clientId] = line.split("|")
+                                    const date =
+                                      lines.find((l) => l.startsWith("Date:"))?.replace("Date:", "").trim() ?? ""
 
-                                        return (
-                                          <Link
-                                            key={index}
-                                            href={`/coach/clients/${clientId}`}
-                                            className="block font-medium text-[#2F5A43] transition hover:text-[#214434] hover:underline"
-                                          >
-                                            {name}
-                                          </Link>
-                                        )
-                                      }
+                                    const time =
+                                      lines.find((l) => l.startsWith("Time:"))?.replace("Time:", "").trim() ?? ""
 
-                                      return (
-                                        <p key={index} className="whitespace-pre-wrap">
-                                          {line}
+                                    const clients = lines.filter((l) => l.includes("|"))
+
+                                    return (
+                                      <div className="space-y-2">
+                                        <p className="text-[13px] font-semibold uppercase tracking-[0.12em] text-[#8F3434]">
+                                          DOUBLE BOOKING
                                         </p>
-                                      )
-                                    })}
-                                  </div>
 
-                                  <button
-                                    onClick={() => markNotificationRead(notification.id)}
-                                    className="rounded-xl bg-[#2F5A43] px-4 py-2 text-[12px] font-light uppercase tracking-[0.15em] text-white transition hover:bg-[#254937]"
-                                  >
-                                    Mark as Done
-                                  </button>
+                                        <p className="text-[13px] uppercase tracking-[0.12em] text-[#2F5A43]">
+                                          <span className="font-light">
+                                            LESSON :
+                                          </span>{" "}
+                                          <span className="font-semibold">
+                                            {new Date(date).toLocaleDateString("en-GB", {
+                                              day: "2-digit",
+                                              month: "2-digit",
+                                              year: "2-digit",
+                                            })}
+                                            {" - "}
+                                            {time.replace(":00", "")}
+                                          </span>
+                                        </p>
+
+                                        {clients.map((client, index) => {
+                                          const [name, clientId] = client.split("|")
+
+                                          return (
+                                            <Link
+                                              key={index}
+                                              href={`/coach/clients/${clientId}`}
+                                              className="block w-fit text-[13px] font-semibold text-[#5874A6] underline underline-offset-2 transition hover:text-[#45628F]"
+                                            >
+                                              {name}
+                                            </Link>
+                                          )
+                                        })}
+
+                                        <p className="text-[13px] font-semibold uppercase tracking-[0.12em] text-[#2F5A43]">
+                                          CONTACT YOUR CLIENTS IMMEDIATELY.
+                                        </p>
+
+                                        <button
+                                          onClick={() => markNotificationRead(notification.id)}
+                                          className="rounded bg-[#2F5A43] px-4 py-1.5 text-[13px] font-light uppercase tracking-[0.12em] text-white transition hover:bg-[#244634]"
+                                        >
+                                          Mark as Done
+                                        </button>
+                                      </div>
+                                    )
+                                  })()}
                                 </>
                               ) : (
                                 <>
-                                  <div className="mb-3 border-b border-[#E7DDD1] pb-2">
-                                    <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8F3434]">
+                                  <div className="space-y-2">
+                                    <p className="text-[13px] font-semibold uppercase tracking-[0.12em] text-[#8F3434]">
                                       LATE BOOKING
                                     </p>
 
-                                    <p className="mt-1 text-[14px] font-medium text-[#2F5A43]">
+                                    <Link
+                                      href={`/coach/clients/${notification.client_id}`}
+                                      className="block w-fit text-[13px] font-semibold text-[#5874A6] underline underline-offset-2 transition hover:text-[#45628F]"
+                                    >
                                       {notification.client_name}
+                                    </Link>
+
+                                    <p className="text-[13px] uppercase tracking-[0.12em] text-[#2F5A43]">
+                                      <span className="font-light">
+                                        LESSON :
+                                      </span>{" "}
+                                      <span className="font-semibold">
+                                        {new Date(notification.lesson_date).toLocaleDateString("en-GB", {
+                                          day: "2-digit",
+                                          month: "2-digit",
+                                        })}
+                                        {" - "}
+                                        {notification.lesson_time.replace(":00", "").toLowerCase()}
+                                      </span>
                                     </p>
-                                  </div>
 
-                                  <div className="mb-4 text-[13px] text-[#555555]">
-                                    {new Date(notification.lesson_date).toLocaleDateString("en-GB", {
-                                      day: "2-digit",
-                                      month: "2-digit",
-                                    })}
-                                    {" @ "}
-                                    {notification.lesson_time.replace(":00", "").toLowerCase()}
-                                  </div>
+                                    <div className="flex gap-2 pt-1">
+                                      <button
+                                        onClick={() => handleApprove(notification.id)}
+                                        className="rounded bg-[#2F5A43] px-4 py-1.5 text-[13px] font-light uppercase tracking-[0.12em] text-white transition hover:bg-[#244634]"
+                                      >
+                                        Approve
+                                      </button>
 
-                                  <div className="flex gap-3 pt-1">
-                                    <button
-                                      onClick={() => handleApprove(notification.id)}
-                                      className="rounded-xl bg-[#2F5A43] px-4 py-2 text-[12px] font-light uppercase tracking-[0.15em] text-white transition hover:bg-[#254937]"
-                                    >
-                                      Approve
-                                    </button>
-
-                                    <button
-                                      onClick={() => handleReject(notification.id, notification.booking_id)}
-                                      className="rounded-xl bg-[#8F3434] px-4 py-2 text-[12px] font-light uppercase tracking-[0.15em] text-white transition hover:bg-[#742A2A]"
-                                    >
-                                      Reject
-                                    </button>
+                                      <button
+                                        onClick={() => handleReject(notification.id, notification.booking_id)}
+                                        className="rounded bg-[#8F3434] px-4 py-1.5 text-[13px] font-light uppercase tracking-[0.12em] text-white transition hover:bg-[#742A2A]"
+                                      >
+                                        Reject
+                                      </button>
+                                    </div>
                                   </div>
                                 </>
                               )}
@@ -562,7 +605,9 @@ export default function Navbar() {
                   {showUrgentDropdown && (
                     <div className="absolute left-0 top-10 z-50 w-[420px] rounded-xl border bg-white p-3 shadow-xl">
                       {urgentNotifications.length === 0 ? (
-                        <p className="text-sm text-black">No urgent notifications.</p>
+                        <p className="text-[13px] font-light uppercase tracking-[0.12em] text-[#2F5A43]">
+                          No Urgent Notifications
+                        </p>
                       ) : (
                         <div className="space-y-3">
                           {urgentNotifications.map((notification) => (
