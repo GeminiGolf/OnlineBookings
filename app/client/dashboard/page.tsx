@@ -68,9 +68,7 @@ export default function ClientDashboard() {
       const year = selectedDate.getFullYear()
       const month = String(selectedDate.getMonth() + 1).padStart(2, "0")
       const day = String(selectedDate.getDate()).padStart(2, "0")
-
       const formattedDate = `${year}-${month}-${day}`
-
       const response = await fetch(
         `/api/public-availability?coachId=${selectedCoach}&date=${formattedDate}`
       )
@@ -81,7 +79,6 @@ export default function ClientDashboard() {
       }
 
       const slots = await response.json()
-
       setTimeSlots(slots)
     }
 
@@ -90,14 +87,12 @@ export default function ClientDashboard() {
   
   async function loadDashboardData() {
     setLoadingPage(true)
-
     const { data: { session } } = await supabase.auth.getSession()
 
     if (!session) {
       setLoadingPage(false)
       return
     }
-
     const { data: clientRecord } = await supabase
       .from("clients")
       .select("*")
@@ -108,7 +103,6 @@ export default function ClientDashboard() {
       setLoadingPage(false)
       return
     }
-
     const today = getMalaysiaDate()
     const { data: missedLessons } = await supabase.from("bookings").select("id, coach_id, client_id").eq("status", "booked").lt("lesson_date", today)
 
@@ -141,7 +135,6 @@ export default function ClientDashboard() {
       .order("lesson_date", { ascending: false })
 
     setPreviousLessons(previous || [])
-
     setCompletedDates((previous || []).filter((lesson) => lesson.status === "completed").map((lesson) => new Date(lesson.lesson_date)))
     setNoShowDates((previous || []).filter((lesson) => lesson.status === "no_show").map((lesson) => new Date(lesson.lesson_date)))
     setUpcomingDates((upcoming || []).map((lesson) => new Date(lesson.lesson_date)))
@@ -156,11 +149,9 @@ export default function ClientDashboard() {
     }
 
     const { data: allCoaches } = await supabase.from("coaches").select("*")
-
     if (allCoaches) {
       setCoaches(allCoaches.filter((coach) => coach.id !== 3))
     }
-
     setLoadingPage(false)
   }
 
@@ -185,7 +176,6 @@ export default function ClientDashboard() {
   }
   function canCancelLesson(lessonDate: string, lessonTime: string) {
     const [year, month, day] = lessonDate.split("-").map(Number)
-
     let hour = parseInt(lessonTime)
 
     if (lessonTime.toUpperCase().includes("PM") && hour !== 12) {
@@ -198,7 +188,6 @@ export default function ClientDashboard() {
 
     const lessonDateTime = new Date(year, month - 1, day, hour, 0, 0)
     const cutoff = new Date(lessonDateTime.getTime() - 12 * 60 * 60 * 1000)
-
     return new Date() <= cutoff
   }
   async function generateRescheduleSlots(date: Date) {
@@ -209,9 +198,7 @@ export default function ClientDashboard() {
     const year = date.getFullYear()
     const month = String(date.getMonth() + 1).padStart(2, "0")
     const day = String(date.getDate()).padStart(2, "0")
-
     const formattedDate = `${year}-${month}-${day}`
-
     const response = await fetch(
       `/api/public-availability?coachId=${rescheduleLesson.coach_id}&date=${formattedDate}`
     )
@@ -230,7 +217,6 @@ export default function ClientDashboard() {
 
         if (period === "PM" && hour !== 12) hour += 12
         if (period === "AM" && hour === 12) hour = 0
-
         return hour
       }
 
@@ -247,7 +233,6 @@ export default function ClientDashboard() {
 
       return
     }
-
     setRescheduleLesson(lesson)
     setRescheduleDate(undefined)
     setRescheduleTime("")
@@ -282,7 +267,6 @@ export default function ClientDashboard() {
 
     if (error) {
       alert("Unable to reschedule lesson.")
-
       return
     }
 
@@ -302,17 +286,14 @@ export default function ClientDashboard() {
       today.getMonth(),
       today.getDate()
     )
-
     const oldDaysDifference = Math.floor(
       (new Date(oldDate).getTime() - todayOnly.getTime()) /
         (1000 * 60 * 60 * 24)
     )
-
     const newDaysDifference = Math.floor(
       (new Date(formattedDate).getTime() - todayOnly.getTime()) /
         (1000 * 60 * 60 * 24)
     )
-
     const isUrgent =
       (oldDaysDifference >= 0 && oldDaysDifference <= 1) ||
       (newDaysDifference >= 0 && newDaysDifference <= 1)
@@ -327,21 +308,18 @@ export default function ClientDashboard() {
     })
 
     alert("Lesson rescheduled.")
-
     window.location.reload()
   }
 
   async function cancelLesson(lesson: any) {
     if (!canCancelLesson(lesson.lesson_date, lesson.lesson_time)) {
       alert("Cancellations within 12 hours of a lesson aren't available.\n\nPlease contact your coach.")
-
       return
     }
 
     const reason = window.prompt("Reason for cancellation:")
     if (!reason || !reason.trim()) {
       alert("Please type your reason for cancellation.")
-
       return
     }
 
@@ -360,7 +338,6 @@ export default function ClientDashboard() {
 
     if (error) {
       alert("Unable to cancel lesson.")
-
       return
     }
 
@@ -390,7 +367,6 @@ export default function ClientDashboard() {
     }
 
     alert("Lesson cancelled.")
-
     window.location.reload()
   }
 
@@ -427,9 +403,7 @@ export default function ClientDashboard() {
         const year = selectedDate.getFullYear()
         const month = String(selectedDate.getMonth() + 1).padStart(2, "0")
         const day = String(selectedDate.getDate()).padStart(2, "0")
-
         const formattedDate = `${year}-${month}-${day}`
-
         const response = await fetch(
           `/api/public-availability?coachId=${selectedCoach}&date=${formattedDate}`
         )
@@ -442,11 +416,14 @@ export default function ClientDashboard() {
     }
 
     const response = await fetch(
-      `/api/public-last-booked?coachId=${selectedCoach}&date=${formattedDate}&before=${selectedTime}`
+      `/api/public-booked/last-slot?coachId=${selectedCoach}&date=${formattedDate}`
     )
 
     const lastBooking = response.ok ? await response.json() : null
-
+    const firstResponse = await fetch(
+      `/api/public-booked/first-slot?coachId=${selectedCoach}&date=${formattedDate}`
+    )
+    const firstBooking = firstResponse.ok ? await firstResponse.json() : null
     const { data: newBooking, error } = await supabase
       .from("bookings")
       .insert({
@@ -492,11 +469,8 @@ export default function ClientDashboard() {
     // bookedTimes was already fetched before creating the booking
 
     let isLateBooking = false
-
     const today = new Date()
-
     const bookingDate = new Date(formattedDate + "T00:00:00")
-
     const daysDifference = Math.floor(
       (bookingDate.getTime() -
         new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime()) /
@@ -506,12 +480,25 @@ export default function ClientDashboard() {
     if (daysDifference >= 0 && daysDifference <= 1) {
       const newHour = timeTo24Hour(selectedTime)
 
-      if (!lastBooking) {
+      // No bookings that day
+      if (!lastBooking && !firstBooking) {
         isLateBooking = true
-      } else {
-        const previousHour = timeTo24Hour(lastBooking.lesson_time)
+      }
 
-        if (newHour >= previousHour + 2) {
+      // Earlier than the first booking
+      else if (firstBooking) {
+        const firstHour = timeTo24Hour(firstBooking.lesson_time)
+
+        if (newHour < firstHour) {
+          isLateBooking = true
+        }
+      }
+
+      // Two or more hours after the last booking
+      if (!isLateBooking && lastBooking) {
+        const lastHour = timeTo24Hour(lastBooking.lesson_time)
+
+        if (newHour >= lastHour + 2) {
           isLateBooking = true
         }
       }
@@ -560,9 +547,7 @@ export default function ClientDashboard() {
       const year = selectedDate.getFullYear()
       const month = String(selectedDate.getMonth() + 1).padStart(2, "0")
       const day = String(selectedDate.getDate()).padStart(2, "0")
-
       const formattedDate = `${year}-${month}-${day}`
-
       const response = await fetch(
         `/api/public-availability?coachId=${selectedCoach}&date=${formattedDate}`
       )
@@ -576,7 +561,6 @@ export default function ClientDashboard() {
   }
   const paginatedUpcoming = upcomingLessons.slice((upcomingPage - 1) * ITEMS_PER_PAGE, upcomingPage * ITEMS_PER_PAGE)
   const paginatedPrevious = previousLessons.slice((previousPage - 1) * ITEMS_PER_PAGE, previousPage * ITEMS_PER_PAGE)
-
   const paginatedPackages = packages
     .filter((pkg) => (pkg.lessons_added || 0) - (pkg.lessons_used || 0) > 0)
     .sort((a, b) => new Date(a.expiration_date).getTime() - new Date(b.expiration_date).getTime())
