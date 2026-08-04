@@ -472,46 +472,68 @@ export default function NotificationsPage() {
               {urgentNotifications.map((notification) => (
                 <div
                   key={notification.id}
-                  className="rounded-2xl border border-[#8F3434] bg-[#FBF4F3] p-5 shadow-xl"
+                  className="rounded-2xl border border-[#8F3434] bg-[#FBF4F3] p-3 shadow-xl"
                 >
                   {notification.type === "late_booking" ? (
                     <>
-                      <h3 className="text-[20px] font-light uppercase tracking-[0.12em] text-[#8F3434]">
-                        Late Booking
-                      </h3>
-
-                      <div className="mt-4 space-y-3">
-                        <div>
-                          <p className="dashboard-label font-normal">Client</p>
-                          <p className="text-[15px] font-light text-[#2F5A43]">
+                      <button
+                        onClick={() =>
+                          setExpandedUrgent((prev) =>
+                            prev.includes(notification.id)
+                              ? prev.filter((id) => id !== notification.id)
+                              : [...prev, notification.id]
+                          )
+                        }
+                        className="flex w-full items-center justify-between text-left"
+                      >
+                        <h3 className="text-[16px] font-light text-[#8F3434]">
+                          <Link
+                            href={`/coach/clients/${notification.client_id}`}
+                            onClick={(e) => e.stopPropagation()}
+                            className="text-[#5874A6] underline underline-offset-2 transition hover:text-[#45628F]"
+                          >
                             {notification.client_name}
-                          </p>
-                        </div>
+                          </Link>{" "}
+                          Late Booking
+                        </h3>
 
-                        <div>
-                          <p className="dashboard-label font-normal">Lesson</p>
-                          <p className="text-[15px] font-light text-[#2F5A43]">
-                            {(notification.lesson_date ?? "").split("-").reverse().slice(0, 2).join("/")} @{" "}
-                            {(notification.lesson_time ?? "").replace(":00", "").toLowerCase()}
-                          </p>
-                        </div>
-                      </div>
+                        <span className="text-lg text-[#8F3434]">
+                          {expandedUrgent.includes(notification.id) ? "▲" : "▼"}
+                        </span>
+                      </button>
 
-                      <div className="mt-5 flex gap-3">
-                        <button
-                          onClick={() => handleApprove(notification)}
-                          className="rounded-xl bg-[#2F5A43] px-5 py-2 text-[13px] font-light uppercase tracking-[0.12em] text-white transition hover:bg-[#244634]"
-                        >
-                          Approve
-                        </button>
+                      {expandedUrgent.includes(notification.id) && (
+                        <>
+                          <div className="mt-3">
+                            <p className="dashboard-label">LESSON</p>
+                            <p className="dashboard-value">
+                              {(notification.lesson_date ?? "")
+                                .split("-")
+                                .reverse()
+                                .slice(0, 2)
+                                .join("/")}{" "}
+                              @{" "}
+                              {(notification.lesson_time ?? "").replace(":00", "")}
+                            </p>
+                          </div>
 
-                        <button
-                          onClick={() => handleReject(notification)}
-                          className="rounded-xl bg-[#8F3434] px-5 py-2 text-[13px] font-light uppercase tracking-[0.12em] text-white transition hover:bg-[#742A2A]"
-                        >
-                          Reject
-                        </button>
-                      </div>
+                          <div className="mt-4 flex gap-3">
+                            <button
+                              onClick={() => handleApprove(notification)}
+                              className="rounded-xl bg-[#2F5A43] px-5 py-2 text-[13px] font-light uppercase tracking-[0.12em] text-white transition hover:bg-[#244634]"
+                            >
+                              Approve
+                            </button>
+
+                            <button
+                              onClick={() => handleReject(notification)}
+                              className="rounded-xl bg-[#8F3434] px-5 py-2 text-[13px] font-light uppercase tracking-[0.12em] text-white transition hover:bg-[#742A2A]"
+                            >
+                              Reject
+                            </button>
+                          </div>
+                        </>
+                      )}
                     </>
  
                   ) : notification.type === "double_booking" ? (
@@ -706,7 +728,10 @@ export default function NotificationsPage() {
                                 height={30}
                                 className="object-contain"
                               />
-                            ) : notification.type === "client_rescheduled" ? null : (
+                            ) : notification.type === "client_rescheduled" ||
+                                 notification.type === "missing_receipt" ||
+                                 notification.type === "late_booking" ||
+                                 notification.type === "client_cancelled" ? null : (
                               <button
                                 onClick={() => setSelectedClient(notification)}
                                 className="flex h-10 w-10 items-center justify-center rounded-full transition hover:bg-[#DDEEDB]"
@@ -749,6 +774,17 @@ export default function NotificationsPage() {
                                       </Link>{"  "}
                                       <span>Missing Receipt</span>
                                     </>
+                                  ) : notification.type === "client_cancelled" ? (
+                                    <>
+                                      <Link
+                                        href={`/coach/clients/${notification.client_id}`}
+                                        onClick={(e) => e.stopPropagation()}
+                                        className="text-[#5874A6] underline underline-offset-2 transition hover:text-[#45628F] mr-2"
+                                      >
+                                        {notification.client_name}
+                                      </Link>{"  "}
+                                      <span>Cancelled</span>
+                                    </>
                                   ) : (
                                     <>{notification.type_label || "-"}</>
                                   )}
@@ -761,7 +797,8 @@ export default function NotificationsPage() {
 
                               {notification.type !== "admin_message_coach" &&
                                 notification.type !== "client_rescheduled" &&
-                                notification.type !== "missing_receipt" && (
+                                notification.type !== "missing_receipt" &&
+                                notification.type !== "client_cancelled" && (
                                   <div className="dashboard-label mt-1">
                                     {notification.original_datetime || "-"}
                                   </div>
@@ -802,6 +839,18 @@ export default function NotificationsPage() {
                                     </p>
                                   </div>
                                 </>
+                              ) : notification.type === "client_cancelled" ? (
+                                <>
+                                  <p className="dashboard-value">
+                                    <span className="dashboard-label">Lesson:</span>{" "}
+                                    {notification.original_datetime || "-"}
+                                  </p>
+
+                                  <p className="dashboard-value whitespace-pre-wrap">
+                                    <span className="dashboard-label">Reason:</span>{" "}
+                                    {notification.notes || "-"}
+                                  </p>
+                                </>
                               ) : (
                                 <>
                                   {notification.type !== "admin_message_coach" && (
@@ -823,54 +872,28 @@ export default function NotificationsPage() {
                                   )}
 
                                   <div>
-                                    <p className="dashboard-label">Notes</p>
-
                                     {notification.type === "missing_receipt" ? (
-                                      <details className="mt-2">
-                                        <summary className="dashboard-value cursor-pointer hover:text-[#2F5A43]">
-                                          {notification.notes || "-"}
-                                        </summary>
+                                      <>
+                                        <div>
+                                          <p className="dashboard-label">NOTES</p>
 
-                                        <div className="mt-3 rounded-xl border border-[#3A5D49] bg-[#FEFDFC] p-3 space-y-2">
-                                          <div className="dashboard-value">
-                                            <strong>Client:</strong>{" "}
-                                            <Link
-                                              href={`/coach/clients/${notification.client_id}`}
-                                              className="text-[#2F5A43] underline"
-                                            >
-                                              {notification.client_name}
-                                            </Link>
-                                          </div>
+                                          <details className="mt-2">
+                                            <summary className="dashboard-value cursor-pointer hover:text-[#2F5A43]">
+                                              {notification.notes || "-"}
+                                            </summary>
 
-                                          <div className="dashboard-value">
-                                            <strong>Purchase:</strong> {notification.notes}
-                                          </div>
-
-                                          <div className="dashboard-value">
-                                            <strong>Date:</strong> {notification.original_datetime}
-                                          </div>
+                                            <div className="mt-2 dashboard-value">
+                                              {notification.notes || "-"} on{" "}
+                                              {notification.original_datetime || "-"}
+                                            </div>
+                                          </details>
                                         </div>
-                                      </details>
+                                      </>
                                     ) : (
                                       <p className="text-[15px] font-light text-[#2F5A43] whitespace-pre-wrap">
                                         {notification.notes || "-"}
                                       </p>
                                     )}
-                                  </div>
-
-                                  <div>
-                                    <p className="dashboard-label">Created</p>
-                                    <p className="text-[15px] font-light text-[#2F5A43]">
-                                      {new Date(notification.created_at).toLocaleDateString("en-GB", {
-                                        day: "2-digit",
-                                        month: "2-digit",
-                                      })}
-                                      {" | "}
-                                      {new Date(notification.created_at).toLocaleTimeString([], {
-                                        hour: "2-digit",
-                                        minute: "2-digit",
-                                      })}
-                                    </p>
                                   </div>
                                 </>
                               )}
@@ -1062,7 +1085,8 @@ export default function NotificationsPage() {
                                 className="object-contain"
                               />
                             ) : notification.type === "client_rescheduled" ||
-                                 notification.type === "missing_receipt" ? null : (
+                                 notification.type === "missing_receipt" ||
+                                 notification.type === "client_cancelled" ? null : (
                               <button
                                 onClick={() => setSelectedClient(notification)}
                                 className="flex h-10 w-10 items-center justify-center rounded-full transition hover:bg-[#E8F2EB]"
@@ -1102,6 +1126,17 @@ export default function NotificationsPage() {
                                       </Link>{" "}
                                       <span>Missing Receipt</span>
                                     </>
+                                  ) : notification.type === "client_cancelled" ? (
+                                    <>
+                                      <Link
+                                        href={`/coach/clients/${notification.client_id}`}
+                                        onClick={(e) => e.stopPropagation()}
+                                        className="text-[#5874A6] underline underline-offset-2 transition hover:text-[#45628F]"
+                                      >
+                                        {notification.client_name}
+                                      </Link>{" "}
+                                      <span>Cancelled</span>
+                                    </>
                                   ) : (
                                     <>{notification.type_label || "-"}</>
                                   )}
@@ -1114,7 +1149,8 @@ export default function NotificationsPage() {
 
                               {notification.type !== "admin_message_coach" &&
                                 notification.type !== "client_rescheduled" &&
-                                notification.type !== "missing_receipt" && (
+                                notification.type !== "missing_receipt" &&
+                                notification.type !== "client_cancelled" && (
                                   <div className="dashboard-label mt-1">
                                     {notification.original_datetime || "-"}
                                   </div>
@@ -1220,6 +1256,44 @@ export default function NotificationsPage() {
                                 <p className="dashboard-value whitespace-pre-wrap text-[#8F3434]">
                                   {notification.notes}
                                 </p>
+                              ) : notification.type === "client_cancelled" ? (
+                                <>
+                                  <p className="dashboard-value">
+                                    <span className="dashboard-label">Lesson:</span>{" "}
+                                    {notification.original_datetime || "-"}
+                                  </p>
+
+                                  <p className="dashboard-value whitespace-pre-wrap">
+                                    <span className="dashboard-label">Reason:</span>{" "}
+                                    {notification.notes || "-"}
+                                  </p>
+
+                                  <p className="dashboard-value">
+                                    <span className="dashboard-label">Done At:</span>{" "}
+                                    {notification.resolved_at
+                                      ? `${new Date(notification.resolved_at).toLocaleDateString("en-GB", {
+                                          day: "2-digit",
+                                          month: "2-digit",
+                                        })} | ${new Date(notification.resolved_at).toLocaleTimeString([], {
+                                          hour: "2-digit",
+                                          minute: "2-digit",
+                                        })}`
+                                      : "-"}
+                                  </p>
+
+                                  <p className="dashboard-value">
+                                    <span className="dashboard-label">Created:</span>{" "}
+                                    {new Date(notification.created_at).toLocaleDateString("en-GB", {
+                                      day: "2-digit",
+                                      month: "2-digit",
+                                    })}{" "}
+                                    |{" "}
+                                    {new Date(notification.created_at).toLocaleTimeString([], {
+                                      hour: "2-digit",
+                                      minute: "2-digit",
+                                    })}
+                                  </p>
+                                </>
                               ) : (
                                 <>
                                   {notification.type !== "admin_message_coach" && (
