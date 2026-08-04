@@ -280,32 +280,71 @@ export default function ClientDashboard() {
       new_time: rescheduleTime,
     })
 
-    const today = new Date()
-    const todayOnly = new Date(
-      today.getFullYear(),
-      today.getMonth(),
-      today.getDate()
+    const lastResponse = await fetch(
+      `/api/public-booked/last-slot?coachId=${rescheduleLesson.coach_id}&date=${formattedDate}`
     )
-    const oldDaysDifference = Math.floor(
-      (new Date(oldDate).getTime() - todayOnly.getTime()) /
-        (1000 * 60 * 60 * 24)
+    const lastBooking = lastResponse.ok ? await lastResponse.json() : null
+    const firstResponse = await fetch(
+      `/api/public-booked/first-slot?coachId=${rescheduleLesson.coach_id}&date=${formattedDate}`
     )
-    const newDaysDifference = Math.floor(
-      (new Date(formattedDate).getTime() - todayOnly.getTime()) /
-        (1000 * 60 * 60 * 24)
-    )
-    const isUrgent =
-      (oldDaysDifference >= 0 && oldDaysDifference <= 1) ||
-      (newDaysDifference >= 0 && newDaysDifference <= 1)
+    const firstBooking = firstResponse.ok ? await firstResponse.json() : null
+    let isLateBooking = false
 
-    await supabase.from("notifications").insert({
-      coach_id: rescheduleLesson.coach_id,
-      client_id: rescheduleLesson.client_id,
-      booking_id: rescheduleLesson.id,
-      type: "client_rescheduled",
-      is_urgent: isUrgent,
-      message: `Client rescheduled lesson.\n\nOld:\n${oldDate} ${oldTime}\n\nNew:\n${formattedDate} ${rescheduleTime}`,
-    })
+    const today = new Date()
+    const bookingDate = new Date(formattedDate + "T00:00:00")
+    const daysDifference = Math.floor(
+      (bookingDate.getTime() -
+        new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime()) /
+        (1000 * 60 * 60 * 24)
+    )
+
+    if (daysDifference >= 0 && daysDifference <= 1) {
+      const newHour = timeTo24Hour(rescheduleTime)
+
+      if (!lastBooking && !firstBooking) {
+        isLateBooking = true
+      } else if (firstBooking) {
+        const firstHour = timeTo24Hour(firstBooking.lesson_time)
+        if (newHour < firstHour) {
+          isLateBooking = true
+        }
+      }
+
+      if (!isLateBooking && lastBooking) {
+        const lastHour = timeTo24Hour(lastBooking.lesson_time)
+
+        if (newHour >= lastHour + 2) {
+          isLateBooking = true
+        }
+      }
+    }
+
+      const { data: notification, error: notificationError } = await supabase
+        .from("notifications")
+        .insert({
+          coach_id: rescheduleLesson.coach_id,
+          client_id: rescheduleLesson.client_id,
+          booking_id: rescheduleLesson.id,
+          type: isLateBooking ? "late_booking" : "client_rescheduled",
+          is_urgent: isLateBooking,
+          message: isLateBooking
+            ? `Late booking requires review.\n\nDate: ${formattedDate}\nTime: ${rescheduleTime}`
+            : `Client rescheduled lesson.\n\nOld:\n${oldDate} ${oldTime}\n\nNew:\n${formattedDate} ${rescheduleTime}`,
+        })
+        .select()
+        .single()
+
+      if (!notificationError && notification) {
+        await fetch("/api/coach/notifications/push", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            notificationId: notification.id,
+          }),
+        })
+      }
 
     alert("Lesson rescheduled.")
     window.location.reload()
