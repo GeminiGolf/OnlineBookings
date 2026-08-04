@@ -911,6 +911,10 @@ export default function NotificationsPage() {
                                     <span className="font-semibold uppercase tracking-[0.12em] text-[#8F3434]">
                                       DOUBLE BOOKING
                                     </span>
+                                  ) : notification.type === "admin_message_coach" ? (
+                                    <span className="font-semibold uppercase tracking-[0.12em] text-[#8F3434]">
+                                      {(notification.subject || "ADMIN MESSAGE").toUpperCase()}
+                                    </span>
                                   ) : (
                                     <>
                                       <Link
