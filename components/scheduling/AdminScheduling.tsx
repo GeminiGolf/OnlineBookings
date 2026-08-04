@@ -157,7 +157,7 @@ export default function AdminDashboard({
       display = 12
     }
 
-    return `${display} ${suffix}`
+    return `${display}:00 ${suffix}`
   }
 
   function getBookingForHour(hour: number) {

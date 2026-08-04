@@ -157,7 +157,7 @@ export default function CoachDashboard({
       display = 12
     }
 
-    return `${display} ${suffix}`
+    return `${display}:00 ${suffix}`
   }
   function getBookingForHour(hour: number) {
     return initialBookings.find((booking) => {
