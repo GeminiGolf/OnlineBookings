@@ -281,11 +281,11 @@ export default function ClientDashboard() {
     })
 
     const lastResponse = await fetch(
-      `/api/public-booked/last-slot?coachId=${rescheduleLesson.coach_id}&date=${formattedDate}`
+      `/api/public-booked/last-slot?coachId=${rescheduleLesson.coach_id}&date=${formattedDate}&excludeBookingId=${rescheduleLesson.id}`
     )
     const lastBooking = lastResponse.ok ? await lastResponse.json() : null
     const firstResponse = await fetch(
-      `/api/public-booked/first-slot?coachId=${rescheduleLesson.coach_id}&date=${formattedDate}`
+      `/api/public-booked/first-slot?coachId=${rescheduleLesson.coach_id}&date=${formattedDate}&excludeBookingId=${rescheduleLesson.id}`
     )
     const firstBooking = firstResponse.ok ? await firstResponse.json() : null
     let isLateBooking = false
