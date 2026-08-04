@@ -538,40 +538,88 @@ export default function NotificationsPage() {
  
                   ) : notification.type === "double_booking" ? (
                     <>
-                      <h3 className="text-lg font-bold text-red-700">DOUBLE BOOKING</h3>
-
-                      <div className="mt-3 space-y-1 text-[#2F5A43]">
-                        {notification.message.split("\n").map((line, index) => {
-                          if (line.includes("|")) {
-                            const [name, clientId] = line.split("|")
-
-                            return (
-                              <Link
-                                key={index}
-                                href={`/coach/clients/${clientId}`}
-                                className="block text-blue-600 hover:underline font-medium"
-                              >
-                                {name}
-                              </Link>
-                            )
-                          }
-
-                          return (
-                            <p key={index} className="whitespace-pre-wrap">
-                              {line}
-                            </p>
+                      <button
+                        onClick={() =>
+                          setExpandedUrgent((prev) =>
+                            prev.includes(notification.id)
+                              ? prev.filter((id) => id !== notification.id)
+                              : [...prev, notification.id]
                           )
-                        })}
-                      </div>
+                        }
+                        className="flex w-full items-center justify-between text-left"
+                      >
+                        <h3 className="text-[16px] font-semibold uppercase text-[#8F3434]">
+                          DOUBLE BOOKING
+                        </h3>
 
-                      <div className="mt-3">
-                        <button
-                          onClick={() => toggleNotification(notification.id, true)}
-                          className="rounded bg-blue-600 px-4 py-2 text-white"
-                        >
-                          Mark as Read
-                        </button>
-                      </div>
+                        <span className="text-lg text-[#8F3434]">
+                          {expandedUrgent.includes(notification.id) ? "▲" : "▼"}
+                        </span>
+                      </button>
+
+                      {expandedUrgent.includes(notification.id) && (() => {
+                        const lines = notification.message
+                          .split("\n")
+                          .filter((line) => line.trim() !== "")
+
+                        const date = lines.find((l) => l.startsWith("Date:"))?.replace("Date:", "").trim() ?? "-"
+                        const time = lines.find((l) => l.startsWith("Time:"))?.replace("Time:", "").trim() ?? "-"
+
+                        const clients = lines.filter((l) => l.includes("|"))
+
+                        return (
+                          <>
+                            <div className="mt-3">
+                              <p className="dashboard-label">LESSON</p>
+                              <p className="dashboard-value">
+                                {new Date(date).toLocaleDateString("en-GB")} - {time.replace(":00", "")}
+                              </p>
+                            </div>
+
+                            <div className="mt-3 space-y-1">
+                              {clients.map((client, index) => {
+                                const [name, clientId] = client.split("|")
+
+                                return (
+                                  <Link
+                                    key={index}
+                                    href={`/coach/clients/${clientId}`}
+                                    className="block text-[#5874A6] underline underline-offset-2 transition hover:text-[#45628F]"
+                                  >
+                                    {name}
+                                  </Link>
+                                )
+                              })}
+                            </div>
+
+                            <div className="mt-3">
+                              <p className="dashboard-value">
+                                Contact your clients immediately.
+                              </p>
+                            </div>
+
+                            <div className="mt-4">
+                              <button
+                                onClick={async () => {
+                                  await supabase
+                                    .from("notifications")
+                                    .update({
+                                      is_read: true,
+                                      is_urgent: false,
+                                      resolved_at: new Date().toISOString(),
+                                    })
+                                    .eq("id", notification.id)
+
+                                  await loadNotifications()
+                                }}
+                                className="rounded-xl bg-[#2F5A43] px-5 py-2 text-[13px] font-light uppercase tracking-[0.12em] text-white transition hover:bg-[#244634]"
+                              >
+                                Mark as Done
+                              </button>
+                            </div>
+                          </>
+                        )
+                      })()}
                     </>
                   ) : null}
                 </div>
@@ -1062,7 +1110,11 @@ export default function NotificationsPage() {
                         </div>
 
                         <div
-                          className={`lg:hidden border-b border-[#3A5D49] ${
+                          className={`lg:hidden ${
+                            notification.type === "double_booking"
+                              ? ""
+                              : "border-b border-[#3A5D49]"
+                          } ${
                             notification.is_read
                               ? "bg-[#ECE7DE]"
                               : "bg-[#FEFDFC]"
@@ -1086,7 +1138,8 @@ export default function NotificationsPage() {
                               />
                             ) : notification.type === "client_rescheduled" ||
                                  notification.type === "missing_receipt" ||
-                                 notification.type === "client_cancelled" ? null : (
+                                 notification.type === "client_cancelled" ||
+                                 notification.type === "double_booking" ? null : (
                               <button
                                 onClick={() => setSelectedClient(notification)}
                                 className="flex h-10 w-10 items-center justify-center rounded-full transition hover:bg-[#E8F2EB]"
@@ -1137,6 +1190,10 @@ export default function NotificationsPage() {
                                       </Link>{" "}
                                       <span>Cancelled</span>
                                     </>
+                                  ) : notification.type === "double_booking" ? (
+                                    <span className="font-semibold uppercase text-[#8F3434]">
+                                      DOUBLE BOOKING
+                                    </span>
                                   ) : (
                                     <>{notification.type_label || "-"}</>
                                   )}
@@ -1150,7 +1207,8 @@ export default function NotificationsPage() {
                               {notification.type !== "admin_message_coach" &&
                                 notification.type !== "client_rescheduled" &&
                                 notification.type !== "missing_receipt" &&
-                                notification.type !== "client_cancelled" && (
+                                notification.type !== "client_cancelled" &&
+                                notification.type !== "double_booking" && (
                                   <div className="dashboard-label mt-1">
                                     {notification.original_datetime || "-"}
                                   </div>
@@ -1256,6 +1314,43 @@ export default function NotificationsPage() {
                                 <p className="dashboard-value whitespace-pre-wrap text-[#8F3434]">
                                   {notification.notes}
                                 </p>
+                              ) : notification.type === "double_booking" ? (
+                                (() => {
+                                  const lines = notification.message
+                                    .split("\n")
+                                    .filter((line) => line.trim() !== "")
+
+                                  const date =
+                                    lines.find((l) => l.startsWith("Date:"))?.replace("Date:", "").trim() ?? "-"
+
+                                  const time =
+                                    lines.find((l) => l.startsWith("Time:"))?.replace("Time:", "").trim() ?? "-"
+
+                                  const clients = lines.filter((l) => l.includes("|"))
+
+                                  return (
+                                    <>
+                                      <p className="dashboard-value">
+                                        <span className="dashboard-label">Lesson:</span>{" "}
+                                        {new Date(date).toLocaleDateString("en-GB")} - {time.replace(":00", "")}
+                                      </p>
+
+                                      {clients.map((client, index) => {
+                                        const [name, clientId] = client.split("|")
+
+                                        return (
+                                          <Link
+                                            key={index}
+                                            href={`/coach/clients/${clientId}`}
+                                            className="block text-[#5874A6] underline underline-offset-2 transition hover:text-[#45628F]"
+                                          >
+                                            {name}
+                                          </Link>
+                                        )
+                                      })}
+                                    </>
+                                  )
+                                })()
                               ) : notification.type === "client_cancelled" ? (
                                 <>
                                   <p className="dashboard-value">
