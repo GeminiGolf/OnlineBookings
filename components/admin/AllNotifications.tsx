@@ -10,6 +10,7 @@ type NotificationRow = {
   id: number
   client_id: number | null
   coach_id: number
+  is_urgent: boolean
   type: string
   subject: string | null
   message: string
@@ -87,10 +88,14 @@ export default function AllNotifications() {
 
   const filteredNotifications = useMemo(() => {
     return notifications.filter((notification) => {
+      const searchTerm = search.trim().toLowerCase()
+
       const matchesSearch =
-        notification.recipient.toLowerCase().includes(search.toLowerCase()) ||
-        notification.type.toLowerCase().includes(search.toLowerCase()) ||
-        (notification.subject ?? "").toLowerCase().includes(search.toLowerCase())
+        notification.recipient.toLowerCase().includes(searchTerm) ||
+        notification.type.toLowerCase().includes(searchTerm) ||
+        (notification.subject ?? "").toLowerCase().includes(searchTerm) ||
+        (searchTerm === "urgent" && notification.is_urgent) ||
+        (searchTerm === "not urgent" && !notification.is_urgent)
 
       const notificationDate = notification.created_at.slice(0, 10)
 

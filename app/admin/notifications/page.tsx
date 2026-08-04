@@ -49,6 +49,7 @@ export default function NotificationsPage() {
   const [selectedClient, setSelectedClient] = useState<Notification | null>(null)
   const [olderFilter, setOlderFilter] = useState("all")
   const [expandedNotifications, setExpandedNotifications] = useState<number[]>([])
+  const [expandedUrgent, setExpandedUrgent] = useState<number[]>([])
   const [showPushModal, setShowPushModal] = useState(false)
 
   const router = useRouter()
@@ -288,20 +289,9 @@ export default function NotificationsPage() {
       })
       .eq("id", id)
 
-    if (!error && value) {
-      const movedNotification = activeNotifications.find((n) => n.id === id)
-      if (movedNotification) {
-        setActiveNotifications((prev) => prev.filter((n) => n.id !== id))
-        setOlderNotifications((prev) => [
-          {
-            ...movedNotification,
-            is_read: true,
-            resolved_at: new Date().toISOString(),
-          },
-          ...prev,
-        ])
+      if (!error && value) {
+        await loadNotifications()
       }
-    }
   }
 
   async function handleApprove(notification: Notification) {
@@ -457,7 +447,7 @@ export default function NotificationsPage() {
               {urgentNotifications.map((notification) => (
                 <div
                   key={notification.id}
-                  className="rounded-2xl border border-[#8F3434] bg-[#FBF4F3] p-5 shadow-xl"
+                  className="rounded-2xl border border-[#8F3434] bg-[#FBF4F3] px-6 py-2 shadow-xl"
                 >
                   {notification.type === "late_booking" ? (
                     <>
@@ -497,6 +487,80 @@ export default function NotificationsPage() {
                           Reject
                         </button>
                       </div>
+                    </>
+                  ) : notification.type === "client_rescheduled" ? (
+                    <>
+                      <button
+                        onClick={() =>
+                          setExpandedUrgent((prev) =>
+                            prev.includes(notification.id)
+                              ? prev.filter((id) => id !== notification.id)
+                              : [...prev, notification.id]
+                          )
+                        }
+                        className="flex w-full items-center justify-between text-left"
+                      >
+                        <h3 className="text-[16px] font-light uppercase tracking-[0.12em] text-[#8F3434]">
+                          <Link
+                            href={`/admin/clients/${notification.client_id}`}
+                            onClick={(e) => e.stopPropagation()}
+                            className="inline text-[#5874A6] underline underline-offset-2 transition hover:text-[#45628F]"
+                          >
+                            {notification.client_name}
+                          </Link>{" "}
+                          RESCHEDULED
+                        </h3>
+
+                        <span className="text-lg text-[#8F3434]">
+                          {expandedUrgent.includes(notification.id) ? "▲" : "▼"}
+                        </span>
+                      </button>
+
+                      {expandedUrgent.includes(notification.id) && (
+                        <>
+                          <div className="mt-2 space-y-1">
+                            {(() => {
+                              const lines = notification.message.split("\n")
+
+                              const dates = lines.filter((line) =>
+                                /^\d{4}-\d{2}-\d{2}/.test(line)
+                              )
+
+                              const formatLesson = (value?: string) => {
+                                if (!value) return "-"
+
+                                const [date, ...time] = value.split(" ")
+                                const [, month, day] = date.split("-")
+
+                                return `${day}/${month} - ${time.join(" ").replace(":00", "")}`
+                              }
+
+                              return (
+                                <>
+                                  <p className="text-[15px] font-light text-[#2F5A43]">
+                                    <span className="dashboard-label font-normal">OLD :</span>{" "}
+                                    {formatLesson(dates[0])}
+                                  </p>
+
+                                  <p className="text-[15px] font-light text-[#2F5A43]">
+                                    <span className="dashboard-label font-normal">NEW :</span>{" "}
+                                    {formatLesson(dates[1])}
+                                  </p>
+                                </>
+                              )
+                            })()}
+                          </div>
+
+                          <div className="mt-3">
+                            <button
+                              onClick={() => toggleNotification(notification.id, true)}
+                              className="rounded-xl bg-[#2F5A43] px-5 py-2 text-[13px] font-light uppercase tracking-[0.12em] text-white transition hover:bg-[#244634]"
+                            >
+                              Mark as Read
+                            </button>
+                          </div>
+                        </>
+                      )}
                     </>
                   ) : notification.type === "double_booking" ? (
                     <>
