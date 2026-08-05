@@ -23,13 +23,21 @@ export default function RequireCoach({ children }: Props) {
         return
       }
 
-      const { data: profile } = await supabase
+      const {
+        data: profile,
+        error: profileError,
+      } = await supabase
         .from("profiles")
         .select("role")
         .eq("id", session.user.id)
         .single()
 
-      if (!profile || profile.role !== "coach") {
+      if (profileError) {
+        console.error("Failed to load coach profile:", profileError)
+        return
+      }
+
+      if (profile?.role !== "coach") {
         await supabase.auth.signOut()
         router.replace("/login")
         return

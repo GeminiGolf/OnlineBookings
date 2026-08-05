@@ -23,13 +23,21 @@ export default function RequireClient({ children }: Props) {
         return
       }
 
-      const { data: profile } = await supabase
+      const {
+        data: profile,
+        error: profileError,
+      } = await supabase
         .from("profiles")
         .select("role")
         .eq("id", session.user.id)
         .single()
 
-      if (!profile || profile.role !== "client") {
+      if (profileError) {
+        console.error("Failed to load client profile:", profileError)
+        return
+      }
+
+      if (profile?.role !== "client") {
         await supabase.auth.signOut()
         router.replace("/login")
         return
