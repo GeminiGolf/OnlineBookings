@@ -52,6 +52,7 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 		price: 0,
 		payment_method: "",
 		purchase_date: "",
+		months: "",
 		expiration_date: "",
 	})
 	const [previewOpen, setPreviewOpen] = useState(false)
@@ -454,6 +455,7 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 																							price: transaction.price ?? 0,
 																							payment_method: transaction.payment_method ?? "",
 																							purchase_date: transaction.purchase_date ?? "",
+																							months: "",
 																							expiration_date: transaction.expiration_date ?? "",
 																						})
 																					}}
@@ -611,6 +613,7 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 																							price: transaction.price ?? 0,
 																							payment_method: transaction.payment_method ?? "",
 																							purchase_date: transaction.purchase_date ?? "",
+																							months: "",
 																							expiration_date: transaction.expiration_date ?? "",
 																						})
 																					}}
@@ -822,6 +825,41 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 										})
 									}
 									className="rounded border px-3 py-2"
+								/>
+							</div>
+
+							<div className="flex items-center justify-between">
+								<label className="font-semibold">Months:</label>
+
+								<input
+									type="number"
+									min="0"
+									value={editForm.months}
+									onChange={(e) => {
+										const months = e.target.value
+
+										if (months === "") {
+											setEditForm({
+												...editForm,
+												months: "",
+											})
+											return
+										}
+
+										const purchase = new Date(editForm.purchase_date)
+
+										if (!isNaN(purchase.getTime())) {
+											const expiration = new Date(purchase)
+											expiration.setMonth(expiration.getMonth() + Number(months))
+
+											setEditForm({
+												...editForm,
+												months,
+												expiration_date: expiration.toISOString().slice(0, 10),
+											})
+										}
+									}}
+									className="w-24 rounded border px-3 py-2"
 								/>
 							</div>
 
