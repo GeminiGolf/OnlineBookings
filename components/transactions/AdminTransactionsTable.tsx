@@ -886,14 +886,14 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 						<div className="mt-8 flex justify-end gap-3">
 							<button
 								onClick={() => setShowDeleteConfirm(true)}
-								className="rounded-lg bg-red-600 px-4 py-2 text-white hover:bg-red-700"
+								className="rounded-lg bg-[#9D3E3E] px-4 py-2 text-[13px] font-light uppercase tracking-[0.08em] text-white transition hover:bg-[#9D3E3E]"
 							>
 								Delete
 							</button>
 
 							<button
 								onClick={saveTransaction}
-								className="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+								className="rounded-lg bg-[#4E6FA8] px-4 py-2 text-[13px] font-light uppercase tracking-[0.08em] text-white transition hover:bg-[#4E6FA8]"
 							>
 								Save
 							</button>
@@ -921,7 +921,7 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 
 							<button
 								onClick={deleteTransaction}
-								className="rounded-lg bg-red-600 px-4 py-2 text-white hover:bg-red-700"
+								className="rounded-lg bg-[#9D3E3E] px-4 py-2 text-[13px] font-light uppercase tracking-[0.08em] text-white transition hover:bg-[#9D3E3E]"
 							>
 								Delete
 							</button>
