@@ -40,6 +40,7 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
   const [showStartCalendar, setShowStartCalendar] = useState(false)
   const [showEndCalendar, setShowEndCalendar] = useState(false)
   const [expandedDates, setExpandedDates] = useState<string[]>([])
+	const [expandedCoaches, setExpandedCoaches] = useState<string[]>([])
   const [page, setPage] = useState(1)
   const [receiptUrl, setReceiptUrl] = useState<string | null>(null)
 	const [editingTransaction, setEditingTransaction] = useState<TransactionRow | null>(null)
@@ -192,10 +193,20 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 		)
 	}
 
+	function toggleCoach(key: string) {
+		setExpandedCoaches((prev) =>
+			prev.includes(key)
+				? prev.filter((c) => c !== key)
+				: [...prev, key]
+		)
+	}
+
   return (
     <div className="mx-auto max-w-5xl">
 			<div className="mb-3 flex items-center justify-between">
-				<h1 className="text-[22px] font-bold">Transactions</h1>
+				<h1 className="text-[22px] font-light uppercase tracking-[0.12em] text-[#2F5A43]">
+					Transactions
+				</h1>
 
 				<button
 					type="button"
@@ -229,16 +240,33 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
         />
 
         <div className="relative">
-          <button
-            type="button"
-            onClick={() => {
-              setShowStartCalendar(!showStartCalendar)
-              setShowEndCalendar(false)
-            }}
-            className="rounded-lg border border-black bg-green-100 px-4 py-2 hover:bg-green-200"
-          >
-            {startDate ? format(new Date(startDate), "dd/MM/yy") : "Start Date"}
-          </button>
+          <>
+						<button
+							type="button"
+							onClick={() => {
+								setShowStartCalendar(!showStartCalendar)
+								setShowEndCalendar(false)
+							}}
+							className="hidden md:block rounded-xl border-2 border-[#3A5D49] bg-[#35684C] px-4 py-2 text-[15px] font-light text-white shadow-sm hover:bg-[#2F5A43]"
+						>
+							{startDate
+								? format(new Date(startDate), "dd/MM/yy")
+								: "Start Date"}
+						</button>
+
+						<button
+							type="button"
+							onClick={() => {
+								setShowStartCalendar(!showStartCalendar)
+								setShowEndCalendar(false)
+							}}
+							className="block md:hidden rounded-xl border-2 border-[#3A5D49] bg-[#35684C] px-4 py-2 text-[15px] font-light text-white shadow-sm hover:bg-[#2F5A43]"
+						>
+							{startDate
+								? format(new Date(startDate), "dd/MM/yy")
+								: "Start"}
+						</button>
+					</>
 
           {showStartCalendar && (
             <div className="absolute z-50 mt-2 rounded-lg border bg-white p-2 shadow-lg">
@@ -273,16 +301,33 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
         </div>
 
         <div className="relative">
-          <button
-            type="button"
-            onClick={() => {
-              setShowEndCalendar(!showEndCalendar)
-              setShowStartCalendar(false)
-            }}
-            className="rounded-lg border border-black bg-red-100 px-4 py-2 hover:bg-red-200"
-          >
-            {endDate ? format(new Date(endDate), "dd/MM/yy") : "End Date"}
-          </button>
+          <>
+						<button
+							type="button"
+							onClick={() => {
+								setShowEndCalendar(!showEndCalendar)
+								setShowStartCalendar(false)
+							}}
+							className="hidden md:block rounded-xl border-2 border-[#7F2E2E] bg-[#9B3B3B] px-4 py-2 text-[15px] font-light text-white shadow-sm hover:bg-[#842F2F]"
+						>
+							{endDate
+								? format(new Date(endDate), "dd/MM/yy")
+								: "End Date"}
+						</button>
+
+						<button
+							type="button"
+							onClick={() => {
+								setShowEndCalendar(!showEndCalendar)
+								setShowStartCalendar(false)
+							}}
+							className="block md:hidden rounded-xl border-2 border-[#7F2E2E] bg-[#9B3B3B] px-4 py-2 text-[15px] font-light text-white shadow-sm hover:bg-[#842F2F]"
+						>
+							{endDate
+								? format(new Date(endDate), "dd/MM/yy")
+								: "End"}
+						</button>
+					</>
 
           {showEndCalendar && (
             <div className="absolute z-50 mt-2 rounded-lg border bg-white p-2 shadow-lg">
@@ -317,22 +362,28 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-2xl border bg-white">
+      <div className="overflow-hidden rounded-3xl border border-[#3A5D49] bg-white shadow-md">
         {/* Desktop */}
         <table className="hidden w-full md:table">
 					<thead>
-						<tr className="border-b text-left">
-							<th className="p-4">Date</th>
-							<th className="p-4">Price</th>
-							<th className="p-4 text-center">Details</th>
+						<tr className="border-b border-[#3A5D49] bg-[#F3F0EA]">
+							<th className="dashboard-label border-b border-[#3A5D49] p-4 text-left">
+								Date
+							</th>
+							<th className="dashboard-label border-b border-[#3A5D49] p-4 text-left">
+								Price
+							</th>
+							<th className="dashboard-label border-b border-[#3A5D49] p-4 text-center">
+								Details
+							</th>
 						</tr>
 					</thead>
 
 					<tbody>
 						{paginatedGroups.map((group) => (
 							<Fragment key={group.date}>
-								<tr className="border-b last:border-0">
-									<td className="p-4">
+								<tr className="border-b border-[#3A5D49] last:border-0 hover:bg-[#F6FAF6]">
+									<td className="p-4 text-[15px] font-light text-[#2F5A43]">
 										{new Date(group.date).toLocaleDateString("en-GB", {
 											day: "2-digit",
 											month: "2-digit",
@@ -340,44 +391,57 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 										})}
 									</td>
 
-									<td className="p-4">${group.total.toFixed(0)}</td>
+									<td className="p-4 text-[15px] font-light text-[#2F5A43]">
+										RM {group.total.toFixed(2)}
+									</td>
 
 									<td className="p-4 text-center">
-										<button onClick={() => toggleRow(group.date)}>
-											{expandedDates.includes(group.date) ? "▲" : "▼"}
+										<button
+											type="button"
+											className="text-[#2F5A43] transition hover:text-[#2F5A43]"
+											onClick={() => toggleRow(group.date)}
+										>
+											{expandedDates.includes(group.date) ? (
+												<ChevronUp size={18} />
+											) : (
+												<ChevronDown size={18} />
+											)}
 										</button>
 									</td>
 								</tr>
 
 								{expandedDates.includes(group.date) && (
 									<tr>
-										<td colSpan={3} className="border-t bg-white px-4 py-4">
+										<td colSpan={3} className="border-t border-[#3A5D49] bg-white px-5 py-5">
 											<div className="space-y-6">
 												{Object.entries(group.coaches).map(([coachName, coach]) => (
 													<div key={coachName}>
-														<div className="mb-2 flex items-center justify-between font-semibold">
+														<div className="mb-2 flex items-center justify-between text-[15px] font-light text-[#2F5A43]">
 															<span>Coach: {coachName}</span>
-															<span>Total: ${coach.total.toFixed(0)}</span>
+															<span>RM {coach.total.toFixed(2)}</span>
 														</div>
 
-														<div className="mx-auto w-fit rounded-lg border border-gray-300 bg-gray-50 p-4">
+														<div className="mx-auto w-fit rounded-2xl border border-[#3A5D49] bg-white shadow-sm">
 															<table className="w-auto text-sm">
 																<thead>
-																	<tr className="border-b">
-																		<th className="px-2 py-2 text-center">
+																	<tr className="border-b border-[#3A5D49] bg-[#F3F0EA]">
+																		<th className="dashboard-label px-2 py-2 text-center">
 																			<Pencil size={16} className="mx-auto" />
 																		</th>
-																		<th className="px-4 py-2 text-left">ID</th>
-																		<th className="px-4 py-2 text-left">Price</th>
-																		<th className="px-4 py-2 text-left">Purchase</th>
-																		<th className="px-4 py-2 text-left">Method</th>
-																		<th className="px-4 py-2 text-left">Client</th>
+																		<th className="dashboard-label px-4 py-2 text-left">ID</th>
+																		<th className="dashboard-label px-4 py-2 text-left">Price</th>
+																		<th className="dashboard-label px-4 py-2 text-left">Purchase</th>
+																		<th className="dashboard-label px-4 py-2 text-left">Method</th>
+																		<th className="dashboard-label px-4 py-2 text-left">Client</th>
 																	</tr>
 																</thead>
 
 																<tbody>
 																	{coach.transactions.map((transaction) => (
-																		<tr key={transaction.id} className="border-b last:border-0">
+																		<tr
+																			key={transaction.id}
+																			className="border-b border-[#3A5D49] last:border-0 hover:bg-[#F6FAF6]"
+																		>
 																			<td className="px-2 py-2 text-center">
 																				<button
 																					type="button"
@@ -393,32 +457,32 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 																							expiration_date: transaction.expiration_date ?? "",
 																						})
 																					}}
-																					className="text-blue-600 hover:text-blue-800"
+																					className="text-[#5874A6] transition hover:text-[#45628F]"
 																					title="Edit Transaction"
 																				>
 																					<Pencil size={14} />
 																				</button>
 																			</td>
 
-																			<td className="px-4 py-2">
+																			<td className="px-4 py-2 text-[15px] font-light text-[#2F5A43]">
 																				[{transaction.id}]
 																			</td>
 
-																			<td className="px-4 py-2">
+																			<td className="px-4 py-2 text-[15px] font-light text-[#2F5A43]">
 																				${(transaction.price ?? 0).toFixed(0)}
 																			</td>
 
-																			<td className="px-4 py-2">
+																			<td className="px-4 py-2 text-[15px] font-light text-[#2F5A43]">
 																				{transaction.transaction_name}
 																			</td>
 
-																			<td className="px-4 py-2">
+																			<td className="px-4 py-2 text-[15px] font-light text-[#2F5A43]">
 																				<div className="flex items-center gap-2">
 																					{transaction.receipt_url && (
 																						<button
 																							type="button"
 																							onClick={() => setReceiptUrl(transaction.receipt_url)}
-																							className="text-blue-600 hover:text-blue-800"
+																							className="text-[#5874A6] transition hover:text-[#45628F]"
 																							title="View Receipt"
 																						>
 																							<ImageIcon size={16} />
@@ -429,7 +493,7 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 																				</div>
 																			</td>
 
-																			<td className="px-4 py-2">
+																			<td className="px-4 py-2 text-[15px] font-light text-[#2F5A43]">
 																				[{transaction.client_id}] {transaction.client_name}
 																			</td>
 
@@ -460,7 +524,7 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 
         {/* Mobile */}
         <div className="md:hidden">
-          <div className="grid grid-cols-[120px_1fr_24px] border-b px-4 py-3 text-sm font-semibold">
+          <div className="dashboard-label grid grid-cols-[120px_1fr_24px] border-b border-[#3A5D49] bg-[#F3F0EA] px-4 py-3">
             <div>Date</div>
             <div>Price</div>
             <div />
@@ -469,10 +533,10 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 						const expanded = expandedDates.includes(group.date)
 
 						return (
-							<div key={group.date} className="border-b last:border-0">
+							<div key={group.date} className="border-b border-[#3A5D49] last:border-0">
 								<button
 									onClick={() => toggleRow(group.date)}
-									className="grid w-full grid-cols-[120px_1fr_24px] items-center gap-3 p-4 text-left"
+									className="grid w-full grid-cols-[120px_1fr_24px] items-center gap-3 p-4 text-left text-[15px] font-light text-[#2F5A43]"
 								>
 									<span className="font-medium">
 										{new Date(group.date).toLocaleDateString("en-GB", {
@@ -482,101 +546,107 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 										})}
 									</span>
 
-									<span className="text-sm text-gray-600">
-										${group.total.toFixed(0)}
+									<span className="text-[15px] font-light text-[#2F5A43]">
+										RM {group.total.toFixed(2)}
 									</span>
 
 									<span>{expanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}</span>
 								</button>
 
 								{expanded && (
-									<div className="border-t bg-white px-3 py-3">
+									<div className="border-t border-[#3A5D49] bg-white px-3 py-3">
 										<div className="space-y-4">
 											{Object.entries(group.coaches).map(([coachName, coach]) => (
 												<div key={coachName}>
-													<div className="mb-2 flex items-center justify-between font-semibold">
-														<span>Coach: {coachName}</span>
-														<span>Total: ${coach.total.toFixed(0)}</span>
-													</div>
+													<button
+														type="button"
+														onClick={() => toggleCoach(`${group.date}-${coachName}`)}
+														className="mb-2 flex w-full items-center justify-between rounded-xl border border-[#3A5D49] bg-[#F3F0EA] px-4 py-3 text-left"
+													>
+														<div>
+															<div className="text-[15px] font-light text-[#2F5A43]">
+																Coach: {coachName.split(" ")[0]} • RM {coach.total.toFixed(2)}
+															</div>
+														</div>
 
-													<div className="mx-auto w-fit rounded-lg border border-gray-300 bg-gray-50 p-2">
-														<table className="w-auto text-sm">
-															<thead>
-																<tr className="border-b">
-																	<th className="px-2 py-1 text-center">
-																		<Pencil size={14} className="mx-auto" />
-																	</th>
-																	<th className="px-2 py-1 text-left">ID</th>
-																	<th className="px-3 py-1 text-left">Price</th>
-																	<th className="px-2 py-1 text-left">Purchase</th>
-																	<th className="px-2 py-1 text-left">Method</th>
-																	<th className="px-2 py-1 text-left">Client</th>
-																</tr>
-															</thead>
+														{expandedCoaches.includes(`${group.date}-${coachName}`) ? (
+															<ChevronUp size={18} className="text-[#2F5A43]" />
+														) : (
+															<ChevronDown size={18} className="text-[#2F5A43]" />
+														)}
+													</button>
 
-															<tbody>
-																{coach.transactions.map((transaction) => (
-																	<tr key={transaction.id} className="border-b last:border-0">
-																		<td className="px-2 py-2 text-center">
-																			<button
-																				type="button"
-																				onClick={() => {
-																					setEditingTransaction(transaction)
-
-																					setEditForm({
-																						transaction_name: transaction.transaction_name ?? "",
-																						lessons_added: transaction.lessons_added ?? 0,
-																						price: transaction.price ?? 0,
-																						payment_method: transaction.payment_method ?? "",
-																						purchase_date: transaction.purchase_date ?? "",
-																						expiration_date: transaction.expiration_date ?? "",
-																					})
-																				}}
-																				className="text-blue-600 hover:text-blue-800"
-																				title="Edit Transaction"
-																			>
-																				<Pencil size={14} />
-																			</button>
-																		</td>
-
-																		<td className="px-2 py-2">
-																			[{transaction.id}]
-																		</td>
-
-																		<td className="px-3 py-2">
-																			${(transaction.price ?? 0).toFixed(0)}
-																		</td>
-
-																		<td className="px-2 py-2">
-																			{transaction.transaction_name}
-																		</td>
-
-																		<td className="px-2 py-2">
-																			<div className="flex items-center gap-2">
-																				{transaction.receipt_url && (
-																					<button
-																						type="button"
-																						onClick={() => setReceiptUrl(transaction.receipt_url)}
-																						className="text-blue-600 hover:text-blue-800"
-																						title="View Receipt"
-																					>
-																						<ImageIcon size={16} />
-																					</button>
-																				)}
-
-																				<span>{transaction.payment_method ?? "-"}</span>
-																			</div>
-																		</td>
-
-																		<td className="px-2 py-2">
-																			[{transaction.client_id}] {transaction.client_name}
-																		</td>
-
+													{expandedCoaches.includes(`${group.date}-${coachName}`) && (
+														<div className="mt-3 w-full rounded-2xl border border-[#3A5D49] bg-white shadow-sm">
+															<table className="w-full table-fixed text-sm">
+																<thead>
+																	<tr className="border-b border-[#3A5D49] bg-[#F3F0EA]">
+																		<th className="w-10 dashboard-label px-2 py-2 text-center">
+																			<Pencil size={14} className="mx-auto" />
+																		</th>
+																		<th className="w-2/5 dashboard-label px-3 py-2 text-left">
+																			PRICE
+																		</th>
+																		<th className="w-3/5 dashboard-label px-3 py-2 text-left">
+																			METHOD
+																		</th>
 																	</tr>
-																))}
-															</tbody>
-														</table>
-													</div>
+																</thead>
+
+																<tbody className="w-full">
+																	{coach.transactions.map((transaction) => (
+																		<tr
+																			key={transaction.id}
+																			className="border-b border-[#3A5D49] last:border-0"
+																		>
+																			<td className="px-2 py-2 text-center">
+																				<button
+																					type="button"
+																					onClick={() => {
+																						setEditingTransaction(transaction)
+
+																						setEditForm({
+																							transaction_name: transaction.transaction_name ?? "",
+																							lessons_added: transaction.lessons_added ?? 0,
+																							price: transaction.price ?? 0,
+																							payment_method: transaction.payment_method ?? "",
+																							purchase_date: transaction.purchase_date ?? "",
+																							expiration_date: transaction.expiration_date ?? "",
+																						})
+																					}}
+																					className="text-[#5874A6] transition hover:text-[#45628F]"
+																				>
+																					<Pencil size={14} />
+																				</button>
+																			</td>
+
+																			<td className="w-2/5 px-3 py-2 text-[15px] font-light text-[#2F5A43]">
+																				RM {(transaction.price ?? 0).toFixed(2)}
+																			</td>
+
+																			<td className="w-3/5 px-3 py-2 text-[15px] font-light text-[#2F5A43]">
+																				<div className="flex w-full items-center gap-2">
+																					{transaction.receipt_url && (
+																						<button
+																							type="button"
+																							onClick={() =>
+																								setReceiptUrl(transaction.receipt_url)
+																							}
+																							className="text-[#5874A6] transition hover:text-[#45628F]"
+																						>
+																							<ImageIcon size={16} />
+																						</button>
+																					)}
+
+																					<span>{transaction.payment_method ?? "-"}</span>
+																				</div>
+																			</td>
+																		</tr>
+																	))}
+																</tbody>
+															</table>
+														</div>
+													)}
 												</div>
 											))}
 										</div>
@@ -586,7 +656,7 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 						)
 					})}
 
-          <div className="grid grid-cols-[120px_1fr_24px] border-t bg-gray-100 p-4 text-[13px] font-bold">
+          <div className="grid grid-cols-[120px_1fr_24px] border-t border-[#3A5D49] bg-[#F3F0EA] p-4 text-[15px] font-light text-[#2F5A43]">
             <div />
             <div>Total: ${totalAmount.toFixed(0)}</div>
             <div />
@@ -598,19 +668,19 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
         <button
           onClick={() => setPage((p) => Math.max(1, p - 1))}
           disabled={page === 1}
-          className="rounded border px-3 py-1 disabled:opacity-50"
+          className="rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[13px] font-light tracking-[0.04em] text-[#2F5A43] shadow-sm transition hover:bg-[#F6FAF6] disabled:opacity-50"
         >
           Previous
         </button>
 
-        <span>
-          Page {page} of {totalPages}
-        </span>
+        <span className="text-[15px] font-light text-[#2F5A43]">
+					Page {page} of {totalPages}
+				</span>
 
         <button
           onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
           disabled={page === totalPages}
-          className="rounded border px-3 py-1 disabled:opacity-50"
+          className="rounded-xl border border-[#3A5D49] bg-white px-4 py-2 text-[13px] font-light tracking-[0.04em] text-[#2F5A43] shadow-sm transition hover:bg-[#F6FAF6] disabled:opacity-50"
         >
           Next
         </button>
@@ -663,6 +733,12 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 						</div>
 
 						<div className="space-y-4">
+
+							<div className="flex items-center justify-between">
+								<label className="font-semibold">Client Name:</label>
+
+								<span>{editingTransaction.client_name}</span>
+							</div>
 
 							<div className="flex items-center justify-between">
 								<label className="font-semibold">Transaction Name:</label>
