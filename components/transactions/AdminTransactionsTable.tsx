@@ -717,11 +717,11 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 
 			{editingTransaction && (
 				<div
-					className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+					className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/50 p-4"
 					onClick={() => setEditingTransaction(null)}
 				>
 					<div
-						className="w-full max-w-xl rounded-xl bg-white p-6 shadow-xl"
+						className="w-full max-w-xl max-h-[90vh] overflow-y-auto rounded-xl bg-white p-6 shadow-xl"
 						onClick={(e) => e.stopPropagation()}
 					>
 						<div className="mb-6 flex items-center justify-between">
