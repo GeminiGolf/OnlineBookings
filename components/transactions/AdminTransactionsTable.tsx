@@ -725,7 +725,9 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 						onClick={(e) => e.stopPropagation()}
 					>
 						<div className="mb-6 flex items-center justify-between">
-							<h2 className="text-2xl font-bold">Edit Transaction</h2>
+							<h2 className="text-[20px] font-light uppercase tracking-[0.12em] text-[#2F5A43]">
+								Edit Transaction
+							</h2>
 
 							<button
 								onClick={() => setEditingTransaction(null)}
@@ -738,13 +740,13 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 						<div className="space-y-4">
 
 							<div className="flex items-center justify-between">
-								<label className="font-semibold">Client Name:</label>
+								<label className="text-[13px] font-light uppercase tracking-[0.12em] text-[#2F5A43]">Client Name:</label>
 
 								<span>{editingTransaction.client_name}</span>
 							</div>
 
 							<div className="flex items-center justify-between">
-								<label className="font-semibold">Transaction Name:</label>
+								<label className="text-[13px] font-light uppercase tracking-[0.12em] text-[#2F5A43]">Transaction Name:</label>
 
 								<input
 									type="text"
@@ -755,12 +757,12 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 											transaction_name: e.target.value,
 										})
 									}
-									className="w-64 rounded border px-3 py-2"
+									className="w-[205px] rounded-2xl border border-[#3A5D49] bg-[#FCFAF6] px-4 py-1.5 text-[15px] font-light text-[#2F5A43] focus:border-[#2F5A43] focus:ring-[#2F5A43]/15"
 								/>
 							</div>
 
 							<div className="flex items-center justify-between">
-								<label className="font-semibold">Lessons Added:</label>
+								<label className="text-[13px] font-light uppercase tracking-[0.12em] text-[#2F5A43]">Lessons Added:</label>
 
 								<input
 									type="number"
@@ -771,12 +773,12 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 											lessons_added: Number(e.target.value),
 										})
 									}
-									className="w-24 rounded border px-3 py-2"
+									className="w-[205px] rounded-2xl border border-[#3A5D49] bg-[#FCFAF6] px-4 py-1.5 text-[15px] font-light text-[#2F5A43] focus:border-[#2F5A43] focus:ring-[#2F5A43]/15"
 								/>
 							</div>
 
 							<div className="flex items-center justify-between">
-								<label className="font-semibold">Price:</label>
+								<label className="text-[13px] font-light uppercase tracking-[0.12em] text-[#2F5A43]">Price:</label>
 
 								<input
 									type="number"
@@ -787,12 +789,12 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 											price: Number(e.target.value),
 										})
 									}
-									className="w-24 rounded border px-3 py-2"
+									className="w-[205px] rounded-2xl border border-[#3A5D49] bg-[#FCFAF6] px-4 py-1.5 text-[15px] font-light text-[#2F5A43] focus:border-[#2F5A43] focus:ring-[#2F5A43]/15"
 								/>
 							</div>
 
 							<div className="flex items-center justify-between">
-								<label className="font-semibold">Payment Method:</label>
+								<label className="text-[13px] font-light uppercase tracking-[0.12em] text-[#2F5A43]">Payment Method:</label>
 
 								<select
 									value={editForm.payment_method}
@@ -802,7 +804,7 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 											payment_method: e.target.value,
 										})
 									}
-									className="w-40 rounded border px-3 py-2"
+									className="w-[205px] rounded-2xl border border-[#3A5D49] bg-[#FCFAF6] px-4 py-2 text-[15px] font-light text-[#2F5A43] focus:border-[#2F5A43] focus:ring-[#2F5A43]/15"
 								>
 									<option>Cash</option>
 									<option>Card</option>
@@ -813,7 +815,7 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 							</div>
 
 							<div className="flex items-center justify-between">
-								<label className="font-semibold">Purchase Date:</label>
+								<label className="text-[13px] font-light uppercase tracking-[0.12em] text-[#2F5A43]">Purchase Date:</label>
 
 								<input
 									type="date"
@@ -824,12 +826,12 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 											purchase_date: e.target.value,
 										})
 									}
-									className="rounded border px-3 py-2"
+									className="w-[205px] rounded-2xl border border-[#3A5D49] bg-[#FCFAF6] px-4 py-1 text-[15px] font-light text-[#2F5A43] focus:border-[#2F5A43] focus:ring-[#2F5A43]/15"
 								/>
 							</div>
 
 							<div className="flex items-center justify-between">
-								<label className="font-semibold">Months:</label>
+								<label className="text-[13px] font-light uppercase tracking-[0.12em] text-[#2F5A43]">Months:</label>
 
 								<input
 									type="number"
@@ -859,12 +861,12 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 											})
 										}
 									}}
-									className="w-24 rounded border px-3 py-2"
+									className="w-[205px] rounded-2xl border border-[#3A5D49] bg-[#FCFAF6] px-4 py-1.5 text-[15px] font-light text-[#2F5A43] focus:border-[#2F5A43] focus:ring-[#2F5A43]/15"
 								/>
 							</div>
 
 							<div className="flex items-center justify-between">
-								<label className="font-semibold">Expiration Date:</label>
+								<label className="text-[13px] font-light uppercase tracking-[0.12em] text-[#2F5A43]">Expiration Date:</label>
 
 								<input
 									type="date"
@@ -875,7 +877,7 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 											expiration_date: e.target.value,
 										})
 									}
-									className="rounded border px-3 py-2"
+									className="w-[205px] rounded-2xl border border-[#3A5D49] bg-[#FCFAF6] px-4 py-1 text-[15px] font-light text-[#2F5A43] focus:border-[#2F5A43] focus:ring-[#2F5A43]/15"
 								/>
 							</div>
 
