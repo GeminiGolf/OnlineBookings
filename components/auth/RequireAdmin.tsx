@@ -23,17 +23,27 @@ export default function RequireAdmin({ children }: Props) {
         return
       }
 
-      const { data: profile } = await supabase
+      const {
+        data: profile,
+        error: profileError,
+      } = await supabase
         .from("profiles")
         .select("role")
         .eq("id", session.user.id)
         .single()
 
-      if (!profile || profile.role !== "admin") {
+      if (profileError) {
+        console.error("Failed to load admin profile:", profileError)
+        return
+      }
+
+      if (profile?.role !== "admin") {
         await supabase.auth.signOut()
         router.replace("/login")
         return
       }
+
+      setAuthorised(true)
 
       setAuthorised(true)
     }

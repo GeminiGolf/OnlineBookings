@@ -10,9 +10,6 @@ import "./globals.css"
 import Navbar
   from "@/components/Navbar"
 
-import SessionTimeout
-  from "@/components/SessionTimeout"
-
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -69,8 +66,6 @@ export default function RootLayout({
     >
 
       <body className="bg-black text-white">
-
-        <SessionTimeout />
 
         <Navbar />
 
