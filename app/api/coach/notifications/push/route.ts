@@ -33,26 +33,42 @@ export async function POST(req: Request) {
       .eq("id", notificationId)
       .single();
 
+    let title: string;
     let body: string;
     let preferenceColumn: string;
 
+    const { data: client } = await supabase
+      .from("clients")
+      .select("name, preferred_name")
+      .eq("id", notification.client_id)
+      .single();
+
+    const clientName =
+      client?.preferred_name ||
+      client?.name ||
+      "Client";
+
     switch (notification.type) {
       case "late_booking":
-        body = "Late Booking Request";
+        title = "Late Booking Request";
+        body = clientName;
         preferenceColumn = "late_booking";
         break;
 
       case "client_cancelled":
-        body = "Client Cancelled";
+        title = "Cancelled Lesson";
+        body = `${clientName} cancelled.`;
         preferenceColumn = "client_cancelled";
         break;
 
       case "double_booking":
-        body = "Double Booking Detected";
+        title = "Double Booking Detected";
+        body = "Please review the schedule.";
         preferenceColumn = "double_booking";
         break;
 
       case "admin_message_coach":
+        title = "Message from Admin";
         body = notification.subject ?? "New Message";
         preferenceColumn = "admin_message";
         break;
@@ -102,7 +118,7 @@ export async function POST(req: Request) {
     }
 
     const payload = JSON.stringify({
-      title: "Gemini Golf Academy",
+      title,
       body,
       url: "/coach/notifications",
     });
