@@ -39,14 +39,21 @@ export async function POST(req: Request) {
 
     const { data: client } = await supabase
       .from("clients")
-      .select("name, preferred_name")
+      .select("preferred_name, first_name, last_name")
       .eq("id", notification.client_id)
       .single();
 
-    const clientName =
-      client?.preferred_name ||
-      client?.name ||
-      "Client";
+    const clientName = client
+      ? [
+          client.preferred_name
+            ? `(${client.preferred_name})`
+            : null,
+          client.first_name,
+          client.last_name,
+        ]
+          .filter(Boolean)
+          .join(" ")
+      : "Client";
 
     switch (notification.type) {
       case "late_booking":
