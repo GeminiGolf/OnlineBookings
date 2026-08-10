@@ -8,7 +8,7 @@ import {
 import "./globals.css"
 
 import Navbar
-  from "@/components/Navbar"
+  from "@/components/navbar/Navbar"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
