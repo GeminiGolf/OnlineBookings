@@ -12,6 +12,27 @@ import ClientNavbar from "./ClientNavbar"
 export default function Navbar() {
   const [loggedIn, setLoggedIn] = useState(false)
   const [role, setRole] = useState("")
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+
+  const toggleMenu = () => {
+    setIsMenuOpen((prev) => {
+      const next = !prev
+      const wrapper = document.getElementById("site-wrapper")
+      const navHeader = document.getElementById("nav-header")
+      const isDesktop = typeof window !== "undefined" && window.innerWidth >= 768
+
+      if (isDesktop) {
+        const newWidth = next ? "calc(100% - 320px)" : "100%"
+        if (wrapper) wrapper.style.width = newWidth
+        if (navHeader) navHeader.style.width = newWidth
+      } else {
+        if (wrapper) wrapper.style.width = "100%"
+        if (navHeader) navHeader.style.width = "100%"
+      }
+
+      return next
+    })
+  }
   const [loading, setLoading] = useState(true)
   const [urgentCount, setUrgentCount] = useState(0)
   const [normalCount, setNormalCount] = useState(0)
@@ -393,7 +414,10 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="absolute left-0 top-0 z-50 flex w-full flex-wrap items-center justify-between border-b border-[#D8CCB7]/10 bg-[#102016]/80 px-6 py-2.5 text-white backdrop-blur-2xl">
+    <nav
+      id="nav-header"
+      className="fixed left-0 top-0 z-40 flex w-full flex-wrap items-center justify-between border-b border-[#D8CCB7]/10 bg-[#102016]/80 px-6 py-2.5 text-white backdrop-blur-2xl transition-[width] duration-300 ease-in-out"
+    >
       <Link href="/" className="flex items-center">
         <Image
           src="/images/navbar-logo.png"
@@ -418,6 +442,8 @@ export default function Navbar() {
                 handleReject={handleReject}
                 markNotificationRead={markNotificationRead}
                 handleLogout={handleLogout}
+                isMenuOpen={isMenuOpen}
+                toggleMenu={toggleMenu}
               />
             )}
 

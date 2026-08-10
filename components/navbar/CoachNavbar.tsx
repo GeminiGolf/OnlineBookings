@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { Bell } from "lucide-react"
+import { Bell, Menu, X } from "lucide-react"
 
 type Props = {
   urgentCount: number
@@ -14,6 +14,8 @@ type Props = {
   ) => void
   markNotificationRead: (notificationId: number) => void
   handleLogout: () => void
+  isMenuOpen: boolean
+  toggleMenu: () => void
 }
 
 export default function CoachNavbar({
@@ -26,8 +28,9 @@ export default function CoachNavbar({
   handleReject,
   markNotificationRead,
   handleLogout,
+  isMenuOpen,
+  toggleMenu,
 }: Props) {
-
   return (
   <>
     <div className="relative">
@@ -190,11 +193,44 @@ export default function CoachNavbar({
       </span>
     </Link>
     <button
-      onClick={handleLogout}
-      className="text-sm font-light uppercase tracking-[0.15em] text-white/80 transition hover:text-white"
+      onClick={toggleMenu}
+      className={`flex items-center justify-center p-1 text-white/80 transition hover:text-white ${
+        isMenuOpen ? "hidden md:hidden" : "flex"
+      }`}
+      aria-label="Toggle Menu"
     >
-      <span className="inline-block scale-x-90">LOGOUT</span>
+      {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
     </button>
+
+    {/* Side Menu Drawer */}
+    <div
+      className={`fixed top-0 right-0 z-50 h-screen w-80 bg-[#102016] text-white shadow-2xl transition-transform duration-300 ease-in-out ${
+        isMenuOpen ? "translate-x-0 md:translate-x-full" : "translate-x-full"
+      }`}
+    >
+      <div className="flex items-center justify-between border-b border-[#D8CCB7]/10 px-6 py-4">
+        <span className="text-xs font-light uppercase tracking-[0.2em] text-[#E7DED1]">MENU</span>
+        <button
+          onClick={toggleMenu}
+          className="text-white/80 transition hover:text-white"
+          aria-label="Close Menu"
+        >
+          <X size={24} />
+        </button>
+      </div>
+
+      <div className="flex flex-col p-6 space-y-4">
+        <button
+          onClick={() => {
+            toggleMenu()
+            handleLogout()
+          }}
+          className="flex w-full items-center justify-start text-left text-sm font-light uppercase tracking-[0.15em] text-red-400 transition hover:text-red-300 py-2 border-b border-[#D8CCB7]/10"
+        >
+          <span className="inline-block scale-x-90">LOGOUT</span>
+        </button>
+      </div>
+    </div>
     </>
   )
 }
