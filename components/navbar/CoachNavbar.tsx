@@ -64,7 +64,7 @@ export default function CoachNavbar({
         </button>
 
         {showUrgentDropdown && (
-          <div className="absolute right-0 top-10 z-50 w-[420px] rounded-xl border bg-white p-3 shadow-xl">
+          <div className="absolute -right-2 top-10 z-50 w-[calc(100vw-32px)] max-w-[420px] rounded-xl border bg-white p-3 shadow-xl">
             {urgentNotifications.length === 0 ? (
               <p className="text-[13px] font-light uppercase tracking-[0.12em] text-[#2F5A43]">
                 No Urgent Notifications
