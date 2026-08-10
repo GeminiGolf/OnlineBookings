@@ -462,6 +462,8 @@ export default function Navbar() {
               <ClientNavbar
                 clientNotificationCount={clientNotificationCount}
                 handleLogout={handleLogout}
+                isMenuOpen={isMenuOpen}
+                toggleMenu={toggleMenu}
               />
             )}
 
