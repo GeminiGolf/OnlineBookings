@@ -162,9 +162,9 @@ export default function Navbar() {
             "missing_receipt",
           ])
 
-        setUrgentCount(notifications?.filter((n) => n.is_urgent).length || 0)
-        setNormalCount(notifications?.filter((n) => !n.is_urgent).length || 0)
         const urgentItems = notifications?.filter((n) => n.is_urgent) || []
+        setUrgentCount(urgentItems.length)
+        setNormalCount(notifications?.filter((n) => !n.is_urgent).length || 0)
         const enrichedUrgent = await Promise.all(
           urgentItems.map(async (notification) => {
             let client_name = ""

@@ -50,14 +50,15 @@ export default function CoachNavbar({
       <div className="relative">
         <button
           onClick={() => setShowUrgentDropdown(!showUrgentDropdown)}
-          className={`relative flex items-center justify-center transition ${
-            urgentCount > 0 ? "font-bold text-red-500" : "text-[#E7DED1] hover:text-white"
-          }`}
+          className="relative flex items-center justify-center transition text-[#E7DED1] hover:text-white"
         >
-          <Bell size={20} />
-          {urgentCount > 0 && (
-            <span className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-[10px] font-bold text-white">
-              {urgentCount}
+          <Bell 
+            size={20} 
+            color={urgentNotifications.length > 0 ? "#8F3434" : "currentColor"} 
+          />
+          {urgentNotifications.length > 0 && (
+            <span className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-[#8F3434] text-[10px] font-bold text-white">
+              {urgentNotifications.length}
             </span>
           )}
         </button>
