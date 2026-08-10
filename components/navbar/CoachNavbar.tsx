@@ -2,7 +2,6 @@ import Link from "next/link"
 import { useState } from "react"
 import { usePathname } from "next/navigation"
 import { Bell, Menu } from "lucide-react"
-import CoachDrawer from "@/components/navbar/drawer/coach"
 type Props = {
   urgentCount: number
   normalCount: number
@@ -32,9 +31,8 @@ export default function CoachNavbar({
   const [showMenu, setShowMenu] = useState(false)
   const pathname = usePathname()
   const drawerBackground =
-    pathname === "/"
-      ? "#08190F"
-      : "#445244"
+    pathname === "/" ? "#08190F" : "#445244"
+  const drawerWidth = "min(320px,72vw)"
   return (
   <div className="flex items-center gap-2 md:gap-4">
     <div className="relative">
@@ -183,13 +181,6 @@ export default function CoachNavbar({
     </div>
 
     <Link
-      href="/coach/schedule"
-      className="ml-1.5 text-sm font-light uppercase tracking-[0.15em] transition"
-      style={{ color: "#D8CCB7" }}
-    >
-      <span className="inline-block scale-x-90">SCHEDULE</span>
-    </Link>
-    <Link
       href="/coach/dashboard"
       className="text-sm font-light uppercase tracking-[0.15em] transition"
       style={{ color: "#D8CCB7" }}
@@ -204,26 +195,70 @@ export default function CoachNavbar({
         </span>
       </span>
     </Link>
-    <div className="relative z-[9999] w-6">
-      {!showMenu && (
+
+    <button
+      onClick={() => setShowMenu((v) => !v)}
+      className="relative z-[10001] rounded-md p-1 transition"
+      style={{ color: "#D8CCB7" }}
+    >
+      <Menu size={22} />
+    </button>
+
+    {showMenu && (
+      <div
+        className="fixed right-0 top-0 z-[10000] h-screen"
+        style={{
+          width: drawerWidth,
+          background: drawerBackground,
+          borderLeft: "1px solid #223126",
+          paddingTop: "64px",
+        }}
+      >
         <button
-          onClick={() => setShowMenu(true)}
-          className="rounded-md p-1 transition"
+          onClick={() => setShowMenu((v) => !v)}
+          className="fixed right-6 top-5 z-[10002] rounded-md p-1 transition"
           style={{ color: "#D8CCB7" }}
         >
           <Menu size={22} />
         </button>
-      )}
-    </div>
 
-    {showMenu && (
-      <CoachDrawer
-        open={showMenu}
-        onClose={() => setShowMenu(false)}
-        handleLogout={handleLogout}
-        backgroundColor={drawerBackground}
-      />
+        <div className="flex flex-col items-center border-b border-[#223126] py-6">
+          <img
+            src="/images/logo-warm.png"
+            className="h-10 w-auto"
+            alt=""
+          />
+
+          <img
+            src="/images/gemini-logo-text-warm.png"
+            className="mt-1 h-4 w-auto"
+            alt=""
+          />
+        </div>
+
+        <nav className="pt-8">
+          <button
+            disabled
+            className="flex h-12 w-full items-center px-8 text-left text-xs font-light uppercase tracking-[0.15em]"
+            style={{
+              color: "#D8CCB7",
+              opacity: 0.45,
+            }}
+          >
+            Coming Soon...
+          </button>
+
+          <button
+            onClick={handleLogout}
+            className="flex h-12 w-full items-center border-t border-[#223126] px-8 text-left text-xs font-light uppercase tracking-[0.15em]"
+            style={{ color: "#D8CCB7" }}
+          >
+            Logout
+          </button>
+        </nav>
+      </div>
     )}
+
   </div>
   )
 }
