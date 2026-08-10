@@ -22,10 +22,13 @@ export default function Navbar() {
     setIsMenuOpen((prev) => {
       const next = !prev
       const wrapper = document.getElementById("site-wrapper")
-      const navHeader = document.getElementById("nav-header")
+      const isDesktop = typeof window !== "undefined" && window.innerWidth >= 768
 
-      if (wrapper) wrapper.style.transform = "none"
-      if (navHeader) navHeader.style.transform = "none"
+      if (isDesktop) {
+        if (wrapper) wrapper.style.transform = next ? "translateX(320px)" : "translateX(0px)"
+      } else {
+        if (wrapper) wrapper.style.transform = "none"
+      }
 
       return next
     })
