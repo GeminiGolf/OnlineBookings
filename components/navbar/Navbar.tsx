@@ -8,7 +8,7 @@ import { usePathname } from "next/navigation"
 import AdminNavbar from "./AdminNavbar"
 import CoachNavbar from "./CoachNavbar"
 import ClientNavbar from "./ClientNavbar"
-import {Menu} from "lucide-react"
+import { Menu, X } from "lucide-react"
 
 export default function Navbar() {
   const pathname = usePathname()
@@ -70,8 +70,7 @@ export default function Navbar() {
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker
         .register("/sw.js")
-        .then(() => {
-        })
+        .then(() => {})
         .catch((error) => {
           console.error("Service Worker registration failed:", error)
         })
@@ -99,21 +98,13 @@ export default function Navbar() {
 
   async function registerPushSubscription(profileId: string) {
     try {
-      if (!("serviceWorker" in navigator)) {
-        return
-      }
-      if (!("PushManager" in window)) {
-        return
-      }
+      if (!("serviceWorker" in navigator)) return
+      if (!("PushManager" in window)) return
       if (Notification.permission === "default") {
         const permission = await Notification.requestPermission()
-        if (permission !== "granted") {
-          return
-        }
+        if (permission !== "granted") return
       }
-      if (Notification.permission !== "granted") {
-        return
-      }
+      if (Notification.permission !== "granted") return
 
       const registration = await navigator.serviceWorker.ready
       let subscription = await registration.pushManager.getSubscription()
@@ -127,9 +118,7 @@ export default function Navbar() {
       }
       await fetch("/api/push/subscribe", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           profile_id: profileId,
           endpoint: subscription.endpoint,
@@ -137,7 +126,6 @@ export default function Navbar() {
           userAgent: navigator.userAgent,
         }),
       })
-
     } catch (error) {
       console.error("PUSH ERROR:", error)
     }
@@ -304,13 +292,8 @@ export default function Navbar() {
 
   function urlBase64ToUint8Array(base64String: string) {
     const padding = "=".repeat((4 - (base64String.length % 4)) % 4)
-
-    const base64 = (base64String + padding)
-      .replace(/-/g, "+")
-      .replace(/_/g, "/")
-
+    const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/")
     const rawData = window.atob(base64)
-
     return Uint8Array.from([...rawData].map((char) => char.charCodeAt(0)))
   }
 
@@ -326,9 +309,7 @@ export default function Navbar() {
       })
       .eq("id", notificationId)
 
-    if (!error) {
-      checkSession()
-    }
+    if (!error) checkSession()
   }
 
   async function markNotificationRead(notificationId: number) {
@@ -341,18 +322,14 @@ export default function Navbar() {
       })
       .eq("id", notificationId)
 
-    if (!error) {
-      checkSession()
-    }
+    if (!error) checkSession()
   }
 
   async function handleReject(notificationId: number, bookingId: number | null) {
     let reason = ""
     while (!reason.trim()) {
       const response = prompt("Reason for rejection:")
-      if (response === null) {
-        return
-      }
+      if (response === null) return
       if (!response.trim()) {
         alert("Please fill in a reason.")
         continue
@@ -363,9 +340,7 @@ export default function Navbar() {
       await supabase
         .from("bookings")
         .update({
-          status: role === "admin"
-            ? "cancelled_admin"
-            : "cancelled_coach",
+          status: role === "admin" ? "cancelled_admin" : "cancelled_coach",
           cancellation_reason: reason,
         })
         .eq("id", bookingId)
@@ -375,31 +350,25 @@ export default function Navbar() {
       .select("client_id, booking_id, coach_id")
       .eq("id", notificationId)
       .single()
+
     if (originalNotification?.client_id) {
-      const { data: clientNotification, error: notificationError } =
-        await supabase
-          .from("notifications")
-          .insert({
-            coach_id: originalNotification.coach_id,
-            client_id: originalNotification.client_id,
-            booking_id: originalNotification.booking_id,
-            type: role === "admin"
-              ? "admin_cancelled"
-              : "coach_cancelled",
-            message: `Late booking request rejected.\n\nReason:\n${reason}`,
-          })
-          .select()
-          .single()
+      const { data: clientNotification, error: notificationError } = await supabase
+        .from("notifications")
+        .insert({
+          coach_id: originalNotification.coach_id,
+          client_id: originalNotification.client_id,
+          booking_id: originalNotification.booking_id,
+          type: role === "admin" ? "admin_cancelled" : "coach_cancelled",
+          message: `Late booking request rejected.\n\nReason:\n${reason}`,
+        })
+        .select()
+        .single()
 
       if (!notificationError && clientNotification) {
         await fetch("/api/client/notifications/push", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            notificationId: clientNotification.id,
-          }),
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ notificationId: clientNotification.id }),
         })
       }
     }
@@ -414,9 +383,8 @@ export default function Navbar() {
         rejection_reason: reason,
       })
       .eq("id", notificationId)
-    if (!error) {
-      checkSession()
-    }
+
+    if (!error) checkSession()
   }
 
   async function handleLogout() {
@@ -425,81 +393,183 @@ export default function Navbar() {
   }
 
   return (
-    <nav
-      id="nav-header"
-      className={`fixed left-0 top-0 z-40 flex h-12 w-full items-center justify-between border-b border-[#D8CCB7]/15 px-6 text-white transition-[margin,width] duration-300 ease-in-out ${
-        isHomePage
-          ? "bg-[#1B2E23]/80 backdrop-blur-2xl"
-          : "bg-[#1B2E23]"
-      }`}
-    >
-      {/* Left side: Single Hamburger Menu Button */}
-      <button
-        onClick={toggleMenu}
-        className={`flex items-center justify-center p-1 text-[#E7DED1] transition hover:text-white ${
-          isMenuOpen ? "opacity-0 pointer-events-none" : "opacity-100"
+    <>
+      <nav
+        id="nav-header"
+        className={`fixed left-0 top-0 z-40 flex h-12 w-full items-center justify-between border-b border-[#D8CCB7]/15 px-6 text-white transition-[margin,width] duration-300 ease-in-out ${
+          isHomePage ? "bg-[#1B2E23]/80 backdrop-blur-2xl" : "bg-[#1B2E23]"
         }`}
-        aria-label="Toggle Menu"
       >
-        <Menu size={24} />
-      </button>
+        {/* Hamburger Toggle Button */}
+        <button
+          onClick={toggleMenu}
+          className={`flex items-center justify-center p-1 text-[#E7DED1] transition hover:text-white ${
+            isMenuOpen ? "pointer-events-none opacity-0" : "opacity-100"
+          }`}
+          aria-label="Toggle Menu"
+        >
+          <Menu size={24} />
+        </button>
 
-      {/* Right side: All Links & Notifications */}
-      <div className="flex items-center gap-6 text-sm lg:gap-8 lg:text-base">
-        {!loading && (
-          <>
-            {loggedIn && role === "coach" && (
-              <CoachNavbar
-                urgentCount={urgentCount}
-                normalCount={normalCount}
-                showUrgentDropdown={showUrgentDropdown}
-                setShowUrgentDropdown={setShowUrgentDropdown}
-                urgentNotifications={urgentNotifications}
-                handleApprove={handleApprove}
-                handleReject={handleReject}
-                markNotificationRead={markNotificationRead}
-                handleLogout={handleLogout}
-                isMenuOpen={isMenuOpen}
-                toggleMenu={toggleMenu}
-              />
-            )}
+        {/* Links & Navigation Items */}
+        <div className="flex items-center gap-6 text-sm lg:gap-8 lg:text-base">
+          {!loading && (
+            <>
+              {loggedIn && role === "coach" && (
+                <CoachNavbar
+                  urgentCount={urgentCount}
+                  normalCount={normalCount}
+                  showUrgentDropdown={showUrgentDropdown}
+                  setShowUrgentDropdown={setShowUrgentDropdown}
+                  urgentNotifications={urgentNotifications}
+                  handleApprove={handleApprove}
+                  handleReject={handleReject}
+                  markNotificationRead={markNotificationRead}
+                  handleLogout={handleLogout}
+                  isMenuOpen={isMenuOpen}
+                  toggleMenu={toggleMenu}
+                />
+              )}
 
-            {loggedIn && role === "admin" && (
-              <AdminNavbar
-                urgentCount={urgentCount}
-                normalCount={normalCount}
-                showUrgentDropdown={showUrgentDropdown}
-                setShowUrgentDropdown={setShowUrgentDropdown}
-                urgentNotifications={urgentNotifications}
-                handleApprove={handleApprove}
-                handleReject={handleReject}
-                markNotificationRead={markNotificationRead}
-                handleLogout={handleLogout}
-              />
-            )}
+              {loggedIn && role === "admin" && (
+                <AdminNavbar
+                  urgentCount={urgentCount}
+                  normalCount={normalCount}
+                  showUrgentDropdown={showUrgentDropdown}
+                  setShowUrgentDropdown={setShowUrgentDropdown}
+                  urgentNotifications={urgentNotifications}
+                  handleApprove={handleApprove}
+                  handleReject={handleReject}
+                  markNotificationRead={markNotificationRead}
+                  handleLogout={handleLogout}
+                />
+              )}
 
-            {loggedIn && role === "client" && (
-              <ClientNavbar
-                clientNotificationCount={clientNotificationCount}
-                handleLogout={handleLogout}
-                isMenuOpen={isMenuOpen}
-                toggleMenu={toggleMenu}
-              />
-            )}
+              {loggedIn && role === "client" && (
+                <ClientNavbar
+                  clientNotificationCount={clientNotificationCount}
+                  handleLogout={handleLogout}
+                  isMenuOpen={isMenuOpen}
+                  toggleMenu={toggleMenu}
+                />
+              )}
 
-            {!loggedIn && (
-              <>
-                <Link href="/login" className="flex h-8 items-center text-sm font-light uppercase tracking-[0.22em] text-[#E7DED1] transition hover:text-white">
-                  <span className="inline-block scale-x-90">LOGIN</span>
-                </Link>
-                <Link href="/signup" className="flex h-8 items-center text-sm font-light uppercase tracking-[0.22em] text-[#E7DED1] transition hover:text-white">
-                  <span className="inline-block scale-x-90">SIGN UP</span>
-                </Link>
-              </>
-            )}
-          </>
-        )}
+              {!loggedIn && (
+                <>
+                  <Link
+                    href="/login"
+                    className="flex h-8 items-center text-sm font-light uppercase tracking-[0.22em] text-[#E7DED1] transition hover:text-white"
+                  >
+                    <span className="inline-block scale-x-90">LOG IN</span>
+                  </Link>
+                  <Link
+                    href="/signup"
+                    className="flex h-8 items-center text-sm font-light uppercase tracking-[0.22em] text-[#E7DED1] transition hover:text-white"
+                  >
+                    <span className="inline-block scale-x-90">SIGN UP</span>
+                  </Link>
+                </>
+              )}
+            </>
+          )}
+        </div>
+      </nav>
+
+      {/* Render Drawer outside nav element */}
+      {!loggedIn && (
+        <LoggedOutDrawer isMenuOpen={isMenuOpen} toggleMenu={toggleMenu} />
+      )}
+    </>
+  )
+}
+
+function LoggedOutDrawer({
+  isMenuOpen,
+  toggleMenu,
+}: {
+  isMenuOpen: boolean
+  toggleMenu: () => void
+}) {
+  return (
+    <>
+      <div
+        style={{ left: isMenuOpen ? "-320px" : "0px" }}
+        className={`fixed top-0 z-50 flex h-screen w-80 flex-col border-r border-[#D8CCB7]/15 bg-[#1B2E23] text-white shadow-2xl transition-transform duration-300 ease-in-out ${
+          isMenuOpen ? "translate-x-full" : "-translate-x-full"
+        }`}
+      >
+        {/* Close Button Header */}
+        <div className="flex h-14 shrink-0 items-center justify-end px-6">
+          <button
+            onClick={toggleMenu}
+            className="rounded-full p-1 text-[#E7DED1]/70 transition hover:bg-[#D8CCB7]/10 hover:text-white"
+            aria-label="Close Menu"
+          >
+            <X size={22} />
+          </button>
+        </div>
+
+        {/* Stacked Logos */}
+        <div className="flex shrink-0 flex-col items-center justify-center border-b border-[#D8CCB7]/10 px-6 pb-6 pt-2">
+          <Image
+            src="/images/logo-warm.png"
+            alt="Logo Icon"
+            width={48}
+            height={48}
+            className="mb-1 h-11 w-auto object-contain"
+          />
+          <Image
+            src="/images/gemini-logo-text-warm.png"
+            alt="Gemini Golf Academy"
+            width={140}
+            height={30}
+            className="h-5 w-auto object-contain opacity-90"
+          />
+        </div>
+
+        {/* Drawer Links */}
+        <div className="space-y-2 px-6 py-4">
+          <Link
+            href="/"
+            onClick={toggleMenu}
+            className="flex items-center justify-between rounded-lg px-3 py-2 text-xs font-light uppercase tracking-[0.18em] text-[#E7DED1] transition hover:bg-[#D8CCB7]/10 hover:text-white"
+          >
+            <span className="origin-left scale-x-95">HOMEPAGE</span>
+          </Link>
+
+          <div className="space-y-2 border-t border-[#D8CCB7]/10 pt-2">
+            <Link
+              href="/login"
+              onClick={toggleMenu}
+              className="flex items-center justify-between rounded-lg px-3 py-2 text-xs font-light uppercase tracking-[0.18em] text-[#E7DED1] transition hover:bg-[#D8CCB7]/10 hover:text-white"
+            >
+              <span className="origin-left scale-x-95">LOG IN</span>
+            </Link>
+
+            <Link
+              href="/signup"
+              onClick={toggleMenu}
+              className="flex items-center justify-between rounded-lg px-3 py-2 text-xs font-light uppercase tracking-[0.18em] text-[#E7DED1] transition hover:bg-[#D8CCB7]/10 hover:text-white"
+            >
+              <span className="origin-left scale-x-95">SIGN UP</span>
+            </Link>
+          </div>
+
+          <div className="border-t border-[#D8CCB7]/10 pt-2">
+            <div className="flex cursor-not-allowed items-center justify-between rounded-lg px-3 py-2 text-xs font-light uppercase tracking-[0.18em] text-[#E7DED1]/40">
+              <span className="origin-left scale-x-95">COMING SOON</span>
+            </div>
+          </div>
+        </div>
       </div>
-    </nav>
+
+      {/* Backdrop for Mobile View */}
+      {isMenuOpen && (
+        <div
+          onClick={toggleMenu}
+          className="fixed inset-0 z-40 bg-black/50 md:hidden"
+        />
+      )}
+    </>
   )
 }

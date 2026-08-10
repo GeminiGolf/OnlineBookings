@@ -2,7 +2,7 @@ import Image from "next/image";
 
 export default function Home() {
   return (
-    <main className="relative h-screen overflow-hidden">
+    <main className="relative min-h-screen w-full bg-[#1B2E23]">
       {/* Mobile */}
       <video
         autoPlay
@@ -27,7 +27,7 @@ export default function Home() {
 
       <div className="absolute inset-0 bg-black/60" />
 
-      <div className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center text-[#F6F2EA]">
+      <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-6 text-center text-[#F6F2EA]">
         <Image
           src="/images/logo-warm.png"
           alt="Gemini Golf Academy"
@@ -62,9 +62,6 @@ export default function Home() {
         >
           BOOK A LESSON
         </a>
-
-        <p className="mt-[clamp(2rem,4vh,3rem)] max-w-xl text-lg font-light leading-8 text-[#E9E2D8]">
-        </p>
       </div>
     </main>
   );
