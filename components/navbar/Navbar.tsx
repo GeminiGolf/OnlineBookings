@@ -492,6 +492,7 @@ export default function Navbar() {
           dashboardHref={getDashboardHref()}
           urgentCount={urgentCount}
           handleLogout={handleLogout}
+          role={role}
         />
       )}
     </>
@@ -504,12 +505,14 @@ function LoggedInDrawer({
   dashboardHref,
   urgentCount,
   handleLogout,
+  role,
 }: {
   isMenuOpen: boolean
   toggleMenu: () => void
   dashboardHref: string
   urgentCount: number
   handleLogout: () => void
+  role: string
 }) {
   return (
     <>
@@ -557,23 +560,63 @@ function LoggedInDrawer({
             <span className="origin-left scale-x-95">HOMEPAGE</span>
           </Link>
 
-          <div className="space-y-2 border-t border-[#D8CCB7]/10 pt-2">
-            <Link
-              href={dashboardHref}
-              onClick={toggleMenu}
-              className="flex items-center justify-between rounded-lg px-3 py-2 text-xs font-light uppercase tracking-[0.18em] text-[#E7DED1] transition hover:bg-[#D8CCB7]/10 hover:text-white"
-            >
-              <span className="origin-left scale-x-95">
-                DASHBOARD {urgentCount > 0 ? `(${urgentCount})` : ""}
-              </span>
-            </Link>
-          </div>
+          {/* Admin Specific Links */}
+          {role === "admin" ? (
+            <div className="space-y-2 border-t border-[#D8CCB7]/10 pt-2">
+              <Link
+                href="/admin/schedule"
+                onClick={toggleMenu}
+                className="flex items-center justify-between rounded-lg px-3 py-2 text-xs font-light uppercase tracking-[0.18em] text-[#E7DED1] transition hover:bg-[#D8CCB7]/10 hover:text-white"
+              >
+                <span className="origin-left scale-x-95">SCHEDULE</span>
+              </Link>
 
-          <div className="border-t border-[#D8CCB7]/10 pt-2">
-            <div className="flex cursor-not-allowed items-center justify-between rounded-lg px-3 py-2 text-xs font-light uppercase tracking-[0.18em] text-[#E7DED1]/40">
-              <span className="origin-left scale-x-95">COMING SOON</span>
+              <Link
+                href="/admin/profiles"
+                onClick={toggleMenu}
+                className="flex items-center justify-between rounded-lg px-3 py-2 text-xs font-light uppercase tracking-[0.18em] text-[#E7DED1] transition hover:bg-[#D8CCB7]/10 hover:text-white"
+              >
+                <span className="origin-left scale-x-95">PROFILES</span>
+              </Link>
+
+              <Link
+                href="/admin/bookings"
+                onClick={toggleMenu}
+                className="flex items-center justify-between rounded-lg px-3 py-2 text-xs font-light uppercase tracking-[0.18em] text-[#E7DED1] transition hover:bg-[#D8CCB7]/10 hover:text-white"
+              >
+                <span className="origin-left scale-x-95">ALL BOOKINGS</span>
+              </Link>
+
+              <Link
+                href="/admin/transactions"
+                onClick={toggleMenu}
+                className="flex items-center justify-between rounded-lg px-3 py-2 text-xs font-light uppercase tracking-[0.18em] text-[#E7DED1] transition hover:bg-[#D8CCB7]/10 hover:text-white"
+              >
+                <span className="origin-left scale-x-95">TRANSACTIONS</span>
+              </Link>
+
+              <Link
+                href="/admin/packages"
+                onClick={toggleMenu}
+                className="flex items-center justify-between rounded-lg px-3 py-2 text-xs font-light uppercase tracking-[0.18em] text-[#E7DED1] transition hover:bg-[#D8CCB7]/10 hover:text-white"
+              >
+                <span className="origin-left scale-x-95">CLIENT PACKAGES</span>
+              </Link>
             </div>
-          </div>
+          ) : (
+            /* Non-Admin Default Links */
+            <div className="space-y-2 border-t border-[#D8CCB7]/10 pt-2">
+              <Link
+                href={dashboardHref}
+                onClick={toggleMenu}
+                className="flex items-center justify-between rounded-lg px-3 py-2 text-xs font-light uppercase tracking-[0.18em] text-[#E7DED1] transition hover:bg-[#D8CCB7]/10 hover:text-white"
+              >
+                <span className="origin-left scale-x-95">
+                  DASHBOARD {urgentCount > 0 ? `(${urgentCount})` : ""}
+                </span>
+              </Link>
+            </div>
+          )}
 
           <div className="border-t border-[#D8CCB7]/10 pt-2">
             <button

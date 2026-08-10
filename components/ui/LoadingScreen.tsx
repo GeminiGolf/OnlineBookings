@@ -13,7 +13,7 @@ export default function LoadingScreen({
     <main className="min-h-screen bg-[#F2EEE8] flex items-center justify-center px-6">
       <div className="flex flex-col items-center">
         <Image
-          src="/images/gemini-logo.png"
+          src="/images/gemini-logo-warm.png"
           alt="Gemini Golf Academy"
           width={170}
           height={170}
@@ -21,7 +21,7 @@ export default function LoadingScreen({
           className="animate-luxury-fade select-none"
         />
 
-        <p className="mt-6 text-[15px] font-light tracking-[0.08em] text-[#6D7F72]">
+        <p className="mt-6 text-[15px] font-light tracking-[0.08em] text-[#BFAD7A]">
           {text}
         </p>
       </div>
