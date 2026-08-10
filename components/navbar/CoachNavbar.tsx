@@ -1,5 +1,6 @@
 import Link from "next/link"
-import { Bell } from "lucide-react"
+import { useState } from "react"
+import { Bell, Menu } from "lucide-react"
 
 type Props = {
   urgentCount: number
@@ -27,20 +28,23 @@ export default function CoachNavbar({
   markNotificationRead,
   handleLogout,
 }: Props) {
+  const [showMenu, setShowMenu] = useState(false)
 
   return (
-  <>
+  <div className="flex items-center gap-2 md:gap-4">
     <div className="relative">
       <button
         onClick={() => setShowUrgentDropdown(!showUrgentDropdown)}
-        className={`relative flex items-center justify-center transition ${
-          urgentCount > 0 ? "font-bold text-red-500" : "hover:text-red-400"
-        }`}
+        className="relative flex items-center justify-center transition"
+        style={{ color: "#D8CCB7" }}
       >
         <>
           <Bell size={20} />
           {urgentCount > 0 && (
-            <span className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-[10px] font-bold text-white">
+            <span
+              className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-bold text-white"
+              style={{ backgroundColor: "#8F3434" }}
+            >
               {urgentCount}
             </span>
           )}
@@ -175,26 +179,64 @@ export default function CoachNavbar({
 
     <Link
       href="/coach/schedule"
-      className="text-sm font-light uppercase tracking-[0.15em] text-white/80 transition hover:text-white"
+      className="ml-1.5 text-sm font-light uppercase tracking-[0.15em] transition"
+      style={{ color: "#D8CCB7" }}
     >
       <span className="inline-block scale-x-90">SCHEDULE</span>
     </Link>
     <Link
       href="/coach/dashboard"
-      className="text-sm font-light uppercase tracking-[0.15em] text-white/80 transition hover:text-white"
+      className="text-sm font-light uppercase tracking-[0.15em] transition"
+      style={{ color: "#D8CCB7" }}
     >
       <span className="inline-block scale-x-90">
-        <span className="inline-block scale-x-90">
+        <span className="inline sm:hidden">
+          {normalCount > 0 ? `DASH (${normalCount})` : "DASH"}
+        </span>
+
+        <span className="hidden sm:inline">
           {normalCount > 0 ? `DASHBOARD (${normalCount})` : "DASHBOARD"}
         </span>
       </span>
     </Link>
-    <button
-      onClick={handleLogout}
-      className="text-sm font-light uppercase tracking-[0.15em] text-white/80 transition hover:text-white"
-    >
-      <span className="inline-block scale-x-90">LOGOUT</span>
-    </button>
-    </>
+    <div className="relative z-[9999]">
+      <button
+        onClick={() => setShowMenu(!showMenu)}
+        className="rounded-md p-1 transition"
+        style={{ color: "#D8CCB7" }}
+      >
+        <Menu size={22} />
+      </button>
+
+      {showMenu && (
+        <div
+          className="absolute right-0 top-full z-[9999] mt-1 w-52 overflow-hidden rounded-b-md border shadow-xl"
+          style={{
+            backgroundColor: "rgba(68, 82, 68, 0.98)",
+            backdropFilter: "blur(8px)",
+            borderColor: "#6A7468",
+          }}
+        >
+          <div className="flex h-10 items-center border-b px-4"
+          style={{ borderColor: "#6A7468" }}>
+            <span
+              className="whitespace-nowrap text-xs font-light uppercase tracking-[0.15em]"
+              style={{ color: "#D8CCB7", opacity: 0.45 }}
+            >
+              Coming Soon...
+            </span>
+          </div>
+
+          <button
+            onClick={handleLogout}
+            className="flex h-10 w-full items-center px-4 text-left text-xs font-light uppercase tracking-[0.15em] transition hover:bg-white/5"
+            style={{ color: "#D8CCB7" }}
+          >
+            Logout
+          </button>
+        </div>
+      )}
+    </div>
+    </div>
   )
 }
