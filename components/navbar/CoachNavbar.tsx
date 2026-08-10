@@ -216,7 +216,7 @@ export default function CoachNavbar({
       >
         <button
           onClick={() => setShowMenu((v) => !v)}
-          className="fixed right-6 top-5 z-[10002] rounded-md p-1 transition"
+          className="absolute right-6 top-3 z-[10002] rounded-md p-1 transition"
           style={{ color: "#D8CCB7" }}
         >
           <Menu size={22} />
