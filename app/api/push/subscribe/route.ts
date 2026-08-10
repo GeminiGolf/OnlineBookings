@@ -25,6 +25,12 @@ export async function POST(req: Request) {
       )
     }
 
+    // This browser/device should only ever belong to the latest logged-in account.
+    await supabaseAdmin
+      .from("push_subscriptions")
+      .delete()
+      .eq("endpoint", endpoint)
+
     const { data, error } = await supabaseAdmin
       .from("push_subscriptions")
       .upsert(
