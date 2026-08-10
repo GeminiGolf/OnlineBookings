@@ -1,7 +1,8 @@
 import Link from "next/link"
 import { useState } from "react"
+import { usePathname } from "next/navigation"
 import { Bell, Menu } from "lucide-react"
-
+import CoachDrawer from "@/components/navbar/drawer/coach"
 type Props = {
   urgentCount: number
   normalCount: number
@@ -29,7 +30,11 @@ export default function CoachNavbar({
   handleLogout,
 }: Props) {
   const [showMenu, setShowMenu] = useState(false)
-
+  const pathname = usePathname()
+  const drawerBackground =
+    pathname === "/"
+      ? "#08190F"
+      : "#445244"
   return (
   <div className="flex items-center gap-2 md:gap-4">
     <div className="relative">
@@ -199,44 +204,26 @@ export default function CoachNavbar({
         </span>
       </span>
     </Link>
-    <div className="relative z-[9999]">
-      <button
-        onClick={() => setShowMenu(!showMenu)}
-        className="rounded-md p-1 transition"
-        style={{ color: "#D8CCB7" }}
-      >
-        <Menu size={22} />
-      </button>
-
-      {showMenu && (
-        <div
-          className="absolute right-0 top-full z-[9999] mt-1 w-52 overflow-hidden rounded-b-md border shadow-xl"
-          style={{
-            backgroundColor: "rgba(68, 82, 68, 0.98)",
-            backdropFilter: "blur(8px)",
-            borderColor: "#6A7468",
-          }}
+    <div className="relative z-[9999] w-6">
+      {!showMenu && (
+        <button
+          onClick={() => setShowMenu(true)}
+          className="rounded-md p-1 transition"
+          style={{ color: "#D8CCB7" }}
         >
-          <div className="flex h-10 items-center border-b px-4"
-          style={{ borderColor: "#6A7468" }}>
-            <span
-              className="whitespace-nowrap text-xs font-light uppercase tracking-[0.15em]"
-              style={{ color: "#D8CCB7", opacity: 0.45 }}
-            >
-              Coming Soon...
-            </span>
-          </div>
-
-          <button
-            onClick={handleLogout}
-            className="flex h-10 w-full items-center px-4 text-left text-xs font-light uppercase tracking-[0.15em] transition hover:bg-white/5"
-            style={{ color: "#D8CCB7" }}
-          >
-            Logout
-          </button>
-        </div>
+          <Menu size={22} />
+        </button>
       )}
     </div>
-    </div>
+
+    {showMenu && (
+      <CoachDrawer
+        open={showMenu}
+        onClose={() => setShowMenu(false)}
+        handleLogout={handleLogout}
+        backgroundColor={drawerBackground}
+      />
+    )}
+  </div>
   )
 }
