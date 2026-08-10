@@ -34,7 +34,7 @@ export default function Home() {
           width={420}
           height={420}
           priority
-          className="mt-[clamp(3rem,7vh,6rem)] h-auto w-[clamp(100px,14vw,180px)] opacity-75"
+          className="mt-[clamp(3rem,7vh,6rem)] h-auto w-[clamp(70px,10vw,130px)] opacity-75"
         />
 
         <Image

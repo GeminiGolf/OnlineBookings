@@ -8,6 +8,7 @@ import { usePathname } from "next/navigation"
 import AdminNavbar from "./AdminNavbar"
 import CoachNavbar from "./CoachNavbar"
 import ClientNavbar from "./ClientNavbar"
+import {Menu} from "lucide-react"
 
 export default function Navbar() {
   const pathname = usePathname()
@@ -22,16 +23,9 @@ export default function Navbar() {
       const next = !prev
       const wrapper = document.getElementById("site-wrapper")
       const navHeader = document.getElementById("nav-header")
-      const isDesktop = typeof window !== "undefined" && window.innerWidth >= 768
 
-      if (isDesktop && !isHomePage) {
-        const newWidth = next ? "calc(100% - 320px)" : "100%"
-        if (wrapper) wrapper.style.width = newWidth
-        if (navHeader) navHeader.style.width = newWidth
-      } else {
-        if (wrapper) wrapper.style.width = "100%"
-        if (navHeader) navHeader.style.width = "100%"
-      }
+      if (wrapper) wrapper.style.transform = "none"
+      if (navHeader) navHeader.style.transform = "none"
 
       return next
     })
@@ -415,23 +409,23 @@ export default function Navbar() {
   return (
     <nav
       id="nav-header"
-      className={`fixed left-0 top-0 z-40 flex h-14 w-full items-center justify-between border-b border-[#D8CCB7]/15 px-6 text-white transition-[width] duration-300 ease-in-out ${
+      className={`fixed left-0 top-0 z-40 flex h-12 w-full items-center justify-between border-b border-[#D8CCB7]/15 px-6 text-white transition-transform duration-300 ease-in-out ${
         isHomePage
           ? "bg-[#1B2E23]/80 backdrop-blur-2xl"
           : "bg-[#1B2E23]"
       }`}
     >
-      <Link href="/" className="flex items-center">
-        <Image
-          src="/images/navbar-logo.png"
-          alt="Gemini Golf Academy"
-          width={80}
-          height={80}
-          priority
-          className="h-6 w-auto transition hover:opacity-70"
-        />
-      </Link>
-      <div className="flex items-center gap-0 text-sm lg:gap-8 lg:text-base">
+      {/* Left side: Single Hamburger Menu Button */}
+      <button
+        onClick={toggleMenu}
+        className="flex items-center justify-center p-1 text-[#E7DED1] transition hover:text-white"
+        aria-label="Toggle Menu"
+      >
+        <Menu size={24} />
+      </button>
+
+      {/* Right side: All Links & Notifications */}
+      <div className="flex items-center gap-6 text-sm lg:gap-8 lg:text-base">
         {!loading && (
           <>
             {loggedIn && role === "coach" && (

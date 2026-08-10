@@ -65,13 +65,13 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
 
-      <body className="overflow-x-hidden bg-black text-white">
+      <body className="overflow-x-hidden bg-[#1B2E23] text-white">
 
         <Navbar />
 
         <div
           id="site-wrapper"
-          className="min-h-screen w-full transition-[width] duration-300 ease-in-out"
+          className="min-h-screen w-full bg-[#1B2E23] transition-transform duration-300 ease-in-out"
         >
           {children}
         </div>
