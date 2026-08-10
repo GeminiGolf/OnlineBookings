@@ -71,7 +71,7 @@ export default function RootLayout({
 
         <div
           id="site-wrapper"
-          className="min-h-screen w-full bg-[#1B2E23] transition-transform duration-300 ease-in-out"
+          className="min-h-screen w-full transition-[margin,width] duration-300 ease-in-out"
         >
           {children}
         </div>

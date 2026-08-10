@@ -22,12 +22,27 @@ export default function Navbar() {
     setIsMenuOpen((prev) => {
       const next = !prev
       const wrapper = document.getElementById("site-wrapper")
+      const navHeader = document.getElementById("nav-header")
       const isDesktop = typeof window !== "undefined" && window.innerWidth >= 768
 
       if (isDesktop) {
-        if (wrapper) wrapper.style.transform = next ? "translateX(320px)" : "translateX(0px)"
+        if (wrapper) {
+          wrapper.style.marginLeft = next ? "320px" : "0px"
+          wrapper.style.width = next ? "calc(100% - 320px)" : "100%"
+        }
+        if (navHeader) {
+          navHeader.style.marginLeft = next ? "320px" : "0px"
+          navHeader.style.width = next ? "calc(100% - 320px)" : "100%"
+        }
       } else {
-        if (wrapper) wrapper.style.transform = "none"
+        if (wrapper) {
+          wrapper.style.marginLeft = "0px"
+          wrapper.style.width = "100%"
+        }
+        if (navHeader) {
+          navHeader.style.marginLeft = "0px"
+          navHeader.style.width = "100%"
+        }
       }
 
       return next
@@ -412,7 +427,7 @@ export default function Navbar() {
   return (
     <nav
       id="nav-header"
-      className={`fixed left-0 top-0 z-40 flex h-12 w-full items-center justify-between border-b border-[#D8CCB7]/15 px-6 text-white transition-transform duration-300 ease-in-out ${
+      className={`fixed left-0 top-0 z-40 flex h-12 w-full items-center justify-between border-b border-[#D8CCB7]/15 px-6 text-white transition-[margin,width] duration-300 ease-in-out ${
         isHomePage
           ? "bg-[#1B2E23]/80 backdrop-blur-2xl"
           : "bg-[#1B2E23]"
@@ -421,7 +436,9 @@ export default function Navbar() {
       {/* Left side: Single Hamburger Menu Button */}
       <button
         onClick={toggleMenu}
-        className="flex items-center justify-center p-1 text-[#E7DED1] transition hover:text-white"
+        className={`flex items-center justify-center p-1 text-[#E7DED1] transition hover:text-white ${
+          isMenuOpen ? "opacity-0 pointer-events-none" : "opacity-100"
+        }`}
         aria-label="Toggle Menu"
       >
         <Menu size={24} />
