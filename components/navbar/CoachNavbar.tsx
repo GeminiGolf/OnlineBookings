@@ -1,7 +1,7 @@
+"use client"
+
 import Link from "next/link"
-import Image from "next/image"
-import { usePathname } from "next/navigation"
-import { Bell, X } from "lucide-react"
+import { Bell } from "lucide-react"
 
 type Props = {
   urgentCount: number
@@ -21,21 +21,13 @@ type Props = {
 }
 
 export default function CoachNavbar({
-  urgentCount,
-  normalCount,
   showUrgentDropdown,
   setShowUrgentDropdown,
   urgentNotifications,
   handleApprove,
   handleReject,
   markNotificationRead,
-  handleLogout,
-  isMenuOpen,
-  toggleMenu,
 }: Props) {
-  const pathname = usePathname()
-  const isHomePage = pathname === "/"
-
   return (
     <>
       {/* 1. SCHEDULE Link First */}
@@ -187,85 +179,6 @@ export default function CoachNavbar({
             )}
           </div>
         )}
-      </div>
-
-      {/* Side Menu Drawer */}
-      <div
-        className={`fixed top-0 left-0 z-50 flex h-screen w-80 flex-col text-white shadow-2xl border-r border-[#D8CCB7]/15 transition-transform duration-300 ease-in-out ${
-          isHomePage
-            ? "bg-[#1B2E23]/95 backdrop-blur-xl"
-            : "bg-[#1B2E23]"
-        } ${
-          isMenuOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
-      >
-        {/* Close Button Header */}
-        <div className="flex h-14 shrink-0 items-center justify-end px-6">
-          <button
-            onClick={toggleMenu}
-            className="rounded-full p-1 text-[#E7DED1]/70 transition hover:bg-[#D8CCB7]/10 hover:text-white"
-            aria-label="Close Menu"
-          >
-            <X size={22} />
-          </button>
-        </div>
-
-        {/* Centered Stacked Logos */}
-        <div className="flex shrink-0 flex-col items-center justify-center border-b border-[#D8CCB7]/10 px-6 pb-6 pt-2">
-          <Image
-            src="/images/logo-warm.png"
-            alt="Logo Icon"
-            width={48}
-            height={48}
-            className="mb-1 h-11 w-auto object-contain"
-          />
-          <Image
-            src="/images/gemini-logo-text-warm.png"
-            alt="Gemini Golf Academy"
-            width={140}
-            height={30}
-            className="h-5 w-auto object-contain opacity-90"
-          />
-        </div>
-
-        {/* Content Area */}
-        <div className="px-6 py-4 space-y-2">
-          <Link
-            href="/"
-            onClick={toggleMenu}
-            className="flex items-center justify-between rounded-lg px-3 py-2 text-xs font-light uppercase tracking-[0.18em] text-[#E7DED1] transition hover:bg-[#D8CCB7]/10 hover:text-white"
-          >
-            <span className="scale-x-95 origin-left">HOMEPAGE</span>
-          </Link>
-
-          <div className="pt-2 border-t border-[#D8CCB7]/10">
-            <Link
-              href="/coach/dashboard"
-              onClick={toggleMenu}
-              className="flex items-center justify-between rounded-lg px-3 py-2 text-xs font-light uppercase tracking-[0.18em] text-[#E7DED1] transition hover:bg-[#D8CCB7]/10 hover:text-white"
-            >
-              <span className="scale-x-95 origin-left">
-                {normalCount > 0 ? `DASHBOARD (${normalCount})` : "DASHBOARD"}
-              </span>
-            </Link>
-          </div>
-
-          <div className="flex items-center justify-between rounded-lg px-3 py-2 text-xs font-light uppercase tracking-[0.18em] text-[#E7DED1]/40 cursor-not-allowed">
-            <span className="scale-x-95 origin-left">COMING SOON</span>
-          </div>
-
-          <div className="pt-2 border-t border-[#D8CCB7]/10 mt-2">
-            <button
-              onClick={() => {
-                toggleMenu()
-                handleLogout()
-              }}
-              className="flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-xs font-light uppercase tracking-[0.18em] text-[#E7786E] transition hover:bg-red-500/10 hover:text-red-300"
-            >
-              <span className="scale-x-95 origin-left">LOGOUT</span>
-            </button>
-          </div>
-        </div>
       </div>
     </>
   )

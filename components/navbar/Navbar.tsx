@@ -392,6 +392,13 @@ export default function Navbar() {
     window.location.href = "/login"
   }
 
+  const getDashboardHref = () => {
+    if (role === "coach") return "/coach/dashboard"
+    if (role === "client") return "/client/dashboard"
+    if (role === "admin") return "/admin"
+    return "/dashboard"
+  }
+
   return (
     <>
       <nav
@@ -475,9 +482,119 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* Render Drawer outside nav element */}
-      {!loggedIn && (
+      {/* Drawers Rendered outside nav header element */}
+      {!loggedIn ? (
         <LoggedOutDrawer isMenuOpen={isMenuOpen} toggleMenu={toggleMenu} />
+      ) : (
+        <LoggedInDrawer
+          isMenuOpen={isMenuOpen}
+          toggleMenu={toggleMenu}
+          dashboardHref={getDashboardHref()}
+          urgentCount={urgentCount}
+          handleLogout={handleLogout}
+        />
+      )}
+    </>
+  )
+}
+
+function LoggedInDrawer({
+  isMenuOpen,
+  toggleMenu,
+  dashboardHref,
+  urgentCount,
+  handleLogout,
+}: {
+  isMenuOpen: boolean
+  toggleMenu: () => void
+  dashboardHref: string
+  urgentCount: number
+  handleLogout: () => void
+}) {
+  return (
+    <>
+      <div
+        className={`fixed left-0 top-0 z-50 flex h-screen w-80 flex-col border-r border-[#D8CCB7]/15 bg-[#1B2E23] text-white shadow-2xl transition-transform duration-300 ease-in-out ${
+          isMenuOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        {/* Close Button Header */}
+        <div className="flex h-14 shrink-0 items-center justify-end px-6">
+          <button
+            onClick={toggleMenu}
+            className="rounded-full p-1 text-[#E7DED1]/70 transition hover:bg-[#D8CCB7]/10 hover:text-white"
+            aria-label="Close Menu"
+          >
+            <X size={22} />
+          </button>
+        </div>
+
+        {/* Stacked Logos */}
+        <div className="flex shrink-0 flex-col items-center justify-center border-b border-[#D8CCB7]/10 px-6 pb-6 pt-2">
+          <Image
+            src="/images/logo-warm.png"
+            alt="Logo Icon"
+            width={48}
+            height={48}
+            className="mb-1 h-11 w-auto object-contain"
+          />
+          <Image
+            src="/images/gemini-logo-text-warm.png"
+            alt="Gemini Golf Academy"
+            width={140}
+            height={30}
+            className="h-5 w-auto object-contain opacity-90"
+          />
+        </div>
+
+        {/* Drawer Links */}
+        <div className="space-y-2 px-6 py-4">
+          <Link
+            href="/"
+            onClick={toggleMenu}
+            className="flex items-center justify-between rounded-lg px-3 py-2 text-xs font-light uppercase tracking-[0.18em] text-[#E7DED1] transition hover:bg-[#D8CCB7]/10 hover:text-white"
+          >
+            <span className="origin-left scale-x-95">HOMEPAGE</span>
+          </Link>
+
+          <div className="space-y-2 border-t border-[#D8CCB7]/10 pt-2">
+            <Link
+              href={dashboardHref}
+              onClick={toggleMenu}
+              className="flex items-center justify-between rounded-lg px-3 py-2 text-xs font-light uppercase tracking-[0.18em] text-[#E7DED1] transition hover:bg-[#D8CCB7]/10 hover:text-white"
+            >
+              <span className="origin-left scale-x-95">
+                DASHBOARD {urgentCount > 0 ? `(${urgentCount})` : ""}
+              </span>
+            </Link>
+          </div>
+
+          <div className="border-t border-[#D8CCB7]/10 pt-2">
+            <div className="flex cursor-not-allowed items-center justify-between rounded-lg px-3 py-2 text-xs font-light uppercase tracking-[0.18em] text-[#E7DED1]/40">
+              <span className="origin-left scale-x-95">COMING SOON</span>
+            </div>
+          </div>
+
+          <div className="border-t border-[#D8CCB7]/10 pt-2">
+            <button
+              onClick={() => {
+                toggleMenu()
+                handleLogout()
+              }}
+              className="flex w-full items-center justify-between rounded-lg px-3 py-2 text-xs font-light uppercase tracking-[0.18em] text-red-300 transition hover:bg-red-500/10 hover:text-red-200"
+            >
+              <span className="origin-left scale-x-95">LOGOUT</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Backdrop for Mobile View */}
+      {isMenuOpen && (
+        <div
+          onClick={toggleMenu}
+          className="fixed inset-0 z-40 bg-black/50 md:hidden"
+        />
       )}
     </>
   )
@@ -493,9 +610,8 @@ function LoggedOutDrawer({
   return (
     <>
       <div
-        style={{ left: isMenuOpen ? "-320px" : "0px" }}
-        className={`fixed top-0 z-50 flex h-screen w-80 flex-col border-r border-[#D8CCB7]/15 bg-[#1B2E23] text-white shadow-2xl transition-transform duration-300 ease-in-out ${
-          isMenuOpen ? "translate-x-full" : "-translate-x-full"
+        className={`fixed left-0 top-0 z-50 flex h-screen w-80 flex-col border-r border-[#D8CCB7]/15 bg-[#1B2E23] text-white shadow-2xl transition-transform duration-300 ease-in-out ${
+          isMenuOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
         {/* Close Button Header */}
