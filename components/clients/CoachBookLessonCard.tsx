@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { DayPicker } from "react-day-picker"
 import "react-day-picker/dist/style.css"
 import { supabase } from "@/lib/supabaseClient"
@@ -22,6 +22,7 @@ export default function CoachBookLessonCard({
   const [completedDates, setCompletedDates] = useState<Date[]>([])
   const [upcomingDates, setUpcomingDates] = useState<Date[]>([])
   const [noShowDates, setNoShowDates] = useState<Date[]>([])
+  const timeSlotsRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     async function loadSlots() {
@@ -143,7 +144,10 @@ export default function CoachBookLessonCard({
   }
 
   return (
-    <div className="rounded-3xl border border-[#3A5D49] bg-white p-3 shadow-md lg:px-6 lg:py-5">
+    <div
+      ref={timeSlotsRef}
+      className="rounded-3xl border border-[#3A5D49] bg-white p-3 shadow-md lg:px-6 lg:py-5"
+    >
       <h2 className="dashboard-heading mb-3">
         Book A Lesson
       </h2>
@@ -156,6 +160,20 @@ export default function CoachBookLessonCard({
           onSelect={(date) => {
             setSelectedDate(date)
             setSelectedTime("")
+
+            if (window.innerWidth < 1024) {
+              setTimeout(() => {
+                const top =
+                  timeSlotsRef.current!.getBoundingClientRect().top +
+                  window.scrollY -
+                  12
+
+                window.scrollTo({
+                  top,
+                  behavior: "smooth",
+                })
+              }, 150)
+            }
           }}
           disabled={[
             {
@@ -175,7 +193,10 @@ export default function CoachBookLessonCard({
         />
       </div>
 
-      <div className="mt-3">
+      <div
+        ref={timeSlotsRef}
+        className="mt-3"
+      >
         <h3 className="dashboard-heading mb-3">
           Available Time Slots
         </h3>
@@ -189,7 +210,23 @@ export default function CoachBookLessonCard({
             {timeSlots.map((time) => (
               <button
                 key={time}
-                onClick={() => setSelectedTime(time)}
+                onClick={() => {
+                  setSelectedTime(time)
+
+                  if (window.innerWidth < 1024) {
+                    setTimeout(() => {
+                      const top =
+                        timeSlotsRef.current!.getBoundingClientRect().top +
+                        window.scrollY +
+                        180
+
+                      window.scrollTo({
+                        top,
+                        behavior: "smooth",
+                      })
+                    }, 50)
+                  }
+                }}
                 className={`rounded-xl border px-4 py-2 text-[15px] font-light transition ${
                   selectedTime === time
                     ? "border-[#2F5A43] bg-[#2F5A43] text-white"
