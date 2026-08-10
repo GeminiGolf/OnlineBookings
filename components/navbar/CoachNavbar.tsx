@@ -1,4 +1,5 @@
 import Link from "next/link"
+import Image from "next/image"
 import { usePathname } from "next/navigation"
 import { Bell, Menu, X } from "lucide-react"
 
@@ -208,16 +209,16 @@ export default function CoachNavbar({
 
     {/* Side Menu Drawer */}
     <div
-      className={`fixed top-0 right-0 z-50 h-screen w-80 text-white shadow-2xl transition-transform duration-300 ease-in-out ${
+      className={`fixed top-0 right-0 z-50 h-screen w-80 text-white shadow-2xl border-l border-[#D8CCB7]/15 transition-transform duration-300 ease-in-out ${
         isHomePage
-          ? "bg-[#2F4538]/90 backdrop-blur-md"
-          : "bg-[#2F4538]"
+          ? "bg-[#1B2E23]/90 backdrop-blur-md"
+          : "bg-[#1B2E23]"
       } ${
         isMenuOpen ? "translate-x-0" : "translate-x-full"
       }`}
     >
-      <div className="flex items-center justify-between border-b border-[#D8CCB7]/10 px-6 py-4">
-        <span className="text-xs font-light uppercase tracking-[0.2em] text-[#E7DED1]">MENU</span>
+      {/* Close Button Header */}
+      <div className="flex h-14 items-center justify-end px-6">
         <button
           onClick={toggleMenu}
           className="text-white/80 transition hover:text-white"
@@ -227,7 +228,29 @@ export default function CoachNavbar({
         </button>
       </div>
 
-      <div className="flex flex-col p-6 space-y-4">
+      {/* Centered Stacked Logos */}
+      <div className="flex flex-col items-center justify-center px-6 pt-2 pb-6">
+        <Image
+          src="/images/logo-warm.png"
+          alt="Logo Icon"
+          width={48}
+          height={48}
+          className="h-12 w-auto object-contain mb-1"
+        />
+        <Image
+          src="/images/gemini-logo-text-warm.png"
+          alt="Gemini Golf Academy"
+          width={180}
+          height={40}
+          className="h-7 w-auto object-contain"
+        />
+      </div>
+
+      {/* Menu / Logout Below Logos */}
+      <div className="border-t border-[#D8CCB7]/10 px-6 pt-6">
+        <span className="mb-4 block text-xs font-light uppercase tracking-[0.2em] text-[#E7DED1]/60">
+          MENU
+        </span>
         <button
           onClick={() => {
             toggleMenu()

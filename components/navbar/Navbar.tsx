@@ -415,10 +415,10 @@ export default function Navbar() {
   return (
     <nav
       id="nav-header"
-      className={`fixed left-0 top-0 z-40 flex h-14 w-full items-center justify-between border-b border-[#D8CCB7]/10 px-6 text-white transition-[width] duration-300 ease-in-out ${
+      className={`fixed left-0 top-0 z-40 flex h-14 w-full items-center justify-between border-b border-[#D8CCB7]/15 px-6 text-white transition-[width] duration-300 ease-in-out ${
         isHomePage
-          ? "bg-[#2F4538]/80 backdrop-blur-2xl"
-          : "bg-[#2F4538]"
+          ? "bg-[#1B2E23]/80 backdrop-blur-2xl"
+          : "bg-[#1B2E23]"
       }`}
     >
       <Link href="/" className="flex items-center">
