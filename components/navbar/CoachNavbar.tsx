@@ -1,4 +1,5 @@
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 import { Bell, Menu, X } from "lucide-react"
 
 type Props = {
@@ -31,6 +32,9 @@ export default function CoachNavbar({
   isMenuOpen,
   toggleMenu,
 }: Props) {
+  const pathname = usePathname()
+  const isHomePage = pathname === "/"
+
   return (
   <>
     <div className="relative">
@@ -204,8 +208,12 @@ export default function CoachNavbar({
 
     {/* Side Menu Drawer */}
     <div
-      className={`fixed top-0 right-0 z-50 h-screen w-80 bg-[#102016] text-white shadow-2xl transition-transform duration-300 ease-in-out ${
-        isMenuOpen ? "translate-x-0 md:translate-x-full" : "translate-x-full"
+      className={`fixed top-0 right-0 z-50 h-screen w-80 text-white shadow-2xl transition-transform duration-300 ease-in-out ${
+        isHomePage
+          ? "bg-[#2F4538]/90 backdrop-blur-md"
+          : "bg-[#2F4538]"
+      } ${
+        isMenuOpen ? "translate-x-0" : "translate-x-full"
       }`}
     >
       <div className="flex items-center justify-between border-b border-[#D8CCB7]/10 px-6 py-4">

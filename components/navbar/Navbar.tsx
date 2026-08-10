@@ -4,12 +4,15 @@ import Link from "next/link"
 import Image from "next/image"
 import { useEffect, useState } from "react"
 import { supabase } from "@/lib/supabaseClient"
-import { Home, Bell, CalendarDays } from "lucide-react"
+import { usePathname } from "next/navigation"
 import AdminNavbar from "./AdminNavbar"
 import CoachNavbar from "./CoachNavbar"
 import ClientNavbar from "./ClientNavbar"
 
 export default function Navbar() {
+  const pathname = usePathname()
+  const isHomePage = pathname === "/"
+
   const [loggedIn, setLoggedIn] = useState(false)
   const [role, setRole] = useState("")
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -21,7 +24,7 @@ export default function Navbar() {
       const navHeader = document.getElementById("nav-header")
       const isDesktop = typeof window !== "undefined" && window.innerWidth >= 768
 
-      if (isDesktop) {
+      if (isDesktop && !isHomePage) {
         const newWidth = next ? "calc(100% - 320px)" : "100%"
         if (wrapper) wrapper.style.width = newWidth
         if (navHeader) navHeader.style.width = newWidth
@@ -50,6 +53,7 @@ export default function Navbar() {
       lesson_time: string
     }[]
   >([])
+
   useEffect(() => {
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker
@@ -102,16 +106,14 @@ export default function Navbar() {
       const registration = await navigator.serviceWorker.ready
       let subscription = await registration.pushManager.getSubscription()
       if (!subscription) {
-
         subscription = await registration.pushManager.subscribe({
           userVisibleOnly: true,
           applicationServerKey: urlBase64ToUint8Array(
             process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!
           ),
         })
-
       }
-      const response = await fetch("/api/push/subscribe", {
+      await fetch("/api/push/subscribe", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -174,8 +176,6 @@ export default function Navbar() {
             let client_name = ""
             let lesson_date = ""
             let lesson_time = ""
-
-            let client_id: number | null = notification.client_id
 
             if (notification.client_id) {
               const { data: client } = await supabase
@@ -253,7 +253,6 @@ export default function Navbar() {
           let client_name = ""
           let lesson_date = ""
           let lesson_time = ""
-          let client_id: number | null = notification.client_id
 
           if (notification.client_id) {
             const { data: client } = await supabase
@@ -416,7 +415,11 @@ export default function Navbar() {
   return (
     <nav
       id="nav-header"
-      className="fixed left-0 top-0 z-40 flex w-full flex-wrap items-center justify-between border-b border-[#D8CCB7]/10 bg-[#102016]/80 px-6 py-2.5 text-white backdrop-blur-2xl transition-[width] duration-300 ease-in-out"
+      className={`fixed left-0 top-0 z-40 flex w-full flex-wrap items-center justify-between border-b border-[#D8CCB7]/10 px-6 py-2.5 text-white transition-[width] duration-300 ease-in-out ${
+        isHomePage
+          ? "bg-[#2F4538]/80 backdrop-blur-2xl"
+          : "bg-[#2F4538]"
+      }`}
     >
       <Link href="/" className="flex items-center">
         <Image
