@@ -211,15 +211,16 @@ export default function CoachNavbar({
           width: drawerWidth,
           background: drawerBackground,
           borderLeft: "1px solid #223126",
-          paddingTop: "64px",
+          paddingTop: "60px",
         }}
       >
         <button
           onClick={() => setShowMenu((v) => !v)}
-          className="absolute right-6 top-3 z-[10002] rounded-md p-1 transition"
-          style={{ color: "#D8CCB7" }}
+          className="absolute right-6 top-3 z-[10002] rounded-md p-1 transition -translate-y-0.5"
         >
-          <Menu size={22} />
+          <div style={{ transform: "translateY(-1.5px)" }}>
+            <Menu size={22} />
+          </div>
         </button>
 
         <div className="flex flex-col items-center border-b border-[#223126] py-6">

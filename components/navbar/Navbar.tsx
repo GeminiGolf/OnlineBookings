@@ -393,7 +393,7 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="absolute left-0 top-0 z-50 flex w-full flex-wrap items-center justify-between border-b border-[#D8CCB7]/10 bg-[#102016]/80 px-6 py-3 text-white backdrop-blur-2xl lg:px-10 lg:py-2.5">
+    <nav className="absolute left-0 top-0 z-50 flex w-full flex-wrap items-center justify-between border-b border-[#D8CCB7]/10 bg-[#102016]/80 px-6 py-2.5 text-white backdrop-blur-2xl">
       <Link href="/" className="flex items-center">
         <Image
           src="/images/navbar-logo.png"
