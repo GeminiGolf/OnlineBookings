@@ -806,9 +806,15 @@ export default function ClientDashboard() {
             </div>
 
             <div className="mt-3 flex flex-col items-center">
-              <h3 className="dashboard-heading mb-3 text-center">
+              <h3 className="dashboard-heading mb-1 text-center">
                 Available Time Slots
               </h3>
+
+              {selectedCoach === 1 && selectedDate?.getDay() === 3 && (
+                <p className="mb-2 max-w-sm text-center text-[12px] font-normal text-[#2F5A43]">
+                  <strong>Wednesdays 7 AM - 12 PM</strong> are for <strong>short game</strong> - Francois
+                </p>
+              )}
 
               {timeSlots.length === 0 ? (
                 <p className="text-center text-[15px] font-light text-[#2F5A43]">

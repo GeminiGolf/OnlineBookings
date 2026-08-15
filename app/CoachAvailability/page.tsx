@@ -206,9 +206,15 @@ export default function CoachAvailabilityPage() {
                   className="mt-2 lg:mt-6 border-t border-[#3A5D49] pt-2 lg:pt-4 min-h-[60px] lg:min-h-[80px] w-full flex flex-col items-center"
                 >
 
-                  <h3 className="dashboard-label mb-3 text-center">
+                  <h3 className="dashboard-label mb-1 text-center">
                     Available Time Slots
                   </h3>
+
+                  {selectedCoach === 1 && selectedDate?.getDay() === 3 && (
+                    <p className="mb-2 max-w-sm text-center text-[12px] font-normal text-[#2F5A43]">
+                      <strong>Wednesdays 7 AM - 12 PM</strong> are for <strong>short game</strong> - Francois
+                    </p>
+                  )}
 
 									{timeSlots.length === 0 ? (
 										<p className="text-[15px] font-light tracking-[0.02em] text-[#2F5A43]">
