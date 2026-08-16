@@ -13,10 +13,13 @@ import { Menu, X } from "lucide-react"
 export default function Navbar() {
   const pathname = usePathname()
   const isHomePage = pathname === "/"
+  const isResetPasswordPage = pathname === "/reset-password"
 
   const [loggedIn, setLoggedIn] = useState(false)
   const [role, setRole] = useState("")
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+
+  const showAuthenticatedNav = loggedIn && !isResetPasswordPage
 
   const toggleMenu = () => {
     setIsMenuOpen((prev) => {
@@ -422,7 +425,7 @@ export default function Navbar() {
         <div className="flex items-center gap-6 text-sm lg:gap-8 lg:text-base">
           {!loading && (
             <>
-              {loggedIn && role === "coach" && (
+              {showAuthenticatedNav && role === "coach" && (
                 <CoachNavbar
                   urgentCount={urgentCount}
                   normalCount={normalCount}
@@ -438,7 +441,7 @@ export default function Navbar() {
                 />
               )}
 
-              {loggedIn && role === "admin" && (
+              {showAuthenticatedNav && role === "admin" && (
                 <AdminNavbar
                   urgentCount={urgentCount}
                   normalCount={normalCount}
@@ -452,7 +455,7 @@ export default function Navbar() {
                 />
               )}
 
-              {loggedIn && role === "client" && (
+              {showAuthenticatedNav && role === "client" && (
                 <ClientNavbar
                   clientNotificationCount={clientNotificationCount}
                   handleLogout={handleLogout}
@@ -461,7 +464,7 @@ export default function Navbar() {
                 />
               )}
 
-              {!loggedIn && (
+              {!showAuthenticatedNav && (
                 <>
                   <Link
                     href="/login"
@@ -483,7 +486,7 @@ export default function Navbar() {
       </nav>
 
       {/* Drawers Rendered outside nav header element */}
-      {!loggedIn ? (
+      {!showAuthenticatedNav ? (
         <LoggedOutDrawer isMenuOpen={isMenuOpen} toggleMenu={toggleMenu} />
       ) : (
         <LoggedInDrawer
