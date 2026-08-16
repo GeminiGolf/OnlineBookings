@@ -10,6 +10,7 @@ type Coach = {
   philosophy: string
   specialisations: string[]
   photoUrl?: string
+  imagePosition?: string
 }
 
 const coachesData: Coach[] = [
@@ -27,6 +28,7 @@ const coachesData: Coach[] = [
       "Technology & Analysis",
     ],
     photoUrl: "/OurCoaches/Francois_Action.png",
+    imagePosition: "object-top",
   },
   {
     id: 2,
@@ -39,9 +41,9 @@ const coachesData: Coach[] = [
       "Short Game",
       "Scoring & Strategy",
       "Performance Training",
-      "Mental Game",
     ],
     photoUrl: "/OurCoaches/Siti_Action.jpg",
+    imagePosition: "object-center",
   },
 ]
 
@@ -49,8 +51,21 @@ export default function MeetOurCoachesPage() {
   return (
     <main className="min-h-screen bg-[#F2EEE8] text-[#2F5A43]">
       {/* Hero Section */}
-      <section className="relative flex flex-col justify-between border-b border-[#3A5D49] bg-[#234A35] px-6 py-10 text-[#F2EEE8] sm:px-10 lg:px-14 lg:py-16">
-        <div className="mx-auto w-full max-w-6xl">
+      <section className="relative flex flex-col justify-between overflow-hidden border-b border-[#3A5D49] px-6 py-10 text-[#F2EEE8] sm:px-10 lg:px-14 lg:py-16">
+        <img
+          src="/OurCoaches/shortgame.jpg"
+          alt="Hero Background"
+          className="absolute inset-0 h-full w-full object-cover object-center"
+        />
+
+        <div 
+          className="absolute inset-0 z-0"
+          style={{
+            background: "linear-gradient(to right, rgba(27, 46, 35, 0.9) 0%, rgba(27, 46, 35, 0.7) 30%, rgba(27, 46, 35, 0.45) 60%, rgba(27, 46, 35, 0.2) 80%, transparent 100%)",
+          }}
+        />
+
+        <div className="relative z-10 mx-auto w-full max-w-6xl">
           <div className="max-w-2xl">
             <h1 className="text-xl font-light uppercase tracking-[0.18em] sm:text-2xl lg:text-3xl">
               Meet Our Coaches
@@ -69,7 +84,7 @@ export default function MeetOurCoachesPage() {
         </div>
       </section>
 
-      {/* Coaches Section - Always Side-by-Side Split */}
+      {/* Coaches Section */}
       <section className="mx-auto w-full max-w-6xl border-x border-[#3A5D49]/20">
         {coachesData.map((coach, index) => {
           const isEven = index % 2 === 0
@@ -77,53 +92,53 @@ export default function MeetOurCoachesPage() {
           return (
             <div
               key={coach.id}
-              className="grid grid-cols-5 border-b border-[#3A5D49]"
+              /* 
+                - grid-cols-5 keeps text and photo strictly side-by-side on all screens.
+                - h-[50vw] max-h-[500px] ensures it shrinks on smaller screens and caps at a fixed max height on wide screens.
+              */
+              className="grid grid-cols-5 border-b border-[#3A5D49] w-full h-[50vw] max-h-[500px] min-h-[360px]"
             >
-              {/* Info Block (3/5 width = 60%) */}
+              {/* Info Block (3/5 width) */}
               <div
-                className={`col-span-3 flex flex-col justify-between bg-[#F2EEE8] p-4 sm:p-6 lg:p-8 ${
+                className={`col-span-3 flex h-full flex-col justify-between bg-[#F2EEE8] p-3 sm:p-6 lg:p-8 overflow-hidden ${
                   isEven ? "order-1" : "order-2"
                 }`}
               >
                 <div>
-                  {/* Coach Number Label */}
                   <div className="flex items-center gap-2 sm:gap-3">
-                    <span className="text-[10px] font-light uppercase tracking-[0.16em] text-[#2F5A43]">
+                    <span className="text-[9px] sm:text-[10px] font-light uppercase tracking-[0.16em] text-[#2F5A43]">
                       {coach.label}
                     </span>
-                    <div className="h-[1px] w-8 bg-[#3A5D49]/40 sm:w-12" />
+                    <div className="h-[1px] w-6 sm:w-12 bg-[#3A5D49]/40" />
                   </div>
 
-                  {/* Name & Role */}
-                  <h2 className="mt-2 text-base font-light uppercase tracking-[0.12em] text-[#2F5A43] sm:text-xl lg:text-2xl">
+                  <h2 className="mt-1 sm:mt-2 text-sm sm:text-xl lg:text-2xl font-light uppercase tracking-[0.12em] text-[#2F5A43]">
                     {coach.name}
                   </h2>
-                  <p className="mt-0.5 text-[10px] font-light uppercase tracking-[0.14em] text-[#B89868] sm:text-xs">
+                  <p className="mt-0.5 text-[9px] sm:text-xs font-light uppercase tracking-[0.14em] text-[#B89868]">
                     {coach.role}
                   </p>
 
-                  {/* Philosophy */}
-                  <div className="mt-4 sm:mt-6">
-                    <h3 className="text-[10px] font-light uppercase tracking-[0.16em] text-[#2F5A43]/70">
+                  <div className="mt-2 sm:mt-5">
+                    <h3 className="text-[9px] sm:text-[10px] font-light uppercase tracking-[0.16em] text-[#2F5A43]/70">
                       Coaching Philosophy
                     </h3>
-                    <p className="mt-1 text-xs font-light leading-relaxed tracking-[0.02em] text-[#2F5A43] sm:text-sm">
+                    <p className="mt-0.5 sm:mt-1 text-[10px] sm:text-sm font-light leading-snug sm:leading-relaxed tracking-[0.02em] text-[#2F5A43] line-clamp-3 sm:line-clamp-none">
                       {coach.philosophy}
                     </p>
                   </div>
 
-                  {/* Specialisations */}
-                  <div className="mt-4 sm:mt-6">
-                    <h3 className="text-[10px] font-light uppercase tracking-[0.16em] text-[#2F5A43]/70">
+                  <div className="mt-2 sm:mt-5 hidden min-[400px]:block">
+                    <h3 className="text-[9px] sm:text-[10px] font-light uppercase tracking-[0.16em] text-[#2F5A43]/70">
                       Specialisations
                     </h3>
-                    <ul className="mt-1.5 space-y-1">
+                    <ul className="mt-1 space-y-0.5">
                       {coach.specialisations.map((item) => (
                         <li
                           key={item}
-                          className="flex items-center gap-1.5 text-xs font-light tracking-[0.02em] text-[#2F5A43]"
+                          className="flex items-center gap-1.5 text-[10px] sm:text-xs font-light tracking-[0.02em] text-[#2F5A43]"
                         >
-                          <span className="text-[8px] font-light">◆</span>
+                          <span className="text-[6px] sm:text-[8px] font-light">◆</span>
                           {item}
                         </li>
                       ))}
@@ -131,20 +146,19 @@ export default function MeetOurCoachesPage() {
                   </div>
                 </div>
 
-                {/* View Availability Action */}
-                <div className="mt-6 sm:mt-8">
+                <div className="mt-2 sm:mt-6">
                   <Link
                     href="/CoachAvailability"
-                    className="inline-flex items-center gap-2 rounded-lg border border-[#3A5D49] bg-white px-3 py-1.5 text-[10px] font-light uppercase tracking-[0.14em] text-[#2F5A43] shadow-sm transition hover:bg-[#F6FAF6] sm:px-4 sm:py-2 sm:text-xs"
+                    className="inline-flex items-center gap-1.5 sm:gap-2 rounded-lg border border-[#3A5D49] bg-white px-2.5 py-1 sm:px-4 sm:py-2 text-[9px] sm:text-xs font-light uppercase tracking-[0.14em] text-[#2F5A43] shadow-sm transition hover:bg-[#F6FAF6]"
                   >
                     View Availability →
                   </Link>
                 </div>
               </div>
 
-              {/* Photo Block (2/5 width = 40%) */}
+              {/* Photo Block (2/5 width) */}
               <div
-                className={`col-span-2 relative min-h-[240px] w-full bg-[#2F5A43] ${
+                className={`col-span-2 relative h-full w-full overflow-hidden ${
                   isEven ? "order-2" : "order-1"
                 }`}
               >
@@ -152,7 +166,9 @@ export default function MeetOurCoachesPage() {
                   <img
                     src={coach.photoUrl}
                     alt={coach.name}
-                    className="h-full w-full object-cover"
+                    className={`h-full w-full object-cover ${
+                      coach.imagePosition || "object-center"
+                    }`}
                   />
                 ) : (
                   <div className="flex h-full w-full items-center justify-center p-4 text-center">
@@ -167,7 +183,7 @@ export default function MeetOurCoachesPage() {
         })}
       </section>
 
-      {/* Call to Action Footer */}
+      {/* Footer CTA */}
       <section className="bg-[#2F5A43] px-6 py-12 text-center text-[#F2EEE8] sm:px-10 lg:py-16">
         <div className="mx-auto max-w-xl">
           <h2 className="text-base font-light uppercase tracking-[0.18em] sm:text-lg lg:text-xl">
