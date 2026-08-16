@@ -49,27 +49,28 @@ export default function MeetOurCoachesPage() {
   return (
     <main className="min-h-screen bg-[#F2EEE8] text-[#2F5A43]">
       {/* Hero Section */}
-      <section className="relative flex flex-col justify-between border-b border-[#3A5D49] bg-[#2F5A43] px-6 py-10 text-[#F2EEE8] sm:px-10 lg:px-14 lg:py-16">
-        <div className="max-w-2xl">
-          <h1 className="text-xl font-light uppercase tracking-[0.18em] sm:text-2xl lg:text-3xl">
-            Meet <br />
-            Our Coaches
-          </h1>
-          <p className="mt-3 text-xs font-light tracking-[0.04em] text-[#E0D8CC] sm:text-sm">
-            The people behind your golf development.
-          </p>
-        </div>
+      <section className="relative flex flex-col justify-between border-b border-[#3A5D49] bg-[#234A35] px-6 py-10 text-[#F2EEE8] sm:px-10 lg:px-14 lg:py-16">
+        <div className="mx-auto w-full max-w-6xl">
+          <div className="max-w-2xl">
+            <h1 className="text-xl font-light uppercase tracking-[0.18em] sm:text-2xl lg:text-3xl">
+              Meet Our Coaches
+            </h1>
+            <p className="mt-3 text-xs font-light tracking-[0.04em] text-[#E0D8CC] sm:text-sm">
+              The people behind your golf development.
+            </p>
+          </div>
 
-        <div className="mt-8 flex items-center justify-between text-[10px] font-light uppercase tracking-[0.2em] text-[#E0D8CC]">
-          <div className="flex flex-col items-center gap-1">
-            <span>Scroll</span>
-            <span>↓</span>
+          <div className="mt-8 flex items-center justify-between text-[10px] font-light uppercase tracking-[0.2em] text-[#E0D8CC]">
+            <div className="flex flex-col items-center gap-1">
+              <span>Scroll</span>
+              <span>↓</span>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Coaches Section - 60/40 Split Layout */}
-      <section className="w-full">
+      {/* Coaches Section - Always Side-by-Side Split */}
+      <section className="mx-auto w-full max-w-6xl border-x border-[#3A5D49]/20">
         {coachesData.map((coach, index) => {
           const isEven = index % 2 === 0
 
@@ -78,7 +79,7 @@ export default function MeetOurCoachesPage() {
               key={coach.id}
               className="grid grid-cols-5 border-b border-[#3A5D49]"
             >
-              {/* Info Block (60% width) */}
+              {/* Info Block (3/5 width = 60%) */}
               <div
                 className={`col-span-3 flex flex-col justify-between bg-[#F2EEE8] p-4 sm:p-6 lg:p-8 ${
                   isEven ? "order-1" : "order-2"
@@ -94,7 +95,7 @@ export default function MeetOurCoachesPage() {
                   </div>
 
                   {/* Name & Role */}
-                  <h2 className="mt-2 text-lg font-light uppercase tracking-[0.12em] text-[#2F5A43] sm:text-xl lg:text-2xl">
+                  <h2 className="mt-2 text-base font-light uppercase tracking-[0.12em] text-[#2F5A43] sm:text-xl lg:text-2xl">
                     {coach.name}
                   </h2>
                   <p className="mt-0.5 text-[10px] font-light uppercase tracking-[0.14em] text-[#B89868] sm:text-xs">
@@ -141,9 +142,9 @@ export default function MeetOurCoachesPage() {
                 </div>
               </div>
 
-              {/* Photo Block (40% width) */}
+              {/* Photo Block (2/5 width = 40%) */}
               <div
-                className={`col-span-2 relative min-h-[240px] w-full bg-[#2F5A43] sm:min-h-[340px] lg:min-h-[420px] ${
+                className={`col-span-2 relative min-h-[240px] w-full bg-[#2F5A43] ${
                   isEven ? "order-2" : "order-1"
                 }`}
               >
