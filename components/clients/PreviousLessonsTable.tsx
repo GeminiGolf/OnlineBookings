@@ -99,7 +99,7 @@ export default function PreviousLessonsTable({ lessons }: Props) {
                         setSelectedLesson(lesson)
                         setNoteText(lesson.lesson_notes || "")
                       }}
-                      className="rounded-xl border border-[#4E6FA8] bg-[#4E6FA8] px-3 py-1.5 text-[14px] font-light text-white shadow-sm transition hover:bg-[#3F5E92]"
+                      className="rounded-xl border border-[#3A5D49] bg-white px-3 py-1.5 text-[14px] font-light text-[#2F5A43] shadow-sm transition hover:bg-[#F6FAF6]"
                     >
                       View Note
                     </button>
@@ -138,9 +138,9 @@ export default function PreviousLessonsTable({ lessons }: Props) {
       </div>
 
       {selectedLesson && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="w-full max-w-2xl rounded-xl bg-white p-6 shadow-xl">
-            <h3 className="mb-4 text-2xl font-bold">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4">
+          <div className="w-full max-w-2xl rounded-3xl border border-[#3A5D49] bg-[#F2EEE8] p-6 shadow-xl">
+            <h3 className="mb-4 text-[18px] font-light uppercase tracking-[0.12em] text-[#2F5A43]">
               Lesson Notes
             </h3>
 
@@ -148,21 +148,21 @@ export default function PreviousLessonsTable({ lessons }: Props) {
               value={noteText}
               onChange={(e) => setNoteText(e.target.value)}
               rows={10}
-              className="w-full rounded-lg border p-3"
-              placeholder="Lesson notes..."
+              className="w-full rounded-2xl border border-[#3A5D49] bg-white p-4 text-[15px] font-light text-[#2F5A43] placeholder-[#2F5A43]/50 focus:border-[#2F5A43] focus:outline-none"
+              placeholder="Enter lesson notes..."
             />
 
-            <div className="mt-4 flex justify-end gap-2">
+            <div className="mt-5 flex justify-end gap-3">
               <button
                 onClick={() => setSelectedLesson(null)}
-                className="rounded border px-4 py-2"
+                className="rounded-xl border border-[#3A5D49] bg-white px-5 py-2 text-[14px] font-light tracking-[0.04em] text-[#2F5A43] shadow-sm transition hover:bg-[#EBE5DC]"
               >
                 Close
               </button>
 
               <button
                 onClick={() => saveNote(selectedLesson.id)}
-                className="rounded bg-green-600 px-4 py-2 text-white"
+                className="rounded-xl border border-[#3A5D49] bg-[#2F5A43] px-5 py-2 text-[14px] font-light tracking-[0.04em] text-white shadow-sm transition hover:bg-[#254936]"
               >
                 Save
               </button>

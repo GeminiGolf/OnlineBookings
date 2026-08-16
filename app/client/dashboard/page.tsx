@@ -1320,14 +1320,21 @@ export default function ClientDashboard() {
         )}
 
         {selectedLessonNote && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-            <div className="w-full max-w-2xl rounded-xl bg-white p-6 shadow-xl">
-              <h3 className="mb-4 text-2xl text-[18px] font-light uppercase tracking-[0.12em] text-black">Lesson Notes</h3>
-              <div className="min-h-[250px] rounded-lg border p-4 whitespace-pre-wrap">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4">
+            <div className="w-full max-w-2xl rounded-3xl border border-[#3A5D49] bg-[#F2EEE8] p-6 shadow-xl">
+              <h3 className="mb-4 text-[18px] font-light uppercase tracking-[0.12em] text-[#2F5A43]">
+                Lesson Notes
+              </h3>
+
+              <div className="min-h-[250px] rounded-2xl border border-[#3A5D49] bg-white p-4 text-[15px] font-light text-[#2F5A43] whitespace-pre-wrap">
                 {selectedLessonNote.lesson_notes}
               </div>
-              <div className="mt-4 flex justify-end">
-                <button onClick={() => setSelectedLessonNote(null)} className="rounded border px-4 py-2">
+
+              <div className="mt-5 flex justify-end">
+                <button
+                  onClick={() => setSelectedLessonNote(null)}
+                  className="rounded-xl border border-[#3A5D49] bg-white px-5 py-2 text-[14px] font-light tracking-[0.04em] text-[#2F5A43] shadow-sm transition hover:bg-[#E2DDD3]"
+                >
                   Close
                 </button>
               </div>
