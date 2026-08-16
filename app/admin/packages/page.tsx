@@ -127,7 +127,8 @@ export default async function CoachPackagesPage() {
   }))
 
   return (
-    <main className="min-h-screen bg-gray-100 p-3 sm:p-10 text-black">
+        <main className="min-h-screen bg-[#F2EEE8] px-4 pt-8 pb-3 sm:p-10 text-[#2F5A43]">
+
       <DashboardContainer>
 
         <AdminPackagesTable

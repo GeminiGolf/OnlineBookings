@@ -21,7 +21,7 @@ export default function LoadingScreen({
           className="animate-luxury-fade select-none"
         />
 
-        <p className="mt-6 text-[15px] font-light tracking-[0.08em] text-[#BFAD7A]">
+        <p className="mt-6 text-[15px] font-light tracking-[0.08em] text-[#8C7968]">
           {text}
         </p>
       </div>
