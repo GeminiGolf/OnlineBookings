@@ -16,7 +16,7 @@ const coachesData: Coach[] = [
   {
     id: 1,
     label: "COACH 01",
-    name: "FRANCOIS",
+    name: "Francois Van Zyl",
     role: "HEAD COACH",
     philosophy:
       "Every golfer is different. My approach is built around understanding how you move, how you learn, and what you want to achieve.",
@@ -26,11 +26,12 @@ const coachesData: Coach[] = [
       "Course Management",
       "Technology & Analysis",
     ],
+    photoUrl: "/OurCoaches/Francois_Action.png",
   },
   {
     id: 2,
     label: "COACH 02",
-    name: "HAZIQ",
+    name: "Siti Shaari",
     role: "PERFORMANCE COACH",
     philosophy:
       "I focus on building repeatable performance under pressure. Golf is as much mental as it is physical.",
@@ -40,6 +41,7 @@ const coachesData: Coach[] = [
       "Performance Training",
       "Mental Game",
     ],
+    photoUrl: "/OurCoaches/Siti_Action.jpg",
   },
 ]
 
@@ -131,7 +133,7 @@ export default function MeetOurCoachesPage() {
                 {/* View Availability Action */}
                 <div className="mt-6 sm:mt-8">
                   <Link
-                    href={`/coachavailability`}
+                    href="/CoachAvailability"
                     className="inline-flex items-center gap-2 rounded-lg border border-[#3A5D49] bg-white px-3 py-1.5 text-[10px] font-light uppercase tracking-[0.14em] text-[#2F5A43] shadow-sm transition hover:bg-[#F6FAF6] sm:px-4 sm:py-2 sm:text-xs"
                   >
                     View Availability →
