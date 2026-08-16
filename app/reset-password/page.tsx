@@ -11,25 +11,62 @@ export default function ResetPasswordPage() {
   const [confirmPassword, setConfirmPassword] = useState("")
   const [showPasswords, setShowPasswords] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [sessionReady, setSessionReady] = useState(false)
   const [success, setSuccess] = useState(false)
 
   useEffect(() => {
-    const hash = window.location.hash.substring(1)
-    const params = new URLSearchParams(hash)
+    async function initSession() {
+      // 1. Check if Supabase auto-detected session or listen for Auth state
+      const { data: { session } } = await supabase.auth.getSession()
 
-    const access_token = params.get("access_token")
-    const refresh_token = params.get("refresh_token")
+      if (session) {
+        setSessionReady(true)
+        return
+      }
 
-    if (!access_token || !refresh_token) return
+      // 2. Fallback: Parse Hash tokens (Implicit Flow)
+      const hash = window.location.hash.substring(1)
+      const params = new URLSearchParams(hash)
+      const access_token = params.get("access_token")
+      const refresh_token = params.get("refresh_token")
 
-    supabase.auth.setSession({
-      access_token,
-      refresh_token,
-    })
+      if (access_token && refresh_token) {
+        const { error } = await supabase.auth.setSession({
+          access_token,
+          refresh_token,
+        })
+
+        if (!error) {
+          setSessionReady(true)
+        } else {
+          alert("Session initialization failed: " + error.message)
+        }
+      }
+    }
+
+    // Subscribe to auth state changes (catches PASSWORD_RECOVERY events)
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        if (event === "PASSWORD_RECOVERY" || session) {
+          setSessionReady(true)
+        }
+      }
+    )
+
+    initSession()
+
+    return () => {
+      authListener.subscription.unsubscribe()
+    }
   }, [])
 
   async function handleResetPassword(e: React.FormEvent) {
     e.preventDefault()
+
+    if (!sessionReady) {
+      alert("Authentication session is still loading or invalid. Please check your reset link.")
+      return
+    }
 
     if (!newPassword || !confirmPassword) {
       alert("Please complete all fields.")
@@ -88,10 +125,7 @@ export default function ResetPasswordPage() {
 
         <form onSubmit={handleResetPassword} className="space-y-3">
           <div>
-            <label className="dashboard-label mb-2 block">
-              New Password
-            </label>
-
+            <label className="dashboard-label mb-2 block">New Password</label>
             <input
               type={showPasswords ? "text" : "password"}
               value={newPassword}
@@ -102,10 +136,7 @@ export default function ResetPasswordPage() {
           </div>
 
           <div>
-            <label className="dashboard-label mb-2 block">
-              Confirm New Password
-            </label>
-
+            <label className="dashboard-label mb-2 block">Confirm New Password</label>
             <input
               type={showPasswords ? "text" : "password"}
               value={confirmPassword}
@@ -126,13 +157,17 @@ export default function ResetPasswordPage() {
 
           <button
             type="submit"
-            disabled={loading}
-            className="mx-auto block w-56 rounded-xl border border-[#3A5D49] bg-[#2F5A43] px-5 py-2 text-[13px] font-light uppercase tracking-[0.12em] text-white shadow-sm transition hover:bg-[#244634]"
+            disabled={loading || !sessionReady}
+            className="mx-auto block w-56 rounded-xl border border-[#3A5D49] bg-[#2F5A43] px-5 py-2 text-[13px] font-light uppercase tracking-[0.12em] text-white shadow-sm transition hover:bg-[#244634] disabled:opacity-50"
           >
-            {loading ? "Resetting Password..." : "Reset Password"}
+            {loading
+              ? "Resetting Password..."
+              : !sessionReady
+              ? "Verifying Session..."
+              : "Reset Password"}
           </button>
         </form>
       </div>
     </main>
   )
-}
+} 
