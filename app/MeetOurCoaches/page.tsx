@@ -159,9 +159,10 @@ export default function MeetOurCoachesPage() {
                     </div>
                   </div>
 
+                  {/* Desktop Link */}
                   <div className="mt-8 shrink-0">
                     <Link
-                      href="/CoachAvailability"
+                      href={`/CoachAvailability?coach=${encodeURIComponent(coach.name.split(' ')[0])}`}
                       className="inline-flex items-center gap-2 rounded-xl bg-[#121D16] px-6 py-3 text-xs font-light uppercase tracking-[0.14em] text-[#F2EEE8] shadow transition hover:bg-[#1B2B20]"
                     >
                       View Availability →
@@ -328,9 +329,10 @@ export default function MeetOurCoachesPage() {
                   </ul>
                 </div>
 
+                {/* Mobile Link */}
                 <div className="mt-6">
                   <Link
-                    href="/CoachAvailability"
+                    href={`/CoachAvailability?coach=${encodeURIComponent(coach.name.split(' ')[0])}`}
                     className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#121D16] px-5 py-3 text-xs font-light uppercase tracking-[0.16em] text-[#F2EEE8] shadow transition hover:bg-[#1B2B20]"
                   >
                     View Availability →
