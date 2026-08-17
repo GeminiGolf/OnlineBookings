@@ -85,10 +85,6 @@ export default function MeetOurCoachesPage() {
               </p>
             </div>
 
-            <div className="flex items-center gap-1 text-[12px] font-light uppercase tracking-[0.2em] text-[#E0D8CC]">
-              <span>Scroll</span>
-              <span>↓</span>
-            </div>
           </div>
         </section>
 
@@ -163,7 +159,7 @@ export default function MeetOurCoachesPage() {
                   <div className="mt-8 shrink-0">
                     <Link
                       href={`/CoachAvailability?coach=${encodeURIComponent(coach.name.split(' ')[0])}`}
-                      className="inline-flex items-center gap-2 rounded-xl border border-[#B89868]/70 bg-[#FAF8F5] px-6 py-3 text-xs font-semibold uppercase tracking-[0.17em] text-[#2F5A43] shadow-sm transition-all hover:border-[#B89868] hover:bg-[#EFECE6]"
+                      className="inline-flex items-center gap-2 rounded-xl border border-[#B89868]/70 bg-[#2F5A43] px-6 py-3 text-xs font-semibold uppercase tracking-[0.17em] text-[#F2EEE8] shadow-sm transition-all hover:border-[#B89868] hover:bg-[#244634]"
                     >
                       View Availability →
                     </Link>
@@ -198,21 +194,30 @@ export default function MeetOurCoachesPage() {
         </section>
 
         {/* Desktop Footer CTA */}
-        <section className="bg-[#121D16] px-10 py-16 text-center text-[#F2EEE8]">
-          <div className="mx-auto max-w-xl">
+        <section className="relative overflow-hidden border-t border-[#E2DDD3] px-10 py-20 text-center text-[#F2EEE8]">
+          <img
+            src="/OurCoaches/approach.jpg"
+            alt="Footer Background"
+            className="absolute inset-0 h-full w-full object-cover object-center"
+          />
+
+          <div
+            className="absolute inset-0 z-0"
+            style={{
+              background:
+                "linear-gradient(to left, rgba(18, 29, 22, 0.95) 0%, rgba(18, 29, 22, 0.8) 30%, rgba(18, 29, 22, 0.5) 60%, rgba(18, 29, 22, 0.2) 80%, transparent 100%)",
+            }}
+          />
+
+          <div className="relative z-10 mx-auto max-w-xl">
             <h2 className="text-2xl font-light uppercase tracking-[0.18em]">
               One Academy. Different Approaches.
             </h2>
-            <p className="mt-2.5 text-base font-light leading-relaxed tracking-[0.04em] text-[#E0D8CC]">
-              Every golfer learns differently. Our coaches bring their own experience,
-              perspective and methodology — united by one goal: helping every player
-              become a better version of themselves.
-            </p>
 
             <div className="mt-6">
               <Link
                 href="/client/dashboard"
-                className="inline-block border border-[#B89868] bg-transparent px-6 py-2.5 text-sm font-light uppercase tracking-[0.18em] text-[#F2EEE8] transition hover:bg-[#B89868] hover:text-[#121D16]"
+                className="inline-block border border-[#B89868] bg-[#121D16]/40 backdrop-blur-sm px-6 py-2.5 text-sm font-light uppercase tracking-[0.18em] text-[#F2EEE8] transition hover:bg-[#B89868] hover:text-[#121D16]"
               >
                 Book A Lesson
               </Link>
@@ -333,7 +338,7 @@ export default function MeetOurCoachesPage() {
                 <div className="mt-6">
                   <Link
                     href={`/CoachAvailability?coach=${encodeURIComponent(coach.name.split(' ')[0])}`}
-                    className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-[#B89868]/70 bg-[#F2EEE8] px-5 py-3 text-xs font-semibold uppercase tracking-[0.17em] text-[#2F5A43] shadow-sm active:bg-[#EFECE6]"
+                    className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-[#B89868]/70 bg-[#2F5A43] px-5 py-3 text-xs font-semibold uppercase tracking-[0.17em] text-[#F2EEE8] shadow-sm active:bg-[#244634]"
                   >
                     View Availability →
                   </Link>
@@ -344,22 +349,34 @@ export default function MeetOurCoachesPage() {
         </div>
 
         {/* Mobile Footer CTA */}
-        <section className="bg-[#121D16] px-6 py-12 text-center text-[#F2EEE8]">
-          <h2 className="text-base font-light uppercase tracking-[0.18em]">
-            One Academy. Different Approaches.
-          </h2>
-          <p className="mt-2 text-xs font-light leading-relaxed text-[#E0D8CC]">
-            Every golfer learns differently. Our coaches bring their own experience,
-            perspective and methodology.
-          </p>
+        <section className="relative overflow-hidden px-6 py-14 text-center text-[#F2EEE8]">
+          <img
+            src="/OurCoaches/approach.jpg"
+            alt="Footer Background"
+            className="absolute inset-0 h-full w-full object-cover object-center"
+          />
 
-          <div className="mt-6">
-            <Link
-              href="/client/dashboard"
-              className="inline-block border border-[#B89868] bg-transparent px-6 py-2.5 text-xs font-light uppercase tracking-[0.18em] text-[#F2EEE8]"
-            >
-              Book A Lesson
-            </Link>
+          <div
+            className="absolute inset-0 z-0"
+            style={{
+              background:
+                "linear-gradient(to left, rgba(18, 29, 22, 0.95) 0%, rgba(18, 29, 22, 0.8) 40%, rgba(18, 29, 22, 0.5) 70%, transparent 100%)",
+            }}
+          />
+
+          <div className="relative z-10">
+            <h2 className="text-base font-light uppercase tracking-[0.18em]">
+              One Academy. Different Approaches.
+            </h2>
+
+            <div className="mt-6">
+              <Link
+                href="/client/dashboard"
+                className="inline-block border border-[#B89868] bg-[#121D16]/40 backdrop-blur-sm px-6 py-2.5 text-xs font-light uppercase tracking-[0.18em] text-[#F2EEE8]"
+              >
+                Book A Lesson
+              </Link>
+            </div>
           </div>
         </section>
       </div>
