@@ -11,8 +11,8 @@ type Coach = {
   specialisations: string[]
   photoUrl?: string
   imagePosition?: string
-  mobileImagePosition?: string // <-- Add this
-  mobileImageHeight?: string   // <-- Add this
+  mobileImagePosition?: string
+  mobileImageHeight?: string
 }
 
 const coachesData: Coach[] = [
@@ -31,9 +31,8 @@ const coachesData: Coach[] = [
     ],
     photoUrl: "/OurCoaches/Francois_Action.png",
     imagePosition: "object-[center_25%]",
-    // Mobile-specific position & height controls:
-    mobileImagePosition: "object-top", // Starts pinned right at the top
-    mobileImageHeight: "h-80", // Increases vertical height (e.g., h-72, h-80, h-96, or min-h-[350px])
+    mobileImagePosition: "object-top",
+    mobileImageHeight: "h-80",
   },
   {
     id: 2,
@@ -49,8 +48,7 @@ const coachesData: Coach[] = [
     ],
     photoUrl: "/OurCoaches/Siti_Action.jpeg",
     imagePosition: "object-center",
-    // Mobile-specific position & height controls:
-    mobileImagePosition: "object-[center_5%]", // Starts lower down (adjust percentage as needed)
+    mobileImagePosition: "object-[center_5%]",
     mobileImageHeight: "h-80", 
   },
 ]
@@ -61,9 +59,9 @@ export default function MeetOurCoachesPage() {
       {/* ========================================================================= */}
       {/*                       1. DESKTOP VERSION (md and up)                     */}
       {/* ========================================================================= */}
-      <div className="hidden md:block min-h-screen bg-[#121D16] text-[#F2EEE8]">
+      <div className="hidden md:block min-h-screen bg-[#F4F1EA] text-[#2F5A43]">
         {/* Desktop Hero Section */}
-        <section className="relative flex min-h-[340px] overflow-hidden border-b border-[#2A3D30] px-14 pb-10 pt-28 text-[#F2EEE8]">
+        <section className="relative flex min-h-[340px] overflow-hidden border-b border-[#E2DDD3] px-14 pb-10 pt-28 text-[#F2EEE8]">
           <img
             src="/OurCoaches/shortgame.jpg"
             alt="Hero Background"
@@ -94,71 +92,66 @@ export default function MeetOurCoachesPage() {
           </div>
         </section>
 
-        {/* Desktop Coaches Grid Layout */}
-        <section className="mx-auto w-full max-w-6xl border-x border-[#2A3D30]">
+        {/* Desktop Header Divider */}
+        <div className="my-10 flex items-center justify-center gap-4 px-6 mx-auto max-w-6xl">
+          <div className="h-[1px] flex-1 bg-[#B89868]/40" />
+          <h2 className="text-sm font-light uppercase tracking-[0.25em] text-[#2F5A43]">
+            Our Coaches
+          </h2>
+          <div className="h-[1px] flex-1 bg-[#B89868]/40" />
+        </div>
+
+        {/* Desktop Coaches Rows (Taller & Mobile Color Theme) */}
+        <section className="mx-auto w-full max-w-6xl px-6 pb-16 space-y-10">
           {coachesData.map((coach, index) => {
             const isEven = index % 2 === 0
-
-            let textSpan = "col-span-8"
-            let photoSpan = "col-span-4"
-            let photoMinHeight = "min-h-[350px]"
-
-            if (coach.id === 1) {
-              textSpan = "col-span-8"
-              photoSpan = "col-span-4"
-              photoMinHeight = "min-h-[350px]"
-            } else if (coach.id === 2) {
-              textSpan = "col-span-8"
-              photoSpan = "col-span-4"
-              photoMinHeight = "min-h-[350px]"
-            }
 
             return (
               <div
                 key={coach.id}
-                className="grid grid-cols-12 border-b border-[#2A3D30] w-full items-stretch"
+                className="grid grid-cols-12 min-h-[440px] lg:min-h-[480px] w-full items-stretch overflow-hidden rounded-2xl bg-[#FAF8F5] shadow-md border border-[#E2DDD3]"
               >
-                {/* Desktop Info Block */}
+                {/* Desktop Info Side */}
                 <div
-                  className={`${textSpan} flex h-full flex-col justify-between bg-[#1B2B20] p-7 overflow-hidden ${
+                  className={`col-span-7 lg:col-span-8 flex h-full flex-col justify-between p-8 lg:p-10 ${
                     isEven ? "order-1" : "order-2"
                   }`}
                 >
                   <div>
                     <div className="flex items-center gap-3">
-                      <span className="text-[12px] font-light uppercase tracking-[0.16em] text-[#B89868]">
+                      <span className="text-xs font-light uppercase tracking-[0.16em] text-[#B89868]">
                         {coach.label}
                       </span>
-                      <div className="h-[1px] w-12 bg-[#2A3D30]" />
+                      <div className="h-[1px] w-12 bg-[#B89868]/50" />
                     </div>
 
-                    <h2 className="mt-2 text-3xl font-light uppercase tracking-[0.12em] text-[#F2EEE8] truncate">
+                    <h2 className="mt-2 text-3xl font-light uppercase tracking-[0.12em] text-[#2F5A43] truncate">
                       {coach.name}
                     </h2>
-                    <p className="mt-0.5 text-sm font-light uppercase tracking-[0.14em] text-[#B89868]">
+                    <p className="mt-0.5 text-xs font-light uppercase tracking-[0.14em] text-[#B89868]">
                       {coach.role}
                     </p>
 
-                    <div className="mt-3">
-                      <h3 className="text-[12px] font-light uppercase tracking-[0.16em] text-[#E0D8CC]/70">
+                    <div className="mt-6">
+                      <h3 className="text-xs font-light uppercase tracking-[0.16em] text-[#2F5A43]/70">
                         Coaching Philosophy
                       </h3>
-                      <p className="mt-0.5 text-base font-light leading-normal tracking-[0.02em] text-[#E0D8CC]">
+                      <p className="mt-1 text-sm lg:text-base font-light leading-relaxed tracking-[0.02em] text-[#2F5A43]">
                         {coach.philosophy}
                       </p>
                     </div>
 
-                    <div className="mt-3">
-                      <h3 className="text-[12px] font-light uppercase tracking-[0.16em] text-[#E0D8CC]/70">
+                    <div className="mt-6">
+                      <h3 className="text-xs font-light uppercase tracking-[0.16em] text-[#2F5A43]/70">
                         Specialisations
                       </h3>
-                      <ul className="mt-0.5 space-y-0.5">
+                      <ul className="mt-1.5 space-y-1">
                         {coach.specialisations.map((item) => (
                           <li
                             key={item}
-                            className="flex items-center gap-1 text-sm font-light tracking-[0.02em] text-[#E0D8CC]"
+                            className="flex items-center gap-2 text-sm font-light tracking-[0.02em] text-[#2F5A43]"
                           >
-                            <span className="text-[8px] font-light text-[#B89868]">◆</span>
+                            <span className="text-[10px] text-[#B89868]">◆</span>
                             {item}
                           </li>
                         ))}
@@ -166,19 +159,19 @@ export default function MeetOurCoachesPage() {
                     </div>
                   </div>
 
-                  <div className="mt-4 shrink-0">
+                  <div className="mt-8 shrink-0">
                     <Link
                       href="/CoachAvailability"
-                      className="inline-flex items-center gap-2 rounded-lg border border-[#3A5D49] bg-[#121D16] px-4 py-2 text-sm font-light uppercase tracking-[0.14em] text-[#F2EEE8] shadow-sm transition hover:bg-[#253A2C] hover:border-[#B89868]"
+                      className="inline-flex items-center gap-2 rounded-xl bg-[#121D16] px-6 py-3 text-xs font-light uppercase tracking-[0.14em] text-[#F2EEE8] shadow transition hover:bg-[#1B2B20]"
                     >
                       View Availability →
                     </Link>
                   </div>
                 </div>
 
-                {/* Desktop Photo Block */}
+                {/* Desktop Photo Side */}
                 <div
-                  className={`${photoSpan} ${photoMinHeight} relative w-full overflow-hidden bg-[#121D16] ${
+                  className={`col-span-5 lg:col-span-4 relative h-full w-full overflow-hidden bg-[#E7E2D8] ${
                     isEven ? "order-2" : "order-1"
                   }`}
                 >
@@ -192,7 +185,7 @@ export default function MeetOurCoachesPage() {
                     />
                   ) : (
                     <div className="flex h-full w-full items-center justify-center p-4 text-center">
-                      <span className="text-[12px] font-light uppercase tracking-[0.2em] text-[#E0D8CC]/60">
+                      <span className="text-xs font-light uppercase tracking-[0.2em] text-[#2F5A43]/60">
                         [ Image Placeholder — {coach.name} ]
                       </span>
                     </div>
@@ -204,7 +197,7 @@ export default function MeetOurCoachesPage() {
         </section>
 
         {/* Desktop Footer CTA */}
-        <section className="bg-[#1B2B20] px-10 py-16 text-center text-[#F2EEE8] border-t border-[#2A3D30]">
+        <section className="bg-[#121D16] px-10 py-16 text-center text-[#F2EEE8]">
           <div className="mx-auto max-w-xl">
             <h2 className="text-2xl font-light uppercase tracking-[0.18em]">
               One Academy. Different Approaches.
