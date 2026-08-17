@@ -89,16 +89,23 @@ export default function MeetOurCoachesPage() {
         </section>
 
         {/* Desktop Header Divider */}
-        <div className="my-10 flex items-center justify-center gap-4 px-6 mx-auto max-w-6xl">
-          <div className="h-[1px] flex-1 bg-[#B89868]/40" />
-          <h2 className="text-sm font-light uppercase tracking-[0.25em] text-[#2F5A43]">
+        <div className="my-10 flex flex-col items-center justify-center px-6 mx-auto max-w-6xl">
+          <div className="flex w-full items-center justify-center gap-4">
+            <div className="h-[1px] flex-1 bg-[#B89868]/40" />
+            <img
+              src="/images/logo-warm.png"
+              alt="Logo"
+              className="h-8 w-auto object-contain"
+            />
+            <div className="h-[1px] flex-1 bg-[#B89868]/40" />
+          </div>
+          <h2 className="mt-2 text-sm font-light uppercase tracking-[0.25em] text-[#2F5A43]">
             Our Coaches
           </h2>
-          <div className="h-[1px] flex-1 bg-[#B89868]/40" />
         </div>
 
         {/* Desktop Coaches Rows (Taller & Mobile Color Theme) */}
-        <section className="mx-auto w-full max-w-6xl px-6 pb-16 space-y-10">
+        <section className="mx-auto w-full max-w-6xl px-6 pb-16 space-y-8">
           {coachesData.map((coach, index) => {
             const isEven = index % 2 === 0
 
@@ -209,14 +216,25 @@ export default function MeetOurCoachesPage() {
             }}
           />
 
-          <div className="relative z-10 mx-auto max-w-xl">
-            <h2 className="text-2xl font-light uppercase tracking-[0.18em]">
-              One Academy. Different Approaches.
+          <div className="relative z-10 mx-auto max-w-2xl">
+            {/* Logo Divider Header */}
+            <div className="mb-5 flex items-center justify-center gap-4">
+              <div className="h-[1px] w-24 bg-[#B89868]/60" />
+              <img
+                src="/images/logo-warm.png"
+                alt="Logo"
+                className="h-7 w-auto object-contain"
+              />
+              <div className="h-[1px] w-24 bg-[#B89868]/60" />
+            </div>
+
+            <h2 className="text-xl lg:text-xl font-light uppercase tracking-[0.18em]">
+              One Academy.<br></br>One Standard.<br></br>Every Golfer.
             </h2>
 
             <div className="mt-6">
               <Link
-                href="/client/dashboard"
+                href="/signup"
                 className="inline-block border border-[#B89868] bg-[#121D16]/40 backdrop-blur-sm px-6 py-2.5 text-sm font-light uppercase tracking-[0.18em] text-[#F2EEE8] transition hover:bg-[#B89868] hover:text-[#121D16]"
               >
                 Book A Lesson
@@ -252,20 +270,23 @@ export default function MeetOurCoachesPage() {
               The people behind your golf development.
             </p>
 
-            <div className="mt-6 flex flex-col items-start gap-1 text-[12px] font-light uppercase tracking-[0.2em] text-[#B89868]">
-              <span>Scroll</span>
-              <span>↓</span>
-            </div>
           </div>
         </section>
 
         {/* Mobile Section Title with Decorative Lines */}
-        <div className="my-8 flex items-center justify-center gap-4 px-6">
-          <div className="h-[1px] flex-1 bg-[#B89868]/40" />
-          <h2 className="text-xs font-light uppercase tracking-[0.25em] text-[#2F5A43]">
+        <div className="my-8 flex flex-col items-center justify-center px-6">
+          <div className="flex w-full items-center justify-center gap-3">
+            <div className="h-[1px] flex-1 bg-[#B89868]/40" />
+            <img
+              src="/images/logo-warm.png"
+              alt="Logo"
+              className="h-6 w-auto object-contain"
+            />
+            <div className="h-[1px] flex-1 bg-[#B89868]/40" />
+          </div>
+          <h2 className="mt-1.5 text-xs font-light uppercase tracking-[0.25em] text-[#2F5A43]">
             Our Coaches
           </h2>
-          <div className="h-[1px] flex-1 bg-[#B89868]/40" />
         </div>
 
         {/* Mobile Coach Cards Stack */}
@@ -365,13 +386,24 @@ export default function MeetOurCoachesPage() {
           />
 
           <div className="relative z-10">
-            <h2 className="text-base font-light uppercase tracking-[0.18em]">
-              One Academy. Different Approaches.
+            {/* Logo Divider Header */}
+            <div className="mb-4 flex items-center justify-center gap-3 px-4">
+              <div className="h-[1px] flex-1 max-w-[60px] bg-[#B89868]/60" />
+              <img
+                src="/images/logo-warm.png"
+                alt="Logo"
+                className="h-5 w-auto object-contain"
+              />
+              <div className="h-[1px] flex-1 max-w-[60px] bg-[#B89868]/60" />
+            </div>
+
+            <h2 className="text-sm font-light uppercase tracking-[0.18em]">
+              One Academy.<br></br>One Standard.<br></br>Every Golfer.
             </h2>
 
             <div className="mt-6">
               <Link
-                href="/client/dashboard"
+                href="/signup"
                 className="inline-block border border-[#B89868] bg-[#121D16]/40 backdrop-blur-sm px-6 py-2.5 text-xs font-light uppercase tracking-[0.18em] text-[#F2EEE8]"
               >
                 Book A Lesson
