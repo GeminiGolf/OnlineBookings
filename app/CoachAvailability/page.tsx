@@ -37,7 +37,7 @@ export default function CoachAvailabilityPage() {
       .order("name")
 
     if (data) {
-      setCoaches(data.filter((coach) => coach.id !== 3 && coach.id !== 8))
+      setCoaches(data.filter((coach) => coach.id !== 8))
     }
   }
 
