@@ -110,16 +110,16 @@ export default function AddCoach({
   if (!open) return null
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-6">
-      <div className="w-full max-w-2xl rounded-2xl bg-white p-6 text-black shadow-xl">
-        <div className="mb-6 flex items-center justify-between">
-          <h2 className="text-2xl font-bold">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm">
+      <div className="w-full max-w-md rounded-3xl border border-[#3A5D49] bg-[#F2ECE3] p-6 text-black shadow-xl">
+        <div className="mb-2 flex items-center justify-between">
+          <h2 className="text-[18px] font-light uppercase tracking-[0.12em] text-[#2F5A43]">
             Promote to Coach
           </h2>
 
           <button
             onClick={onClose}
-            className="rounded border px-3 py-1 hover:bg-gray-100"
+            className="text-2xl text-[#2F5A43] transition hover:opacity-70"
           >
             ✕
           </button>
@@ -127,7 +127,7 @@ export default function AddCoach({
 
         <div className="space-y-5">
           <div>
-            <label className="mb-2 block font-medium">
+            <label className="mb-1 block text-[12px] font-light uppercase tracking-[0.08em] text-[#2F5A43]">
               Search Client
             </label>
 
@@ -138,24 +138,24 @@ export default function AddCoach({
                 setSelectedClientId(null)
               }}
               placeholder="Search by name, email or phone..."
-              className="w-full rounded-lg border p-3"
+              className="w-full rounded-xl border border-[#3A5D49] bg-[#FCFAF6] px-4 py-2 text-[16px] font-light tracking-[0.04em] text-[#2F5A43] placeholder:text-[#6D7F72] focus:border-[#2F5A43] focus:outline-none"
             />
           </div>
 
-          <div className="max-h-96 overflow-y-auto rounded-lg border">
+          <div className="max-h-80 space-y-1 overflow-y-auto rounded-xl border border-[#3A5D49] bg-[#FCFAF6] p-3">
             {loading ? (
-              <div className="p-6 text-center">
+              <div className="p-4 text-center text-[14px] font-light text-[#2F5A43]">
                 Loading...
               </div>
             ) : filteredClients.length === 0 ? (
-              <div className="p-6 text-center">
+              <div className="p-4 text-center text-[14px] font-light text-[#2F5A43]">
                 No matching clients found.
               </div>
             ) : (
               filteredClients.map((client) => (
                 <label
                   key={client.id}
-                  className="flex cursor-pointer items-start gap-4 border-b p-4 hover:bg-gray-50"
+                  className="flex cursor-pointer items-start gap-3 rounded-xl border border-[#3A5D49]/30 bg-white p-3 transition hover:bg-[#F2ECE3]/50"
                 >
                   <input
                     type="checkbox"
@@ -169,21 +169,21 @@ export default function AddCoach({
                           : client.id
                       )
                     }
-                    className="mt-1 h-5 w-5"
+                    className="mt-1 h-4 w-4 accent-[#21402E]"
                   />
 
                   <div className="flex-1">
-                    <div className="font-semibold">
+                    <div className="text-[15px] font-medium text-[#2F5A43]">
                       {client.preferred_name
                         ? `(${client.preferred_name}) ${client.last_name}`
                         : `${client.first_name} ${client.last_name}`}
                     </div>
 
-                    <div className="text-sm text-gray-600">
+                    <div className="text-[13px] font-light text-[#6D7F72]">
                       {client.email || "No email"}
                     </div>
 
-                    <div className="text-sm text-gray-600">
+                    <div className="text-[13px] font-light text-[#6D7F72]">
                       {client.phone || "No phone"}
                     </div>
                   </div>
@@ -195,7 +195,7 @@ export default function AddCoach({
           <button
             disabled={!selectedClientId}
             onClick={promoteClient}
-            className="w-full rounded-lg bg-blue-600 py-3 font-medium text-white disabled:cursor-not-allowed disabled:bg-gray-300"
+            className="mt-2 w-full rounded-xl bg-[#21402E] px-6 py-3 text-sm font-light uppercase tracking-[0.18em] text-white transition hover:bg-[#2B533B] disabled:cursor-not-allowed disabled:opacity-50"
           >
             Promote
           </button>

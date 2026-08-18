@@ -1,7 +1,6 @@
 import Link from "next/link"
 import { createClient } from "@/lib/supabaseServer"
 import ClientsSearch from "@/components/coach/ClientsSearch"
-import AddClient from "@/components/coach/AddClient"
 import { redirect } from "next/navigation"
 import DashboardContainer from "@/components/layout/DashboardContainer"
 export default async function CoachClientsPage() {

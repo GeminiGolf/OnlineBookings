@@ -104,24 +104,22 @@ export default async function AdminClientProfilePage({ params }: Props) {
 
         <div className="mt-0">
           <div className="rounded-3xl border border-[#3A5D49] bg-white shadow-md">
-            <details open>
-              <summary className="relative flex cursor-pointer items-center list-none px-6 py-4">
-                <h1 className="dashboard-heading min-w-0 flex-1 break-words pr-24">
-                  {client.preferred_name
-                    ? `${client.preferred_name} ${client.last_name}`
-                    : `${client.first_name} ${client.last_name}`}
-                </h1>
+            <details>
+              <summary className="relative flex cursor-pointer items-center justify-center list-none px-6 py-2">
+                <div className="flex items-center justify-center gap-5">
+                  <h1 className="dashboard-heading">
+                    {client.preferred_name
+                      ? `${client.preferred_name} ${client.last_name}`
+                      : `${client.first_name} ${client.last_name}`}
+                  </h1>
 
-                <div className="absolute right-12 top-1/2 -translate-y-1/2">
                   <ClientIDTransactionForm
                     clientId={client.id}
                     lessonsRemaining={client.lessons_remaining}
-                    buttonLabel="$$$"
-                    buttonClassName="rounded-2xl bg-[#2F5A43] px-4 py-2 text-[13px] font-light uppercase tracking-[0.12em] text-white transition hover:bg-[#244634]"
                   />
                 </div>
 
-                <span className="absolute right-6 top-1/2 -translate-y-1/2 text-[18px] text-[#2F5A43]">
+                <span className="absolute right-6 text-[18px] text-[#2F5A43]">
                   ▼
                 </span>
               </summary>
