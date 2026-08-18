@@ -232,7 +232,7 @@ function CoachAvailabilityContent() {
                     </p>
                   ) : (
                     <div className="mx-auto max-w-[340px]">
-                      <div className="flex flex-wrap justify-center gap-2">
+                      <div className="flex flex-wrap justify-center gap-1">
                         {timeSlots.map((time) => (
                           <div
                             key={time}

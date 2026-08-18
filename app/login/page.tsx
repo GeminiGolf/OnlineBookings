@@ -75,7 +75,7 @@ export default function LoginPage() {
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full rounded-xl border border-[#3A5D49] bg-[#FCFAF6] px-5 py-3 text-[14px] font-light tracking-[0.08em] text-[#2F5A43] placeholder:text-[#6D7F72] placeholder:tracking-[0.08em] focus:border-[#2F5A43] focus:outline-none"
+            className="w-full rounded-xl border border-[#3A5D49] bg-[#FCFAF6] px-5 py-3 text-[16px] font-light tracking-[0.08em] text-[#2F5A43] placeholder:text-[#6D7F72] placeholder:tracking-[0.08em] focus:border-[#2F5A43] focus:outline-none"
           />
 
           <input
@@ -83,7 +83,7 @@ export default function LoginPage() {
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full rounded-xl border border-[#3A5D49] bg-[#FCFAF6] px-5 py-3 text-[14px] font-light tracking-[0.08em] text-[#2F5A43] placeholder:text-[#6D7F72] placeholder:tracking-[0.08em] focus:border-[#2F5A43] focus:outline-none"
+            className="w-full rounded-xl border border-[#3A5D49] bg-[#FCFAF6] px-5 py-3 text-[16px] font-light tracking-[0.08em] text-[#2F5A43] placeholder:text-[#6D7F72] placeholder:tracking-[0.08em] focus:border-[#2F5A43] focus:outline-none"
           />
 
           <div className="flex flex-wrap justify-center gap-4">
