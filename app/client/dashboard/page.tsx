@@ -344,6 +344,16 @@ export default function ClientDashboard() {
             notificationId: notification.id,
           }),
         })
+
+        await fetch("/api/admin/notifications/push", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            notificationId: notification.id,
+          }),
+        })
       }
 
     alert("Lesson rescheduled.")
@@ -395,6 +405,16 @@ export default function ClientDashboard() {
 
     if (!notificationError && notification) {
       await fetch("/api/coach/notifications/push", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          notificationId: notification.id,
+        }),
+      })
+
+      await fetch("/api/admin/notifications/push", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -559,6 +579,16 @@ export default function ClientDashboard() {
 
       if (!notificationError && notification) {
         await fetch("/api/coach/notifications/push", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            notificationId: notification.id,
+          }),
+        })
+
+        await fetch("/api/admin/notifications/push", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

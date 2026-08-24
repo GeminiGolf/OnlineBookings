@@ -122,6 +122,19 @@ export async function POST(req: Request) {
           }),
         }
       )
+
+      await fetch(
+        `${baseUrl}/api/admin/notifications/push`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            notificationId: notification.id,
+          }),
+        }
+      )
     }
 
     const { error: alertError } = await supabase
