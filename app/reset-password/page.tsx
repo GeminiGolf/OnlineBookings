@@ -16,68 +16,19 @@ export default function ResetPasswordPage() {
 
   useEffect(() => {
     async function initSession() {
-      // 1. Check if a session already exists
-      const {
-        data: { session },
-      } = await supabase.auth.getSession()
+      const { data, error } = await supabase.auth.getSession()
 
-      if (session) {
-        setSessionReady(true)
+      if (error || !data.session) {
+        alert(
+          "Your password reset link is invalid or has expired. Please request a new one."
+        )
         return
       }
 
-      // 2. Handle PKCE password recovery link
-      const code = new URLSearchParams(window.location.search).get("code")
-
-      if (code) {
-        const { data, error } =
-          await supabase.auth.exchangeCodeForSession(code)
-
-        if (error) {
-          alert("Session initialization failed: " + error.message)
-          return
-        }
-
-        if (data.session) {
-          setSessionReady(true)
-          return
-        }
-      }
-
-      // 3. Fallback: Handle implicit-flow hash tokens
-      const hash = window.location.hash.substring(1)
-      const params = new URLSearchParams(hash)
-      const access_token = params.get("access_token")
-      const refresh_token = params.get("refresh_token")
-
-      if (access_token && refresh_token) {
-        const { error } = await supabase.auth.setSession({
-          access_token,
-          refresh_token,
-        })
-
-        if (!error) {
-          setSessionReady(true)
-        } else {
-          alert("Session initialization failed: " + error.message)
-        }
-      }
+      setSessionReady(true)
     }
-
-    // 4. Listen for PASSWORD_RECOVERY events
-    const { data: authListener } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        if (event === "PASSWORD_RECOVERY" || session) {
-          setSessionReady(true)
-        }
-      }
-    )
 
     initSession()
-
-    return () => {
-      authListener.subscription.unsubscribe()
-    }
   }, [])
 
   async function handleResetPassword(e: React.FormEvent) {
