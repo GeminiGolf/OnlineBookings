@@ -102,14 +102,14 @@ export default function SignupPage() {
 
     if (emailExists) {
       alert(
-        "This email address is already in use.\n\nPlease contact admin@geminigolfacademy.com for assistance."
+        "This email address is already in use.\n\nPlease contact (+60) 17-357-6747 for assistance."
       )
       return
     }
 
     if (phoneExists) {
       alert(
-        "This phone number is already in use.\n\nPlease contact admin@geminigolfacademy.com for assistance."
+        "This phone number is already in use.\n\nPlease contact (+60) 17-357-6747 for assistance."
       )
       return
     }
