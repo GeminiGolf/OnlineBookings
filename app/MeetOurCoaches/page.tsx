@@ -21,13 +21,12 @@ const coachesData: Coach[] = [
     label: "COACH 01",
     name: "Francois Van Zyl",
     role: "HEAD COACH",
-    philosophy:
-      "Every golfer is different. My approach is built around understanding how you move, how you learn, and what you want to achieve.",
+    philosophy: "I believe golf is for everyone at all levels.\nMy approach is to meet each student where they are, and build lessons around the way they learn best.\n\nI want my students to move towards their goals without losing sight of what makes golf fun for them.",
     specialisations: [
-      "Swing Development",
-      "Performance",
-      "Course Management",
-      "Technology & Analysis",
+      "Trackman",
+      "Video Analysis",
+      "Capto-Putting",
+      "HackMotion-wrist movement",
     ],
     photoUrl: "/OurCoaches/Francois_Action.png",
     imagePosition: "object-[center_25%]",
@@ -139,7 +138,7 @@ export default function MeetOurCoachesPage() {
                       <h3 className="text-xs font-light uppercase tracking-[0.16em] text-[#2F5A43]/70">
                         Coaching Philosophy
                       </h3>
-                      <p className="mt-1 text-sm lg:text-base font-light leading-relaxed tracking-[0.02em] text-[#2F5A43]">
+                      <p className="mt-1 whitespace-pre-line text-sm lg:text-base font-light leading-relaxed tracking-[0.02em] text-[#2F5A43]">
                         {coach.philosophy}
                       </p>
                     </div>
@@ -333,7 +332,7 @@ export default function MeetOurCoachesPage() {
                   <h3 className="text-xs font-light uppercase tracking-[0.16em] text-[#2F5A43]/70">
                     Coaching Philosophy
                   </h3>
-                  <p className="mt-1 text-sm font-light leading-relaxed text-[#2F5A43]">
+                  <p className="mt-1 whitespace-pre-line text-sm font-light leading-relaxed text-[#2F5A43]">
                     {coach.philosophy}
                   </p>
                 </div>
