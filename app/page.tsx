@@ -53,7 +53,7 @@ export default function Home() {
         </div>
 
         <p className="mb-[clamp(1.5rem,3vh,2rem)] text-[clamp(10px,0.9vw,13px)] uppercase tracking-[0.45em] text-[#D8CCB7]">
-          PRECISION · PERFORMANCE · PURPOSE
+          One Academy · One Standard · Every Golfer.
         </p>
 
         <a
