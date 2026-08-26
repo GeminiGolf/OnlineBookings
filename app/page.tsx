@@ -79,7 +79,7 @@ import { MapPin, Mail, Phone } from "lucide-react";export default function Home(
                 alt="Gemini Golf Academy Logo Icon"
                 width={40}
                 height={40}
-                className="h-4.5 w-auto opacity-100"
+                className="h-4 w-auto opacity-100"
               />
               <Image
                 src="/images/gemini-logo-text-warm.png"
@@ -117,7 +117,7 @@ import { MapPin, Mail, Phone } from "lucide-react";export default function Home(
 
           {/* Right Column: Contact Us */}
           <div className="flex flex-col items-center gap-1 text-center text-xs font-light leading-snug text-[#D8CCB7]/90">
-            <h3 className="text-[14px] font-normal text-[#D8CCB7]">Contact Us</h3>
+            <h3 className="mb-2 text-[14px] font-normal text-[#D8CCB7]">Contact Us</h3>
 
             <div className="flex items-center justify-center gap-2.5">
               <Mail className="h-3.5 w-3.5 shrink-0 text-[#D8CCB7]" />
