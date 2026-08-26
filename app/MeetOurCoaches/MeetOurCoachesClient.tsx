@@ -22,12 +22,12 @@ const coachesData: Coach[] = [
     name: "Francois Van Zyl",
     role: "HEAD COACH",
     philosophy:
-      "I believe golf is for everyone at all levels.\nMy approach is to meet each student where they are, and build lessons around the way they learn best.\n\nI want my students to move towards their goals without losing sight of what makes golf fun for them.",
+      "I believe coaching should be clear, simple and individual to each golfer. \nMy approach is to find the root of the problem, simplify the fix, and give players the tools to improve.",
     specialisations: [
-      "Trackman",
-      "Video Analysis",
-      "Capto-Putting",
-      "HackMotion-wrist movement",
+      "Swing Mechanics & Technique",
+      "Golf Technology & Swing Analysis",
+      "Course-Management & Strategy",
+      "Putting & Short Game",
     ],
     photoUrl: "/OurCoaches/Francois_Action.png",
     imagePosition: "object-[center_25%]",
@@ -40,11 +40,12 @@ const coachesData: Coach[] = [
     name: "Siti Shaari",
     role: "PERFORMANCE COACH",
     philosophy:
-      "I focus on building repeatable performance under pressure. Golf is as much mental as it is physical.",
+      "I believe golf is about more than just the swing.\nMy focus is on helping students develop their game while builing confidence on the course.",
     specialisations: [
-      "Short Game",
-      "Scoring & Strategy",
-      "Performance Training",
+      "Swing Fundamentals & Technique",
+      "Course Management & Smart Playing",
+      "Mental Game & Confidence",
+      "Competitive/Performance Golf"
     ],
     photoUrl: "/OurCoaches/Siti_Action.jpeg",
     imagePosition: "object-center",
