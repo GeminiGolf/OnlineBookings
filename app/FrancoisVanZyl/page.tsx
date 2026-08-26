@@ -16,13 +16,13 @@ export const metadata: Metadata = {
     "Gemini Golf Academy",
   ],
   alternates: {
-    canonical: "https://geminigolfacademy.com/coaches/francois-van-zyl",
+    canonical: "https://www.geminigolfacademy.com/FrancoisVanZyl",
   },
   openGraph: {
     title: "Francois Van Zyl - Head Golf Coach | Gemini Golf Academy",
     description:
       "PGA professional with 20+ years coaching golfers of all skill levels—from beginners learning foundational mechanics to elite pros refining tour performance.",
-    url: "https://geminigolfacademy.com/coaches/francois-van-zyl",
+    url: "https://www.geminigolfacademy.com/FrancoisVanZyl",
     siteName: "Gemini Golf Academy",
     images: [
       {
