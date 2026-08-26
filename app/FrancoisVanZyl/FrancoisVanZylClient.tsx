@@ -60,7 +60,7 @@ export default function FrancoisVanZylClient() {
           <span className="text-xs font-light uppercase tracking-[0.25em] text-[#B89868]">
             Head Golf Coach
           </span>
-          <h1 className="mt-1 text-2xl font-light uppercase tracking-[0.18em] text-[#F2EEE8] md:mt-2 md:text-4xl">
+          <h1 className="mt-1 text-2xl font-light uppercase tracking-[0.18em] text-[#E0D8CC] md:mt-2 md:text-4xl">
             Francois Van Zyl
           </h1>
           <p className="mt-1 max-w-xl text-xs font-light tracking-[0.04em] text-[#E0D8CC] md:mt-2 md:text-sm">
@@ -237,8 +237,8 @@ export default function FrancoisVanZylClient() {
 
       </main>
 
-      {/* FOOTER CONTACT */}
-      <section className="relative overflow-hidden border-t border-[#E2DDD3] px-6 pb-6 pt-14 text-center text-[#F2EEE8]">
+{/* FOOTER CONTACT */}
+      <section className="relative overflow-hidden border-t border-[#E2DDD3] px-6 py-10 text-[#F2EEE8]">
         <img
           src="/OurCoaches/approach.jpg"
           alt="Footer Background"
@@ -252,50 +252,62 @@ export default function FrancoisVanZylClient() {
           }}
         />
 
-        <div className="relative z-10 mx-auto max-w-xl">
-          <div className="mb-6 flex items-center justify-center gap-3">
-            <div className="h-[1px] w-16 bg-[#B89868]/60" />
-            <img
-              src="/images/logo-warm.png"
-              alt="Logo"
-              className="h-6 w-auto object-contain"
-            />
-            <div className="h-[1px] w-16 bg-[#B89868]/60" />
-          </div>
+        <div className="relative z-10 mx-auto max-w-2xl">
+          <div className="flex flex-col items-center justify-center gap-6 sm:flex-row sm:gap-10">
+            {/* Left: Brand Identity */}
+            <div className="flex flex-col items-center text-center sm:items-start sm:text-left">
+              <div className="flex items-center gap-4">
+                <img
+                  src="/images/logo-warm.png"
+                  alt="Logo"
+                  className="h-4.5 w-auto object-contain"
+                />
+                <span className="text-sm font-light uppercase tracking-[0.2em] text-[#E0D8CC]">
+                  Francois Van Zyl
+                </span>
+              </div>
+              <p className="mt-1 text-xs font-light tracking-[0.05em] text-[#B89868]">
+                Head Coach • Gemini Golf Academy
+              </p>
+            </div>
 
-          <div className="flex flex-col items-center justify-center gap-4 text-xs font-light tracking-[0.14em] uppercase text-[#E0D8CC] sm:flex-row sm:gap-8">
-            
-            <div className="flex items-center gap-2.5 transition hover:text-[#F2EEE8]">
-              <svg 
-                className="h-3.5 w-3.5 shrink-0 text-[#B89868]" 
-                viewBox="0 0 24 24" 
-                fill="none" 
-                stroke="currentColor" 
-                strokeWidth="1.75" 
-                strokeLinecap="round" 
-                strokeLinejoin="round"
+            {/* Center Vertical Divider */}
+            <div className="h-px w-24 bg-[#B89868]/30 sm:h-10 sm:w-px" />
+
+            {/* Right: Direct Contacts */}
+            <div className="flex flex-col items-center gap-2 text-xs font-light text-[#E0D8CC] sm:items-end">
+              <a
+                href="mailto:francois@geminigolfacademy.com"
+                className="flex items-center gap-2 transition hover:text-[#B89868]"
               >
-                <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
-                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-                <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
-              </svg>
+                <span>francois@geminigolfacademy.com</span>
+                <Mail className="h-3.5 w-3.5 text-[#B89868]" />
+              </a>
               <a
                 href="https://www.instagram.com/FVZgolf"
                 target="_blank"
                 rel="noopener noreferrer"
+                className="flex items-center gap-2 transition hover:text-[#B89868]"
               >
-                @FVZgolf
-              </a>
-            </div>
-            <div className="flex items-center gap-2.5 transition hover:text-[#F2EEE8]">
-              <Mail className="h-3.5 w-3.5 shrink-0 text-[#B89868]" />
-              <a href="mailto:francois@geminigolfacademy.com">
-                francois@geminigolfacademy.com
+                <span>@FVZgolf</span>
+                <svg
+                  className="h-3.5 w-3.5 text-[#B89868]"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.75"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                  <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+                </svg>
               </a>
             </div>
           </div>
 
-          <div className="mt-8 border-t border-[#D8CCB7]/20 pt-4 text-[11px] font-light text-[#E0D8CC]/60">
+          <div className="mt-8 border-t border-[#D8CCB7]/20 pt-4 text-center text-[11px] font-light text-[#E0D8CC]/50">
             © {new Date().getFullYear()} Gemini Golf Academy Sdn Bhd. All rights reserved.
           </div>
         </div>
