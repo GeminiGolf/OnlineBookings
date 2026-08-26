@@ -129,14 +129,14 @@ export default function FrancoisVanZylClient() {
               <div className="h-44 overflow-hidden rounded-2xl bg-[#E7E2D8] lg:h-[230px]">
                 <img
                   src="/FVZ/FPutt.png"
-                  alt="Francois Junior Coaching"
+                  alt="Francois Putting Green"
                   className="h-full w-full object-cover object-center"
                 />
               </div>
               <div className="h-44 overflow-hidden rounded-2xl bg-[#E7E2D8] lg:h-[230px]">
                 <img
                   src="/FVZ/F_Che.png"
-                  alt="Francois Club Fitting"
+                  alt="Francois Champion Mentality"
                   className="h-full w-full object-cover object-center"
                 />
               </div>
@@ -177,8 +177,8 @@ export default function FrancoisVanZylClient() {
             {/* Outdoor / Putting Green Action Shot */}
             <div className="h-64 overflow-hidden rounded-2xl bg-[#E7E2D8] lg:col-span-5 lg:h-[340px]">
               <img
-                src="/FVZ/FCO.png"
-                alt="Francois Putting Green Analysis"
+                src="/FVZ/FCo.png"
+                alt="Francois Coaching"
                 className="h-full w-full object-cover object-center"
               />
             </div>
