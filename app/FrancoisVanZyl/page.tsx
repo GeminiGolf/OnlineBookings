@@ -4,12 +4,47 @@ import FrancoisVanZylClient from "./FrancoisVanZylClient"
 export const metadata: Metadata = {
   title: "Francois Van Zyl | Head Golf Coach | Gemini Golf Academy",
   description:
-    "Learn about Head Coach Francois Van Zyl at Gemini Golf Academy in Petaling Jaya. PGA professional with 20+ years of teaching experience, swing analysis technology, and club fitting.",
+    "PGA professional Francois Van Zyl offers private golf lessons for beginners to touring pros at Gemini Golf Academy in Petaling Jaya. 20+ years of player development experience.",
+  keywords: [
+    "Francois Van Zyl",
+    "Beginner Golf Lessons Petaling Jaya",
+    "Pro Golf Coach Kuala Lumpur",
+    "Golf Coach Selangor",
+    "Private Golf Lessons PJ",
+    "Beginner Golf Coach Kuala Lumpur",
+    "Golf Academy Kuala Lumpur",
+    "Gemini Golf Academy",
+  ],
+  alternates: {
+    canonical: "https://geminigolfacademy.com/coaches/francois-van-zyl",
+  },
   openGraph: {
-    title: "Francois Van Zyl - Head Golf Coach",
+    title: "Francois Van Zyl - Head Golf Coach | Gemini Golf Academy",
     description:
-      "PGA professional with 20+ years coaching experience specializing in customized instruction, TrackMan, HackMotion, Capto, and video swing analysis.",
-    images: [{ url: "/OurCoaches/Francois_Action.png" }],
+      "PGA professional with 20+ years coaching golfers of all skill levels—from beginners learning foundational mechanics to elite pros refining tour performance.",
+    url: "https://geminigolfacademy.com/coaches/francois-van-zyl",
+    siteName: "Gemini Golf Academy",
+    images: [
+      {
+        url: "/OurCoaches/Francois_Action.png",
+        width: 1200,
+        height: 630,
+        alt: "Francois Van Zyl Head Golf Coach",
+      },
+    ],
+    locale: "en_US",
+    type: "profile",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Francois Van Zyl | Head Golf Coach",
+    description:
+      "PGA Golf Professional specializing in beginner to pro level golf instruction and personalized player development.",
+    images: ["/OurCoaches/Francois_Action.png"],
+  },
+  robots: {
+    index: true,
+    follow: true,
   },
 }
 
@@ -19,9 +54,12 @@ export default function FrancoisVanZylPage() {
     "@type": "Person",
     "name": "Francois Van Zyl",
     "jobTitle": "Head Golf Coach",
+    "email": "mailto:francois@geminigolfacademy.com",
+    "sameAs": ["https://www.instagram.com/FVZgolf"],
     "worksFor": {
       "@type": "SportsActivityLocation",
       "name": "Gemini Golf Academy",
+      "url": "https://geminigolfacademy.com",
       "address": {
         "@type": "PostalAddress",
         "addressLocality": "Petaling Jaya",
@@ -30,13 +68,13 @@ export default function FrancoisVanZylPage() {
       },
     },
     "description":
-      "PGA professional with over 20 years of golf coaching experience specializing in swing mechanics, TrackMan swing analysis, and player development.",
+      "PGA professional with over 20 years of golf coaching experience. Tailored golf lessons for complete beginners, intermediate golfers, competing juniors, and professional players.",
     "knowsAbout": [
-      "Golf Instruction",
-      "Swing Mechanics",
-      "TrackMan Golf Analysis",
-      "HackMotion Wrist Sensor",
-      "Capto Putting System",
+      "Beginner Golf Lessons",
+      "Pro Golf Coaching",
+      "Golf Instruction & Player Development",
+      "Golf Swing Mechanics",
+      "Short Game & Putting Coaching",
       "Master Club Fitting",
     ],
   }
