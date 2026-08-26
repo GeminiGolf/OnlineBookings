@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import { Mail } from "lucide-react"
 
 export default function FrancoisVanZylClient() {
   const specialisations = [
@@ -39,17 +40,31 @@ export default function FrancoisVanZylClient() {
 
   return (
     <div className="min-h-screen bg-[#F4F1EA] text-[#2F5A43]">
-      {/* ================= DARK GREEN TEXT HEADER ================= */}
-      <section className="relative bg-[#1b2e23] border-b border-[#24392B] px-6 pt-28 pb-12 text-[#F2EEE8]">
-        <div className="mx-auto flex max-w-6xl flex-col items-start justify-end">
+      {/* ================= HERO HEADER WITH IMAGE & GRADIENT ================= */}
+      <section className="relative flex min-h-[220px] overflow-hidden border-b border-[#E2DDD3] px-6 pb-6 pt-20 text-[#F2EEE8] md:min-h-[340px] md:px-14 md:pb-12 md:pt-28">
+        <img
+          src="/OurCoaches/shortgame.jpg"
+          alt="Hero Background"
+          className="absolute inset-0 h-full w-full object-cover object-center"
+        />
+
+        <div
+          className="absolute inset-0 z-0"
+          style={{
+            background:
+              "linear-gradient(to right, rgba(18, 29, 22, 0.95) 0%, rgba(18, 29, 22, 0.8) 30%, rgba(18, 29, 22, 0.5) 60%, rgba(18, 29, 22, 0.2) 80%, transparent 100%)",
+          }}
+        />
+
+        <div className="relative z-10 mx-auto flex w-full max-w-6xl flex-col justify-end">
           <span className="text-xs font-light uppercase tracking-[0.25em] text-[#B89868]">
             Head Golf Coach
           </span>
-          <h1 className="mt-2 text-3xl font-light uppercase tracking-[0.18em] text-[#F2EEE8] md:text-4xl">
+          <h1 className="mt-1 text-2xl font-light uppercase tracking-[0.18em] text-[#F2EEE8] md:mt-2 md:text-4xl">
             Francois Van Zyl
           </h1>
-          <p className="mt-2 max-w-xl text-xs font-light tracking-[0.04em] text-[#E0D8CC] md:text-sm">
-            PGA Professional with 20+ years of teaching experience, swing technology, and custom golf development.
+          <p className="mt-1 max-w-xl text-xs font-light tracking-[0.04em] text-[#E0D8CC] md:mt-2 md:text-sm">
+            
           </p>
         </div>
       </section>
@@ -73,12 +88,12 @@ export default function FrancoisVanZylClient() {
             {/* Middle Content Column */}
             <div className="flex flex-col justify-between py-2 lg:col-span-4">
               <div>
-                <span className="text-xs font-light uppercase tracking-[0.2em] text-[#B89868]">
+                <span className="text-[14px] font-light uppercase tracking-[0.2em] text-[#B89868]">
                   Coaching Philosophy
                 </span>
                 
-                <p className="mt-3 text-xs font-light leading-relaxed tracking-[0.02em] text-[#2F5A43] md:text-sm">
-                  I believe coaching should be clear, simple and individual to each golfer. My approach is to find the root of the problem, simplify the fix, and give players the tools to improve.
+                <p className="mt-3 text-[13px]] font-light leading-relaxed tracking-[0.02em] text-[#2F5A43] md:text-sm">
+                  I believe coaching should be clear, simple and individual to each golfer. <br></br>My approach is to pinpoint the problem, simplify the solution, and give the player the confidence to own it.
                 </p>
 
                 <div className="mt-6">
@@ -89,7 +104,7 @@ export default function FrancoisVanZylClient() {
                     {specialisations.map((item) => (
                       <li
                         key={item}
-                        className="flex items-center gap-2 text-xs font-light tracking-[0.02em] text-[#2F5A43] md:text-sm"
+                        className="flex items-center gap-2 text-[13px] font-light tracking-[0.02em] text-[#2F5A43] md:text-sm"
                       >
                         <span className="text-[10px] text-[#B89868]">◆</span>
                         {item}
@@ -134,22 +149,27 @@ export default function FrancoisVanZylClient() {
         <section className="overflow-hidden rounded-3xl border border-[#E2DDD3] bg-[#FAF8F5] p-6 shadow-md md:p-8">
           <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-12">
             
-            <div className="space-y-4 lg:col-span-7">
+            <div className="space-y-3 lg:col-span-7">
               <span className="text-xs font-light uppercase tracking-[0.2em] text-[#B89868]">
                 Background & Approach
               </span>
-              <h2 className="text-xl font-light uppercase tracking-[0.14em] text-[#2F5A43] md:text-2xl">
-                Personal Coaching Story
+              <h2 className="text-[18px] font-light uppercase tracking-[0.14em] text-[#2F5A43] md:text-2xl">
+                My Coaching Story
               </h2>
-              <div className="space-y-3 text-xs font-light leading-relaxed tracking-[0.02em] text-[#2F5A43] md:text-sm">
+              <div className="space-y-3 text-[13px] font-light leading-relaxed tracking-[0.02em] text-[#2F5A43] md:text-sm">
                 <p>
-                  Golf has always been about more than just hitting a good shot for me. With over 20 years of teaching experience and a background in professional golf, I believe the best coaching starts with understanding the individual — how they move, how they learn, and what they are trying to achieve.
+                  "Pinpoint the problem, simplify the solution, and give the player the confidence to own it." 
+
                 </p>
                 <p>
-                  My approach is simple: understand the problem, simplify the solution, and give the player the confidence to own it. Technology such as TrackMan, HackMotion, Capto and video analysis helps me understand what is happening, but it is never the goal. The goal is to help each golfer understand their game and become a better player.
+                  Golf has always been about more than just hitting a good shot for me. After 20 years of coaching, I believe the best results start with understanding the individual - how they move, how they learn, and what they are trying to achieve.
                 </p>
                 <p>
-                  Today, I bring together my experience as a PGA professional, coach and club fitter to work with golfers of all levels — from players picking up a club for the first time to those looking to compete at their highest level.
+                  
+                  I utilize technology such as TrackMan, HackMotion, Capto and video analysis to make the learning process more visual. It helps my students see changes in their swing and shows a clearer path to what we are working towards.
+                </p>
+                <p>
+                  Today, I bring together my experience as a PGA professional, coach and club fitter to work with golfers of all levels - from players picking up a club for the first time to those looking to compete at their highest level.
                 </p>
               </div>
             </div>
@@ -203,10 +223,10 @@ export default function FrancoisVanZylClient() {
                   key={tech.name}
                   className="rounded-xl border border-[#E2DDD3]/60 bg-[#F4F1EA]/50 p-3"
                 >
-                  <h4 className="text-xs font-medium tracking-[0.05em] text-[#2F5A43]">
+                  <h4 className="text-[13px] font-medium tracking-[0.06em] text-[#2F5A43]">
                     {tech.name}
                   </h4>
-                  <p className="mt-1 text-[11px] font-light leading-relaxed text-[#2F5A43]/80">
+                  <p className="mt-1 text-[12px] font-light leading-relaxed text-[#2F5A43]/80">
                     {tech.desc}
                   </p>
                 </div>
@@ -217,8 +237,8 @@ export default function FrancoisVanZylClient() {
 
       </main>
 
-      {/* FOOTER CTA */}
-      <section className="relative overflow-hidden border-t border-[#E2DDD3] px-6 py-14 text-center text-[#F2EEE8]">
+      {/* FOOTER CONTACT */}
+      <section className="relative overflow-hidden border-t border-[#E2DDD3] px-6 pb-6 pt-14 text-center text-[#F2EEE8]">
         <img
           src="/OurCoaches/approach.jpg"
           alt="Footer Background"
@@ -233,7 +253,7 @@ export default function FrancoisVanZylClient() {
         />
 
         <div className="relative z-10 mx-auto max-w-xl">
-          <div className="mb-4 flex items-center justify-center gap-3">
+          <div className="mb-6 flex items-center justify-center gap-3">
             <div className="h-[1px] w-16 bg-[#B89868]/60" />
             <img
               src="/images/logo-warm.png"
@@ -243,20 +263,40 @@ export default function FrancoisVanZylClient() {
             <div className="h-[1px] w-16 bg-[#B89868]/60" />
           </div>
 
-          <h2 className="text-lg font-light uppercase tracking-[0.18em]">
-            Ready To Elevate Your Game?
-          </h2>
-          <p className="mt-2 text-xs font-light text-[#E0D8CC]">
-            Book a private one-on-one session with Head Coach Francois Van Zyl.
-          </p>
+          <div className="flex flex-col items-center justify-center gap-4 text-xs font-light tracking-[0.14em] uppercase text-[#E0D8CC] sm:flex-row sm:gap-8">
+            
+            <div className="flex items-center gap-2.5 transition hover:text-[#F2EEE8]">
+              <svg 
+                className="h-3.5 w-3.5 shrink-0 text-[#B89868]" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                strokeWidth="1.75" 
+                strokeLinecap="round" 
+                strokeLinejoin="round"
+              >
+                <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+              </svg>
+              <a
+                href="https://www.instagram.com/FVZgolf"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                @FVZgolf
+              </a>
+            </div>
+            <div className="flex items-center gap-2.5 transition hover:text-[#F2EEE8]">
+              <Mail className="h-3.5 w-3.5 shrink-0 text-[#B89868]" />
+              <a href="mailto:francois@geminigolfacademy.com">
+                francois@geminigolfacademy.com
+              </a>
+            </div>
+          </div>
 
-          <div className="mt-6">
-            <Link
-              href="/CoachAvailability?coach=Francois"
-              className="inline-block border border-[#B89868] bg-[#121D16]/60 px-6 py-2.5 text-xs font-light uppercase tracking-[0.18em] text-[#F2EEE8] backdrop-blur-sm transition hover:bg-[#B89868] hover:text-[#121D16]"
-            >
-              Check Availability
-            </Link>
+          <div className="mt-8 border-t border-[#D8CCB7]/20 pt-4 text-[11px] font-light text-[#E0D8CC]/60">
+            © {new Date().getFullYear()} Gemini Golf Academy Sdn Bhd. All rights reserved.
           </div>
         </div>
       </section>

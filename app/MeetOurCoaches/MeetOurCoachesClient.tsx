@@ -22,14 +22,14 @@ const coachesData: Coach[] = [
     name: "Francois Van Zyl",
     role: "HEAD COACH",
     philosophy:
-      "I believe coaching should be clear, simple and individual to each golfer. \nMy approach is to find the root of the problem, simplify the fix, and give players the tools to improve.",
+      "I believe coaching should be clear, simple and individual to each golfer. \nMy approach is to pinpoint the problem, simplify the solution, and give the player the confidence to own it.",
     specialisations: [
       "Swing Mechanics & Technique",
       "Golf Technology & Swing Analysis",
       "Course-Management & Strategy",
       "Putting & Short Game",
     ],
-    photoUrl: "/OurCoaches/Francois_Action.png",
+    photoUrl: "/FVZ/F_2.png",
     imagePosition: "object-[center_25%]",
     mobileImagePosition: "object-top",
     mobileImageHeight: "h-80",
@@ -40,7 +40,7 @@ const coachesData: Coach[] = [
     name: "Siti Shaari",
     role: "PERFORMANCE COACH",
     philosophy:
-      "I believe golf is about more than just the swing.\nMy focus is on helping students develop their game while builing confidence on the course.",
+      "I believe golf is about more than just the swing.\nMy focus is on helping students develop their swing and mental game so they achieve their goals whilst remembering to enjoy the process.",
     specialisations: [
       "Swing Fundamentals & Technique",
       "Course Management & Smart Playing",
