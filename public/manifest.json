@@ -1,8 +1,8 @@
 {
   "id": "/",
-  "name": "Gemini Golf",
+  "name": "Gemini Golf Academy",
   "short_name": "Gemini Golf",
-  "description": "Golf Lesson Booking Platform",
+  "description": "The digital home of Gemini Golf Academy — book lessons, manage your profile, follow your progress, and stay connected with your coach.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#000000",

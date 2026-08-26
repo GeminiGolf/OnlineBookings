@@ -21,9 +21,8 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: "Gemini Golf",
-  description:
-    "Golf Lesson Booking Platform",
+  title: "Gemini Golf Academy",
+  description: "The digital home of Gemini Golf Academy — book lessons, manage your profile, follow your progress, and stay connected with your coach.",
 
   manifest: "/manifest.json",
 
