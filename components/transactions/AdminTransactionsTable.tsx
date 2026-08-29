@@ -16,9 +16,10 @@ import { format } from "date-fns"
 import "react-day-picker/dist/style.css"
 
 export type TransactionRow = {
-  id: number
-  client_id: number
-  purchase_date: string | null
+	id: number
+	client_id: number
+	added_by: number | null
+	purchase_date: string | null
   expiration_date: string | null
   lessons_added: number | null
   price: number | null
@@ -45,8 +46,12 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
   const [receiptUrl, setReceiptUrl] = useState<string | null>(null)
 	const [editingTransaction, setEditingTransaction] = useState<TransactionRow | null>(null)
 	const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+	const [coaches, setCoaches] = useState<
+		{ id: number; name: string }[]
+	>([])
 
 	const [editForm, setEditForm] = useState({
+		added_by: "",
 		transaction_name: "",
 		lessons_added: 0,
 		price: 0,
@@ -55,6 +60,24 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 		months: "",
 		expiration_date: "",
 	})
+
+	useEffect(() => {
+		async function fetchCoaches() {
+			const { data, error } = await supabase
+				.from("coaches")
+				.select("id, name")
+				.order("name")
+
+			if (error) {
+				console.error("Error fetching coaches:", error)
+				return
+			}
+
+			setCoaches(data ?? [])
+		}
+
+		fetchCoaches()
+	}, [])
 	const [previewOpen, setPreviewOpen] = useState(false)
 	const [pdfDoc, setPdfDoc] = useState<jsPDF | null>(null)
 	const [pdfFilename, setPdfFilename] = useState("")
@@ -150,6 +173,7 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 		const { error } = await supabase
 			.from("lesson_packages")
 			.update({
+				added_by: editForm.added_by ? Number(editForm.added_by) : null,
 				transaction_name: editForm.transaction_name,
 				lessons_added: editForm.lessons_added,
 				price: editForm.price,
@@ -450,6 +474,7 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 																						setEditingTransaction(transaction)
 
 																						setEditForm({
+																							added_by: transaction.added_by?.toString() ?? "",
 																							transaction_name: transaction.transaction_name ?? "",
 																							lessons_added: transaction.lessons_added ?? 0,
 																							price: transaction.price ?? 0,
@@ -608,6 +633,7 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 																						setEditingTransaction(transaction)
 
 																						setEditForm({
+																							added_by: transaction.added_by?.toString() ?? "",
 																							transaction_name: transaction.transaction_name ?? "",
 																							lessons_added: transaction.lessons_added ?? 0,
 																							price: transaction.price ?? 0,
@@ -740,9 +766,36 @@ export default function TransactionsTable({ transactions }: TransactionsTablePro
 						<div className="space-y-4">
 
 							<div className="flex items-center justify-between">
-								<label className="text-[13px] font-light uppercase tracking-[0.12em] text-[#2F5A43]">Client Name:</label>
+								<label className="text-[13px] font-light uppercase tracking-[0.12em] text-[#2F5A43]">
+									Client Name:
+								</label>
 
 								<span>{editingTransaction.client_name}</span>
+							</div>
+
+							<div className="flex items-center justify-between">
+								<label className="text-[13px] font-light uppercase tracking-[0.12em] text-[#2F5A43]">
+									Coach:
+								</label>
+
+								<select
+									value={editForm.added_by}
+									onChange={(e) =>
+										setEditForm({
+											...editForm,
+											added_by: e.target.value,
+										})
+									}
+									className="w-[205px] rounded-2xl border border-[#3A5D49] bg-[#FCFAF6] px-4 py-1.5 text-[15px] font-light text-[#2F5A43] focus:border-[#2F5A43] focus:ring-[#2F5A43]/15"
+								>
+									<option value="">Select Coach</option>
+
+									{coaches.map((coach) => (
+										<option key={coach.id} value={coach.id}>
+											{coach.name}
+										</option>
+									))}
+								</select>
 							</div>
 
 							<div className="flex items-center justify-between">
