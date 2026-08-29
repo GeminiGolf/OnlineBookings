@@ -35,7 +35,7 @@ import { MapPin, Mail, Phone } from "lucide-react";export default function Home(
             width={420}
             height={420}
             priority
-            className="mt-[clamp(3rem,7vh,6rem)] h-auto w-[clamp(70px,10vw,130px)] opacity-75"
+            className="mt-[clamp(3rem,7vh,6rem)] h-auto w-[clamp(60px,10vw,110px)] opacity-75"
           />
 
           <Image
@@ -44,7 +44,7 @@ import { MapPin, Mail, Phone } from "lucide-react";export default function Home(
             width={420}
             height={420}
             priority
-            className="mt-[clamp(0.5rem,1.2vh,1rem)] h-auto w-[clamp(180px,26vw,420px)] opacity-75"
+            className="mt-[clamp(0.5rem,1.2vh,1rem)] h-auto w-[clamp(220px,26vw,420px)] opacity-75"
           />
 
           <div className="mt-[clamp(0.25rem,0.8vh,0.75rem)] mb-[clamp(0.75rem,2vh,1.25rem)] flex items-center gap-[clamp(0.5rem,1vw,0.75rem)]">
@@ -53,7 +53,7 @@ import { MapPin, Mail, Phone } from "lucide-react";export default function Home(
             <div className="h-px w-[clamp(50px,6vw,80px)] bg-[#D8CCB7]" />
           </div>
 
-          <p className="mb-[clamp(1.5rem,3vh,2rem)] text-[clamp(10px,0.9vw,13px)] uppercase tracking-[0.45em] text-[#D8CCB7]">
+          <p className="mb-[clamp(1.5rem,3vh,2rem)] text-[clamp(11px,0.9vw,13px)] uppercase tracking-[0.45em] text-[#D8CCB7]">
             <span className="whitespace-nowrap">One Academy · One Standard ·</span>{" "}
             <span className="whitespace-nowrap">Every Golfer.</span>
           </p>
@@ -61,13 +61,13 @@ import { MapPin, Mail, Phone } from "lucide-react";export default function Home(
           <div className="flex w-full max-w-[200px] sm:max-w-md flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3">
             <a
               href="/CoachAvailability"
-              className="w-full sm:w-1/2 sm:flex-1 whitespace-nowrap rounded-full border border-[#D8CCB7] bg-[#102418]/70 px-2 sm:px-0 py-[clamp(0.5rem,1.2vw,0.9rem)] text-center text-[clamp(11px,1.1vw,14px)] font-light uppercase tracking-[0.08em] sm:tracking-[0.1em] text-[#F6F2EA] backdrop-blur-md transition hover:bg-[#183525]/80"
+              className="w-full sm:w-1/2 sm:flex-1 whitespace-nowrap rounded-full border border-[#D8CCB7] bg-[#102418]/70 px-2 sm:px-0 py-[clamp(0.5rem,1.2vw,0.9rem)] text-center text-[clamp(11px,1.1vw,14px)] font-light uppercase tracking-[0.08em] sm:tracking-[0.1em] text-[#D8CCB7] backdrop-blur-md transition hover:bg-[#183525]/80"
             >
               BOOK A LESSON
             </a>
             <a
               href="/MeetOurCoaches"
-              className="w-full sm:w-1/2 sm:flex-1 whitespace-nowrap rounded-full border border-[#D8CCB7] bg-[#102418]/70 px-2 sm:px-0 py-[clamp(0.5rem,1.2vw,0.9rem)] text-center text-[clamp(11px,1.1vw,14px)] font-light uppercase tracking-[0.08em] sm:tracking-[0.1em] text-[#F6F2EA] backdrop-blur-md transition hover:bg-[#183525]/80"
+              className="w-full sm:w-1/2 sm:flex-1 whitespace-nowrap rounded-full border border-[#D8CCB7] bg-[#102418]/70 px-2 sm:px-0 py-[clamp(0.5rem,1.2vw,0.9rem)] text-center text-[clamp(11px,1.1vw,14px)] font-light uppercase tracking-[0.08em] sm:tracking-[0.1em] text-[#D8CCB7] backdrop-blur-md transition hover:bg-[#183525]/80"
             >
               MEET OUR COACHES
             </a>
