@@ -38,14 +38,14 @@ const coachesData: Coach[] = [
     id: 2,
     label: "COACH 02",
     name: "Siti Shaari",
-    role: "PERFORMANCE COACH",
+    role: "Player Development Coach",
     philosophy:
-      "I believe golf is about more than just the swing.\nMy focus is on helping students develop their swing and mental game so they achieve their goals whilst remembering to enjoy the process.",
+      "I believe golfers learn best when they understand what they are doing and why they are doing it. \n My coaching centers around building strong foundations and helping each player understand their own movement.",
     specialisations: [
-      "Swing Fundamentals & Technique",
-      "Course Management & Smart Playing",
-      "Mental Game & Confidence",
-      "Competitive/Performance Golf"
+      "Swing Technique & Movement Understanding",
+      "Mental Game & On-Course Confidence",
+      "Women’s Golf Development",
+      "Junior Golf Coaching"
     ],
     photoUrl: "/OurCoaches/Siti_Action.jpeg",
     imagePosition: "object-center",
