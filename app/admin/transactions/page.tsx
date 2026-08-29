@@ -78,6 +78,7 @@ export default async function AdminTransactionsPage() {
       return {
         id: pkg.id,
         client_id: pkg.client_id,
+        added_by: pkg.added_by,
         purchase_date: pkg.purchase_date,
         expiration_date: pkg.expiration_date,
         lessons_added: pkg.lessons_added,
