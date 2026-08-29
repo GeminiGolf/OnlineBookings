@@ -163,8 +163,18 @@ export default function MeetOurCoachesClient() {
                     </div>
                   </div>
 
-                  {/* Desktop Link */}
-                  <div className="mt-8 shrink-0">
+                  {/* Desktop Links */}
+                  <div className="mt-8 flex flex-col gap-2.5 shrink-0 items-start">
+                    <Link
+                      href={
+                        coach.name.includes("Francois")
+                          ? "/FrancoisVanZyl"
+                          : "/SitiShaari"
+                      }
+                      className="inline-flex items-center gap-2 rounded-xl border border-[#B89868]/80 bg-transparent px-6 py-3 text-xs font-semibold uppercase tracking-[0.17em] text-[#2F5A43] transition-all hover:bg-[#2F5A43] hover:text-[#F2EEE8]"
+                    >
+                      Read More →
+                    </Link>
                     <Link
                       href={`/CoachAvailability?coach=${encodeURIComponent(
                         coach.name.split(" ")[0]
@@ -363,8 +373,18 @@ export default function MeetOurCoachesClient() {
                   </ul>
                 </div>
 
-                {/* Mobile Link */}
-                <div className="mt-6">
+                {/* Mobile Links */}
+                <div className="mt-6 flex flex-col gap-2.5">
+                  <Link
+                    href={
+                      coach.name.includes("Francois")
+                        ? "/FrancoisVanZyl"
+                        : "/SitiShaari"
+                    }
+                    className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-[#B89868]/80 bg-transparent px-5 py-3 text-xs font-semibold uppercase tracking-[0.17em] text-[#2F5A43] transition-all active:bg-[#2F5A43] active:text-[#F2EEE8]"
+                  >
+                    Read More →
+                  </Link>
                   <Link
                     href={`/CoachAvailability?coach=${encodeURIComponent(
                       coach.name.split(" ")[0]

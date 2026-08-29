@@ -341,7 +341,7 @@ export default function ClientIDTransactionForm({
                   <input
                     id="receipt-upload"
                     type="file"
-                    accept="image/*"
+                    accept="image/*,application/pdf"
                     onChange={(e) =>
                       setReceiptFile(e.target.files?.[0] || null)
                     }

@@ -54,15 +54,24 @@ import { MapPin, Mail, Phone } from "lucide-react";export default function Home(
           </div>
 
           <p className="mb-[clamp(1.5rem,3vh,2rem)] text-[clamp(10px,0.9vw,13px)] uppercase tracking-[0.45em] text-[#D8CCB7]">
-            One Academy · One Standard · Every Golfer.
+            <span className="whitespace-nowrap">One Academy · One Standard ·</span>{" "}
+            <span className="whitespace-nowrap">Every Golfer.</span>
           </p>
 
-          <a
-            href="/CoachAvailability"
-            className="rounded-full border border-[#D8CCB7] bg-[#102418]/70 px-[clamp(2rem,3vw,2.75rem)] py-[clamp(0.65rem,1.2vw,0.9rem)] text-[clamp(13px,1.15vw,17px)] font-light uppercase tracking-[0.18em] text-[#F6F2EA] backdrop-blur-md transition hover:bg-[#183525]/80"
-          >
-            BOOK A LESSON
-          </a>
+          <div className="flex w-full max-w-[200px] sm:max-w-md flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3">
+            <a
+              href="/CoachAvailability"
+              className="w-full sm:w-1/2 sm:flex-1 whitespace-nowrap rounded-full border border-[#D8CCB7] bg-[#102418]/70 px-2 sm:px-0 py-[clamp(0.5rem,1.2vw,0.9rem)] text-center text-[clamp(11px,1.1vw,14px)] font-light uppercase tracking-[0.08em] sm:tracking-[0.1em] text-[#F6F2EA] backdrop-blur-md transition hover:bg-[#183525]/80"
+            >
+              BOOK A LESSON
+            </a>
+            <a
+              href="/MeetOurCoaches"
+              className="w-full sm:w-1/2 sm:flex-1 whitespace-nowrap rounded-full border border-[#D8CCB7] bg-[#102418]/70 px-2 sm:px-0 py-[clamp(0.5rem,1.2vw,0.9rem)] text-center text-[clamp(11px,1.1vw,14px)] font-light uppercase tracking-[0.08em] sm:tracking-[0.1em] text-[#F6F2EA] backdrop-blur-md transition hover:bg-[#183525]/80"
+            >
+              MEET OUR COACHES
+            </a>
+          </div>
         </div>
       </main>
 
