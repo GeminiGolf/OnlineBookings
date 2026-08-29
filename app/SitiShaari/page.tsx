@@ -4,7 +4,7 @@ import SitiShaariClient from "./SitiShaariClient"
 export const metadata: Metadata = {
   title: "Siti Shaari | Player Development Coach | Gemini Golf Academy",
   description:
-    "PGA professional Siti Shaari offers private golf lessons for beginners to touring pros at Gemini Golf Academy in Petaling Jaya. 20+ years of player development experience.",
+    "PGAM professional Siti Shaari offers private golf lessons for beginners to touring pros at Gemini Golf Academy in Petaling Jaya. 20+ years of player development experience.",
   keywords: [
     "Siti Shaari",
     "Beginner Golf Lessons Petaling Jaya",
@@ -68,14 +68,14 @@ export default function SitiShaariPage() {
       },
     },
     "description":
-      "PGA professional with over 20 years of golf coaching experience. Tailored golf lessons for complete beginners, intermediate golfers, competing juniors, and professional players.",
+      "PGAM professional with over 20 years of golf playing and coaching experience. Tailored golf lessons for complete beginners, intermediate golfers, women golfers, and competing juniors.",
     "knowsAbout": [
       "Beginner Golf Lessons",
-      "Pro Golf Coaching",
+      "Junior Golf Coaching",
+      "Women's Golf Development",
       "Golf Instruction & Player Development",
       "Golf Swing Mechanics",
-      "Short Game & Putting Coaching",
-      "Master Club Fitting",
+      "Mental Game & On-Course Confidence",
     ],
   }
 

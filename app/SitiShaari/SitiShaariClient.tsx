@@ -116,7 +116,7 @@ export default function SitiShaariClient() {
 
               <div className="mt-6">
                 <Link
-                  href="/CoachAvailability?coach=Francois"
+                  href="/CoachAvailability?coach=Siti"
                   className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-[#B89868]/80 bg-transparent px-5 py-3 text-xs font-semibold uppercase tracking-[0.17em] text-[#2F5A43] transition-all hover:bg-[#2F5A43] hover:text-[#F2EEE8]"
                 >
                   View Availability →
