@@ -61,13 +61,13 @@ import { MapPin, Mail, Phone } from "lucide-react";export default function Home(
           <div className="flex w-full max-w-[200px] sm:max-w-md flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3">
             <a
               href="/CoachAvailability"
-              className="w-full sm:w-1/2 sm:flex-1 whitespace-nowrap rounded-full border border-[#D8CCB7] bg-[#102418]/70 px-2 sm:px-0 py-[clamp(0.5rem,1.2vw,0.9rem)] text-center text-[clamp(11px,1.1vw,14px)] font-light uppercase tracking-[0.08em] sm:tracking-[0.1em] text-[#D8CCB7] backdrop-blur-md transition hover:bg-[#183525]/80"
+              className="w-full sm:w-1/2 sm:flex-1 whitespace-nowrap rounded-full border border-[#D8CCB7] bg-[#102418]/70 px-2 sm:px-0 py-[clamp(0.5rem,1.2vw,0.9rem)] text-center text-[clamp(11px,1.1vw,14px)] font-light uppercase tracking-[0.08em] sm:tracking-[0.1em] text-[#F6F0E2] backdrop-blur-md transition hover:bg-[#183525]/80"
             >
               BOOK A LESSON
             </a>
             <a
               href="/MeetOurCoaches"
-              className="w-full sm:w-1/2 sm:flex-1 whitespace-nowrap rounded-full border border-[#D8CCB7] bg-[#102418]/70 px-2 sm:px-0 py-[clamp(0.5rem,1.2vw,0.9rem)] text-center text-[clamp(11px,1.1vw,14px)] font-light uppercase tracking-[0.08em] sm:tracking-[0.1em] text-[#D8CCB7] backdrop-blur-md transition hover:bg-[#183525]/80"
+              className="w-full sm:w-1/2 sm:flex-1 whitespace-nowrap rounded-full border border-[#D8CCB7] bg-[#102418]/70 px-2 sm:px-0 py-[clamp(0.5rem,1.2vw,0.9rem)] text-center text-[clamp(11px,1.1vw,14px)] font-light uppercase tracking-[0.08em] sm:tracking-[0.1em] text-[#F6F0E2] backdrop-blur-md transition hover:bg-[#183525]/80"
             >
               MEET OUR COACHES
             </a>
