@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import SitiShaariClient from "./SitiShaariClient"
 
 export const metadata: Metadata = {
-  title: "Siti Shaari | Head Golf Coach | Gemini Golf Academy",
+  title: "Siti Shaari | Player Development Coach | Gemini Golf Academy",
   description:
     "PGA professional Siti Shaari offers private golf lessons for beginners to touring pros at Gemini Golf Academy in Petaling Jaya. 20+ years of player development experience.",
   keywords: [
@@ -16,20 +16,20 @@ export const metadata: Metadata = {
     "Gemini Golf Academy",
   ],
   alternates: {
-    canonical: "https://www.geminigolfacademy.com/FrancoisVanZyl",
+    canonical: "https://www.geminigolfacademy.com/SitiShaari",
   },
   openGraph: {
-    title: "Siti Shaari - Head Golf Coach | Gemini Golf Academy",
+    title: "Siti Shaari - Player Development Golf Coach | Gemini Golf Academy",
     description:
       "PGA professional with 20+ years coaching golfers of all skill levels—from beginners learning foundational mechanics to elite pros refining tour performance.",
-    url: "https://www.geminigolfacademy.com/FrancoisVanZyl",
+    url: "https://www.geminigolfacademy.com/SitiShaari",
     siteName: "Gemini Golf Academy",
     images: [
       {
-        url: "/OurCoaches/Francois_Action.png",
+        url: "/OurCoaches/Siti_Action.jpeg",
         width: 1200,
         height: 630,
-        alt: "Siti Shaari Head Golf Coach",
+        alt: "Siti Shaari Player Development Coach",
       },
     ],
     locale: "en_US",
@@ -37,10 +37,10 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Siti Shaari | Head Golf Coach",
+    title: "Siti Shaari | Player Development Coach",
     description:
       "PGA Golf Professional specializing in beginner to pro level golf instruction and personalized player development.",
-    images: ["/OurCoaches/Francois_Action.png"],
+    images: ["/OurCoaches/Siti_Action.jpeg"],
   },
   robots: {
     index: true,

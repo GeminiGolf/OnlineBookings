@@ -3,38 +3,38 @@
 import Link from "next/link"
 import { Mail } from "lucide-react"
 
-export default function FrancoisVanZylClient() {
+export default function SitiShaariClient() {
   const specialisations = [
-    "Swing Mechanics & Technique",
-    "Golf Technology & Swing Analysis (TrackMan & Video)",
-    "Course-Management & Strategy",
-    "Putting & Short Game",
+    "Swing Technique & Movement Understanding",
+    "Mental Game & On-Course Confidence",
+    "Women's Golf  Development",
+    "Junior Golf Coaching",
   ]
 
   const credentials = [
-    "PGA Class A Professional",
-    "Over 20+ Years Teaching Experience",
-    "Former Professional Tour Player",
-    "Certified Master Club Fitter",
-    "TrackMan, HackMotion & Capto Specialist",
+    "PGAM Member",
+    "Over 20+ years of competitive golf experience",
+    "Represented Malaysia’s national team for nearly a decade",
+    "Former collegiate golfer at the University of South Alabama",
+    "5+ years of coaching experience",
   ]
 
-  const technologies = [
+  const coachingFocusAreas = [
     {
-      name: "TrackMan Launch Monitor",
-      desc: "Delivers exact ball flight and club data to pinpoint precise movement mechanics.",
+      title: "Beginner & Junior Development",
+      desc: "Building strong fundamentals, core mechanics, and game enjoyment early in a golfer's journey.",
     },
     {
-      name: "HackMotion 3D Wrist Sensor",
-      desc: "Measures wrist angles throughout the swing to fix face control and contact issues.",
+      title: "Women's Golf Progression",
+      desc: "Creating an encouraging environment focused on swing efficiency, distance gain, and course confidence.",
     },
     {
-      name: "Capto Precision Putting",
-      desc: "Provides deep biomechanical feedback on stroke tempo, face angle, and roll.",
+      title: "Movement Understanding",
+      desc: "Helping players make sense of their swing dynamics instead of forcing a rigid, copy-cat technique.",
     },
     {
-      name: "High-Speed Video Analysis",
-      desc: "Offers visual, frame-by-frame clarification so you can see exact areas for growth.",
+      title: "Effective Independent Practice",
+      desc: "Teaching golfers how to practice with clarity so they can self-diagnose and own their development.",
     },
   ]
 
@@ -58,10 +58,10 @@ export default function FrancoisVanZylClient() {
 
         <div className="relative z-10 mx-auto flex w-full max-w-6xl flex-col justify-end">
           <span className="text-xs font-light uppercase tracking-[0.25em] text-[#B89868]">
-            Head Golf Coach
+            Player Development Coach
           </span>
           <h1 className="mt-1 text-2xl font-light uppercase tracking-[0.18em] text-[#E0D8CC] md:mt-2 md:text-4xl">
-            Francois Van Zyl
+            Siti Shaari
           </h1>
           <p className="mt-1 max-w-xl text-xs font-light tracking-[0.04em] text-[#E0D8CC] md:mt-2 md:text-sm">
             
@@ -79,8 +79,8 @@ export default function FrancoisVanZylClient() {
             {/* Main Action Shot (Left Column) */}
             <div className="relative min-h-[380px] overflow-hidden rounded-2xl bg-[#E7E2D8] lg:col-span-5 lg:min-h-[480px]">
               <img
-                src="/FVZ/Francois_Main.jpg"
-                alt="Francois Coaching TrackMan"
+                src="/OurCoaches/Siti_Action.jpeg"
+                alt="Siti Shaari Wedge Gemini Golf Academy"
                 className="h-full w-full object-cover object-center"
               />
             </div>
@@ -93,7 +93,7 @@ export default function FrancoisVanZylClient() {
                 </span>
                 
                 <p className="mt-3 text-[13px]] font-light leading-relaxed tracking-[0.02em] text-[#2F5A43] md:text-sm">
-                  I believe coaching should be clear, simple and individual to each golfer. <br></br>My approach is to pinpoint the problem, simplify the solution, and give the player the confidence to own it.
+                  I believe golfers learn best when they understand what they are doing and why they are doing it.<br></br>My coaching centers around building strong foundations and helping each player understand their own movement.
                 </p>
 
                 <div className="mt-6">
@@ -128,15 +128,15 @@ export default function FrancoisVanZylClient() {
             <div className="grid grid-cols-2 gap-4 lg:col-span-3 lg:grid-cols-1">
               <div className="h-44 overflow-hidden rounded-2xl bg-[#E7E2D8] lg:h-[230px]">
                 <img
-                  src="/FVZ/FPutt.png"
-                  alt="Francois Putting Green"
+                  src="/SS/SCP.jpg"
+                  alt="Siti Coaching Children"
                   className="h-full w-full object-cover object-center"
                 />
               </div>
               <div className="h-44 overflow-hidden rounded-2xl bg-[#E7E2D8] lg:h-[230px]">
                 <img
-                  src="/FVZ/F_Che.png"
-                  alt="Francois Champion Mentality"
+                  src="/SS/SMayb.jpg"
+                  alt="Siti Shaari Maybank Tournament"
                   className="h-full w-full object-cover object-center"
                 />
               </div>
@@ -158,27 +158,23 @@ export default function FrancoisVanZylClient() {
               </h2>
               <div className="space-y-3 text-[13px] font-light leading-relaxed tracking-[0.02em] text-[#2F5A43] md:text-sm">
                 <p>
-                  "Pinpoint the problem, simplify the solution, and give the player the confidence to own it." 
-
+                  Golf has been a big part of my life for over 20 years. From competing for my college and state, to being a pro golfer. Those experiences shaped my understanding of the game and my passion for helping others improve. 
                 </p>
                 <p>
-                  Golf has always been about more than just hitting a good shot for me. After 20 years of coaching, I believe the best results start with understanding the individual - how they move, how they learn, and what they are trying to achieve.
+                  My interest in coaching came from wanting to better understand why swings work and how to adapt them to better my abilities. Over time, I found that I enjoyed breaking down those ideas and helping other golfers make sense of what they are doing.
                 </p>
                 <p>
-                  
-                  I utilize technology such as TrackMan, HackMotion, Capto and video analysis to make the learning process more visual. It helps my students see changes in their swing and shows a clearer path to what we are working towards.
+                  I want my students to understand their golf and practice it effectively, not just follow instructions. My goal is to give them the knowledge, clarity and confidence to keep developing their game and enjoy the process along the way.
                 </p>
-                <p>
-                  Today, I bring together my experience as a PGA professional, coach and club fitter to work with golfers of all levels - from players picking up a club for the first time to those looking to compete at their highest level.
-                </p>
+                
               </div>
             </div>
 
             {/* Outdoor / Putting Green Action Shot */}
             <div className="h-64 overflow-hidden rounded-2xl bg-[#E7E2D8] lg:col-span-5 lg:h-[340px]">
               <img
-                src="/FVZ/FCo.png"
-                alt="Francois Coaching"
+                src="/SS/SLa.jpg"
+                alt="Siti Shaari Womens Coaching"
                 className="h-full w-full object-cover object-center"
               />
             </div>
@@ -209,25 +205,25 @@ export default function FrancoisVanZylClient() {
             </ul>
           </section>
 
-          {/* Coaching Tech Card */}
+          {/* Core Specialisations Card */}
           <section className="rounded-3xl border border-[#E2DDD3] bg-[#FAF8F5] p-6 shadow-md md:p-8">
             <span className="text-xs font-light uppercase tracking-[0.2em] text-[#B89868]">
-              Data-Driven Improvement
+              Coaching Focus
             </span>
             <h3 className="mt-1 text-lg font-light uppercase tracking-[0.12em] text-[#2F5A43]">
-              Coaching Technology
+              Core Specialisations
             </h3>
             <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
-              {technologies.map((tech) => (
+              {coachingFocusAreas.map((area) => (
                 <div
-                  key={tech.name}
+                  key={area.title}
                   className="rounded-xl border border-[#E2DDD3]/60 bg-[#F4F1EA]/50 p-3"
                 >
                   <h4 className="text-[13px] font-medium tracking-[0.06em] text-[#2F5A43]">
-                    {tech.name}
+                    {area.title}
                   </h4>
                   <p className="mt-1 text-[12px] font-light leading-relaxed text-[#2F5A43]/80">
-                    {tech.desc}
+                    {area.desc}
                   </p>
                 </div>
               ))}
@@ -263,11 +259,11 @@ export default function FrancoisVanZylClient() {
                   className="h-4.5 w-auto object-contain"
                 />
                 <span className="text-sm font-light uppercase tracking-[0.2em] text-[#E0D8CC]">
-                  Francois Van Zyl
+                  Siti Shaari
                 </span>
               </div>
               <p className="mt-1 text-xs font-light tracking-[0.05em] text-[#B89868]">
-                Head Coach • Gemini Golf Academy
+                Player Development Coach • Gemini Golf Academy
               </p>
             </div>
 
@@ -277,19 +273,19 @@ export default function FrancoisVanZylClient() {
             {/* Right: Direct Contacts */}
             <div className="flex flex-col items-center gap-2 text-xs font-light text-[#E0D8CC] sm:items-end">
               <a
-                href="mailto:francois@geminigolfacademy.com"
+                href="mailto:siti@geminigolfacademy.com"
                 className="flex items-center gap-2 transition hover:text-[#B89868]"
               >
-                <span>francois@geminigolfacademy.com</span>
+                <span>siti@geminigolfacademy.com</span>
                 <Mail className="h-3.5 w-3.5 text-[#B89868]" />
               </a>
               <a
-                href="https://www.instagram.com/FVZgolf"
+                href="https://www.instagram.com/sitishaari.golf"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 transition hover:text-[#B89868]"
               >
-                <span>@FVZgolf</span>
+                <span>@sitishaari.golf</span>
                 <svg
                   className="h-3.5 w-3.5 text-[#B89868]"
                   viewBox="0 0 24 24"
