@@ -131,7 +131,7 @@ import { MapPin, Mail, Phone } from "lucide-react";export default function Home(
             <div className="flex items-center justify-center gap-2.5">
               <Mail className="h-3.5 w-3.5 shrink-0 text-[#D8CCB7]" />
               <a href="mailto:inquiries@geminigolfacademy.com" className="hover:underline">
-                admin@geminigolfacademy.com
+                hello@geminigolfacademy.com
               </a>
             </div>
 
