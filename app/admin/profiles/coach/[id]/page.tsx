@@ -4,6 +4,7 @@ import { redirect } from "next/navigation"
 import AdminCoachDefaultsCard from "@/components/admin/AdminCoachDefaultsCard"
 import AdminCoachContactEditor from "@/components/admin/AdminCoachContactEditor"
 import DashboardContainer from "@/components/layout/DashboardContainer"
+
 type Props = {
   params: Promise<{
     id: string
@@ -43,8 +44,8 @@ export default async function AdminCoachProfilePage({
 
   if (!coach) {
     return (
-      <main className="min-h-screen bg-gray-100 p-3 sm:p-10 text-black">
-        <h1 className="text-2xl font-bold">
+      <main className="min-h-screen bg-[#F2EEE8] px-4 pt-8 pb-3 sm:p-10 text-black">
+        <h1 className="dashboard-heading">
           Coach Not Found
         </h1>
       </main>
@@ -56,11 +57,17 @@ export default async function AdminCoachProfilePage({
     .select("id")
     .eq("primary_coach_id", coach.id)
 
+  // Calculate date cutoff for 3 months ago
+  const threeMonthsAgo = new Date()
+  threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3)
+  const cutoffDateStr = threeMonthsAgo.toISOString().split("T")[0]
+
   const { data: completedBookings } = await supabase
     .from("bookings")
     .select("client_id")
     .eq("coach_id", coach.id)
     .eq("status", "completed")
+    .gte("lesson_date", cutoffDateStr)
 
   const activeClients = new Set(
     (completedBookings || []).map(
@@ -69,18 +76,18 @@ export default async function AdminCoachProfilePage({
   )
 
   return (
-    <main className="min-h-screen bg-gray-100 p-3 sm:p-10 text-black">
+    <main className="min-h-screen bg-[#F2EEE8] px-4 pt-8 pb-3 sm:p-10 text-black">
       <DashboardContainer>
         <Link
           href="/admin/profiles"
-          className="mb-6 inline-block rounded-lg border bg-white px-4 py-2"
+          className="mb-4 inline-block rounded-xl border border-[#3A5D49] bg-white px-5 py-2 text-[15px] font-light tracking-[0.04em] text-[#2F5A43] shadow-sm transition hover:bg-[#F6FAF6] hover:text-[#2F5A43]"
         >
           ← Back to Profiles
         </Link>
 
         <div className="grid gap-4 lg:grid-cols-2">
-          <div className="rounded-2xl bg-white p-5 shadow">
-            <h2 className="mb-4 text-[22px] font-bold">
+          <div className="rounded-3xl border border-[#3A5D49] bg-white p-5 shadow-md lg:px-6 lg:py-5">
+            <h2 className="dashboard-heading mb-4">
               Coach Summary
             </h2>
 
@@ -90,7 +97,7 @@ export default async function AdminCoachProfilePage({
                   Name
                 </p>
 
-                <p className="font-medium">
+                <p className="dashboard-value">
                   {coach.preferred_name ||
                     coach.name}
                 </p>
@@ -104,21 +111,21 @@ export default async function AdminCoachProfilePage({
               />
 
               <div>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-[#3A5D49]">
                   Total Clients
                 </p>
 
-                <p className="text-2xl font-bold">
+                <p className="dashboard-value">
                   {clients?.length || 0}
                 </p>
               </div>
 
               <div>
-                <p className="text-sm text-gray-500">
-                  Active Clients
+                <p className="text-sm text-[#3A5D49]">
+                  Active Clients (Past 3 Months)
                 </p>
 
-                <p className="text-2xl font-bold">
+                <p className="dashboard-value">
                   {activeClients.size}
                 </p>
               </div>
@@ -130,12 +137,12 @@ export default async function AdminCoachProfilePage({
           />
         </div>
 
-        <div className="mt-4 rounded-2xl bg-white p-5 shadow">
-          <h2 className="mb-4 text-[22px] font-bold">
+        <div className="mt-4 rounded-3xl border border-[#3A5D49] bg-white p-5 shadow-md lg:px-6 lg:py-5">
+          <h2 className="dashboard-heading mb-4">
             Specializations
           </h2>
 
-          <p>
+          <p className="dashboard-value">
             {coach.specializations ||
               "No specializations added"}
           </p>

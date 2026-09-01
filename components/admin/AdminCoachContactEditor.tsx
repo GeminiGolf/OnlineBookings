@@ -54,6 +54,21 @@ export default function AdminCoachContactEditor({
   async function saveEmail() {
     setSaving(true)
 
+    // Update coaches table directly so coach.email changes immediately
+    const { error: coachErr } = await supabase
+      .from("coaches")
+      .update({
+        email: email.trim() === "" ? null : email.trim(),
+      })
+      .eq("id", coachId)
+
+    if (coachErr) {
+      alert(coachErr.message)
+      setSaving(false)
+      return
+    }
+
+    // Keep auth/profile updated via API if applicable
     const response = await fetch(
       "/api/admin/coach/update-email",
       {
@@ -93,13 +108,14 @@ export default function AdminCoachContactEditor({
             onClick={() =>
               setEditingPhone(true)
             }
+            className="text-[#2F5A43] hover:opacity-80 transition"
           >
             <Pencil size={14} />
           </button>
         </div>
 
         {!editingPhone ? (
-          <p>
+          <p className="dashboard-value">
             {phone || "Not provided"}
           </p>
         ) : (
@@ -109,13 +125,13 @@ export default function AdminCoachContactEditor({
               onChange={(e) =>
                 setPhone(e.target.value)
               }
-              className="rounded border px-2 py-1"
+              className="rounded-xl border border-[#3A5D49] bg-white px-3 py-1.5 text-black outline-none focus:ring-1 focus:ring-[#3A5D49]"
             />
 
             <button
               onClick={savePhone}
               disabled={saving}
-              className="rounded bg-black px-3 py-1 text-white"
+              className="rounded-xl border border-[#3A5D49] bg-[#3A5D49] px-4 py-1.5 text-sm font-light text-white transition hover:bg-[#2F5A43] disabled:opacity-50"
             >
               Save
             </button>
@@ -124,7 +140,7 @@ export default function AdminCoachContactEditor({
               onClick={() =>
                 setEditingPhone(false)
               }
-              className="rounded border px-3 py-1"
+              className="rounded-xl border border-gray-300 bg-white px-4 py-1.5 text-sm font-light text-gray-700 transition hover:bg-gray-50"
             >
               Cancel
             </button>
@@ -143,13 +159,14 @@ export default function AdminCoachContactEditor({
             onClick={() =>
               setEditingEmail(true)
             }
+            className="text-[#2F5A43] hover:opacity-80 transition"
           >
             <Pencil size={14} />
           </button>
         </div>
 
         {!editingEmail ? (
-          <p>
+          <p className="dashboard-value">
             {email || "Not provided"}
           </p>
         ) : (
@@ -159,13 +176,13 @@ export default function AdminCoachContactEditor({
               onChange={(e) =>
                 setEmail(e.target.value)
               }
-              className="rounded border px-2 py-1"
+              className="rounded-xl border border-[#3A5D49] bg-white px-3 py-1.5 text-black outline-none focus:ring-1 focus:ring-[#3A5D49]"
             />
 
             <button
               onClick={saveEmail}
               disabled={saving}
-              className="rounded bg-black px-3 py-1 text-white"
+              className="rounded-xl border border-[#3A5D49] bg-[#3A5D49] px-4 py-1.5 text-sm font-light text-white transition hover:bg-[#2F5A43] disabled:opacity-50"
             >
               Save
             </button>
@@ -174,7 +191,7 @@ export default function AdminCoachContactEditor({
               onClick={() =>
                 setEditingEmail(false)
               }
-              className="rounded border px-3 py-1"
+              className="rounded-xl border border-gray-300 bg-white px-4 py-1.5 text-sm font-light text-gray-700 transition hover:bg-gray-50"
             >
               Cancel
             </button>

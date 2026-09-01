@@ -3,6 +3,12 @@
 import { useEffect, useState, type ReactNode } from "react"
 import { supabase } from "@/lib/supabaseClient"
 import { getMalaysiaDate } from "@/lib/date"
+type Coach = {
+  id: number
+  name: string
+  preferred_name: string | null
+}
+
 type CoachDefaults = {
   ppv_price: number | null
   ppv_expiry_months: number | null
@@ -33,6 +39,8 @@ export default function ClientIDTransactionForm({
   const [price, setPrice] = useState(0)
   const [coachDefaults, setCoachDefaults] =
     useState<CoachDefaults | null>(null)
+  const [coaches, setCoaches] = useState<Coach[]>([])
+  const [selectedCoachId, setSelectedCoachId] = useState<number | null>(null)
   const isOther = transactionType === "Other"
   const [paymentMethod, setPaymentMethod] = useState("")
   const [receiptFile, setReceiptFile] = useState<File | null>(null)
@@ -49,25 +57,35 @@ export default function ClientIDTransactionForm({
   }, [])
 
   async function loadCoachDefaults() {
+    const { data: coachesList } = await supabase
+      .from("coaches")
+      .select("id, name, preferred_name")
+      .order("name")
+
+    if (coachesList) setCoaches(coachesList)
+
     const { data: clientData } = await supabase
       .from("clients")
       .select("primary_coach_id")
       .eq("id", clientId)
       .single()
-    if (!clientData?.primary_coach_id) return
-    const { data: coachData } = await supabase
-      .from("coaches")
-      .select(`
-        ppv_price,
-        ppv_expiry_months,
-        package_5_price,
-        package_5_expiry_months,
-        package_10_price,
-        package_10_expiry_months
-      `)
-      .eq("id", clientData.primary_coach_id)
-      .single()
-    setCoachDefaults(coachData)
+      
+    if (clientData?.primary_coach_id) {
+      setSelectedCoachId(clientData.primary_coach_id)
+      const { data: coachData } = await supabase
+        .from("coaches")
+        .select(`
+          ppv_price,
+          ppv_expiry_months,
+          package_5_price,
+          package_5_expiry_months,
+          package_10_price,
+          package_10_expiry_months
+        `)
+        .eq("id", clientData.primary_coach_id)
+        .single()
+      setCoachDefaults(coachData)
+    }
   }
 
     function updateExpiryMonths(months: number) {
@@ -169,15 +187,6 @@ export default function ClientIDTransactionForm({
     }
 
     const purchaseDate = getMalaysiaDate()
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
-
-    const { data: coach } = await supabase
-      .from("coaches")
-      .select("id")
-      .eq("profile_id", user?.id)
-      .single()
 
     const { data, error } = await supabase
       .from("lesson_packages")
@@ -193,7 +202,7 @@ export default function ClientIDTransactionForm({
         receipt_url: receiptUrl,
         purchase_date: purchaseDate,
         expiration_date: expirationDate,
-        added_by: coach?.id ?? null,
+        added_by: selectedCoachId,
       })
       .select()
       .single()
@@ -263,6 +272,22 @@ export default function ClientIDTransactionForm({
               Add Transaction
             </h2>
             <div className="space-y-2">
+              <div>
+                <label className="mb-2 block text-[13px] font-medium uppercase tracking-[0.12em] text-[#2F5A43]">Coach</label>
+                <select
+                  value={selectedCoachId ?? ""}
+                  onChange={(e) => setSelectedCoachId(e.target.value ? Number(e.target.value) : null)}
+                  className="w-full rounded-2xl border border-[#3A5D49] bg-[#FCFAF6] px-4 py-2 text-[15px] font-light text-[#2F5A43] outline-none transition focus:border-[#2F5A43] focus:ring-2 focus:ring-[#2F5A43]/15"
+                >
+                  <option value="">Select Coach</option>
+                  {coaches.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.preferred_name || c.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
               <div>
                 <label className="mb-2 block text-[13px] font-medium uppercase tracking-[0.12em] text-[#2F5A43]">Transaction Type</label>
                 <select

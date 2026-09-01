@@ -71,31 +71,31 @@ export default function AdminCoachDefaultsCard({
   }
 
   return (
-    <div className="rounded-2xl bg-white p-5 shadow">
-      <h2 className="mb-4 text-[22px] font-bold">
+    <div className="rounded-3xl border border-[#3A5D49] bg-white p-5 shadow-md lg:px-6 lg:py-5">
+      <h2 className="dashboard-heading mb-4">
         Lesson Defaults
       </h2>
 
       <table className="w-full text-sm">
         <thead>
-          <tr className="border-b">
-            <th className="p-2 text-left">
+          <tr className="border-b border-gray-200">
+            <th className="p-2 text-left font-medium text-gray-500">
               Package
             </th>
 
-            <th className="p-2 text-left">
+            <th className="p-2 text-left font-medium text-gray-500">
               Price
             </th>
 
-            <th className="p-2 text-left">
+            <th className="p-2 text-left font-medium text-gray-500">
               Expiry
             </th>
           </tr>
         </thead>
 
         <tbody>
-          <tr className="border-b">
-            <td className="p-2">PPV</td>
+          <tr className="border-b border-gray-100">
+            <td className="p-2 dashboard-value">PPV</td>
 
             <td className="p-2">
               <input
@@ -106,7 +106,7 @@ export default function AdminCoachDefaultsCard({
                     Number(e.target.value)
                   )
                 }
-                className="w-24 rounded border p-2"
+                className="w-24 rounded-xl border border-[#3A5D49] bg-white px-3 py-1.5 text-black outline-none focus:ring-1 focus:ring-[#3A5D49]"
               />
             </td>
 
@@ -119,13 +119,13 @@ export default function AdminCoachDefaultsCard({
                     Number(e.target.value)
                   )
                 }
-                className="w-24 rounded border p-2"
+                className="w-24 rounded-xl border border-[#3A5D49] bg-white px-3 py-1.5 text-black outline-none focus:ring-1 focus:ring-[#3A5D49]"
               />
             </td>
           </tr>
 
-          <tr className="border-b">
-            <td className="p-2">
+          <tr className="border-b border-gray-100">
+            <td className="p-2 dashboard-value">
               5 Lessons
             </td>
 
@@ -138,7 +138,7 @@ export default function AdminCoachDefaultsCard({
                     Number(e.target.value)
                   )
                 }
-                className="w-24 rounded border p-2"
+                className="w-24 rounded-xl border border-[#3A5D49] bg-white px-3 py-1.5 text-black outline-none focus:ring-1 focus:ring-[#3A5D49]"
               />
             </td>
 
@@ -151,13 +151,13 @@ export default function AdminCoachDefaultsCard({
                     Number(e.target.value)
                   )
                 }
-                className="w-24 rounded border p-2"
+                className="w-24 rounded-xl border border-[#3A5D49] bg-white px-3 py-1.5 text-black outline-none focus:ring-1 focus:ring-[#3A5D49]"
               />
             </td>
           </tr>
 
           <tr>
-            <td className="p-2">
+            <td className="p-2 dashboard-value">
               10 Lessons
             </td>
 
@@ -170,7 +170,7 @@ export default function AdminCoachDefaultsCard({
                     Number(e.target.value)
                   )
                 }
-                className="w-24 rounded border p-2"
+                className="w-24 rounded-xl border border-[#3A5D49] bg-white px-3 py-1.5 text-black outline-none focus:ring-1 focus:ring-[#3A5D49]"
               />
             </td>
 
@@ -183,7 +183,7 @@ export default function AdminCoachDefaultsCard({
                     Number(e.target.value)
                   )
                 }
-                className="w-24 rounded border p-2"
+                className="w-24 rounded-xl border border-[#3A5D49] bg-white px-3 py-1.5 text-black outline-none focus:ring-1 focus:ring-[#3A5D49]"
               />
             </td>
           </tr>
@@ -193,7 +193,7 @@ export default function AdminCoachDefaultsCard({
       <button
         onClick={saveDefaults}
         disabled={saving}
-        className="mt-4 rounded-lg bg-black px-4 py-2 text-white"
+        className="mt-4 rounded-xl border border-[#3A5D49] bg-[#3A5D49] px-5 py-2 text-[15px] font-light tracking-[0.04em] text-white shadow-sm transition hover:bg-[#2F5A43] disabled:opacity-50"
       >
         {saving
           ? "Saving..."
