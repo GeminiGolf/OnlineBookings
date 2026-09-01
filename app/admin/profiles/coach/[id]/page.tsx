@@ -2,6 +2,7 @@ import Link from "next/link"
 import { createClient } from "@/lib/supabaseServer"
 import { redirect } from "next/navigation"
 import AdminCoachDefaultsCard from "@/components/admin/AdminCoachDefaultsCard"
+import CoachPointsDefaults from "@/components/admin/CoachPointsDefaults" // 1. Import component
 import AdminCoachContactEditor from "@/components/admin/AdminCoachContactEditor"
 import DashboardContainer from "@/components/layout/DashboardContainer"
 
@@ -135,6 +136,11 @@ export default async function AdminCoachProfilePage({
           <AdminCoachDefaultsCard
             coach={coach}
           />
+        </div>
+
+        {/* 2. Inserted CoachPointsDefaults component here */}
+        <div className="mt-4">
+          <CoachPointsDefaults coach={coach} />
         </div>
 
         <div className="mt-4 rounded-3xl border border-[#3A5D49] bg-white p-5 shadow-md lg:px-6 lg:py-5">
