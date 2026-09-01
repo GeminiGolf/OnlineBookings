@@ -209,7 +209,7 @@ export default function CoachProfilePage() {
                   </tr>
 
                   <tr className="hover:bg-[#F6FAF6]">
-                    <td className="dashboard-value p-4">Review Lesson</td>
+                    <td className="dashboard-value p-4">Google Review Points</td>
                     <td className="dashboard-value p-4">
                       {coach?.review_points ?? 0} pts
                     </td>

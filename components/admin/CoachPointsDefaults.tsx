@@ -68,7 +68,7 @@ export default function AdminCoachPointsDefaultsCard({ coach }: Props) {
           </tr>
 
           <tr>
-            <td className="p-2 dashboard-value">Review Lesson</td>
+            <td className="p-2 dashboard-value">Google Review Points</td>
             <td className="p-2">
               <input
                 type="number"
