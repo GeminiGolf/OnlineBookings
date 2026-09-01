@@ -33,6 +33,7 @@ export default function ClientIDTransactionForm({
   buttonClassName,
 }: Props) {
   const [showModal, setShowModal] = useState(false)
+  const [purchaseDate, setPurchaseDate] = useState(getMalaysiaDate())
   const [transactionType, setTransactionType] = useState("PPV")
   const [transactionName, setTransactionName] = useState("PPV")
   const [lessonsAdded, setLessonsAdded] = useState(1)
@@ -185,8 +186,6 @@ export default function ClientIDTransactionForm({
       }
       receiptUrl = fileName
     }
-
-    const purchaseDate = getMalaysiaDate()
 
     const { data, error } = await supabase
       .from("lesson_packages")
@@ -381,6 +380,18 @@ export default function ClientIDTransactionForm({
                   </label>
                 </div>
               )}
+
+              <div>
+                <label className="mb-2 block text-[13px] font-medium uppercase tracking-[0.12em] text-[#2F5A43]">
+                  Purchase Date
+                </label>
+                <input
+                  type="date"
+                  value={purchaseDate}
+                  onChange={(e) => setPurchaseDate(e.target.value)}
+                  className="w-full rounded-2xl border border-[#3A5D49] bg-[#FCFAF6] px-4 py-2 text-[15px] font-light text-[#2F5A43] outline-none transition focus:border-[#2F5A43] focus:ring-2 focus:ring-[#2F5A43]/15"
+                />
+              </div>
 
               <div>
                 <label className="mb-2 block text-[13px] font-medium uppercase tracking-[0.12em] text-[#2F5A43]">
