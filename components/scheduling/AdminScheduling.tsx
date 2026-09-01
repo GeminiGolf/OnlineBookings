@@ -28,6 +28,8 @@ type Booking = {
     email: string | null
     notes: string | null
     lessons_remaining: number
+    primary_coach_id: number | null
+    points: number | null
   } | null
 }
 
@@ -1077,18 +1079,33 @@ export default function AdminDashboard({
                         )
                     }
 
+                    // 1. Get schedule coach's complete_points default
+                    const { data: coachData } = await supabase
+                      .from("coaches")
+                      .select("complete_points")
+                      .eq("id", coachId)
+                      .single()
+
+                    const pointsToAdd = coachData?.complete_points ?? 0
+
+                    // 2. Fetch fresh client data directly from DB to get real current points balance
+                    const { data: freshClient } = await supabase
+                      .from("clients")
+                      .select("points, lessons_remaining")
+                      .eq("id", selectedBooking.clients.id)
+                      .single()
+
+                    const currentBalance = freshClient?.points ?? 0
+                    const currentLessons = freshClient?.lessons_remaining ?? 0
+
+                    // 3. Save accumulated points sum
                     await supabase
                       .from("clients")
                       .update({
-                        lessons_remaining: Math.max(
-                          0,
-                          (selectedBooking.clients?.lessons_remaining || 0) - 1
-                        ),
+                        lessons_remaining: Math.max(0, currentLessons - 1),
+                        points: currentBalance + pointsToAdd,
                       })
-                      .eq(
-                        "id",
-                        selectedBooking.clients.id
-                      )                    
+                      .eq("id", selectedBooking.clients.id)                    
                   }
 
                   window.location.reload()
