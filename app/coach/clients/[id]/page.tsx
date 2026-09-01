@@ -143,16 +143,16 @@ export default async function CoachClientProfilePage({ params }: Props) {
                   </div>
 
                   <div>
-                    <p className="dashboard-label">Coach</p>
+                    <p className="dashboard-label">Lessons Remaining</p>
                     <p className="dashboard-value">
-                      {primaryCoach?.preferred_name || primaryCoach?.name}
+                      {client.lessons_remaining}
                     </p>
                   </div>
 
                   <div>
-                    <p className="dashboard-label">Lessons Remaining</p>
+                    <p className="dashboard-label">Points</p>
                     <p className="dashboard-value">
-                      {client.lessons_remaining}
+                      {client.points ?? 0}
                     </p>
                   </div>
 

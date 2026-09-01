@@ -10,6 +10,7 @@ import AdminClientContactEditor from "@/components/admin/AdminClientContactEdito
 import ClientNotesCard from "@/components/clients/ClientNotesCard"
 import AdminLessonsRemainingEditor from "@/components/admin/AdminLessonsRemainingEditor"
 import AdminCoachEditor from "@/components/admin/AdminCoachEditor"
+import ClientPointsEditor from "@/components/admin/ClientPointsEditor"
 import DashboardContainer from "@/components/layout/DashboardContainer"
 
 type Props = {
@@ -149,6 +150,11 @@ export default async function AdminClientProfilePage({ params }: Props) {
                     clientId={client.id}
                     coaches={coaches || []}
                     initialCoachId={primaryCoach?.id ?? null}
+                  />
+
+                  <ClientPointsEditor
+                    clientId={client.id}
+                    initialPoints={client.points ?? 0}
                   />
                 </div>
 

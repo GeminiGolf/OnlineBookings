@@ -28,6 +28,7 @@ type Booking = {
     email: string | null
     notes: string | null
     lessons_remaining: number
+    points: number | null
   } | null
 }
 
@@ -933,20 +934,30 @@ export default function CoachDashboard({
       )}
 
       {showCompleteModal && selectedBooking && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-6">
-          <div className="w-full max-w-lg rounded-2xl bg-[#FEFDFC] p-6">
-            <h2 className="mb-4 text-2xl font-bold">
-              Complete Lesson
-            </h2>
-
-            <div className="flex gap-3">
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 p-6">
+          <div className="w-full max-w-md rounded-3xl border border-[#B9B2A8] bg-[#FEFDFC] p-8 shadow-xl">
+            <div className="mb-6 flex items-center justify-between">
+              <h2 className="text-[20px] font-light uppercase tracking-[0.12em] text-[#2F5A43]">
+                Complete Lesson
+              </h2>
               <button
-                onClick={() =>
-                  setShowCompleteModal(false)
-                }
-                className="rounded-lg border px-4 py-2"
+                onClick={() => setShowCompleteModal(false)}
+                className="flex h-8 w-8 items-center justify-center rounded-full border border-[#3A5D49] bg-[#FEFDFC] text-[#2F5A43] transition hover:bg-[#F7F3EE]"
               >
-                Close
+                ×
+              </button>
+            </div>
+
+            <p className="mb-6 text-[15px] font-light tracking-[0.02em] text-[#2F5A43]">
+              Are you sure you want to mark this lesson as completed?
+            </p>
+
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setShowCompleteModal(false)}
+                className="rounded-2xl border border-[#3A5D49] bg-[#FBF8F3] px-5 py-2 text-[13px] font-light uppercase tracking-[0.12em] text-[#2F5A43] transition hover:bg-[#F0ECE1]"
+              >
+                Cancel
               </button>
 
               <button
@@ -1031,18 +1042,33 @@ export default function CoachDashboard({
                         )
                     }
 
+                    // 1. Get logged-in coach's complete_points default
+                    const { data: coachData } = await supabase
+                      .from("coaches")
+                      .select("complete_points")
+                      .eq("id", coachId)
+                      .single()
+
+                    const pointsToAdd = coachData?.complete_points ?? 0
+
+                    // 2. Fetch fresh client data directly from DB to get real current points balance
+                    const { data: freshClient } = await supabase
+                      .from("clients")
+                      .select("points, lessons_remaining")
+                      .eq("id", selectedBooking.clients.id)
+                      .single()
+
+                    const currentBalance = freshClient?.points ?? 0
+                    const currentLessons = freshClient?.lessons_remaining ?? 0
+
+                    // 3. Save accumulated points sum
                     await supabase
                       .from("clients")
                       .update({
-                        lessons_remaining: Math.max(
-                          0,
-                          (selectedBooking.clients?.lessons_remaining || 0) - 1
-                        ),
+                        lessons_remaining: Math.max(0, currentLessons - 1),
+                        points: currentBalance + pointsToAdd,
                       })
-                      .eq(
-                        "id",
-                        selectedBooking.clients.id
-                      )                    
+                      .eq("id", selectedBooking.clients.id)                    
                   }
 
                   window.location.reload()
