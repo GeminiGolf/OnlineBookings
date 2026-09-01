@@ -32,6 +32,14 @@ export default function AdminNavbar({
 
   return (
     <>
+
+      <Link
+        href="/admin/schedule"
+        className="text-[15px] font-light uppercase tracking-[0.15em] text-[#E7DED1] transition hover:text-white"
+      >
+        SCHEDULE
+      </Link>
+
       {/* 1. DASH Link First */}
       <Link
         href="/admin"
