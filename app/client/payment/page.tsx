@@ -90,7 +90,7 @@ export default function PaymentPage() {
             <div className="mt-6 flex justify-center">
               <div className="relative overflow-hidden rounded-2xl border border-[#E2DDD3] bg-white p-4 shadow-sm">
                 <Image
-                  src="/images/GGA_QR.png"
+                  src="/images/GGA_QR.jpeg"
                   alt="Gemini Golf Academy QR Code"
                   width={240}
                   height={240}
@@ -105,16 +105,31 @@ export default function PaymentPage() {
               <span className="text-[11px] font-light uppercase tracking-[0.2em] text-[#B89868]">
                 Direct Bank Transfer
               </span>
-              <h2 className="mt-1 text-sm font-medium uppercase tracking-[0.12em] text-[#2F5A43]">
-                Gemini Golf SDN BHD
-              </h2>
-              <p className="mt-2 text-lg font-semibold tracking-[0.15em] text-[#2F5A43]">
-                8011373062
-              </p>
-              <p className="mt-0.5 text-xs font-medium uppercase tracking-[0.18em] text-[#2F5A43]/70">
-                CIMB
-              </p>
+              <div className="mt-2 space-y-1">
+                <p className="text-sm font-medium uppercase tracking-[0.12em] text-[#2F5A43]">
+                  Gemini Golf SDN BHD
+                </p>
+                <p className="text-sm font-medium uppercase tracking-[0.12em] text-[#2F5A43]">
+                  8011373062
+                </p>
+                <p className="text-sm font-medium uppercase tracking-[0.12em] text-[#2F5A43]">
+                  CIMB
+                </p>
+              </div>
             </div>
+
+            {/* Receipt Notice */}
+            <p className="mt-6 text-center text-xs font-light leading-relaxed tracking-[0.04em] text-[#2F5A43]">
+              Kindly send your receipt to admin: <br />
+              <a
+                href="https://wa.me/60173576747"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-medium tracking-[0.06em] text-[#2F5A43] underline transition-colors hover:text-[#B89868]"
+              >
+                +60173576747
+              </a>
+            </p>
           </section>
         )}
       </main>
