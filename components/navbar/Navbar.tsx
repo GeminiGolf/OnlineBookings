@@ -8,7 +8,7 @@ import { usePathname } from "next/navigation"
 import AdminNavbar from "./AdminNavbar"
 import CoachNavbar from "./CoachNavbar"
 import ClientNavbar from "./ClientNavbar"
-import { Menu, X } from "lucide-react"
+import { Menu, X, ChevronDown } from "lucide-react"
 
 export default function Navbar() {
   const pathname = usePathname()
@@ -653,6 +653,8 @@ function LoggedOutDrawer({
   isMenuOpen: boolean
   toggleMenu: () => void
 }) {
+  const [isCoachesOpen, setIsCoachesOpen] = useState(false)
+
   return (
     <>
       <div
@@ -698,6 +700,57 @@ function LoggedOutDrawer({
           >
             <span className="origin-left scale-x-95">HOMEPAGE</span>
           </Link>
+
+          {/* Our Coaches Section */}
+          <div className="border-t border-[#D8CCB7]/10 pt-2">
+            <div className="flex items-center gap-2 rounded-lg px-3 py-1.5 transition hover:bg-[#D8CCB7]/10">
+              <Link
+                href="/MeetOurCoaches"
+                onClick={toggleMenu}
+                className="border-b border-[#E7DED1] pb-0.5 text-xs font-light uppercase tracking-[0.18em] text-[#E7DED1] transition hover:border-white hover:text-white"
+              >
+                <span className="inline-block origin-left scale-x-95">
+                  OUR COACHES
+                </span>
+              </Link>
+
+              {/* Arrow directly next to text */}
+              <button
+                onClick={() => setIsCoachesOpen((prev) => !prev)}
+                className="p-0.5 text-[#E7DED1] transition hover:text-white"
+                aria-label="Toggle Coaches Dropdown"
+              >
+                <ChevronDown
+                  size={16}
+                  className={`transition-transform duration-200 ${
+                    isCoachesOpen ? "rotate-180" : ""
+                  }`}
+                />
+              </button>
+            </div>
+
+            {/* Indented Sub-links */}
+            {isCoachesOpen && (
+              <div className="mt-0.5 space-y-0.5 pl-4">
+                <Link
+                  href="/FrancoisVanZyl"
+                  onClick={toggleMenu}
+                  className="flex items-center rounded-lg px-3 py-1.5 text-xs font-light uppercase tracking-[0.18em] text-[#E7DED1]/80 transition hover:bg-[#D8CCB7]/10 hover:text-white"
+                >
+                  <span className="origin-left scale-x-95">
+                    FRANCOIS VAN ZYL
+                  </span>
+                </Link>
+                <Link
+                  href="/SitiShaari"
+                  onClick={toggleMenu}
+                  className="flex items-center rounded-lg px-3 py-1.5 text-xs font-light uppercase tracking-[0.18em] text-[#E7DED1]/80 transition hover:bg-[#D8CCB7]/10 hover:text-white"
+                >
+                  <span className="origin-left scale-x-95">SITI SHAARI</span>
+                </Link>
+              </div>
+            )}
+          </div>
 
           <div className="space-y-2 border-t border-[#D8CCB7]/10 pt-2">
             <Link

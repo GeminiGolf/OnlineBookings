@@ -114,10 +114,11 @@ export default function FrancoisVanZylClient() {
                 </div>
               </div>
 
-              <div className="mt-6">
+              {/* Centered View Availability Container */}
+              <div className="mt-6 flex justify-center">
                 <Link
                   href="/CoachAvailability?coach=Francois"
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-[#B89868]/80 bg-transparent px-5 py-3 text-xs font-semibold uppercase tracking-[0.17em] text-[#2F5A43] transition-all hover:bg-[#2F5A43] hover:text-[#F2EEE8]"
+                  className="inline-flex w-fit items-center justify-center gap-2 rounded-xl border border-[#B89868]/80 bg-transparent px-5 py-3 text-xs font-semibold uppercase tracking-[0.17em] text-[#2F5A43] transition-all hover:bg-[#2F5A43] hover:text-[#F2EEE8]"
                 >
                   View Availability →
                 </Link>
@@ -159,13 +160,11 @@ export default function FrancoisVanZylClient() {
               <div className="space-y-3 text-[13px] font-light leading-relaxed tracking-[0.02em] text-[#2F5A43] md:text-sm">
                 <p>
                   "Pinpoint the problem, simplify the solution, and give the player the confidence to own it." 
-
                 </p>
                 <p>
                   Golf has always been about more than just hitting a good shot for me. After 20 years of coaching, I believe the best results start with understanding the individual - how they move, how they learn, and what they are trying to achieve.
                 </p>
                 <p>
-                  
                   I utilize technology such as TrackMan, HackMotion, Capto and video analysis to make the learning process more visual. It helps my students see changes in their swing and shows a clearer path to what we are working towards.
                 </p>
                 <p>
@@ -234,10 +233,20 @@ export default function FrancoisVanZylClient() {
             </div>
           </section>
         </div>
+        
+        {/* Back to Our Coaches Button with Gold Border */}
+        <div className="flex justify-center pt-2">
+          <Link
+            href="/MeetOurCoaches"
+            className="inline-flex w-fit items-center justify-center gap-2 rounded-xl border border-[#B89868]/80 bg-[#FAF8F5] px-6 py-3 text-xs font-semibold uppercase tracking-[0.17em] text-[#2F5A43] shadow-md transition-all hover:border-[#2F5A43] hover:bg-[#2F5A43] hover:text-[#F2EEE8]"
+          >
+            ← Back to Our Coaches
+          </Link>
+        </div>
 
       </main>
 
-{/* FOOTER CONTACT */}
+      {/* FOOTER CONTACT */}
       <section className="relative overflow-hidden border-t border-[#E2DDD3] px-6 py-10 text-[#F2EEE8]">
         <img
           src="/OurCoaches/approach.jpg"

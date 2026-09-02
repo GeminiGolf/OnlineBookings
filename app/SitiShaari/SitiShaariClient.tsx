@@ -114,10 +114,10 @@ export default function SitiShaariClient() {
                 </div>
               </div>
 
-              <div className="mt-6">
+              <div className="mt-6 flex justify-center">
                 <Link
                   href="/CoachAvailability?coach=Siti"
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-[#B89868]/80 bg-transparent px-5 py-3 text-xs font-semibold uppercase tracking-[0.17em] text-[#2F5A43] transition-all hover:bg-[#2F5A43] hover:text-[#F2EEE8]"
+                  className="inline-flex w-fit items-center justify-center gap-2 rounded-xl border border-[#B89868]/80 bg-transparent px-5 py-3 text-xs font-semibold uppercase tracking-[0.17em] text-[#2F5A43] transition-all hover:bg-[#2F5A43] hover:text-[#F2EEE8]"
                 >
                   View Availability →
                 </Link>
@@ -230,7 +230,15 @@ export default function SitiShaariClient() {
             </div>
           </section>
         </div>
-
+        {/* Back to Our Coaches Button with Gold Border */}
+        <div className="flex justify-center pt-2">
+          <Link
+            href="/MeetOurCoaches"
+            className="inline-flex w-fit items-center justify-center gap-2 rounded-xl border border-[#B89868]/80 bg-[#FAF8F5] px-6 py-3 text-xs font-semibold uppercase tracking-[0.17em] text-[#2F5A43] shadow-md transition-all hover:border-[#2F5A43] hover:bg-[#2F5A43] hover:text-[#F2EEE8]"
+          >
+            ← Back to Our Coaches
+          </Link>
+        </div>
       </main>
 
 {/* FOOTER CONTACT */}
