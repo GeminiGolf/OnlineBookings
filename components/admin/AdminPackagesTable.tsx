@@ -431,7 +431,7 @@ export default function AdminPackagesTable({
                         </td>
                         <td className="p-4">
                           <Link
-                            href={`/coach/clients/${pkg.client_id}`}
+                            href={`/admin/clients/${pkg.client_id}`}
                             className="text-[15px] font-light text-[#2F5A43] underline decoration-[#2F5A43] underline-offset-2 transition hover:text-[#2F5A43]"
                           >
                             {pkg.client_name}
@@ -455,7 +455,7 @@ export default function AdminPackagesTable({
                   return (
                     <div key={pkg.id} className="border-b px-5 py-1.5 last:border-0">
                       <Link
-                        href={`/coach/clients/${pkg.client_id}`}
+                        href={`/admin/clients/${pkg.client_id}`}
                         className="dashboard-label text-[#2F5A43] hover:underline"
                       >
                         {pkg.client_name}
@@ -584,7 +584,7 @@ export default function AdminPackagesTable({
                         </td>
                         <td className="p-4">
                           <Link
-                            href={`/coach/clients/${pkg.client_id}`}
+                            href={`/admin/clients/${pkg.client_id}`}
                             className="text-[15px] font-light text-[#2F5A43] underline decoration-[#2F5A43] underline-offset-2 transition hover:text-[#2F5A43]"
                           >
                             {pkg.client_name}
@@ -608,7 +608,7 @@ export default function AdminPackagesTable({
                   return (
                     <div key={pkg.id} className="border-b px-5 py-1.5 last:border-0">
                       <Link
-                        href={`/coach/clients/${pkg.client_id}`}
+                        href={`/admin/clients/${pkg.client_id}`}
                         className="dashboard-label text-[#2F5A43] hover:underline"
                       >
                         {pkg.client_name}
