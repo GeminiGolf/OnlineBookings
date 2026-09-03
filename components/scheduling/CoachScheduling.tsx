@@ -631,8 +631,8 @@ export default function CoachDashboard({
 
             return (
               <div key={hour} className="grid grid-cols-[82px_1fr] border-b border-[#3A5D49]">
-                <div className="flex items-center whitespace-nowrap border-r border-[#3A5D49] bg-[#FBF8F3] px-3 py-2 text-[14px] font-light text-[#2F5A43]">
-                  {formatHour(hour)}
+                <div className="flex items-center whitespace-nowrap border-r border-[#3A5D49] bg-[#FBF8F3] px-4 py-1.5 text-[14px] font-light text-[#2F5A43]">
+                  {formatHour(hour).replace(":00", "")}
                 </div>
 
                 <button
