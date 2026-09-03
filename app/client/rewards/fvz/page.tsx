@@ -256,7 +256,16 @@ export default function FvzRewardsPage() {
                       Completing a training/practice day will count as completing a lesson <span className="underline underline-offset-4 decoration-[#3A5D49]/40 font-semibold text-[#2F5A43]">for 10 points</span>.
                     </p>
                     <p className="text-[#3A5D49]/70 pt-0.5 sm:pt-1">
-                      Please contact Coach Francois or admin (+60 173576747) for more info as slots will be limited.
+                      Please contact Coach Francois or admin (
+                      <a 
+                        href="https://wa.me/60173576747" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="underline underline-offset-2 transition hover:text-[#2F5A43]"
+                      >
+                        +60 173576747
+                      </a>
+                      ) for more info as slots will be limited.
                     </p>
                   </div>
                 </div>

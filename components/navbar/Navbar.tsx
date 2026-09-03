@@ -17,6 +17,7 @@ export default function Navbar() {
 
   const [loggedIn, setLoggedIn] = useState(false)
   const [role, setRole] = useState("")
+  const [primaryCoachId, setPrimaryCoachId] = useState<number | null>(null)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   const showAuthenticatedNav = loggedIn && !isResetPasswordPage
@@ -215,8 +216,13 @@ export default function Navbar() {
     }
 
     if (currentRole === "client") {
-      const { data: client } = await supabase.from("clients").select("id").eq("profile_id", session.user.id).single()
+      const { data: client } = await supabase
+        .from("clients")
+        .select("id, primary_coach_id")
+        .eq("profile_id", session.user.id)
+        .single()
       if (client) {
+        setPrimaryCoachId(client.primary_coach_id ?? null)
         const { data: notifications } = await supabase
           .from("notifications")
           .select("id")
@@ -496,6 +502,7 @@ export default function Navbar() {
           urgentCount={urgentCount}
           handleLogout={handleLogout}
           role={role}
+          primaryCoachId={primaryCoachId}
         />
       )}
     </>
@@ -509,6 +516,7 @@ function LoggedInDrawer({
   urgentCount,
   handleLogout,
   role,
+  primaryCoachId,
 }: {
   isMenuOpen: boolean
   toggleMenu: () => void
@@ -516,7 +524,16 @@ function LoggedInDrawer({
   urgentCount: number
   handleLogout: () => void
   role: string
+  primaryCoachId: number | null
 }) {
+  const getRewardsHref = () => {
+    // Only Coach 1 has an active rewards page; all others return null to trigger "COMING SOON"
+    if (primaryCoachId === 1) return "/client/rewards/fvz"
+    return null
+  }
+
+  const rewardsHref = getRewardsHref()
+
   return (
     <>
       <div
@@ -607,7 +624,7 @@ function LoggedInDrawer({
               </Link>
             </div>
           ) : (
-            /* Non-Admin Default Links (Dashboard & Payment grouped) */
+            /* Non-Admin Default Links (Dashboard, Rewards & Payment grouped) */
             <div className="space-y-2 border-t border-[#D8CCB7]/10 pt-2">
               <Link
                 href={dashboardHref}
@@ -620,14 +637,29 @@ function LoggedInDrawer({
               </Link>
 
               {role === "client" && (
-                
-                <Link
-                  href="/client/payment"
-                  onClick={toggleMenu}
-                  className="flex items-center justify-between rounded-lg px-3 py-2 text-xs font-light uppercase tracking-[0.18em] text-[#E7DED1] transition hover:bg-[#D8CCB7]/10 hover:text-white"
-                >
-                  <span className="origin-left scale-x-95">PAYMENT</span>
-                </Link>
+                <>
+                  {rewardsHref ? (
+                    <Link
+                      href={rewardsHref}
+                      onClick={toggleMenu}
+                      className="flex items-center justify-between rounded-lg px-3 py-2 text-xs font-light uppercase tracking-[0.18em] text-[#E7DED1] transition hover:bg-[#D8CCB7]/10 hover:text-white"
+                    >
+                      <span className="origin-left scale-x-95">REWARDS</span>
+                    </Link>
+                  ) : (
+                    <div className="flex cursor-not-allowed items-center justify-between rounded-lg px-3 py-2 text-xs font-light uppercase tracking-[0.18em] text-[#E7DED1]/40">
+                      <span className="origin-left scale-x-95">(COMING SOON...)</span>
+                    </div>
+                  )}
+
+                  <Link
+                    href="/client/payment"
+                    onClick={toggleMenu}
+                    className="flex items-center justify-between rounded-lg px-3 py-2 text-xs font-light uppercase tracking-[0.18em] text-[#E7DED1] transition hover:bg-[#D8CCB7]/10 hover:text-white"
+                  >
+                    <span className="origin-left scale-x-95">PAYMENT</span>
+                  </Link>
+                </>
               )}
             </div>
           )}
