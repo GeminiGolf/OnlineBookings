@@ -544,6 +544,22 @@ export default function AdminDashboard({
           </button>
         </div>
 
+        {/* Selected Coach Daily Booking Counters */}
+        {(() => {
+          const bookedCount = initialBookings.filter(
+            (b) => b.status === "booked"
+          ).length
+          const completedCount = initialBookings.filter(
+            (b) => b.status === "completed"
+          ).length
+
+          return (
+            <div className="mb-3 text-[14px] font-light tracking-[0.02em] text-[#2F5A43]">
+              Today: <span className="font-semibold">{bookedCount}</span> | Completed: <span className="font-semibold">{completedCount}</span>
+            </div>
+          )
+        })()}
+
         {(rescheduleBooking || moveBooking) && (
           <div className="mb-4 rounded-3xl border border-[#3A5D49] bg-[#FBF8F3] p-5 shadow-sm">
             <p className="dashboard-label mb-2">
