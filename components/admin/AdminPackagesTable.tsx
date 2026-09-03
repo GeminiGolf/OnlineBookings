@@ -68,12 +68,25 @@ export default function AdminPackagesTable({
   )
   const [editingPackage, setEditingPackage] =
     useState<CoachPackageRow | null>(null)
+  const [coachId, setCoachId] = useState<string>("")
   const [packageName, setPackageName] = useState("")
   const [lessonsAdded, setLessonsAdded] = useState(0)
   const [lessonsUsed, setLessonsUsed] = useState(0)
   const [purchaseDate, setPurchaseDate] = useState("")
-  const [expiryDate, setExpiryDate] = useState("")
+  const [months, setMonths] = useState("")
+  const [expirationDate, setExpirationDate] = useState("")
   const router = useRouter()
+
+  function openEditModal(pkg: CoachPackageRow) {
+    setEditingPackage(pkg)
+    setCoachId(pkg.coach_id ? pkg.coach_id.toString() : "")
+    setPackageName(pkg.transaction_name ?? "")
+    setLessonsAdded(pkg.lessons_added ?? 0)
+    setLessonsUsed(pkg.lessons_used ?? 0)
+    setPurchaseDate(pkg.purchase_date ?? "")
+    setMonths("")
+    setExpirationDate(pkg.expiration_date ?? "")
+  }
 
 
   const rowsPerPage = 10
@@ -119,11 +132,12 @@ export default function AdminPackagesTable({
     const { error } = await supabase
       .from("lesson_packages")
       .update({
+        added_by: coachId ? Number(coachId) : null,
         transaction_name: packageName,
         lessons_added: lessonsAdded,
         lessons_used: lessonsUsed,
         purchase_date: purchaseDate || null,
-        expiration_date: expiryDate || null,
+        expiration_date: expirationDate || null,
       })
       .eq("id", editingPackage.id)
 
@@ -407,15 +421,9 @@ export default function AdminPackagesTable({
                       <tr key={pkg.id}>
                         <td className="p-4">
                           <button
-                            onClick={() => {
-                              setEditingPackage(pkg)
-                              setPackageName(pkg.transaction_name)
-                              setLessonsAdded(pkg.lessons_added)
-                              setLessonsUsed(pkg.lessons_used)
-                              setPurchaseDate(pkg.purchase_date ?? "")
-                              setExpiryDate(pkg.expiration_date ?? "")
-                            }}
-                            className="rounded border px-2 py-1 hover:bg-gray-100"
+                            onClick={() => openEditModal(pkg)}
+                            className="text-[#5874A6] transition hover:text-[#45628F]"
+                            title="Edit Package"
                           >
                             ✏️
                           </button>
@@ -567,8 +575,9 @@ export default function AdminPackagesTable({
                       <tr key={pkg.id} className="border-b last:border-0">
                         <td className="p-4">
                           <button
-                            onClick={() => setEditingPackage(pkg)}
-                            className="rounded border px-2 py-1 hover:bg-gray-100"
+                            onClick={() => openEditModal(pkg)}
+                            className="text-[#5874A6] transition hover:text-[#45628F]"
+                            title="Edit Package"
                           >
                             ✏️
                           </button>
@@ -651,104 +660,168 @@ export default function AdminPackagesTable({
           </>
         )}
       </div>
-
+ 
       {editingPackage && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-          <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-xl">
-            <h2 className="mb-4 text-xl font-bold">Edit Package</h2>
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/50 p-4"
+          onClick={() => setEditingPackage(null)}
+        >
+          <div
+            className="w-full max-w-xl max-h-[90vh] overflow-y-auto rounded-xl bg-white p-6 shadow-xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="mb-6 flex items-center justify-between">
+              <h2 className="text-[20px] font-light uppercase tracking-[0.12em] text-[#2F5A43]">
+                Edit Package
+              </h2>
+
+              <button
+                onClick={() => setEditingPackage(null)}
+                className="text-2xl font-bold text-gray-500 hover:text-black"
+              >
+                ×
+              </button>
+            </div>
 
             <div className="space-y-4">
-
-              <div>
-                <label className="block text-sm font-semibold mb-1">
-                  Client
+              <div className="flex items-center justify-between">
+                <label className="text-[13px] font-light uppercase tracking-[0.12em] text-[#2F5A43]">
+                  Client:
                 </label>
-                <div className="rounded border bg-gray-100 px-3 py-2">
+
+                <span className="text-[15px] font-light text-[#2F5A43]">
                   {editingPackage.client_name}
-                </div>
+                </span>
               </div>
 
-              <div>
-                <label className="block text-sm font-semibold mb-1">
-                  Coach
+              <div className="flex items-center justify-between">
+                <label className="text-[13px] font-light uppercase tracking-[0.12em] text-[#2F5A43]">
+                  Coach:
                 </label>
-                <div className="rounded border bg-gray-100 px-3 py-2">
-                  {editingPackage.coach_name}
-                </div>
+
+                <select
+                  value={coachId}
+                  onChange={(e) => setCoachId(e.target.value)}
+                  className="w-[205px] rounded-2xl border border-[#3A5D49] bg-[#FCFAF6] px-4 py-1.5 text-[15px] font-light text-[#2F5A43] focus:border-[#2F5A43] focus:ring-[#2F5A43]/15"
+                >
+                  <option value="">Select Coach</option>
+
+                  {coaches.map((coach) => (
+                    <option key={coach.id} value={coach.id}>
+                      {coach.name}
+                    </option>
+                  ))}
+                </select>
               </div>
 
-              <div>
-                <label className="block text-sm font-semibold mb-1">
-                  Package
+              <div className="flex items-center justify-between">
+                <label className="text-[13px] font-light uppercase tracking-[0.12em] text-[#2F5A43]">
+                  Package:
                 </label>
+
                 <input
-                  className="w-full rounded border px-3 py-2"
+                  type="text"
                   value={packageName}
                   onChange={(e) => setPackageName(e.target.value)}
+                  className="w-[205px] rounded-2xl border border-[#3A5D49] bg-[#FCFAF6] px-4 py-1.5 text-[15px] font-light text-[#2F5A43] focus:border-[#2F5A43] focus:ring-[#2F5A43]/15"
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-semibold mb-1">
-                  Lessons Added
+              <div className="flex items-center justify-between">
+                <label className="text-[13px] font-light uppercase tracking-[0.12em] text-[#2F5A43]">
+                  Lessons Added:
                 </label>
+
                 <input
                   type="number"
-                  className="w-full rounded border px-3 py-2"
                   value={lessonsAdded}
                   onChange={(e) => setLessonsAdded(Number(e.target.value))}
+                  className="w-[205px] rounded-2xl border border-[#3A5D49] bg-[#FCFAF6] px-4 py-1.5 text-[15px] font-light text-[#2F5A43] focus:border-[#2F5A43] focus:ring-[#2F5A43]/15"
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-semibold mb-1">
-                  Lessons Used
+              <div className="flex items-center justify-between">
+                <label className="text-[13px] font-light uppercase tracking-[0.12em] text-[#2F5A43]">
+                  Lessons Used:
                 </label>
+
                 <input
                   type="number"
-                  className="w-full rounded border px-3 py-2"
                   value={lessonsUsed}
                   onChange={(e) => setLessonsUsed(Number(e.target.value))}
+                  className="w-[205px] rounded-2xl border border-[#3A5D49] bg-[#FCFAF6] px-4 py-1.5 text-[15px] font-light text-[#2F5A43] focus:border-[#2F5A43] focus:ring-[#2F5A43]/15"
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-semibold mb-1">
-                  Purchase Date
+              <div className="flex items-center justify-between">
+                <label className="text-[13px] font-light uppercase tracking-[0.12em] text-[#2F5A43]">
+                  Purchase Date:
                 </label>
+
                 <input
                   type="date"
-                  className="w-full rounded border px-3 py-2"
                   value={purchaseDate}
                   onChange={(e) => setPurchaseDate(e.target.value)}
+                  className="w-[205px] rounded-2xl border border-[#3A5D49] bg-[#FCFAF6] px-4 py-1 text-[15px] font-light text-[#2F5A43] focus:border-[#2F5A43] focus:ring-[#2F5A43]/15"
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-semibold mb-1">
-                  Expiry Date
+              <div className="flex items-center justify-between">
+                <label className="text-[13px] font-light uppercase tracking-[0.12em] text-[#2F5A43]">
+                  Months:
                 </label>
+
+                <input
+                  type="number"
+                  min="0"
+                  value={months}
+                  onChange={(e) => {
+                    const val = e.target.value
+
+                    if (val === "") {
+                      setMonths("")
+                      return
+                    }
+
+                    const purchase = new Date(purchaseDate)
+
+                    if (!isNaN(purchase.getTime())) {
+                      const expiration = new Date(purchase)
+                      expiration.setMonth(expiration.getMonth() + Number(val))
+
+                      setMonths(val)
+                      setExpirationDate(expiration.toISOString().slice(0, 10))
+                    }
+                  }}
+                  className="w-[205px] rounded-2xl border border-[#3A5D49] bg-[#FCFAF6] px-4 py-1.5 text-[15px] font-light text-[#2F5A43] focus:border-[#2F5A43] focus:ring-[#2F5A43]/15"
+                />
+              </div>
+
+              <div className="flex items-center justify-between">
+                <label className="text-[13px] font-light uppercase tracking-[0.12em] text-[#2F5A43]">
+                  Expiration:
+                </label>
+
                 <input
                   type="date"
-                  className="w-full rounded border px-3 py-2"
-                  value={expiryDate}
-                  onChange={(e) => setExpiryDate(e.target.value)}
+                  value={expirationDate}
+                  onChange={(e) => setExpirationDate(e.target.value)}
+                  className="w-[205px] rounded-2xl border border-[#3A5D49] bg-[#FCFAF6] px-4 py-1 text-[15px] font-light text-[#2F5A43] focus:border-[#2F5A43] focus:ring-[#2F5A43]/15"
                 />
               </div>
-
             </div>
 
             <div className="mt-8 flex justify-end gap-3">
               <button
                 onClick={() => setEditingPackage(null)}
-                className="rounded-lg border px-4 py-2 hover:bg-gray-100"
+                className="rounded-lg border border-[#3A5D49] px-4 py-2 text-[13px] font-light uppercase tracking-[0.08em] text-[#2F5A43] transition hover:bg-gray-100"
               >
                 Cancel
               </button>
 
               <button
                 onClick={handleSavePackage}
-                className="rounded-lg bg-green-600 px-4 py-2 text-white hover:bg-green-700"
+                className="rounded-lg bg-[#4E6FA8] px-4 py-2 text-[13px] font-light uppercase tracking-[0.08em] text-white transition hover:bg-[#4E6FA8]"
               >
                 Save
               </button>
