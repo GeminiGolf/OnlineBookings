@@ -227,12 +227,12 @@ function CoachAvailabilityContent() {
                       Select a coach and date.
                     </p>
                   ) : (
-                    <div className="mx-auto max-w-[340px]">
+                    <div className="mx-auto w-full max-w-[340px]">
                       <div className="flex flex-wrap justify-center gap-1">
                         {timeSlots.map((time) => (
                           <div
                             key={time}
-                            className="rounded-xl border border-[#3A5D49] bg-[#2F5A43] px-4 py-2 text-[12px] font-light uppercase tracking-[0.18em] text-white shadow-sm transition hover:bg-[#244634]"
+                            className="flex w-[calc(33.333%-0.375rem)] items-center justify-center rounded-2xl border border-[#3A5D49] bg-[#2F5A43] py-1.5 text-[13px] sm:text-[14px] font-medium text-white shadow-sm transition hover:bg-[#244634]"
                           >
                             {time}
                           </div>
