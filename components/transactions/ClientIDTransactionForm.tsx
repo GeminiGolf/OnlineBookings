@@ -3,6 +3,7 @@
 import { useEffect, useState, type ReactNode } from "react"
 import { supabase } from "@/lib/supabaseClient"
 import { getMalaysiaDate } from "@/lib/date"
+
 type Coach = {
   id: number
   name: string
@@ -25,7 +26,6 @@ type Props = {
   buttonClassName?: string
 }
 
-
 export default function ClientIDTransactionForm({
   clientId,
   lessonsRemaining,
@@ -42,22 +42,40 @@ export default function ClientIDTransactionForm({
     useState<CoachDefaults | null>(null)
   const [coaches, setCoaches] = useState<Coach[]>([])
   const [selectedCoachId, setSelectedCoachId] = useState<number | null>(null)
+  const [isAdmin, setIsAdmin] = useState<boolean>(false)
   const isOther = transactionType === "Other"
   const [paymentMethod, setPaymentMethod] = useState("")
   const [receiptFile, setReceiptFile] = useState<File | null>(null)
   const [saving, setSaving] = useState(false)
   const expiry = new Date()
   expiry.setFullYear(expiry.getFullYear() + 1)
-  const [expirationDate, setExpirationDate] = useState(expiry.toISOString().split("T")[0])
+  const [expirationDate, setExpirationDate] = useState(
+    expiry.toISOString().split("T")[0]
+  )
   const showReceiptUpload =
-    paymentMethod === "transfer" ||
-    paymentMethod === "e-wallet"
+    paymentMethod === "transfer" || paymentMethod === "e-wallet"
 
   useEffect(() => {
-    loadCoachDefaults()
+    loadUserAndCoachDefaults()
   }, [])
 
-  async function loadCoachDefaults() {
+  async function loadUserAndCoachDefaults() {
+    // 1. Check User Role
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
+
+    if (user) {
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", user.id)
+        .single()
+
+      setIsAdmin(profile?.role === "admin")
+    }
+
+    // 2. Load Coaches List
     const { data: coachesList } = await supabase
       .from("coaches")
       .select("id, name, preferred_name")
@@ -65,12 +83,13 @@ export default function ClientIDTransactionForm({
 
     if (coachesList) setCoaches(coachesList)
 
+    // 3. Set Primary Coach Default
     const { data: clientData } = await supabase
       .from("clients")
       .select("primary_coach_id")
       .eq("id", clientId)
       .single()
-      
+
     if (clientData?.primary_coach_id) {
       setSelectedCoachId(clientData.primary_coach_id)
       const { data: coachData } = await supabase
@@ -89,78 +108,51 @@ export default function ClientIDTransactionForm({
     }
   }
 
-    function updateExpiryMonths(months: number) {
-      const expiry = new Date()
+  function updateExpiryMonths(months: number) {
+    const expiry = new Date()
+    expiry.setMonth(expiry.getMonth() + months)
+    setExpirationDate(expiry.toISOString().split("T")[0])
+  }
+
+  function updateTransaction(type: string) {
+    setTransactionType(type)
+    const expiry = new Date()
+
+    if (type === "PPV") {
+      const months = coachDefaults?.ppv_expiry_months ?? 6
       expiry.setMonth(expiry.getMonth() + months)
+      setTransactionName("PPV")
+      setLessonsAdded(1)
+      setPrice(coachDefaults?.ppv_price ?? 0)
       setExpirationDate(expiry.toISOString().split("T")[0])
     }
 
-    function updateTransaction(type: string) {
-      setTransactionType(type)
-      const expiry = new Date()
-
-      if (type === "PPV") {
-        const months =
-          coachDefaults?.ppv_expiry_months ?? 6
-        expiry.setMonth(
-          expiry.getMonth() + months
-        )
-        setTransactionName("PPV")
-        setLessonsAdded(1)
-        setPrice(
-          coachDefaults?.ppv_price ?? 0
-        )
-        setExpirationDate(
-          expiry.toISOString().split("T")[0]
-        )
-      }
-
-      if (type === "5 Lessons") {
-        const months =
-          coachDefaults?.package_5_expiry_months ??
-          6
-        expiry.setMonth(
-          expiry.getMonth() + months
-        )
-        setTransactionName("5 Lessons")
-        setLessonsAdded(5)
-        setPrice(
-          coachDefaults?.package_5_price ?? 0
-        )
-        setExpirationDate(
-          expiry.toISOString().split("T")[0]
-        )
-      }
-
-      if (type === "10 Lessons") {
-        const months =
-          coachDefaults?.package_10_expiry_months ??
-          12
-        expiry.setMonth(
-          expiry.getMonth() + months
-        )
-        setTransactionName("10 Lessons")
-        setLessonsAdded(10)
-        setPrice(
-          coachDefaults?.package_10_price ?? 0
-        )
-        setExpirationDate(
-          expiry.toISOString().split("T")[0]
-        )
-      }
-
-      if (type === "Other") {
-        setTransactionName("")
-        setLessonsAdded(1)
-        setPrice(0)
-        expiry.setMonth(
-          expiry.getMonth() + 6
-        )
-        setExpirationDate(
-          expiry.toISOString().split("T")[0]
-        )
-      }
+    if (type === "5 Lessons") {
+      const months = coachDefaults?.package_5_expiry_months ?? 6
+      expiry.setMonth(expiry.getMonth() + months)
+      setTransactionName("5 Lessons")
+      setLessonsAdded(5)
+      setPrice(coachDefaults?.package_5_price ?? 0)
+      setExpirationDate(expiry.toISOString().split("T")[0])
     }
+
+    if (type === "10 Lessons") {
+      const months = coachDefaults?.package_10_expiry_months ?? 12
+      expiry.setMonth(expiry.getMonth() + months)
+      setTransactionName("10 Lessons")
+      setLessonsAdded(10)
+      setPrice(coachDefaults?.package_10_price ?? 0)
+      setExpirationDate(expiry.toISOString().split("T")[0])
+    }
+
+    if (type === "Other") {
+      setTransactionName("")
+      setLessonsAdded(1)
+      setPrice(0)
+      expiry.setMonth(expiry.getMonth() + 6)
+      setExpirationDate(expiry.toISOString().split("T")[0])
+    }
+  }
 
   async function saveTransaction() {
     if (saving) return
@@ -193,27 +185,25 @@ export default function ClientIDTransactionForm({
         client_id: clientId,
         transaction_name: transactionName,
         lessons_added: lessonsAdded,
-        price:
-          paymentMethod === "free lesson"
-            ? 0
-            : price,
+        price: paymentMethod === "free lesson" ? 0 : price,
         payment_method: paymentMethod,
         receipt_url: receiptUrl,
-        purchase_date: purchaseDate,
+        purchase_date: isAdmin ? purchaseDate : getMalaysiaDate(),
         expiration_date: expirationDate,
         added_by: selectedCoachId,
       })
       .select()
       .single()
+
     if (error) {
       console.error("LESSON PACKAGE ERROR", error)
       alert(error.message)
       setSaving(false)
       return
     }
+
     if (
-      (paymentMethod === "transfer" ||
-        paymentMethod === "e-wallet") &&
+      (paymentMethod === "transfer" || paymentMethod === "e-wallet") &&
       !receiptUrl
     ) {
       const { data: clientData } = await supabase
@@ -238,6 +228,7 @@ export default function ClientIDTransactionForm({
 
       console.log("MISSING RECEIPT ERROR", notificationError)
     }
+
     await supabase
       .from("clients")
       .update({
@@ -245,6 +236,7 @@ export default function ClientIDTransactionForm({
         expiry_date: expirationDate,
       })
       .eq("id", clientId)
+
     alert("Transaction added successfully.")
     window.location.reload()
   }
@@ -271,24 +263,34 @@ export default function ClientIDTransactionForm({
               Add Transaction
             </h2>
             <div className="space-y-2">
-              <div>
-                <label className="mb-2 block text-[13px] font-medium uppercase tracking-[0.12em] text-[#2F5A43]">Coach</label>
-                <select
-                  value={selectedCoachId ?? ""}
-                  onChange={(e) => setSelectedCoachId(e.target.value ? Number(e.target.value) : null)}
-                  className="w-full rounded-2xl border border-[#3A5D49] bg-[#FCFAF6] px-4 py-2 text-[15px] font-light text-[#2F5A43] outline-none transition focus:border-[#2F5A43] focus:ring-2 focus:ring-[#2F5A43]/15"
-                >
-                  <option value="">Select Coach</option>
-                  {coaches.map((c) => (
-                    <option key={c.id} value={c.id}>
-                      {c.preferred_name || c.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              {isAdmin && (
+                <div>
+                  <label className="mb-2 block text-[13px] font-medium uppercase tracking-[0.12em] text-[#2F5A43]">
+                    Coach
+                  </label>
+                  <select
+                    value={selectedCoachId ?? ""}
+                    onChange={(e) =>
+                      setSelectedCoachId(
+                        e.target.value ? Number(e.target.value) : null
+                      )
+                    }
+                    className="w-full rounded-2xl border border-[#3A5D49] bg-[#FCFAF6] px-4 py-2 text-[15px] font-light text-[#2F5A43] outline-none transition focus:border-[#2F5A43] focus:ring-2 focus:ring-[#2F5A43]/15"
+                  >
+                    <option value="">Select Coach</option>
+                    {coaches.map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {c.preferred_name || c.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
 
               <div>
-                <label className="mb-2 block text-[13px] font-medium uppercase tracking-[0.12em] text-[#2F5A43]">Transaction Type</label>
+                <label className="mb-2 block text-[13px] font-medium uppercase tracking-[0.12em] text-[#2F5A43]">
+                  Transaction Type
+                </label>
                 <select
                   value={transactionType}
                   onChange={(e) => updateTransaction(e.target.value)}
@@ -303,7 +305,9 @@ export default function ClientIDTransactionForm({
 
               {isOther && (
                 <div>
-                  <label className="mb-2 block text-[13px] font-medium uppercase tracking-[0.12em] text-[#2F5A43]">Transaction Name</label>
+                  <label className="mb-2 block text-[13px] font-medium uppercase tracking-[0.12em] text-[#2F5A43]">
+                    Transaction Name
+                  </label>
                   <input
                     value={transactionName}
                     onChange={(e) => setTransactionName(e.target.value)}
@@ -314,7 +318,9 @@ export default function ClientIDTransactionForm({
               )}
 
               <div>
-                <label className="mb-2 block text-[13px] font-medium uppercase tracking-[0.12em] text-[#2F5A43]">Lessons Adding</label>
+                <label className="mb-2 block text-[13px] font-medium uppercase tracking-[0.12em] text-[#2F5A43]">
+                  Lessons Adding
+                </label>
                 <input
                   type="number"
                   value={lessonsAdded}
@@ -326,22 +332,23 @@ export default function ClientIDTransactionForm({
               </div>
 
               <div>
-                <label className="mb-2 block text-[13px] font-medium uppercase tracking-[0.12em] text-[#2F5A43]">Price</label>
+                <label className="mb-2 block text-[13px] font-medium uppercase tracking-[0.12em] text-[#2F5A43]">
+                  Price
+                </label>
                 <input
                   type="number"
-                  value={
-                    paymentMethod === "free lesson"
-                      ? 0
-                      : price
-                  }
+                  value={paymentMethod === "free lesson" ? 0 : price}
                   disabled={!isOther}
                   onFocus={(e) => e.target.select()}
                   onChange={(e) => setPrice(Number(e.target.value))}
                   className="w-full rounded-2xl border border-[#3A5D49] bg-[#FCFAF6] px-4 py-2 text-[15px] font-light text-[#2F5A43] disabled:bg-[#F3F0EA]"
                 />
               </div>
+
               <div>
-                <label className="mb-2 block text-[13px] font-medium uppercase tracking-[0.12em] text-[#2F5A43]">Payment Method</label>
+                <label className="mb-2 block text-[13px] font-medium uppercase tracking-[0.12em] text-[#2F5A43]">
+                  Payment Method
+                </label>
                 <select
                   value={paymentMethod}
                   onChange={(e) => setPaymentMethod(e.target.value)}
@@ -381,17 +388,19 @@ export default function ClientIDTransactionForm({
                 </div>
               )}
 
-              <div>
-                <label className="mb-2 block text-[13px] font-medium uppercase tracking-[0.12em] text-[#2F5A43]">
-                  Purchase Date
-                </label>
-                <input
-                  type="date"
-                  value={purchaseDate}
-                  onChange={(e) => setPurchaseDate(e.target.value)}
-                  className="w-full rounded-2xl border border-[#3A5D49] bg-[#FCFAF6] px-4 py-2 text-[15px] font-light text-[#2F5A43] outline-none transition focus:border-[#2F5A43] focus:ring-2 focus:ring-[#2F5A43]/15"
-                />
-              </div>
+              {isAdmin && (
+                <div>
+                  <label className="mb-2 block text-[13px] font-medium uppercase tracking-[0.12em] text-[#2F5A43]">
+                    Purchase Date
+                  </label>
+                  <input
+                    type="date"
+                    value={purchaseDate}
+                    onChange={(e) => setPurchaseDate(e.target.value)}
+                    className="w-full rounded-2xl border border-[#3A5D49] bg-[#FCFAF6] px-4 py-2 text-[15px] font-light text-[#2F5A43] outline-none transition focus:border-[#2F5A43] focus:ring-2 focus:ring-[#2F5A43]/15"
+                  />
+                </div>
+              )}
 
               <div>
                 <label className="mb-2 block text-[13px] font-medium uppercase tracking-[0.12em] text-[#2F5A43]">
@@ -399,17 +408,15 @@ export default function ClientIDTransactionForm({
                 </label>
 
                 <select
-                  value={
-                    (() => {
-                      const today = new Date()
-                      const expiry = new Date(expirationDate)
+                  value={(() => {
+                    const today = new Date()
+                    const expiry = new Date(expirationDate)
 
-                      return (
-                        (expiry.getFullYear() - today.getFullYear()) * 12 +
-                        (expiry.getMonth() - today.getMonth())
-                      ).toString()
-                    })()
-                  }
+                    return (
+                      (expiry.getFullYear() - today.getFullYear()) * 12 +
+                      (expiry.getMonth() - today.getMonth())
+                    ).toString()
+                  })()}
                   onChange={(e) => updateExpiryMonths(Number(e.target.value))}
                   className="w-full rounded-2xl border border-[#3A5D49] bg-[#FCFAF6] px-4 py-2.5 text-[15px] font-light text-[#2F5A43] outline-none transition focus:border-[#2F5A43] focus:ring-2 focus:ring-[#2F5A43]/15"
                 >
