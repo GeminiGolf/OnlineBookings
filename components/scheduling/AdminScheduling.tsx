@@ -496,7 +496,7 @@ export default function AdminDashboard({
             </p>
           )}
         </div>
-        <div className="mb-6 mt-2 flex flex-wrap items-center gap-2">
+        <div className="mb-3 mt-2 flex flex-wrap items-center gap-2">
           <button
             onClick={previousDay}
             className="rounded-2xl border border-[#3A5D49] bg-white px-3 sm:px-5 py-2 text-[15px] font-light text-[#2F5A43] shadow-sm transition hover:bg-[#F6FAF6]"
@@ -546,16 +546,17 @@ export default function AdminDashboard({
 
         {/* Selected Coach Daily Booking Counters */}
         {(() => {
-          const bookedCount = initialBookings.filter(
-            (b) => b.status === "booked"
+          const totalTodayCount = initialBookings.filter(
+            (b) => b.status === "booked" || b.status === "completed"
           ).length
+
           const completedCount = initialBookings.filter(
             (b) => b.status === "completed"
           ).length
 
           return (
             <div className="mb-3 text-[14px] font-light tracking-[0.02em] text-[#2F5A43]">
-              Today: <span className="font-semibold">{bookedCount}</span> | Completed: <span className="font-semibold">{completedCount}</span>
+              Today: <span className="font-semibold">{totalTodayCount}</span> | Completed: <span className="font-semibold">{completedCount}</span>
             </div>
           )
         })()}

@@ -537,16 +537,17 @@ export default function CoachDashboard({
 
         {/* Daily Booking Counters */}
         {(() => {
-          const bookedCount = initialBookings.filter(
-            (b) => b.status === "booked"
+          const totalTodayCount = initialBookings.filter(
+            (b) => b.status === "booked" || b.status === "completed"
           ).length
+
           const completedCount = initialBookings.filter(
             (b) => b.status === "completed"
           ).length
 
           return (
             <div className="mb-3 text-[14px] font-light tracking-[0.02em] text-[#2F5A43]">
-              Today: <span className="font-semibold">{bookedCount}</span> | Completed: <span className="font-semibold">{completedCount}</span>
+              Today: <span className="font-semibold">{totalTodayCount}</span> | Completed: <span className="font-semibold">{completedCount}</span>
             </div>
           )
         })()}
