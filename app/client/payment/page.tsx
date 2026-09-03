@@ -119,7 +119,7 @@ export default function PaymentPage() {
             </div>
 
             {/* Receipt Notice */}
-            <p className="mt-6 text-center text-xs font-light leading-relaxed tracking-[0.04em] text-[#2F5A43]">
+            <p className="mt-6 text-center text-[13px] font-light leading-relaxed tracking-[0.04em] text-[#2F5A43]">
               Kindly send your receipt to admin: <br />
               <a
                 href="https://wa.me/60173576747"
