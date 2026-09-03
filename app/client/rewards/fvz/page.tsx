@@ -93,12 +93,31 @@ export default function FvzRewardsPage() {
           </p>
         </div>
 
-        {/* Your Rewards Counter Hero Banner */}
-        <div className="relative overflow-hidden rounded-3xl border border-[#3A5D49]/20 bg-[#ECE8DC] shadow-sm">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between min-h-[160px]">
-            
-            {/* Left Content */}
-            <div className="z-10 p-6 sm:p-8 space-y-3 max-w-md">
+        {/* Your Rewards Counter Hero Banner - Full Background Image with Translucent Overlay */}
+        <div className="relative min-h-[160px] overflow-hidden rounded-3xl border border-[#3A5D49]/20 shadow-sm">
+          {/* Full-bleed Background Image across the entire card */}
+          <div className="absolute inset-0 h-full w-full">
+            <Image
+              src="/images/putt.jpg"
+              alt="Golf putting on green"
+              fill
+              sizes="100vw"
+              priority
+              className="object-cover object-center"
+            />
+          </div>
+
+          {/* Translucent Overlay - Clean tint without backdrop-blur artifacts */}
+          <div 
+            className="absolute inset-0 bg-[#ECE8DC]/92"
+            style={{
+              clipPath: "polygon(0 0, 75% 0, 55% 100%, 0 100%)"
+            }}
+          />
+
+          {/* Content Layer */}
+          <div className="relative z-10 flex min-h-[160px] flex-col justify-center p-6 sm:p-8">
+            <div className="max-w-md space-y-3">
               <div className="flex items-center gap-2">
                 <Sparkles size={18} className="text-[#2F5A43]" />
                 <h2 className="text-xs font-light uppercase tracking-[0.2em] text-[#2F5A43]">
@@ -112,42 +131,23 @@ export default function FvzRewardsPage() {
                   <span className="text-5xl font-serif tracking-tight text-[#2F5A43] sm:text-6xl">
                     {points}
                   </span>
-                  <p className="text-[10px] font-light uppercase tracking-[0.2em] text-[#3A5D49]/80 mt-1">
+                  <p className="mt-1 text-[10px] font-light uppercase tracking-[0.2em] text-[#3A5D49]/80">
                     Points
                   </p>
                 </div>
 
-                <div className="h-12 w-[1px] bg-[#3A5D49]/20 shrink-0" />
+                <div className="h-12 w-[1px] shrink-0 bg-[#3A5D49]/20" />
 
                 <div className="space-y-1">
                   <p className="text-base font-serif text-[#2F5A43]">
                     You’re making progress!
                   </p>
-                  <p className="text-xs font-light text-[#3A5D49]/80 leading-relaxed">
+                  <p className="text-xs font-light leading-relaxed text-[#3A5D49]/80">
                     Keep showing up, earn points, and unlock exclusive rewards.
                   </p>
                 </div>
               </div>
             </div>
-
-            {/* Right Side Image - Sweep Cutout Style */}
-            <div className="relative hidden h-full w-1/2 min-h-[160px] sm:block">
-              <div 
-                className="absolute inset-0 h-full w-full"
-                style={{
-                  clipPath: "polygon(22% 0%, 100% 0%, 100% 100%, 0% 100%)"
-                }}
-              >
-                <Image
-                  src="/images/putt.jpg"
-                  alt="Golf putting on green"
-                  fill
-                  priority
-                  className="object-cover object-center"
-                />
-              </div>
-            </div>
-
           </div>
         </div>
 
