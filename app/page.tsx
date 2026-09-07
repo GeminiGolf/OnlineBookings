@@ -1,7 +1,40 @@
 import Image from "next/image";
-import { MapPin, Mail, Phone } from "lucide-react";export default function Home() {
+import { MapPin, Mail, Phone } from "lucide-react";
+
+export default function Home() {
   return (
     <div className="min-h-screen flex flex-col bg-[#1B2E23]">
+      {/* LOCAL BUSINESS SCHEMA MARKUP */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "SportsActivityLocation",
+            "name": "Gemini Golf Academy",
+            "image": "https://www.geminigolfacademy.com/images/logo-warm.png",
+            "url": "https://www.geminigolfacademy.com",
+            "telephone": "+60173576747",
+            "email": "hello@geminigolfacademy.com",
+            "address": {
+              "@type": "PostalAddress",
+              "streetAddress": "Block A (Level 1), Boulevard 51, Jalan SS9A/18, Seksyen 51a",
+              "addressLocality": "Petaling Jaya",
+              "addressRegion": "Selangor",
+              "postalCode": "47300",
+              "addressCountry": "MY"
+            },
+            "geo": {
+              "@type": "GeoCoordinates",
+              "latitude": 3.0879459,
+              "longitude": 101.6248033
+            },
+            "areaServed": ["Petaling Jaya", "Kuala Lumpur"],
+            "description": "Professional golf academy offering expert golf lessons and coaching in Petaling Jaya and Kuala Lumpur."
+          })
+        }}
+      />
+
       {/* HERO SECTION */}
       <main className="relative min-h-screen w-full flex-grow">
         {/* Mobile Video */}
@@ -113,7 +146,8 @@ import { MapPin, Mail, Phone } from "lucide-react";export default function Home(
                     href="https://www.google.com/maps/place/Wedge+Range+%E2%80%A2+Petaling+Jaya/@3.088056,101.6245866,20.5z/data=!4m9!1m2!2m1!1sBlock+a+boulevard+51+Jalan+SS9A%2F18+Seksyen+51a+47300+Petaling+Jaya!3m5!1s0x31cc4b98e9f6bd09:0xa0ce29eba27b7783!8m2!3d3.0879459!4d101.6248033!16s%2Fg%2F11vjnslt35?entry=ttu&g_ep=EgoyMDI2MDgyMy4wIKXMDSoASAFQAw%3D%3D"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="mt-2.5 inline-block -ml-6 text-[11px] uppercase tracking-wider text-[#D8CCB7] underline opacity-80 hover:opacity-100"                  >
+                    className="mt-2.5 inline-block -ml-6 text-[11px] uppercase tracking-wider text-[#D8CCB7] underline opacity-80 hover:opacity-100"
+                  >
                     Locate Us →
                   </a>
                 </div>
