@@ -30,7 +30,7 @@ export default function Home() {
               "longitude": 101.6248033
             },
             "areaServed": ["Petaling Jaya", "Kuala Lumpur"],
-            "description": "Professional golf academy offering expert golf lessons and coaching in Petaling Jaya and Kuala Lumpur."
+            "description": "Professional golf academy with coaches teaching lessons for complete beginnners to pro tour players in Petaling Jaya and Kuala Lumpur."
           })
         }}
       />
