@@ -644,7 +644,7 @@ function LoggedInDrawer({
                       onClick={toggleMenu}
                       className="flex items-center justify-between rounded-lg px-3 py-2 text-xs font-light uppercase tracking-[0.18em] text-[#E7DED1] transition hover:bg-[#D8CCB7]/10 hover:text-white"
                     >
-                      <span className="origin-left scale-x-95">REWARDS</span>
+                      <span className="origin-left scale-x-95">REWARDS - NEW!</span>
                     </Link>
                   ) : (
                     <div className="flex cursor-not-allowed items-center justify-between rounded-lg px-3 py-2 text-xs font-light uppercase tracking-[0.18em] text-[#E7DED1]/40">
