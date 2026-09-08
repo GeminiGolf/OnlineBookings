@@ -229,13 +229,48 @@ export default function ClientIDTransactionForm({
       console.log("MISSING RECEIPT ERROR", notificationError)
     }
 
-    await supabase
+    // 1. Calculate points earned based on selectedCoachId and transactionType
+    let pointsToAdd = 0
+    if (selectedCoachId === 1) {
+      if (transactionType === "5 Lessons") {
+        pointsToAdd = 15
+      } else if (transactionType === "10 Lessons") {
+        pointsToAdd = 35
+      }
+    }
+
+    // 2. Get current points balance
+    const { data: currentClientData, error: clientFetchError } = await supabase
+      .from("clients")
+      .select("points")
+      .eq("id", clientId)
+      .single()
+
+    if (clientFetchError) {
+      console.error("FETCH CLIENT POINTS ERROR", clientFetchError)
+      alert(clientFetchError.message)
+      setSaving(false)
+      return
+    }
+
+    const currentPoints = currentClientData?.points ?? 0
+
+    // 3. Update client record with accumulated points
+    const { error: updateError } = await supabase
       .from("clients")
       .update({
         lessons_remaining: lessonsRemaining + Number(lessonsAdded),
         expiry_date: expirationDate,
+        points: currentPoints + pointsToAdd,
       })
       .eq("id", clientId)
+
+    if (updateError) {
+      console.error("CLIENT UPDATE ERROR", updateError)
+      alert(updateError.message)
+      setSaving(false)
+      return
+    }
 
     alert("Transaction added successfully.")
     window.location.reload()
