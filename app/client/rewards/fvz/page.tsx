@@ -33,31 +33,34 @@ export default function FvzRewardsPage() {
         return
       }
 
-      // 2. Verify profile role is client
+      // 2. Verify profile role is client or admin
       const { data: profile } = await supabase
         .from("profiles")
         .select("role")
         .eq("id", session.user.id)
         .single()
 
-      if (profile?.role !== "client") {
+      if (profile?.role !== "client" && profile?.role !== "admin") {
         router.replace("/dashboard")
         return
       }
 
-      // 3. Check client primary_coach_id matches coach ID 1 & fetch points
-      const { data: client } = await supabase
-        .from("clients")
-        .select("primary_coach_id, points")
-        .eq("profile_id", session.user.id)
-        .single()
+      // 3. Check client primary_coach_id matches coach ID 1 & fetch points (only enforce for clients)
+      if (profile?.role === "client") {
+        const { data: client } = await supabase
+          .from("clients")
+          .select("primary_coach_id, points")
+          .eq("profile_id", session.user.id)
+          .single()
 
-      if (!client || client.primary_coach_id !== EXPECTED_COACH_ID) {
-        router.replace("/client/dashboard")
-        return
+        if (!client || client.primary_coach_id !== EXPECTED_COACH_ID) {
+          router.replace("/client/dashboard")
+          return
+        }
+
+        setPoints(client.points ?? 0)
       }
 
-      setPoints(client.points ?? 0)
       setLoading(false)
     }
 
