@@ -80,7 +80,29 @@ export default function AdminNavbar({
                     key={notification.id}
                     className="rounded-lg border border-red-200 bg-red-50 p-3"
                   >
-                    {notification.type === "double_booking" ? (
+                    {notification.type === "payment_received" ? (
+                      <>
+                        <div className="mb-2 text-xs font-medium text-black">
+                          Payment received from{" "}
+                          {notification.client_name ||
+                            (() => {
+                              try {
+                                const parsed = JSON.parse(notification.message)
+                                return parsed.text?.replace("Payment receipt uploaded by ", "").replace(".", "") || "Client"
+                              } catch {
+                                return "Client"
+                              }
+                            })()}
+                        </div>
+
+                        <button
+                          onClick={() => markNotificationRead(notification.id)}
+                          className="rounded bg-[#2F5A43] px-3 py-1 text-xs uppercase text-white transition hover:bg-[#244634]"
+                        >
+                          Done
+                        </button>
+                      </>
+                    ) : notification.type === "double_booking" ? (
                       <>
                         <div className="mb-2 text-[13px] font-semibold uppercase tracking-[0.12em] text-[#8F3434]">
                           DOUBLE BOOKING

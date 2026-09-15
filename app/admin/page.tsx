@@ -17,21 +17,22 @@ export default function AdminPage() {
     const { data: urgentNotifications } = await supabase
       .from("notifications")
       .select("id")
-      .eq("type", "late_booking")
+      .in("type", ["late_booking", "double_booking", "payment_received"])
       .eq("is_urgent", true)
       .eq("is_read", false)
 
-    const { data: missingReceiptNotifications } = await supabase
+    const { data: normalNotifications } = await supabase
       .from("notifications")
       .select("id")
-      .eq("type", "missing_receipt")
+      .in("type", ["missing_receipt", "payment_received"])
+      .eq("is_urgent", false)
       .eq("is_read", false)
 
     const urgentCount = urgentNotifications?.length || 0
-    const receiptCount = missingReceiptNotifications?.length || 0
+    const normalCount = normalNotifications?.length || 0
 
     setUrgentNotifications(urgentCount)
-    setTotalNotifications(urgentCount + receiptCount)
+    setTotalNotifications(urgentCount + normalCount)
   }
 
   return (

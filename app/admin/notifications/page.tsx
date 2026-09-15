@@ -34,6 +34,7 @@ type Notification = {
   original_datetime?: string
   new_datetime?: string
   notes?: string
+  receipt_file_url?: string
 }
 
 export default function NotificationsPage() {
@@ -51,6 +52,7 @@ export default function NotificationsPage() {
   const [expandedNotifications, setExpandedNotifications] = useState<number[]>([])
   const [expandedUrgent, setExpandedUrgent] = useState<number[]>([])
   const [showPushModal, setShowPushModal] = useState(false)
+  const [previewImageUrl, setPreviewImageUrl] = useState<string | null>(null)
 
   const router = useRouter()
 
@@ -249,6 +251,31 @@ export default function NotificationsPage() {
           }
         }
 
+        let receipt_file_url = ""
+        let receipt_file_name = ""
+
+        if (notification.type === "payment_received") {
+          type_label = "Payment Received"
+
+          try {
+            const parsed = JSON.parse(notification.message)
+            receipt_file_name = parsed.file_name || ""
+            notes = parsed.text || "Payment receipt uploaded"
+
+            if (parsed.file_path) {
+              const { data: signedData } = await supabase.storage
+                .from("client_uploaded_receipts")
+                .createSignedUrl(parsed.file_path, 3600)
+
+              receipt_file_url = signedData?.signedUrl || ""
+            } else if (parsed.file_url) {
+              receipt_file_url = parsed.file_url
+            }
+          } catch {
+            notes = notification.message || "Payment receipt uploaded"
+          }
+        }
+
         return {
           ...notification,
           client_name,
@@ -263,6 +290,8 @@ export default function NotificationsPage() {
           original_datetime,
           new_datetime,
           notes,
+          receipt_file_url,
+          receipt_file_name,
         }
       })
     )
@@ -485,6 +514,70 @@ export default function NotificationsPage() {
                           className="rounded-xl bg-[#8F3434] px-5 py-2 text-[13px] font-light uppercase tracking-[0.12em] text-white transition hover:bg-[#742A2A]"
                         >
                           Reject
+                        </button>
+                      </div>
+                    </>
+                  ) : notification.type === "payment_received" ? (
+                    <>
+                      <h3 className="text-[20px] font-light uppercase tracking-[0.12em] text-[#8F3434]">
+                        Payment Receipt
+                      </h3>
+
+                      <div className="mt-4 space-y-3">
+                        <div>
+                          <p className="dashboard-label font-normal">Client</p>
+                          <Link
+                            href={`/admin/clients/${notification.client_id}`}
+                            className="text-[15px] font-light text-[#5874A6] underline underline-offset-2 transition hover:text-[#45628F]"
+                          >
+                            {notification.client_name || "Client"}
+                          </Link>
+                        </div>
+
+                        <div>
+                          <p className="dashboard-label font-normal">Details</p>
+                          <p className="flex items-center gap-2 text-[15px] font-light text-[#2F5A43]">
+                            {notification.receipt_file_url && (
+                              <button
+                                type="button"
+                                onClick={() => setPreviewImageUrl(notification.receipt_file_url || null)}
+                                title="Click to view receipt image"
+                                className="inline-flex items-center justify-center rounded border border-[#E2DDD3] bg-white p-1 text-sm shadow-sm transition hover:scale-105 hover:border-[#2F5A43]"
+                              >
+                                🖼️
+                              </button>
+                            )}
+                            <span>
+                              Receipt uploaded on{" "}
+                              {new Date(notification.created_at).toLocaleDateString("en-GB", {
+                                day: "2-digit",
+                                month: "2-digit",
+                              })}{" "}
+                              @{" "}
+                              {new Date(notification.created_at)
+                                .toLocaleTimeString([], {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                  hour12: true,
+                                })
+                                .toLowerCase()}
+                            </span>
+                          </p>
+
+                          {(notification as any).receipt_file_name && (
+                            <p className="mt-1 text-xs text-gray-500">
+                              Saved as: <span className="font-mono text-[#2F5A43]">{(notification as any).receipt_file_name}</span>
+                            </p>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="mt-5 flex gap-3">
+                        <button
+                          onClick={() => toggleNotification(notification.id, true)}
+                          className="rounded-xl bg-[#2F5A43] px-6 py-2 text-[13px] font-light uppercase tracking-[0.12em] text-white transition hover:bg-[#244634]"
+                        >
+                          Done
                         </button>
                       </div>
                     </>
@@ -822,6 +915,7 @@ export default function NotificationsPage() {
                   <option value="Cancelled">Cancelled</option>
                   <option value="Rescheduled">Rescheduled</option>
                   <option value="Late Booking">Late Booking</option>
+                  <option value="Payment Received">Payment Received</option>
                   <option value="Coach Cancelled">Coach Cancelled</option>
                   <option value="No Show">No Show</option>
                 </select>
@@ -1063,6 +1157,33 @@ export default function NotificationsPage() {
         open={showPushModal}
         onClose={() => setShowPushModal(false)}
       />
+
+      {previewImageUrl && (
+        <div 
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 p-4"
+          onClick={() => setPreviewImageUrl(null)}
+        >
+          <div 
+            className="relative max-h-[90vh] max-w-3xl overflow-hidden rounded-2xl bg-white p-4 shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="mb-2 flex justify-end">
+              <button
+                type="button"
+                onClick={() => setPreviewImageUrl(null)}
+                className="rounded-lg px-3 py-1 text-sm font-bold text-gray-600 hover:bg-gray-100"
+              >
+                ✕ Close
+              </button>
+            </div>
+            <img
+              src={previewImageUrl}
+              alt="Uploaded Receipt Preview"
+              className="max-h-[75vh] w-auto rounded-lg object-contain"
+            />
+          </div>
+        </div>
+      )}
     </main>
   </RequireAdmin>
   )

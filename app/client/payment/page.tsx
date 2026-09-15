@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { supabase } from "@/lib/supabaseClient"
+import SubmitReceipt from "@/components/clients/SubmitReceipt"
 
 export default function PaymentPage() {
   const [loading, setLoading] = useState(true)
@@ -118,9 +119,12 @@ export default function PaymentPage() {
               </div>
             </div>
 
+            {/* Submit Receipt Section */}
+            <SubmitReceipt />
+
             {/* Receipt Notice */}
             <p className="mt-6 text-center text-[13px] font-light leading-relaxed tracking-[0.04em] text-[#2F5A43]">
-              Kindly send your receipt to admin: <br />
+              If upload is unsuccessful, please send your receipt to admin: <br />
               <a
                 href="https://wa.me/60173576747"
                 target="_blank"
