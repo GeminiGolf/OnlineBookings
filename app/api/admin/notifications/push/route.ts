@@ -58,8 +58,18 @@ export async function POST(req: Request) {
           .join(" ")
       : "Client";
 
-    // Handle allowed admin notification types: late_booking, client_cancelled, double_booking
+    // Formulate name specifically for payment received format
+    const paymentClientName = client
+      ? [client.first_name, client.last_name].filter(Boolean).join(" ")
+      : "Client";
+
+    // Handle allowed admin notification types
     switch (notification.type) {
+      case "payment_received":
+        title = "Payment Received";
+        body = `Payment Received from ${paymentClientName}`;
+        break;
+
       case "late_booking":
         title = "Late Booking Request";
         body = clientName;

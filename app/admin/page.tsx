@@ -14,25 +14,26 @@ export default function AdminPage() {
   }, [])
 
   async function loadNotifications() {
-    const { data: urgentNotifications } = await supabase
+    // 1. Fetch unread urgent notifications (Payment Received, Late Booking, etc.)
+    const { data: urgentData } = await supabase
       .from("notifications")
       .select("id")
-      .in("type", ["late_booking", "double_booking", "payment_received"])
       .eq("is_urgent", true)
       .eq("is_read", false)
 
-    const { data: normalNotifications } = await supabase
+    // 2. Fetch unread non-urgent missing receipts (matches active notifications section)
+    const { data: missingReceiptData } = await supabase
       .from("notifications")
       .select("id")
-      .in("type", ["missing_receipt", "payment_received"])
+      .eq("type", "missing_receipt")
       .eq("is_urgent", false)
       .eq("is_read", false)
 
-    const urgentCount = urgentNotifications?.length || 0
-    const normalCount = normalNotifications?.length || 0
+    const urgentCount = urgentData?.length || 0
+    const missingCount = missingReceiptData?.length || 0
 
     setUrgentNotifications(urgentCount)
-    setTotalNotifications(urgentCount + normalCount)
+    setTotalNotifications(urgentCount + missingCount)
   }
 
   return (

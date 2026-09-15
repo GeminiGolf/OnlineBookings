@@ -59,9 +59,9 @@ export default function SubmitReceipt() {
         throw new Error("Client record not found.")
       }
 
-      // 2. Upload files to storage and capture the path
-      let lastUploadedPath = ""
-      let lastFileName = ""
+      // 2. Upload files to storage and collect all paths
+      const uploadedFilePaths: string[] = []
+      const uploadedFileNames: string[] = []
 
       for (const file of filesToUpload) {
         const fileExt = file.name.split(".").pop()
@@ -76,11 +76,11 @@ export default function SubmitReceipt() {
           throw storageError
         }
 
-        lastUploadedPath = filePath
-        lastFileName = file.name
+        uploadedFilePaths.push(filePath)
+        uploadedFileNames.push(file.name)
       }
 
-      // 3. Create notification with JSON payload containing file path
+      // 3. Create notification with multi-file JSON payload
       const clientName = clientRecord.preferred_name || clientRecord.name || "Client"
 
       const { data: notification, error: notificationError } = await supabase
@@ -93,15 +93,21 @@ export default function SubmitReceipt() {
           message: JSON.stringify({
             text: `Payment receipt uploaded by ${clientName}.`,
             client_name: clientName,
-            file_name: lastFileName,
-            file_path: lastUploadedPath,
+            file_names: uploadedFileNames,
+            file_paths: uploadedFilePaths,
           }),
         })
         .select()
         .single()
 
-      if (!notificationError && notification) {
-        await fetch("/api/admin/notifications/push", {
+      if (notificationError) throw notificationError
+
+      // Show instant success alert as soon as Supabase insertion succeeds
+      alert("Receipt(s) uploaded successfully!")
+
+      // Fire push notification in the background without blocking the UI
+      if (notification) {
+        fetch("/api/admin/notifications/push", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -109,10 +115,8 @@ export default function SubmitReceipt() {
           body: JSON.stringify({
             notificationId: notification.id,
           }),
-        })
+        }).catch((err) => console.error("Push notification error:", err))
       }
-
-      alert("Receipt(s) uploaded successfully!")
       // Reset input state back to 1 empty field
       setRows([{ id: crypto.randomUUID(), file: null }])
     } catch (error: any) {

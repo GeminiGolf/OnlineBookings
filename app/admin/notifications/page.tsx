@@ -34,7 +34,7 @@ type Notification = {
   original_datetime?: string
   new_datetime?: string
   notes?: string
-  receipt_file_url?: string
+  receipt_files?: { url: string; name: string }[]
 }
 
 export default function NotificationsPage() {
@@ -251,25 +251,30 @@ export default function NotificationsPage() {
           }
         }
 
-        let receipt_file_url = ""
-        let receipt_file_name = ""
+        let receipt_files: { url: string; name: string }[] = []
 
         if (notification.type === "payment_received") {
           type_label = "Payment Received"
 
           try {
             const parsed = JSON.parse(notification.message)
-            receipt_file_name = parsed.file_name || ""
             notes = parsed.text || "Payment receipt uploaded"
 
-            if (parsed.file_path) {
+            // Extract file paths & names supporting both new arrays and legacy single values
+            const paths: string[] = parsed.file_paths || (parsed.file_path ? [parsed.file_path] : [])
+            const names: string[] = parsed.file_names || (parsed.file_name ? [parsed.file_name] : [])
+
+            for (let i = 0; i < paths.length; i++) {
+              const path = paths[i]
+              const name = names[i] || `Receipt ${i + 1}`
+
               const { data: signedData } = await supabase.storage
                 .from("client_uploaded_receipts")
-                .createSignedUrl(parsed.file_path, 3600)
+                .createSignedUrl(path, 3600)
 
-              receipt_file_url = signedData?.signedUrl || ""
-            } else if (parsed.file_url) {
-              receipt_file_url = parsed.file_url
+              if (signedData?.signedUrl) {
+                receipt_files.push({ url: signedData.signedUrl, name })
+              }
             }
           } catch {
             notes = notification.message || "Payment receipt uploaded"
@@ -290,8 +295,7 @@ export default function NotificationsPage() {
           original_datetime,
           new_datetime,
           notes,
-          receipt_file_url,
-          receipt_file_name,
+          receipt_files,
         }
       })
     )
@@ -536,38 +540,36 @@ export default function NotificationsPage() {
 
                         <div>
                           <p className="dashboard-label font-normal">Details</p>
-                          <p className="flex items-center gap-2 text-[15px] font-light text-[#2F5A43]">
-                            {notification.receipt_file_url && (
-                              <button
-                                type="button"
-                                onClick={() => setPreviewImageUrl(notification.receipt_file_url || null)}
-                                title="Click to view receipt image"
-                                className="inline-flex items-center justify-center rounded border border-[#E2DDD3] bg-white p-1 text-sm shadow-sm transition hover:scale-105 hover:border-[#2F5A43]"
-                              >
-                                🖼️
-                              </button>
-                            )}
-                            <span>
-                              Receipt uploaded on{" "}
-                              {new Date(notification.created_at).toLocaleDateString("en-GB", {
-                                day: "2-digit",
-                                month: "2-digit",
-                              })}{" "}
-                              @{" "}
-                              {new Date(notification.created_at)
-                                .toLocaleTimeString([], {
-                                  hour: "2-digit",
-                                  minute: "2-digit",
-                                  hour12: true,
-                                })
-                                .toLowerCase()}
-                            </span>
+                          <p className="text-[15px] font-light text-[#2F5A43]">
+                            Uploaded on{" "}
+                            {new Date(notification.created_at).toLocaleDateString("en-GB", {
+                              day: "2-digit",
+                              month: "2-digit",
+                            })}{" "}
+                            @{" "}
+                            {new Date(notification.created_at)
+                              .toLocaleTimeString([], {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                                hour12: true,
+                              })
+                              .toLowerCase()}
                           </p>
 
-                          {(notification as any).receipt_file_name && (
-                            <p className="mt-1 text-xs text-gray-500">
-                              Saved as: <span className="font-mono text-[#2F5A43]">{(notification as any).receipt_file_name}</span>
-                            </p>
+                          {(notification as any).receipt_files?.length > 0 && (
+                            <div className="mt-2 flex flex-wrap gap-2">
+                              {(notification as any).receipt_files.map((file: { url: string; name: string }, idx: number) => (
+                                <button
+                                  key={idx}
+                                  type="button"
+                                  onClick={() => setPreviewImageUrl(file.url)}
+                                  className="inline-flex items-center gap-1.5 rounded-lg border border-[#E2DDD3] bg-white px-2.5 py-1 text-xs font-medium text-[#2F5A43] shadow-sm transition hover:border-[#2F5A43] hover:bg-[#F4F1EA]"
+                                >
+                                  <span>🖼️</span>
+                                  <span className="max-w-[150px] truncate">{file.name}</span>
+                                </button>
+                              ))}
+                            </div>
                           )}
                         </div>
                       </div>
