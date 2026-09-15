@@ -46,7 +46,6 @@ export default function NotificationsPage() {
   const [olderPage, setOlderPage] = useState(1)
   const PAGE_SIZE = 5
   const [loading, setLoading] = useState(true)
-  const [currentRole, setCurrentRole] = useState("")
   const [selectedClient, setSelectedClient] = useState<Notification | null>(null)
   const [olderFilter, setOlderFilter] = useState("all")
   const [expandedNotifications, setExpandedNotifications] = useState<number[]>([])
@@ -70,12 +69,7 @@ export default function NotificationsPage() {
       return
     }
     const { data: profile } = await supabase.from("profiles").select("role").eq("id", session.user.id).single()
-    setCurrentRole(profile?.role || "")
 
-    if (profile?.role === "client") {
-      router.push("/client/notifications")
-      return
-    }
     if (profile?.role !== "admin") {
       router.replace("/login")
       return
@@ -92,6 +86,77 @@ export default function NotificationsPage() {
       console.error(error)
       setLoading(false)
       return
+    }
+
+    // Fetch all related clients, bookings and booking changes in batches
+    // instead of making separate database requests for every notification.
+    const clientIds = [
+      ...new Set(
+        data
+          .map((notification) => notification.client_id)
+          .filter((id): id is number => id !== null)
+      ),
+    ]
+
+    const bookingIds = [
+      ...new Set(
+        data
+          .map((notification) => notification.booking_id)
+          .filter((id): id is number => id !== null)
+      ),
+    ]
+
+    const [clientsResult, bookingsResult, changesResult] = await Promise.all([
+      clientIds.length > 0
+        ? supabase
+            .from("clients")
+            .select("id, name, phone, email, notes, lessons_remaining")
+            .in("id", clientIds)
+        : Promise.resolve({ data: [], error: null }),
+
+      bookingIds.length > 0
+        ? supabase
+            .from("bookings")
+            .select("id, lesson_date, lesson_time, cancellation_reason")
+            .in("id", bookingIds)
+        : Promise.resolve({ data: [], error: null }),
+
+      bookingIds.length > 0
+        ? supabase
+            .from("booking_changes")
+            .select("*")
+            .in("booking_id", bookingIds)
+            .order("created_at", { ascending: false })
+        : Promise.resolve({ data: [], error: null }),
+    ])
+
+    if (clientsResult.error) {
+      console.error("Error loading clients:", clientsResult.error)
+    }
+
+    if (bookingsResult.error) {
+      console.error("Error loading bookings:", bookingsResult.error)
+    }
+
+    if (changesResult.error) {
+      console.error("Error loading booking changes:", changesResult.error)
+    }
+
+    const clientsMap = new Map(
+      (clientsResult.data || []).map((client) => [client.id, client])
+    )
+
+    const bookingsMap = new Map(
+      (bookingsResult.data || []).map((booking) => [booking.id, booking])
+    )
+
+    // Keep only the newest booking change for each booking.
+    const latestChangesMap = new Map()
+
+    for (const change of changesResult.data || []) {
+      if (!latestChangesMap.has(change.booking_id)) {
+        latestChangesMap.set(change.booking_id, change)
+      }
     }
 
     const enrichedNotifications = await Promise.all(
@@ -111,19 +176,8 @@ export default function NotificationsPage() {
         let cancellationReason = ""
 
         if (notification.client_id) {
-          const { data: client } = await supabase
-            .from("clients")
-            .select(
-              `
-              name,
-              phone,
-              email,
-              notes,
-              lessons_remaining
-            `
-            )
-            .eq("id", notification.client_id)
-            .single()
+          const client = clientsMap.get(notification.client_id)
+
           client_name = client?.name || ""
           client_phone = client?.phone || ""
           client_email = client?.email || ""
@@ -132,17 +186,7 @@ export default function NotificationsPage() {
         }
 
         if (notification.booking_id) {
-          const { data: booking } = await supabase
-            .from("bookings")
-            .select(
-              `
-              lesson_date,
-              lesson_time,
-              cancellation_reason
-            `
-            )
-            .eq("id", notification.booking_id)
-            .single()
+          const booking = bookingsMap.get(notification.booking_id)
 
           lesson_date = booking?.lesson_date || ""
           lesson_time = booking?.lesson_time || ""
@@ -180,15 +224,7 @@ export default function NotificationsPage() {
         }
 
         if (notification.type === "client_rescheduled" && notification.booking_id) {
-          const { data: changes } = await supabase
-            .from("booking_changes")
-            .select("*")
-            .eq("booking_id", notification.booking_id)
-            .order("created_at", {
-              ascending: false,
-            })
-
-          const change = changes?.[0]
+          const change = latestChangesMap.get(notification.booking_id)
 
           if (change) {
             const formatDate = (date: string) =>
