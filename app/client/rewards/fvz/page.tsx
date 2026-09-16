@@ -234,7 +234,7 @@ export default function FvzRewardsPage() {
                   <Percent size={20} className="sm:w-[22px] sm:h-[22px]" />
                 </div>
                 <h3 className="text-xs font-semibold uppercase tracking-[0.15em] text-[#2F5A43]">
-                  50% Off Lesson
+                  50% Off 1 Lesson
                 </h3>
                 <p className="text-[10px] sm:text-[11px] font-medium uppercase tracking-[0.1em] text-[#3A5D49]/70">
                   100 Points
