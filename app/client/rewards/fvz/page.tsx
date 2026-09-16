@@ -310,7 +310,7 @@ export default function FvzRewardsPage() {
         {/* Get Points For Showing Up Section */}
         <section className="space-y-4 sm:space-y-6">
           <div className="flex items-center justify-center gap-3">
-            <div className="h-[1px] flex-1 bg-[#3A5D49]/15 md:hidden" />
+            <div className="h-[1px] flex-1 bg-[#3A5D49]/15" />
             <Sun size={20} className="text-[#2F5A43] shrink-0" />
             <h2 className="text-sm font-light uppercase tracking-[0.2em] text-[#2F5A43] text-center">
               Get Points For Showing Up
