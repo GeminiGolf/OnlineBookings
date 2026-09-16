@@ -107,6 +107,24 @@ export default function FvzRewardsPage() {
           return
         }
 
+        // Fetch the newly created notification record to send push
+        const { data: createdNotif } = await supabase
+          .from("notifications")
+          .select("id")
+          .eq("client_id", client.id)
+          .eq("type", "points_redeemed")
+          .order("created_at", { ascending: false })
+          .limit(1)
+          .maybeSingle()
+
+        if (createdNotif?.id) {
+          await fetch("/api/admin/notifications/push", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ notificationId: createdNotif.id }),
+          })
+        }
+
         // Update state with exact new balance returned from database
         setPoints(newBalance)
         alert("Congratulations on reaching a milestone! Your reward will be credited within 12 hours!")

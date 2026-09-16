@@ -65,6 +65,13 @@ export async function POST(req: Request) {
 
     // Handle allowed admin notification types
     switch (notification.type) {
+      case "points_redeemed": {
+        title = "Points Redeemed";
+        // Uses the raw database message directly to prevent duplicating the client's name
+        body = notification.message || "Points redeemed";
+        break;
+      }
+
       case "payment_received":
         title = "Payment Received";
         body = `Payment Received from ${paymentClientName}`;

@@ -80,7 +80,24 @@ export default function AdminNavbar({
                     key={notification.id}
                     className="rounded-lg border border-red-200 bg-red-50 p-3"
                   >
-                    {notification.type === "payment_received" ? (
+                    {notification.type === "points_redeemed" ? (
+                      <>
+                        <div className="mb-1 text-[13px] font-semibold text-[#8F3434]">
+                          Points Redeemed
+                        </div>
+
+                        <div className="mb-2 text-xs font-medium text-black">
+                          {notification.message}
+                        </div>
+
+                        <button
+                          onClick={() => markNotificationRead(notification.id)}
+                          className="rounded bg-[#2F5A43] px-3 py-1 text-xs uppercase text-white transition hover:bg-[#244634]"
+                        >
+                          Done
+                        </button>
+                      </>
+                    ) : notification.type === "payment_received" ? (
                       <>
                         <div className="mb-2 text-xs font-medium text-black">
                           Payment received from{" "}

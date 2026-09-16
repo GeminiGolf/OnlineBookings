@@ -243,7 +243,7 @@ export default function Navbar() {
       const { data: urgentNotificationsData } = await supabase
         .from("notifications")
         .select("*")
-        .in("type", ["late_booking", "double_booking", "payment_received"])
+        .in("type", ["late_booking", "double_booking", "payment_received", "points_redeemed"])
         .eq("is_urgent", true)
         .eq("is_read", false)
 

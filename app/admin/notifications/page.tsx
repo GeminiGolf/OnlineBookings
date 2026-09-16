@@ -289,6 +289,11 @@ export default function NotificationsPage() {
 
         let receipt_files: { url: string; name: string }[] = []
 
+        if (notification.type === "points_redeemed") {
+          type_label = "Points Redeemed"
+          notes = notification.message || "Points redeemed by client"
+        }
+
         if (notification.type === "payment_received") {
           type_label = "Payment Received"
 
@@ -518,7 +523,56 @@ export default function NotificationsPage() {
                   key={notification.id}
                   className="rounded-2xl border border-[#8F3434] bg-[#FBF4F3] px-6 py-2 shadow-xl"
                 >
-                  {notification.type === "late_booking" ? (
+                  {notification.type === "points_redeemed" ? (
+                    <>
+                      <h3 className="text-[20px] font-light uppercase tracking-[0.12em] text-[#8F3434]">
+                        Points Redeemed
+                      </h3>
+
+                      <div className="mt-4 space-y-3">
+                        <div>
+                          <p className="dashboard-label font-normal">Client</p>
+                          <Link
+                            href={`/admin/clients/${notification.client_id}`}
+                            className="text-[15px] font-light text-[#5874A6] underline underline-offset-2 transition hover:text-[#45628F]"
+                          >
+                            {notification.client_name || "Client"}
+                          </Link>
+                        </div>
+
+                        <div>
+                          <p className="dashboard-label font-normal">Details</p>
+                          <p className="text-[15px] font-light text-[#2F5A43]">
+                            {notification.message}
+                          </p>
+                          <p className="mt-1 text-xs text-[#2F5A43]/70">
+                            Redeemed on{" "}
+                            {new Date(notification.created_at).toLocaleDateString("en-GB", {
+                              day: "2-digit",
+                              month: "2-digit",
+                            })}{" "}
+                            @{" "}
+                            {new Date(notification.created_at)
+                              .toLocaleTimeString([], {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                                hour12: true,
+                              })
+                              .toLowerCase()}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="mt-5 flex gap-3">
+                        <button
+                          onClick={() => toggleNotification(notification.id, true)}
+                          className="rounded-xl bg-[#2F5A43] px-6 py-2 text-[13px] font-light uppercase tracking-[0.12em] text-white transition hover:bg-[#244634]"
+                        >
+                          Done
+                        </button>
+                      </div>
+                    </>
+                  ) : notification.type === "late_booking" ? (
                     <>
                       <h3 className="text-[20px] font-light uppercase tracking-[0.12em] text-[#8F3434]">
                         Late Booking
@@ -954,6 +1008,7 @@ export default function NotificationsPage() {
                   <option value="Rescheduled">Rescheduled</option>
                   <option value="Late Booking">Late Booking</option>
                   <option value="Payment Received">Payment Received</option>
+                  <option value="Points Redeemed">Points Redeemed</option>
                   <option value="Coach Cancelled">Coach Cancelled</option>
                   <option value="No Show">No Show</option>
                 </select>
