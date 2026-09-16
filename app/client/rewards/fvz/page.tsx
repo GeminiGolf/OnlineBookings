@@ -19,11 +19,18 @@ import {
 
 const EXPECTED_COACH_ID = 1
 
+interface ClientData {
+  id: number
+  name: string
+  primary_coach_id: number | null
+  points: number | null
+}
+
 export default function FvzRewardsPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(true)
   const [points, setPoints] = useState<number>(0)
-  const [clientId, setClientId] = useState<number | null>(null)
+  const [client, setClient] = useState<ClientData | null>(null)
   const [isRedeeming, setIsRedeeming] = useState(false)
 
   useEffect(() => {
@@ -50,21 +57,21 @@ export default function FvzRewardsPage() {
         return
       }
 
-      // 3. Check client primary_coach_id matches coach ID 1 & fetch points (only enforce for clients)
+      // 3. Check client primary_coach_id matches coach ID 1 & fetch client info
       if (profile?.role === "client") {
-        const { data: client } = await supabase
+        const { data: clientData } = await supabase
           .from("clients")
-          .select("id, primary_coach_id, points")
+          .select("id, name, primary_coach_id, points")
           .eq("profile_id", session.user.id)
           .single()
 
-        if (!client || client.primary_coach_id !== EXPECTED_COACH_ID) {
+        if (!clientData || clientData.primary_coach_id !== EXPECTED_COACH_ID) {
           router.replace("/client/dashboard")
           return
         }
 
-        setClientId(client.id)
-        setPoints(client.points ?? 0)
+        setClient(clientData)
+        setPoints(clientData.points ?? 0)
       }
 
       setLoading(false)
@@ -74,41 +81,41 @@ export default function FvzRewardsPage() {
   }, [router])
 
   const handleRedeem = async (itemName: string, pointsRequired: number) => {
-    if (points < pointsRequired) return
+      if (points < pointsRequired || !client) return
 
-    const confirmed = window.confirm(
-      `Confirm redemption of ${itemName} for ${pointsRequired} points?`
-    )
+      const confirmed = window.confirm(
+        `Confirm redemption of ${itemName} for ${pointsRequired} points?`
+      )
 
-    if (!confirmed) return
+      if (!confirmed) return
 
-    setIsRedeeming(true)
+      setIsRedeeming(true)
 
-    try {
-      const newPointsBalance = points - pointsRequired
-
-      if (clientId) {
-        const { error } = await supabase
-          .from("clients")
-          .update({ points: newPointsBalance })
-          .eq("id", clientId)
+      try {
+        // Call the Supabase RPC function
+        const { data: newBalance, error } = await supabase.rpc("redeem_reward", {
+          p_client_id: client.id,
+          p_client_name: client.name,
+          p_points_spent: pointsRequired,
+          p_reward_name: itemName,
+          p_client_coach: client.primary_coach_id,
+        })
 
         if (error) {
-          alert("Something went wrong processing your redemption. Please try again.")
+          console.error("Redemption error:", error.message)
+          alert(error.message || "Failed to redeem reward. Please try again.")
           return
         }
-      }
 
-      setPoints(newPointsBalance)
-      alert(
-        "Congratulations on reaching a milestone! Your reward will be credited within 12 hours!"
-      )
-    } catch {
-      alert("An unexpected error occurred. Please try again.")
-    } finally {
-      setIsRedeeming(false)
+        // Update state with exact new balance returned from database
+        setPoints(newBalance)
+        alert("Congratulations on reaching a milestone! Your reward will be credited within 12 hours!")
+      } catch {
+        alert("An unexpected error occurred. Please try again.")
+      } finally {
+        setIsRedeeming(false)
+      }
     }
-  }
 
   if (loading) {
     return (
