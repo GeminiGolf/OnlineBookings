@@ -3,8 +3,9 @@
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
+import Link from "next/link"
 import { supabase } from "@/lib/supabaseClient"
-import { Sparkles, Lock } from "lucide-react"
+import { Sparkles, Lock, ArrowLeft } from "lucide-react"
 
 const EXPECTED_COACH_ID = 1
 
@@ -485,6 +486,16 @@ export default function RiseAndPlungePage() {
                 </li>
               </ul>
             </div>
+          </div>
+
+          {/* Back to Partner Rewards Navigation Button */}
+          <div className="flex justify-center pt-1 pb-0">
+            <Link
+              href="/client/rewards/fvz/PartnerRewards"
+              className="inline-flex items-center gap-2 rounded-full border border-[#e5dec9] bg-[#fdfbf7] px-5 py-2 text-xs uppercase tracking-[0.15em] text-[#1b3022] shadow-sm transition hover:bg-[#1b3022] hover:text-[#f7f4ee] active:scale-[0.98]"
+            >
+              <ArrowLeft size={16} /> Back to Partner Rewards
+            </Link>
           </div>
         </main>
       </div>

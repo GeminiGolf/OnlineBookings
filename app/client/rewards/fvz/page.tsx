@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
+import Link from "next/link"
 import { supabase } from "@/lib/supabaseClient"
 import { 
   Sparkles, 
@@ -14,7 +15,8 @@ import {
   Sun,
   Gift,
   Percent,
-  Award
+  Award,
+  ArrowRight
 } from "lucide-react"
 
 const EXPECTED_COACH_ID = 1
@@ -287,21 +289,27 @@ export default function FvzRewardsPage() {
               </div>
             </div>
 
-            {/* Reward 3: More Rewards Coming Soon */}
-            <div className="flex flex-col items-center justify-between rounded-2xl border border-dashed border-[#3A5D49]/30 bg-[#F4F1E8]/30 p-4 sm:p-6 text-center">
-              <div className="space-y-2 sm:space-y-3">
-                <div className="mx-auto flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-[#E5E0D3]/60 text-[#3A5D49]/60">
+            {/* Reward 3: Partner Rewards */}
+            <div className="flex flex-col items-center justify-between rounded-2xl border border-[#3A5D49]/20 bg-[#F4F1E8]/60 p-4 sm:p-6 text-center transition hover:bg-[#F4F1E8]">
+              <div className="space-y-1.5 sm:space-y-2">
+                <div className="mx-auto flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-[#E5E0D3] text-[#2F5A43]">
                   <Sparkles size={20} className="sm:w-[22px] sm:h-[22px]" />
                 </div>
-                <h3 className="text-xs font-semibold uppercase tracking-[0.15em] text-[#3A5D49]/70">
+                <h3 className="text-xs font-semibold uppercase tracking-[0.15em] text-[#2F5A43]">
                   Partner Rewards
                 </h3>
+                <p className="text-[10px] sm:text-[11px] font-medium uppercase tracking-[0.1em] text-[#3A5D49]/70">
+                  
+                </p>
               </div>
 
-              <div className="mt-3 sm:mt-6">
-                <span className="inline-block text-[10px] sm:text-[11px] font-light uppercase tracking-[0.15em] text-[#3A5D49]/60">
-                  Coming Soon!
-                </span>
+              <div className="mt-4 sm:mt-6 w-full">
+                <Link
+                  href="/client/rewards/fvz/PartnerRewards"
+                  className="inline-flex w-full items-center justify-center gap-1.5 rounded-full bg-[#E5E0D3] px-3.5 py-1.5 sm:px-4 sm:py-2 text-[11px] sm:text-[12px] font-semibold uppercase tracking-[0.15em] text-[#2F5A43] transition hover:bg-[#2F5A43] hover:text-[#F7F5EE] active:scale-[0.98]"
+                >
+                  More Rewards! <ArrowRight size={14} />
+                </Link>
               </div>
             </div>
           </div>
