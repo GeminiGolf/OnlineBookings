@@ -39,9 +39,9 @@ const storeLocations = [
       "59100 Kuala Lumpur",
     ],
     hoursLines: [
+      "Mondays: Closed",
       "Tue - Fri: 10:00 AM - 8:00 PM",
       "Sat - Sun: 9:00 AM - 8:00 PM",
-      "Closed on Mondays",
     ],
     image: "/partners/rise_and_plunge/bangsar.png",
     mapUrl:
@@ -375,63 +375,38 @@ export default function RiseAndPlungePage() {
                   key={loc.name}
                   className="bg-[#fdfbf7] border border-[#e5dec9] rounded-2xl overflow-hidden shadow-sm flex flex-col justify-between p-4 md:p-5"
                 >
-                  {/* Top Content Layout */}
-                  <div className="flex flex-col md:flex-col">
-                    {/* Main Top Row: Image + Location Info */}
-                    <div className="flex flex-row md:flex-col gap-4 md:gap-0 items-start md:items-stretch">
-                      {/* Image */}
-                      <div className="relative w-28 h-32 md:w-full md:h-48 shrink-0 bg-[#1b3022]/5 rounded-xl md:rounded-xl overflow-hidden md:mb-4">
-                        <Image
-                          src={loc.image}
-                          alt={loc.name}
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
+                  <div className="flex flex-col">
+                    {/* Image Header */}
+                    <div className="relative w-full h-40 md:h-48 shrink-0 bg-[#1b3022]/5 rounded-xl overflow-hidden mb-3 md:mb-4">
+                      <Image
+                        src={loc.image}
+                        alt={loc.name}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
 
-                      {/* Address & Hours Container */}
-                      <div className="flex-1 min-w-0 flex flex-row md:flex-col items-start justify-between gap-3 md:gap-0">
-                        {/* Location & Address */}
-                        <div className="flex-1 min-w-0">
-                          <h4 className="text-sm md:text-base font-semibold text-[#1b3022] uppercase tracking-wide mb-1.5 md:mb-2">
-                            {loc.name}
-                          </h4>
-                          <div className="text-[11px] md:text-xs text-[#526351] font-light leading-relaxed space-y-0.5">
-                            {loc.addressLines.map((line, i) => (
-                              <div key={i}>{line}</div>
-                            ))}
-                          </div>
-                        </div>
-
-                        {/* MOBILE ONLY: Vertical Divider Line */}
-                        <div className="block md:hidden w-px h-24 bg-[#e5dec9] shrink-0 self-center mx-1" />
-
-                        {/* MOBILE ONLY: Right-Aligned Operating Hours */}
-                        <div className="block md:hidden flex-1 min-w-0 pl-1">
-                          <div className="flex items-center gap-1 text-[11px] text-[#1b3022] font-semibold mb-1">
-                            <svg className="w-3 h-3 text-[#1b3022] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            <span>Operating Hours</span>
-                          </div>
-                          <div className="text-[10px] text-[#526351] font-light space-y-0.5">
-                            {loc.hoursLines.map((line, i) => (
-                              <div key={i}>{line}</div>
-                            ))}
-                          </div>
-                        </div>
+                    {/* Location Name & Address */}
+                    <div>
+                      <h4 className="text-sm md:text-base font-semibold text-[#1b3022] uppercase tracking-wide mb-1.5 md:mb-2">
+                        {loc.name}
+                      </h4>
+                      <div className="text-[11px] md:text-xs text-[#526351] font-light leading-relaxed space-y-0.5">
+                        {loc.addressLines.map((line, i) => (
+                          <div key={i}>{line}</div>
+                        ))}
                       </div>
                     </div>
 
-                    {/* DESKTOP ONLY: Horizontal Divider + Operating Hours Below */}
-                    <div className="hidden md:block border-t border-[#e5dec9]/70 pt-3 mt-4">
-                      <div className="flex items-center gap-1.5 text-xs text-[#1b3022] font-semibold mb-1.5">
+                    {/* Operating Hours below Address */}
+                    <div className="border-t border-[#e5dec9]/70 pt-3 mt-3">
+                      <div className="flex items-center gap-1.5 text-[11px] md:text-xs text-[#1b3022] font-semibold mb-1">
                         <svg className="w-3.5 h-3.5 text-[#1b3022] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                         <span>Operating Hours</span>
                       </div>
-                      <div className="text-xs text-[#526351] font-light space-y-0.5">
+                      <div className="text-[11px] md:text-xs text-[#526351] font-light space-y-0.5">
                         {loc.hoursLines.map((line, i) => (
                           <div key={i}>{line}</div>
                         ))}
@@ -439,7 +414,7 @@ export default function RiseAndPlungePage() {
                     </div>
                   </div>
 
-                  {/* View on Google Maps Link (Bottom on both screens) */}
+                  {/* View on Google Maps Link */}
                   <div className="pt-3 md:pt-4 mt-3 md:mt-4 border-t border-[#e5dec9]/70">
                     <a
                       href={loc.mapUrl}
