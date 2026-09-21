@@ -4,6 +4,7 @@ import Link from "next/link"
 import AdminProfilesSearch from "@/components/admin/AdminProfilesSearch"
 import CreateProfileButton from "@/components/admin/AddDeleteProfiles/CreateProfileButton"
 import DashboardContainer from "@/components/layout/DashboardContainer"
+
 export default async function AdminProfilesPage() {
   const supabase = await createClient()
 
@@ -24,12 +25,15 @@ export default async function AdminProfilesPage() {
   if (!profile || profile.role !== "admin") {
     redirect("/login")
   }
+
   const { data: coaches } = await supabase
     .from("coaches")
     .select("id, name, preferred_name")
+
   const { data: clients } = await supabase
     .from("clients")
-    .select("id, name, preferred_name, first_name, last_name, phone, email, primary_coach_id")
+    .select("id, name, preferred_name, first_name, last_name, phone, email, primary_coach_id, points")
+
   const coachLookup = new Map(
     (coaches || []).map((coach) => [coach.id, coach.name])
   )
@@ -44,11 +48,13 @@ export default async function AdminProfilesPage() {
     phone?: string | null
     email?: string | null
     coach_name?: string | null
+    points?: number | null
   }[] = [
     ...(coaches || []).map((coach) => ({
       id: coach.id,
       type: "Coach" as const,
       name: coach.preferred_name || coach.name,
+      points: null,
     })),
     ...(clients || []).map((client) => ({
       id: client.id,
@@ -60,6 +66,7 @@ export default async function AdminProfilesPage() {
       phone: client.phone,
       email: client.email,
       coach_name: coachLookup.get(client.primary_coach_id) ?? "",
+      points: client.points ?? 0,
     })),
   ].sort((a, b) => {
     if (a.type !== b.type) {
@@ -68,9 +75,7 @@ export default async function AdminProfilesPage() {
     return a.name.localeCompare(b.name)
   })
 
-  
   return (
-    
     <main className="min-h-screen bg-[#F2EEE8] px-4 pt-8 pb-3 sm:p-10 text-[#2F5A43]">
       <DashboardContainer>
         <Link

@@ -13,8 +13,8 @@ type Profile = {
   email?: string | null
   phone?: string | null
   coach_name?: string | null
+  points?: number | null
 }
-
 type Props = {
   profiles: Profile[]
 }
@@ -89,18 +89,26 @@ export default function AdminProfilesSearch({
             }
             className="block overflow-hidden rounded-2xl border border-[#3A5D49] bg-[#FCFAF6] shadow-sm"
           >
-            <div className="p-3">
-              <div className="text-[14px] font-light tracking-[0.06em] text-[#2F5A43]">
-                {profile.type === "Client"
-                  ? profile.preferred_name
-                    ? `(${profile.preferred_name}) ${profile.last_name}`
-                    : `${profile.first_name} ${profile.last_name}`
-                  : profile.name}
+            <div className="p-3 flex items-center justify-between">
+              <div>
+                <div className="text-[14px] font-light tracking-[0.06em] text-[#2F5A43]">
+                  {profile.type === "Client"
+                    ? profile.preferred_name
+                      ? `(${profile.preferred_name}) ${profile.last_name}`
+                      : `${profile.first_name} ${profile.last_name}`
+                    : profile.name}
+                </div>
+
+                <div className="mt-1 text-[13px] font-medium uppercase tracking-[0.12em] text-[#2F5A43]/70">
+                  {profile.type}
+                </div>
               </div>
 
-              <div className="mt-2 text-[13px] font-medium uppercase tracking-[0.12em] text-[#2F5A43]">
-                {profile.type}
-              </div>
+              {profile.type === "Client" && (
+                <div className="text-[14px] font-medium text-[#2F5A43] whitespace-nowrap ml-3">
+                  {profile.points ?? 0} pts
+                </div>
+              )}
             </div>
           </Link>
         ))}
@@ -122,6 +130,10 @@ export default function AdminProfilesSearch({
 
               <th className="dashboard-label p-4 text-left">
                 Name
+              </th>
+
+              <th className="dashboard-label p-4 text-left">
+                Points
               </th>
             </tr>
           </thead>
@@ -152,13 +164,17 @@ export default function AdminProfilesSearch({
                       : profile.name}
                   </Link>
                 </td>
+
+                <td className="p-4 text-[15px] font-light text-[#2F5A43]">
+                  {profile.type === "Client" ? (profile.points ?? 0) : "-"}
+                </td>
               </tr>
             ))}
 
             {filteredProfiles.length === 0 && (
               <tr>
                 <td
-                  colSpan={2}
+                  colSpan={3}
                   className="p-8 text-center text-[15px] font-light text-[#2F5A43]"
                 >
                   No matching profiles found.

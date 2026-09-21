@@ -218,7 +218,7 @@ export default function FvzRewardsPage() {
         </div>
 
         {/* Rewards Section */}
-        <section className="space-y-4 sm:space-y-6">
+        <section className="pb-6 space-y-4 sm:space-y-6">
           <div className="flex items-center justify-center gap-3">
             <div className="h-[1px] flex-1 bg-[#3A5D49]/15" />
             <Gift size={20} className="text-[#2F5A43] shrink-0" />
@@ -290,12 +290,12 @@ export default function FvzRewardsPage() {
             </div>
 
             {/* Reward 3: Partner Rewards */}
-            <div className="flex flex-col items-center justify-between rounded-2xl border border-[#3A5D49]/20 bg-[#F4F1E8]/60 p-4 sm:p-6 text-center transition hover:bg-[#F4F1E8]">
+            <div className="flex flex-col items-center justify-between rounded-2xl border border-[#3A5D49]/20 bg-[#e5e0d3]/70 p-4 sm:p-6 text-center transition hover:bg-[#F4F1E8]">
               <div className="space-y-1.5 sm:space-y-2">
-                <div className="mx-auto flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-[#E5E0D3] text-[#2F5A43]">
+                <div className="mx-auto flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-[#c9bea3]/100 text-[#F4F1E8]">
                   <Sparkles size={20} className="sm:w-[22px] sm:h-[22px]" />
                 </div>
-                <h3 className="text-xs font-semibold uppercase tracking-[0.15em] text-[#2F5A43]">
+                <h3 className="pt-4 text-[13px] font-semibold uppercase tracking-[0.15em] text-[#2F5A43]">
                   Partner Rewards
                 </h3>
                 <p className="text-[10px] sm:text-[11px] font-medium uppercase tracking-[0.1em] text-[#3A5D49]/70">
@@ -306,7 +306,7 @@ export default function FvzRewardsPage() {
               <div className="mt-4 sm:mt-6 w-full">
                 <Link
                   href="/client/rewards/fvz/PartnerRewards"
-                  className="inline-flex w-full items-center justify-center gap-1.5 rounded-full bg-[#E5E0D3] px-3.5 py-1.5 sm:px-4 sm:py-2 text-[11px] sm:text-[12px] font-semibold uppercase tracking-[0.15em] text-[#2F5A43] transition hover:bg-[#2F5A43] hover:text-[#F7F5EE] active:scale-[0.98]"
+                  className="inline-flex w-full items-center justify-center gap-1.5 rounded-full bg-[#c9bea3] px-3.5 py-1.5 sm:px-4 sm:py-2 text-[11px] sm:text-[12px] font-semibold uppercase tracking-[0.15em] text-[#F4F1E8] transition hover:bg-[#2F5A43] hover:text-[#F7F5EE] active:scale-[0.98]"
                 >
                   More Rewards! <ArrowRight size={14} />
                 </Link>
@@ -316,7 +316,7 @@ export default function FvzRewardsPage() {
         </section>
 
         {/* Get Points For Showing Up Section */}
-        <section className="space-y-4 sm:space-y-6">
+        <section className="space-y-8 sm:space-y-10">
           <div className="flex items-center justify-center gap-3">
             <div className="h-[1px] flex-1 bg-[#3A5D49]/15" />
             <Sun size={20} className="text-[#2F5A43] shrink-0" />
