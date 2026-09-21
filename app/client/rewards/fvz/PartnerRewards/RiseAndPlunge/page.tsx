@@ -4,6 +4,16 @@ import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
 import { supabase } from "@/lib/supabaseClient"
+import { Sparkles, Lock } from "lucide-react"
+
+const EXPECTED_COACH_ID = 1
+
+interface ClientData {
+  id: number
+  name: string
+  primary_coach_id: number | null
+  points: number | null
+}
 
 const storeLocations = [
   {
@@ -71,10 +81,13 @@ const benefits = [
 export default function RiseAndPlungePage() {
   const router = useRouter()
   const [loading, setLoading] = useState(true)
-  const [isAdmin, setIsAdmin] = useState(false)
+  const [hasAccess, setHasAccess] = useState<boolean>(false)
+  const [points, setPoints] = useState<number>(0)
+  const [client, setClient] = useState<ClientData | null>(null)
+  const [isRedeeming, setIsRedeeming] = useState(false)
 
   useEffect(() => {
-    async function verifyAdminAccess() {
+    async function verifyAccess() {
       const {
         data: { session },
       } = await supabase.auth.getSession()
@@ -84,23 +97,95 @@ export default function RiseAndPlungePage() {
         return
       }
 
+      // Check profile role
       const { data: profile } = await supabase
         .from("profiles")
         .select("role")
         .eq("id", session.user.id)
         .single()
 
+      // 1. Admins automatically get access
       if (profile?.role === "admin") {
-        setIsAdmin(true)
-      } else {
-        setIsAdmin(false)
+        setHasAccess(true)
+        setLoading(false)
+        return
+      }
+
+      // 2. Clients check: must have primary_coach_id === EXPECTED_COACH_ID (1)
+      if (profile?.role === "client") {
+        const { data: clientData } = await supabase
+          .from("clients")
+          .select("id, name, primary_coach_id, points")
+          .eq("profile_id", session.user.id)
+          .single()
+
+        if (clientData) {
+          setClient(clientData)
+          setPoints(clientData.points ?? 0)
+
+          if (clientData.primary_coach_id === EXPECTED_COACH_ID) {
+            setHasAccess(true)
+          }
+        }
       }
 
       setLoading(false)
     }
 
-    verifyAdminAccess()
+    verifyAccess()
   }, [router])
+
+  const handleRedeem = async (itemName: string, pointsRequired: number) => {
+    if (points < pointsRequired || !client) return
+
+    const confirmed = window.confirm(
+      `Confirm redemption of ${itemName} for ${pointsRequired} points?`
+    )
+
+    if (!confirmed) return
+
+    setIsRedeeming(true)
+
+    try {
+      const { data: newBalance, error } = await supabase.rpc("redeem_reward", {
+        p_client_id: client.id,
+        p_client_name: client.name,
+        p_points_spent: pointsRequired,
+        p_reward_name: itemName,
+        p_client_coach: client.primary_coach_id,
+      })
+
+      if (error) {
+        console.error("Redemption error:", error.message)
+        alert(error.message || "Failed to redeem reward. Please try again.")
+        return
+      }
+
+      const { data: createdNotif } = await supabase
+        .from("notifications")
+        .select("id")
+        .eq("client_id", client.id)
+        .eq("type", "points_redeemed")
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle()
+
+      if (createdNotif?.id) {
+        await fetch("/api/admin/notifications/push", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ notificationId: createdNotif.id }),
+        })
+      }
+
+      setPoints(newBalance)
+      alert("Congratulations! Your reward will be credited shortly!")
+    } catch {
+      alert("An unexpected error occurred. Please try again.")
+    } finally {
+      setIsRedeeming(false)
+    }
+  }
 
   if (loading) {
     return (
@@ -108,6 +193,23 @@ export default function RiseAndPlungePage() {
         <div className="text-center font-light uppercase tracking-[0.2em] text-xs">
           Loading Partner Page...
         </div>
+      </div>
+    )
+  }
+
+  // Fallback UI when user is not an Admin or Coach 1 client
+  if (!hasAccess) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center bg-[#f7f4ee] px-4 text-center text-[#1b3022]">
+        <div className="mb-4 rounded-full bg-[#1b3022]/5 p-4 text-[#1b3022]">
+          <Lock size={28} />
+        </div>
+        <h1 className="text-xl font-light uppercase tracking-[0.2em]">
+          Exclusive Partner Offer
+        </h1>
+        <p className="mt-2 max-w-sm text-xs font-light text-[#526351]">
+          This partner offer is currently restricted to select program members. Please contact your coach for more details.
+        </p>
       </div>
     )
   }
@@ -125,11 +227,9 @@ export default function RiseAndPlungePage() {
             sizes="100vw"
             className="object-cover object-center"
           />
-          {/* Dark overlay to make logo pop */}
           <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px]" />
 
           <div className="relative z-10 flex flex-col items-center">
-            {/* Bigger Logo Container */}
             <div className="relative w-64 h-28 md:w-80 md:h-36 mb-2 drop-shadow-md">
               <Image
                 src="/partners/rise_and_plunge/rnp_logo.png"
@@ -150,169 +250,171 @@ export default function RiseAndPlungePage() {
         </section>
 
         {/* Main Content Body */}
-        <main className="max-w-4xl mx-auto px-4 md:px-8 my-10">
-          {!isAdmin ? (
-            /* Coming Soon View for Non-Admins */
-            <div className="flex justify-center py-16 md:py-24">
-              <div className="max-w-md w-full bg-[#fdfbf7] border border-[#e5dec9] rounded-2xl p-10 shadow-sm text-center">
-                <div className="w-12 h-12 mx-auto rounded-full bg-[#1b3022]/10 flex items-center justify-center mb-4 text-[#1b3022]">
-                  ❖
-                </div>
-                <span className="text-[10px] uppercase tracking-widest text-[#1b3022]/70 font-semibold block">
-                  PARTNER REWARDS
-                </span>
-                <h2 className="text-3xl font-light uppercase tracking-wider mt-2 text-[#1b3022]">
-                  COMING SOON
-                </h2>
-                <p className="text-xs text-[#1b3022]/80 mt-3 leading-relaxed font-light">
-                  We are curating exclusive partner benefits and discounts for our golfers. Check back shortly!
-                </p>
-              </div>
+        <main className="max-w-4xl mx-auto px-4 md:px-8 my-10 space-y-8">
+          {/* Small Points Display Bar */}
+          <div className="bg-[#fdfbf7] border border-[#e5dec9] rounded-xl px-5 py-3 shadow-sm flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Sparkles size={16} className="text-[#1b3022]" />
+              <span className="text-xs font-semibold uppercase tracking-wider text-[#1b3022]">
+                Your Points Balance
+              </span>
             </div>
-          ) : (
-            /* Full Details View */
-            <div className="space-y-8">
-              {/* 1. Reward Redemption Offers */}
-              <div>
-                <h3 className="text-xs font-semibold uppercase tracking-[0.2em] text-[#1b3022]/70 mb-4 px-1">
-                  Exclusive Points Rewards
-                </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {rewardOffers.map((offer) => (
-                    <div
-                      key={offer.title}
-                      className="bg-[#fdfbf7] border border-[#e5dec9] rounded-2xl overflow-hidden shadow-sm flex flex-col justify-between"
-                    >
-                      <div className="relative w-full h-64 md:h-72 bg-[#1b3022]/5">
-                        <Image
-                          src={offer.image}
-                          alt={offer.title}
-                          fill
-                          className="object-cover"
-                        />
-                        <div className="absolute top-3 right-3 bg-[#1b3022] text-[#d9cfbd] text-[10px] font-semibold uppercase px-3 py-1 rounded-full shadow-md">
-                          {offer.points} Points
-                        </div>
-                      </div>
+            <div className="text-sm font-bold text-[#1b3022] tracking-wide">
+              {points} <span className="text-[10px] uppercase font-normal text-[#526351]">PTS</span>
+            </div>
+          </div>
 
-                      <div className="p-5 flex-1 flex flex-col justify-between">
-                        <div>
-                          <div className="text-[10px] font-semibold uppercase tracking-widest text-[#1b3022]/60 mb-1">
-                            {offer.duration} • {offer.offer}
-                          </div>
-                          <h4 className="text-base font-medium uppercase tracking-wide text-[#1b3022]">
-                            {offer.title}
-                          </h4>
-                        </div>
-
-                        <div className="mt-4 pt-4 border-t border-[#e5dec9]/60 flex items-center justify-between">
-                          <span className="text-[11px] font-medium text-[#1b3022]">
-                            Redeemable in App
-                          </span>
-                          <button className="text-[10px] font-semibold uppercase tracking-widest bg-[#1b3022] text-[#f7f4ee] px-4 py-2 rounded-lg hover:bg-[#2c4733] transition-colors">
-                            Redeem
-                          </button>
-                        </div>
+          {/* 1. Reward Redemption Offers */}
+          <div>
+            <h3 className="text-xs font-semibold uppercase tracking-[0.2em] text-[#1b3022]/70 mb-4 px-1">
+              Exclusive Points Rewards
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {rewardOffers.map((offer) => {
+                const canAfford = points >= offer.points
+                return (
+                  <div
+                    key={offer.title}
+                    className="bg-[#fdfbf7] border border-[#e5dec9] rounded-2xl overflow-hidden shadow-sm flex flex-col justify-between"
+                  >
+                    <div className="relative w-full h-64 md:h-72 bg-[#1b3022]/5">
+                      <Image
+                        src={offer.image}
+                        alt={offer.title}
+                        fill
+                        className="object-cover"
+                      />
+                      <div className="absolute top-3 right-3 bg-[#1b3022] text-[#d9cfbd] text-[10px] font-semibold uppercase px-3 py-1 rounded-full shadow-md">
+                        {offer.points} Points
                       </div>
                     </div>
-                  ))}
-                </div>
-              </div>
 
-              {/* 2. Branch Location */}
-              <div>
-                <h3 className="text-xs font-semibold uppercase tracking-[0.2em] text-[#1b3022]/70 mb-4 px-1">
-                  Location & Hours
-                </h3>
-                <div className="grid grid-cols-1 gap-4">
-                  {storeLocations.map((loc) => (
-                    <div
-                      key={loc.name}
-                      className="bg-[#fdfbf7] border border-[#e5dec9] rounded-2xl overflow-hidden shadow-sm flex flex-col md:flex-row"
-                    >
-                      <div className="relative w-full md:w-2/5 h-48 md:h-auto shrink-0 bg-[#1b3022]/5">
-                        <Image
-                          src={loc.image}
-                          alt={loc.name}
-                          fill
-                          className="object-cover"
-                        />
+                    <div className="p-5 flex-1 flex flex-col justify-between">
+                      <div>
+                        <div className="text-[10px] font-semibold uppercase tracking-widest text-[#1b3022]/60 mb-1">
+                          {offer.duration} • {offer.offer}
+                        </div>
+                        <h4 className="text-base font-medium uppercase tracking-wide text-[#1b3022]">
+                          {offer.title}
+                        </h4>
                       </div>
 
-                      <div className="p-6 flex-1 flex flex-col justify-between">
-                        <div>
-                          <div className="flex items-center gap-2 mb-2">
-                            <svg className="w-4 h-4 text-[#1b3022]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                            </svg>
-                            <h4 className="text-sm font-medium text-[#1b3022] uppercase tracking-wide">
-                              {loc.name}
-                            </h4>
-                          </div>
-
-                          <p className="text-xs text-[#526351] font-light leading-relaxed pl-6 mb-3">
-                            {loc.address}
-                          </p>
-
-                          <div className="flex items-center gap-2 pl-6 text-xs text-[#1b3022] font-medium">
-                            <svg className="w-3.5 h-3.5 text-[#1b3022]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            <span>{loc.hours}</span>
-                          </div>
-                        </div>
-
-                        <div className="pt-6 pl-6">
-                          <a
-                            href={loc.mapUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-widest text-[#1b3022] hover:underline"
-                          >
-                            View on Google Maps →
-                          </a>
-                        </div>
+                      <div className="mt-4 pt-4 border-t border-[#e5dec9]/60 flex items-center justify-between">
+                        <span className="text-[11px] font-medium text-[#1b3022]">
+                          Redeemable in App
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => handleRedeem(offer.title, offer.points)}
+                          disabled={!canAfford || isRedeeming}
+                          className={`text-[10px] font-semibold uppercase tracking-widest px-4 py-2 rounded-lg transition-colors ${
+                            canAfford && !isRedeeming
+                              ? "bg-[#1b3022] text-[#f7f4ee] hover:bg-[#2c4733]"
+                              : "bg-[#e5dec9]/60 text-[#1b3022]/40 cursor-not-allowed"
+                          }`}
+                        >
+                          Redeem
+                        </button>
                       </div>
                     </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* 3. Partner Overview & Why We Partnered */}
-              <div className="bg-[#fdfbf7] border border-[#e5dec9] rounded-2xl p-6 md:p-8 shadow-sm">
-                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#1b3022]/5 text-[#1b3022] text-[10px] font-semibold uppercase tracking-wider mb-3">
-                  <span>❖</span> Premium Recovery Partner
-                </div>
-
-                <h2 className="text-2xl font-light uppercase tracking-wide text-[#1b3022]">
-                  Rise & Plunge
-                </h2>
-
-                <p className="text-xs text-[#526351] font-light mt-1.5 leading-relaxed">
-                  Malaysia's premier contrast therapy studio featuring private suites equipped with full-spectrum infrared saunas and precision ice baths built to optimize physical performance and mental clarity.
-                </p>
-
-                <div className="mt-5 pt-5 border-t border-[#e5dec9]">
-                  <h3 className="text-[11px] font-semibold uppercase tracking-widest text-[#1b3022]">
-                    Why Contrast Therapy Matters for Golfers
-                  </h3>
-                  <p className="text-xs text-[#526351] font-light leading-relaxed mt-1.5">
-                    Golfers are athletes. Both practice and rounds place high physical stress on body while demanding sharp focus over several hours. Contrast therapy combines deep thermal heat and cold exposure to accelerate complete recovery.
-                  </p>
-                  
-                  <ul className="mt-3 space-y-2 text-xs text-[#526351] font-light list-disc list-inside">
-                    <li>
-                      <strong className="text-[#1b3022] font-medium">Muscle & Joint Recovery:</strong> Infrared heat eases muscular tightness and restores rotational flexibility, while ice baths flush inflammation and post-round soreness.
-                    </li>
-                    <li>
-                      <strong className="text-[#1b3022] font-medium">Mental Edge & Focus:</strong> Cold exposure lowers stress, sharpens alertness, and builds the nervous system resilience needed to stay locked in down the stretch.
-                    </li>
-                  </ul>
-                </div>
-              </div>
+                  </div>
+                )
+              })}
             </div>
-          )}
+          </div>
+
+          {/* 2. Branch Location */}
+          <div>
+            <h3 className="text-xs font-semibold uppercase tracking-[0.2em] text-[#1b3022]/70 mb-4 px-1">
+              Location & Hours
+            </h3>
+            <div className="grid grid-cols-1 gap-4">
+              {storeLocations.map((loc) => (
+                <div
+                  key={loc.name}
+                  className="bg-[#fdfbf7] border border-[#e5dec9] rounded-2xl overflow-hidden shadow-sm flex flex-col md:flex-row"
+                >
+                  <div className="relative w-full md:w-2/5 h-48 md:h-auto shrink-0 bg-[#1b3022]/5">
+                    <Image
+                      src={loc.image}
+                      alt={loc.name}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+
+                  <div className="p-6 flex-1 flex flex-col justify-between">
+                    <div>
+                      <div className="flex items-center gap-2 mb-2">
+                        <svg className="w-4 h-4 text-[#1b3022]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        <h4 className="text-sm font-medium text-[#1b3022] uppercase tracking-wide">
+                          {loc.name}
+                        </h4>
+                      </div>
+
+                      <p className="text-xs text-[#526351] font-light leading-relaxed pl-6 mb-3">
+                        {loc.address}
+                      </p>
+
+                      <div className="flex items-center gap-2 pl-6 text-xs text-[#1b3022] font-medium">
+                        <svg className="w-3.5 h-3.5 text-[#1b3022]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span>{loc.hours}</span>
+                      </div>
+                    </div>
+
+                    <div className="pt-6 pl-6">
+                      <a
+                        href={loc.mapUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-widest text-[#1b3022] hover:underline"
+                      >
+                        View on Google Maps →
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* 3. Partner Overview & Why We Partnered */}
+          <div className="bg-[#fdfbf7] border border-[#e5dec9] rounded-2xl p-6 md:p-8 shadow-sm">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#1b3022]/5 text-[#1b3022] text-[10px] font-semibold uppercase tracking-wider mb-3">
+              <span>❖</span> Premium Recovery Partner
+            </div>
+
+            <h2 className="text-2xl font-light uppercase tracking-wide text-[#1b3022]">
+              Rise & Plunge
+            </h2>
+
+            <p className="text-xs text-[#526351] font-light mt-1.5 leading-relaxed">
+              Malaysia's premier contrast therapy studio featuring private suites equipped with full-spectrum infrared saunas and precision ice baths built to optimize physical performance and mental clarity.
+            </p>
+
+            <div className="mt-5 pt-5 border-t border-[#e5dec9]">
+              <h3 className="text-[11px] font-semibold uppercase tracking-widest text-[#1b3022]">
+                Why Contrast Therapy Matters for Golfers
+              </h3>
+              <p className="text-xs text-[#526351] font-light leading-relaxed mt-1.5">
+                Golfers are athletes. Both practice and rounds place high physical stress on body while demanding sharp focus over several hours. Contrast therapy combines deep thermal heat and cold exposure to accelerate complete recovery.
+              </p>
+              
+              <ul className="mt-3 space-y-2 text-xs text-[#526351] font-light list-disc list-inside">
+                <li>
+                  <strong className="text-[#1b3022] font-medium">Muscle & Joint Recovery:</strong> Infrared heat eases muscular tightness and restores rotational flexibility, while ice baths flush inflammation and post-round soreness.
+                </li>
+                <li>
+                  <strong className="text-[#1b3022] font-medium">Mental Edge & Focus:</strong> Cold exposure lowers stress, sharpens alertness, and builds the nervous system resilience needed to stay locked in down the stretch.
+                </li>
+              </ul>
+            </div>
+          </div>
         </main>
       </div>
 
