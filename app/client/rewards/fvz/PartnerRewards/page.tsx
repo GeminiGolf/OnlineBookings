@@ -6,34 +6,44 @@ import Image from "next/image"
 import Link from "next/link"
 import { supabase } from "@/lib/supabaseClient"
 
+const EXPECTED_COACH_ID = 1
+
 const partners = [
   {
-    name: "Bagus Golf",
-    description: "Premium golf equipment, apparel, and custom fitting services.",
-    logo: "/partners/bagus_golf/bagus-logo.png",
-    href: "/client/rewards/fvz/PartnerRewards/BagusGolf",
-    comingSoon: false,
-  },
-  {
-    name: "Rise and Plunge",
+    name: "Rise & Plunge",
     description: "Recovery & wellness experiences built for peak athletic performance.",
+    bgImage: "/partners/rise_and_plunge/banner.png",
     logo: "/partners/rise_and_plunge/rnp_logo.png",
     href: "/client/rewards/fvz/PartnerRewards/RiseAndPlunge",
     comingSoon: false,
+    disabled: false,
+  },
+  {
+    name: "Bagus Golf",
+    description: "Authentic and affordable golf equipment, and custom fitting services.",
+    bgImage: null,
+    logo: "/partners/bagus_golf/bagus-logo.png",
+    href: "/client/rewards/fvz/PartnerRewards/BagusGolf",
+    comingSoon: false,
+    disabled: true,
   },
   {
     name: "Coming Soon",
     description: "We are onboarding exciting new premium brands. Stay tuned!",
+    bgImage: null,
     logo: null,
     href: "#",
     comingSoon: true,
+    disabled: true,
   },
   {
     name: "Coming Soon",
     description: "Exclusive member perks with our upcoming lifestyle partner.",
+    bgImage: null,
     logo: null,
     href: "#",
     comingSoon: true,
+    disabled: true,
   },
 ]
 
@@ -50,7 +60,7 @@ const benefits = [
     title: "MEMBER-ONLY OFFERS",
     icon: (
       <svg className="w-5 h-5 mx-auto text-[#d9cfbd] mb-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
       </svg>
     ),
   },
@@ -75,10 +85,10 @@ const benefits = [
 export default function PartnerRewardsPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(true)
-  const [isAdmin, setIsAdmin] = useState(false)
+  const [hasAccess, setHasAccess] = useState(false)
 
   useEffect(() => {
-    async function verifyAdminAccess() {
+    async function verifyAccess() {
       const {
         data: { session },
       } = await supabase.auth.getSession()
@@ -94,16 +104,30 @@ export default function PartnerRewardsPage() {
         .eq("id", session.user.id)
         .single()
 
+      // 1. Admins automatically get access
       if (profile?.role === "admin") {
-        setIsAdmin(true)
-      } else {
-        setIsAdmin(false)
+        setHasAccess(true)
+        setLoading(false)
+        return
+      }
+
+      // 2. Clients check: must have primary_coach_id === EXPECTED_COACH_ID (1)
+      if (profile?.role === "client") {
+        const { data: clientData } = await supabase
+          .from("clients")
+          .select("primary_coach_id")
+          .eq("profile_id", session.user.id)
+          .single()
+
+        if (clientData && clientData.primary_coach_id === EXPECTED_COACH_ID) {
+          setHasAccess(true)
+        }
       }
 
       setLoading(false)
     }
 
-    verifyAdminAccess()
+    verifyAccess()
   }, [router])
 
   if (loading) {
@@ -149,8 +173,8 @@ export default function PartnerRewardsPage() {
 
         {/* Main Content Area */}
         <main className="max-w-5xl mx-auto px-4 md:px-8 my-10">
-          {!isAdmin ? (
-            /* Coming Soon Card for Non-Admins */
+          {!hasAccess ? (
+            /* Coming Soon Card for Restricted Users */
             <div className="flex justify-center py-16 md:py-24">
               <div className="max-w-md w-full bg-[#fdfbf7] border border-[#e5dec9] rounded-2xl p-10 shadow-sm text-center">
                 <div className="w-12 h-12 mx-auto rounded-full bg-[#1b3022]/10 flex items-center justify-center mb-4 text-[#1b3022]">
@@ -168,7 +192,7 @@ export default function PartnerRewardsPage() {
               </div>
             </div>
           ) : (
-            /* Admin Partner Cards View */
+            /* Authorized View */
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {partners.map((partner, idx) => {
                 if (partner.comingSoon) {
@@ -200,10 +224,42 @@ export default function PartnerRewardsPage() {
                   )
                 }
 
-                return (
-                  <Link key={partner.name} href={partner.href} className="group block">
-                    <div className="bg-[#fdfbf7] border border-[#e5dec9] rounded-2xl p-6 shadow-sm transition-all duration-200 group-hover:border-[#1b3022] group-hover:shadow-md flex flex-col items-center text-center h-full">
-                      <div className="w-70 h-40 mx-auto rounded-xl bg-white border border-[#e5dec9] p-2 mb-5 flex items-center justify-center">
+                const cardInner = (
+                  <div
+                    className={`bg-[#fdfbf7] border border-[#e5dec9] rounded-2xl p-6 shadow-sm flex flex-col items-center text-center h-full transition-all duration-200 ${
+                      partner.disabled
+                        ? "opacity-60 grayscale-[50%] cursor-not-allowed select-none"
+                        : "group-hover:border-[#1b3022] group-hover:shadow-md"
+                    }`}
+                  >
+                    <div className="w-70 h-40 mx-auto rounded-xl bg-white border border-[#e5dec9] p-2 mb-5 flex items-center justify-center overflow-hidden relative">
+                      {partner.bgImage ? (
+                        /* Hero Style Banner Header inside the card */
+                        <div className="relative w-full h-full rounded-lg overflow-hidden flex items-center justify-center">
+                          <Image
+                            src={partner.bgImage}
+                            alt={`${partner.name} banner`}
+                            fill
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                            className={`object-cover object-center transition-transform duration-300 ${
+                              partner.disabled ? "" : "group-hover:scale-105"
+                            }`}
+                          />
+                          <div className="absolute inset-0 bg-black/60 backdrop-blur-[1px]" />
+                          {partner.logo && (
+                            <div className="relative z-10 w-48 h-20">
+                              <Image
+                                src={partner.logo}
+                                alt={`${partner.name} logo`}
+                                fill
+                                sizes="200px"
+                                className="object-contain drop-shadow-md"
+                              />
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        /* Standard White Box Logo */
                         <div className="relative w-full h-full rounded-lg overflow-hidden">
                           {partner.logo && (
                             <Image
@@ -211,23 +267,41 @@ export default function PartnerRewardsPage() {
                               alt={`${partner.name} logo`}
                               fill
                               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                              className="object-cover group-hover:scale-105 transition-transform duration-300"
+                              className={`object-cover transition-transform duration-300 ${
+                                partner.disabled ? "" : "group-hover:scale-105"
+                              }`}
                             />
                           )}
                         </div>
-                      </div>
-
-                      <h2 className="text-lg font-medium tracking-wide uppercase text-[#1b3022]">
-                        {partner.name}
-                      </h2>
-                      <p className="text-xs text-[#526351] leading-relaxed mt-2 font-light">
-                        {partner.description}
-                      </p>
-
-                      <span className="mt-auto pt-6 text-[10px] font-semibold uppercase tracking-widest text-[#1b3022] group-hover:underline">
-                        VIEW REWARDS →
-                      </span>
+                      )}
                     </div>
+
+                    <h2 className="text-lg font-medium tracking-wide uppercase text-[#1b3022]">
+                      {partner.name}
+                    </h2>
+                    <p className="text-xs text-[#526351] leading-relaxed mt-2 font-light">
+                      {partner.description}
+                    </p>
+
+                    <span
+                      className={`mt-auto pt-6 text-[10px] font-semibold uppercase tracking-widest ${
+                        partner.disabled
+                          ? "text-[#8e988d]"
+                          : "text-[#1b3022] group-hover:underline"
+                      }`}
+                    >
+                      {partner.disabled ? "COMING SOON" : "VIEW REWARDS →"}
+                    </span>
+                  </div>
+                )
+
+                if (partner.disabled) {
+                  return <div key={partner.name}>{cardInner}</div>
+                }
+
+                return (
+                  <Link key={partner.name} href={partner.href} className="group block">
+                    {cardInner}
                   </Link>
                 )
               })}
