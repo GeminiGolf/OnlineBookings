@@ -17,12 +17,50 @@ interface ClientData {
 
 const storeLocations = [
   {
-    name: "1 Mont Kiara Branch",
-    address: "Level 2, 1 Mont Kiara, Jalan Kiara, Mont Kiara, 50480 Kuala Lumpur",
-    hours: "Daily: 8:00 AM - 9:00 PM",
+    name: "Mont Kiara",
+    addressLines: [
+      "Level 2, 1 Mont Kiara",
+      "Jalan Kiara,",
+      "Mont Kiara,",
+      "50480 Kuala Lumpur",
+    ],
+    hoursLines: ["Daily: 8:00 AM - 9:00 PM"],
     image: "/partners/rise_and_plunge/MK.png",
     mapUrl:
       "https://maps.google.com/?q=1+Mont+Kiara+Jalan+Kiara+Mont+Kiara+50480+Kuala+Lumpur",
+  },
+  {
+    name: "Bangsar",
+    addressLines: [
+      "Lot No. 2F-8, 9 & 10, 2nd Floor",
+      "Bangsar Village II",
+      "2, Jalan Telawi 3, Bangsar Baru",
+      "59100 Kuala Lumpur",
+    ],
+    hoursLines: [
+      "Tue - Fri: 10:00 AM - 8:00 PM",
+      "Sat - Sun: 9:00 AM - 8:00 PM",
+      "Closed on Mondays",
+    ],
+    image: "/partners/rise_and_plunge/bangsar.png",
+    mapUrl:
+      "https://maps.google.com/?q=Bangsar+Village+II+Jalan+Telawi+3+Bangsar+Baru+59100+Kuala+Lumpur",
+  },
+  {
+    name: "Ampang",
+    addressLines: [
+      "Lot L1-43, The Campus Ampang",
+      "Jalan Kolam Air Lama",
+      "Mukim Hulu Kelang",
+      "68000, Selangor",
+    ],
+    hoursLines: [
+      "Mon - Fri: 10:00 AM - 8:00 PM",
+      "Sat - Sun: 9:00 AM - 8:00 PM",
+    ],
+    image: "/partners/rise_and_plunge/ampang.png",
+    mapUrl:
+      "https://maps.google.com/?q=The+Campus+Ampang+Jalan+Kolam+Air+Lama+68000+Selangor",
   },
 ]
 
@@ -40,6 +78,13 @@ const rewardOffers = [
     points: 100,
     offer: "1 Free Session",
     image: "/partners/rise_and_plunge/sauna_and_bath.png",
+  },
+  {
+    title: "2 Pax Sauna & Ice Bath",
+    duration: "45 minutes",
+    points: 110,
+    offer: "1 Free Session",
+    image: "/partners/rise_and_plunge/2pax.png",
   },
 ]
 
@@ -250,7 +295,7 @@ export default function RiseAndPlungePage() {
         </section>
 
         {/* Main Content Body */}
-        <main className="max-w-4xl mx-auto px-4 md:px-8 my-10 space-y-8">
+        <main className="max-w-5xl mx-auto px-4 md:px-8 my-10 space-y-8">
           {/* Small Points Display Bar */}
           <div className="bg-[#fdfbf7] border border-[#e5dec9] rounded-xl px-5 py-3 shadow-sm flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -264,12 +309,12 @@ export default function RiseAndPlungePage() {
             </div>
           </div>
 
-          {/* 1. Reward Redemption Offers */}
+          {/* 1. Reward Redemption Offers (3 Side-by-Side Cards) */}
           <div>
             <h3 className="text-xs font-semibold uppercase tracking-[0.2em] text-[#1b3022]/70 mb-4 px-1">
               Exclusive Points Rewards
             </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {rewardOffers.map((offer) => {
                 const canAfford = points >= offer.points
                 return (
@@ -277,7 +322,7 @@ export default function RiseAndPlungePage() {
                     key={offer.title}
                     className="bg-[#fdfbf7] border border-[#e5dec9] rounded-2xl overflow-hidden shadow-sm flex flex-col justify-between"
                   >
-                    <div className="relative w-full h-64 md:h-72 bg-[#1b3022]/5">
+                    <div className="relative w-full h-56 md:h-60 bg-[#1b3022]/5">
                       <Image
                         src={offer.image}
                         alt={offer.title}
@@ -323,18 +368,19 @@ export default function RiseAndPlungePage() {
             </div>
           </div>
 
-          {/* 2. Branch Location */}
+          {/* 2. Branch Locations (3 Side-by-Side Cards) */}
           <div>
             <h3 className="text-xs font-semibold uppercase tracking-[0.2em] text-[#1b3022]/70 mb-4 px-1">
-              Location & Hours
+              Locations & Hours
             </h3>
-            <div className="grid grid-cols-1 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {storeLocations.map((loc) => (
                 <div
                   key={loc.name}
-                  className="bg-[#fdfbf7] border border-[#e5dec9] rounded-2xl overflow-hidden shadow-sm flex flex-col md:flex-row"
+                  className="bg-[#fdfbf7] border border-[#e5dec9] rounded-2xl overflow-hidden shadow-sm flex flex-col justify-between"
                 >
-                  <div className="relative w-full md:w-2/5 h-48 md:h-auto shrink-0 bg-[#1b3022]/5">
+                  {/* Photo Top */}
+                  <div className="relative w-full h-48 bg-[#1b3022]/5 shrink-0">
                     <Image
                       src={loc.image}
                       alt={loc.name}
@@ -343,31 +389,37 @@ export default function RiseAndPlungePage() {
                     />
                   </div>
 
-                  <div className="p-6 flex-1 flex flex-col justify-between">
+                  {/* Details Bottom */}
+                  <div className="p-5 flex-1 flex flex-col justify-between">
                     <div>
-                      <div className="flex items-center gap-2 mb-2">
-                        <svg className="w-4 h-4 text-[#1b3022]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                        </svg>
-                        <h4 className="text-sm font-medium text-[#1b3022] uppercase tracking-wide">
-                          {loc.name}
-                        </h4>
+                      <h4 className="text-base font-medium text-[#1b3022] uppercase tracking-wide mb-3">
+                        {loc.name}
+                      </h4>
+
+                      {/* Address Lines */}
+                      <div className="text-xs text-[#526351] font-light leading-relaxed mb-4 space-y-0.5">
+                        {loc.addressLines.map((line, i) => (
+                          <div key={i}>{line}</div>
+                        ))}
                       </div>
 
-                      <p className="text-xs text-[#526351] font-light leading-relaxed pl-6 mb-3">
-                        {loc.address}
-                      </p>
-
-                      <div className="flex items-center gap-2 pl-6 text-xs text-[#1b3022] font-medium">
-                        <svg className="w-3.5 h-3.5 text-[#1b3022]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        <span>{loc.hours}</span>
+                      {/* Hours Lines */}
+                      <div className="border-t border-[#e5dec9]/60 pt-3">
+                        <div className="flex items-center gap-1.5 text-xs text-[#1b3022] font-medium mb-1.5">
+                          <svg className="w-3.5 h-3.5 text-[#1b3022] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          <span>Operating Hours</span>
+                        </div>
+                        <div className="text-[11px] text-[#526351] font-light space-y-0.5 pl-5">
+                          {loc.hoursLines.map((line, i) => (
+                            <div key={i}>{line}</div>
+                          ))}
+                        </div>
                       </div>
                     </div>
 
-                    <div className="pt-6 pl-6">
+                    <div className="pt-5 mt-4 border-t border-[#e5dec9]/60">
                       <a
                         href={loc.mapUrl}
                         target="_blank"
