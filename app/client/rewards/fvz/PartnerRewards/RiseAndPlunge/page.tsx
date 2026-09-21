@@ -282,6 +282,7 @@ export default function RiseAndPlungePage() {
                 alt="Rise & Plunge Logo"
                 fill
                 priority
+                sizes="(max-width: 768px) 256px, 320px"
                 className="object-contain"
               />
             </div>
