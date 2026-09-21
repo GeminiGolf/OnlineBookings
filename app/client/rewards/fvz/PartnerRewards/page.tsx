@@ -1,5 +1,10 @@
-import Image from "next/image";
-import Link from "next/link";
+"use client"
+
+import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
+import Image from "next/image"
+import Link from "next/link"
+import { supabase } from "@/lib/supabaseClient"
 
 const partners = [
   {
@@ -30,7 +35,7 @@ const partners = [
     href: "#",
     comingSoon: true,
   },
-];
+]
 
 const benefits = [
   {
@@ -61,123 +66,188 @@ const benefits = [
     title: "SPECIAL EXPERIENCES",
     icon: (
       <svg className="w-5 h-5 mx-auto text-[#d9cfbd] mb-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
       </svg>
     ),
   },
-];
+]
 
 export default function PartnerRewardsPage() {
+  const router = useRouter()
+  const [loading, setLoading] = useState(true)
+  const [isAdmin, setIsAdmin] = useState(false)
+
+  useEffect(() => {
+    async function verifyAdminAccess() {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession()
+
+      if (!session) {
+        router.replace("/login")
+        return
+      }
+
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", session.user.id)
+        .single()
+
+      if (profile?.role === "admin") {
+        setIsAdmin(true)
+      } else {
+        setIsAdmin(false)
+      }
+
+      setLoading(false)
+    }
+
+    verifyAdminAccess()
+  }, [router])
+
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[#f7f4ee] text-[#1b3022]">
+        <div className="text-center font-light uppercase tracking-[0.2em] text-xs">
+          Loading Rewards...
+        </div>
+      </div>
+    )
+  }
+
   return (
-    <div className="min-h-screen bg-[#f7f4ee] text-[#1b3022]">
-      {/* Header Hero Banner with top padding to push content under navbar */}
-      <section className="relative w-full h-[220px] md:h-[260px] pt-12 md:pt-16 flex items-center overflow-hidden">
-        <Image
-          src="/OurCoaches/shortgame.jpg"
-          alt="Golf background"
-          fill
-          priority
-          className="object-cover object-center"
-        />
-        <div className="absolute inset-0 bg-black/50" />
+    <div className="min-h-screen bg-[#f7f4ee] text-[#1b3022] flex flex-col justify-between">
+      <div>
+        {/* Header Hero Banner - Visible to Everyone */}
+        <section className="relative w-full h-[220px] md:h-[260px] pt-12 md:pt-16 flex items-center overflow-hidden">
+          <Image
+            src="/OurCoaches/shortgame.jpg"
+            alt="Golf background"
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-center"
+          />
+          <div className="absolute inset-0 bg-black/50" />
 
-        <div className="relative z-10 max-w-5xl mx-auto px-6 md:px-10 w-full text-white">
-          <div className="flex items-center gap-2 mb-1">
-            <span className="text-[10px] md:text-xs uppercase tracking-widest text-[#d9cfbd] font-medium">
-              BRAND PARTNER
-            </span>
-            <div className="h-[1px] w-12 bg-[#d9cfbd]/60" />
+          <div className="relative z-10 max-w-5xl mx-auto px-6 md:px-10 w-full text-white">
+            <div className="flex items-center gap-2 mb-1">
+              <span className="text-[10px] md:text-xs uppercase tracking-widest text-[#d9cfbd] font-medium">
+                BRAND PARTNER
+              </span>
+              <div className="h-[1px] w-12 bg-[#d9cfbd]/60" />
+            </div>
+            <h1 className="text-2xl md:text-3xl font-light tracking-wider uppercase">
+              REWARDS
+            </h1>
+            <p className="text-[11px] md:text-xs text-[#e0dad0] tracking-wide mt-1 max-w-lg font-light">
+              Explore exclusive perks and benefits offered by our brand partners.
+            </p>
           </div>
-          <h1 className="text-2xl md:text-3xl font-light tracking-wider uppercase">
-            REWARDS
-          </h1>
-          <p className="text-[11px] md:text-xs text-[#e0dad0] tracking-wide mt-1 max-w-lg font-light">
-            Explore exclusive perks and benefits offered by our brand partners.
-          </p>
-        </div>
-      </section>
+        </section>
 
-      {/* Partners Cards Grid */}
-      <main className="max-w-5xl mx-auto px-4 md:px-8 my-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {partners.map((partner, idx) => {
-            if (partner.comingSoon) {
-              return (
-                <div
-                  key={idx}
-                  className="bg-[#fdfbf7]/60 border border-dashed border-[#d5cebc] rounded-2xl p-6 flex flex-col items-center text-center h-full opacity-75"
-                >
-                  <div className="w-70 h-40 mx-auto rounded-xl bg-white/50 border border-dashed border-[#d5cebc] p-2 mb-5 flex flex-col items-center justify-center text-[#8e988d]">
-                    <svg className="w-8 h-8 mb-2 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                    </svg>
-                    <span className="text-xs uppercase tracking-widest font-medium text-[#7a8879]">
-                      More Partners
-                    </span>
-                  </div>
-
-                  <h2 className="text-lg font-medium tracking-wide uppercase text-[#5a6b5c]">
-                    {partner.name}
-                  </h2>
-                  <p className="text-xs text-[#7a8879] leading-relaxed mt-2 font-light">
-                    {partner.description}
-                  </p>
-
-                  <span className="mt-auto pt-6 text-[10px] font-semibold uppercase tracking-widest text-[#8e988d]">
-                    ANNOUNCING SOON
-                  </span>
+        {/* Main Content Area */}
+        <main className="max-w-5xl mx-auto px-4 md:px-8 my-10">
+          {!isAdmin ? (
+            /* Coming Soon Card for Non-Admins */
+            <div className="flex justify-center py-16 md:py-24">
+              <div className="max-w-md w-full bg-[#fdfbf7] border border-[#e5dec9] rounded-2xl p-10 shadow-sm text-center">
+                <div className="w-12 h-12 mx-auto rounded-full bg-[#1b3022]/10 flex items-center justify-center mb-4 text-[#1b3022]">
+                  ❖
                 </div>
-              );
-            }
+                <span className="text-[10px] uppercase tracking-widest text-[#1b3022]/70 font-semibold block">
+                  PARTNER REWARDS
+                </span>
+                <h2 className="text-3xl font-light uppercase tracking-wider mt-2 text-[#1b3022]">
+                  COMING SOON
+                </h2>
+                <p className="text-xs text-[#1b3022]/80 mt-3 leading-relaxed font-light">
+                  We are curating exclusive partner benefits and discounts for our golfers. Check back shortly!
+                </p>
+              </div>
+            </div>
+          ) : (
+            /* Admin Partner Cards View */
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {partners.map((partner, idx) => {
+                if (partner.comingSoon) {
+                  return (
+                    <div
+                      key={idx}
+                      className="bg-[#fdfbf7]/60 border border-dashed border-[#d5cebc] rounded-2xl p-6 flex flex-col items-center text-center h-full opacity-75"
+                    >
+                      <div className="w-70 h-40 mx-auto rounded-xl bg-white/50 border border-dashed border-[#d5cebc] p-2 mb-5 flex flex-col items-center justify-center text-[#8e988d]">
+                        <svg className="w-8 h-8 mb-2 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                        </svg>
+                        <span className="text-xs uppercase tracking-widest font-medium text-[#7a8879]">
+                          More Partners
+                        </span>
+                      </div>
 
-            return (
-              <Link key={partner.name} href={partner.href} className="group block">
-                <div className="bg-[#fdfbf7] border border-[#e5dec9] rounded-2xl p-6 shadow-sm transition-all duration-200 group-hover:border-[#1b3022] group-hover:shadow-md flex flex-col items-center text-center h-full">
-                  {/* Logo Box */}
-                  <div className="w-70 h-40 mx-auto rounded-xl bg-white border border-[#e5dec9] p-2 mb-5 flex items-center justify-center">
-                    <div className="relative w-full h-full rounded-lg overflow-hidden">
-                      {partner.logo && (
-                        <Image
-                          src={partner.logo}
-                          alt={`${partner.name} logo`}
-                          fill
-                          className="object-cover group-hover:scale-105 transition-transform duration-300"
-                        />
-                      )}
+                      <h2 className="text-lg font-medium tracking-wide uppercase text-[#5a6b5c]">
+                        {partner.name}
+                      </h2>
+                      <p className="text-xs text-[#7a8879] leading-relaxed mt-2 font-light">
+                        {partner.description}
+                      </p>
+
+                      <span className="mt-auto pt-6 text-[10px] font-semibold uppercase tracking-widest text-[#8e988d]">
+                        ANNOUNCING SOON
+                      </span>
                     </div>
-                  </div>
+                  )
+                }
 
-                  {/* Info */}
-                  <h2 className="text-lg font-medium tracking-wide uppercase text-[#1b3022]">
-                    {partner.name}
-                  </h2>
-                  <p className="text-xs text-[#526351] leading-relaxed mt-2 font-light">
-                    {partner.description}
-                  </p>
+                return (
+                  <Link key={partner.name} href={partner.href} className="group block">
+                    <div className="bg-[#fdfbf7] border border-[#e5dec9] rounded-2xl p-6 shadow-sm transition-all duration-200 group-hover:border-[#1b3022] group-hover:shadow-md flex flex-col items-center text-center h-full">
+                      <div className="w-70 h-40 mx-auto rounded-xl bg-white border border-[#e5dec9] p-2 mb-5 flex items-center justify-center">
+                        <div className="relative w-full h-full rounded-lg overflow-hidden">
+                          {partner.logo && (
+                            <Image
+                              src={partner.logo}
+                              alt={`${partner.name} logo`}
+                              fill
+                              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                              className="object-cover group-hover:scale-105 transition-transform duration-300"
+                            />
+                          )}
+                        </div>
+                      </div>
 
-                  {/* View Perk Link Indicator */}
-                  <span className="mt-auto pt-6 text-[10px] font-semibold uppercase tracking-widest text-[#1b3022] group-hover:underline">
-                    VIEW REWARDS →
-                  </span>
-                </div>
-              </Link>
-            );
-          })}
-        </div>
-      </main>
+                      <h2 className="text-lg font-medium tracking-wide uppercase text-[#1b3022]">
+                        {partner.name}
+                      </h2>
+                      <p className="text-xs text-[#526351] leading-relaxed mt-2 font-light">
+                        {partner.description}
+                      </p>
 
-      {/* Footer Banner */}
+                      <span className="mt-auto pt-6 text-[10px] font-semibold uppercase tracking-widest text-[#1b3022] group-hover:underline">
+                        VIEW REWARDS →
+                      </span>
+                    </div>
+                  </Link>
+                )
+              })}
+            </div>
+          )}
+        </main>
+      </div>
+
+      {/* Footer Banner - Visible to Everyone */}
       <section className="relative w-full py-6 px-6 overflow-hidden text-center text-white">
         <Image
           src="/images/putt.jpg"
           alt="Putting background"
           fill
+          sizes="100vw"
           className="object-cover object-center"
         />
         <div className="absolute inset-0 bg-[#0f1c13]/75" />
 
         <div className="relative z-10 max-w-4xl mx-auto">
-          {/* Top Divider / Crest */}
           <div className="flex items-center justify-center gap-3 mb-2">
             <div className="h-[1px] w-10 bg-[#d9cfbd]/50" />
             <span className="text-[#d9cfbd] text-xs">❖</span>
@@ -190,7 +260,6 @@ export default function PartnerRewardsPage() {
             FOR OUR GOLFERS.
           </h2>
 
-          {/* Benefits Icons Row */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-5 pt-4 border-t border-[#d9cfbd]/20">
             {benefits.map((item, index) => (
               <div 
@@ -209,5 +278,5 @@ export default function PartnerRewardsPage() {
         </div>
       </section>
     </div>
-  );
+  )
 }

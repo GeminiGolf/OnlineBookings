@@ -294,7 +294,7 @@ export default function FvzRewardsPage() {
                   <Sparkles size={20} className="sm:w-[22px] sm:h-[22px]" />
                 </div>
                 <h3 className="text-xs font-semibold uppercase tracking-[0.15em] text-[#3A5D49]/70">
-                  More Rewards
+                  Partner Rewards
                 </h3>
               </div>
 
