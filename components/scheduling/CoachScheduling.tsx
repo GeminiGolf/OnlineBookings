@@ -1059,16 +1059,33 @@ export default function CoachDashboard({
                         )
                     }
 
-                    // 1. Get logged-in coach's complete_points default
+                    // 1. Array of client IDs in the 6 months program
+                    const SIX_MONTH_PROGRAM_CLIENT_IDS: number[] = [
+                      // Add client IDs here, e.g.: 10, 25, 42
+                      64, 138, 34
+                      //Eva Lao - 64, 
+                      //Ambrose Corray - 138
+                      //Sydney Teoh - 34
+                    ]
+
+                    // 2. Get logged-in coach's complete_points default
                     const { data: coachData } = await supabase
                       .from("coaches")
                       .select("complete_points")
                       .eq("id", coachId)
                       .single()
 
-                    const pointsToAdd = coachData?.complete_points ?? 0
+                    // Check if current client is in the 6 months program
+                    const isSixMonthClient = SIX_MONTH_PROGRAM_CLIENT_IDS.includes(
+                      selectedBooking.clients.id
+                    )
 
-                    // 2. Fetch fresh client data directly from DB to get real current points balance
+                    // Award 5 points if they are in the program, otherwise use the coach default
+                    const pointsToAdd = isSixMonthClient
+                      ? 5
+                      : coachData?.complete_points ?? 0
+
+                    // 3. Fetch fresh client data directly from DB to get real current points balance
                     const { data: freshClient } = await supabase
                       .from("clients")
                       .select("points, lessons_remaining")
@@ -1078,7 +1095,7 @@ export default function CoachDashboard({
                     const currentBalance = freshClient?.points ?? 0
                     const currentLessons = freshClient?.lessons_remaining ?? 0
 
-                    // 3. Save accumulated points sum
+                    // 4. Save accumulated points sum
                     await supabase
                       .from("clients")
                       .update({
