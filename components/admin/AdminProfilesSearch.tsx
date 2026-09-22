@@ -25,10 +25,12 @@ export default function AdminProfilesSearch({
   const [search, setSearch] = useState("")
   const [page, setPage] = useState(1)
 
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc" | null>(null)
+
   const filteredProfiles = useMemo(() => {
     const term = search.toLowerCase().trim()
 
-    return !term
+    const list = !term
       ? profiles
       : profiles.filter((profile) =>
           profile.name.toLowerCase().includes(term) ||
@@ -51,7 +53,15 @@ export default function AdminProfilesSearch({
             .toLowerCase()
             .includes(term)
         )
-  }, [profiles, search])
+
+    if (!sortOrder) return list
+
+    return [...list].sort((a, b) => {
+      const pointsA = a.points ?? 0
+      const pointsB = b.points ?? 0
+      return sortOrder === "asc" ? pointsA - pointsB : pointsB - pointsA
+    })
+  }, [profiles, search, sortOrder])
 
   const itemsPerPage = 15
 
@@ -133,7 +143,23 @@ export default function AdminProfilesSearch({
               </th>
 
               <th className="dashboard-label p-4 text-left">
-                Points
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSortOrder((prev) => {
+                      if (prev === null) return "desc"
+                      if (prev === "desc") return "asc"
+                      return null
+                    })
+                    setPage(1)
+                  }}
+                  className="inline-flex items-center gap-1.5 hover:text-[#2F5A43]"
+                >
+                  <span>Points</span>
+                  <span className="text-xs">
+                    {sortOrder === "asc" ? "▲" : sortOrder === "desc" ? "▼" : "↕"}
+                  </span>
+                </button>
               </th>
             </tr>
           </thead>
