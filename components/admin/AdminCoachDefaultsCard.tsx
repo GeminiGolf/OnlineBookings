@@ -6,6 +6,8 @@ import { supabase } from "@/lib/supabaseClient"
 type Props = {
   coach: {
     id: number
+    clinic_price?: number | null
+    clinic_expiry?: number | null
     ppv_price: number | null
     ppv_expiry_months: number | null
     package_5_price: number | null
@@ -18,6 +20,14 @@ type Props = {
 export default function AdminCoachDefaultsCard({
   coach,
 }: Props) {
+  const [clinicPrice, setClinicPrice] = useState(
+    coach.clinic_price ?? 0
+  )
+
+  const [clinicExpiry, setClinicExpiry] = useState(
+    coach.clinic_expiry ?? 0
+  )
+
   const [ppvPrice, setPpvPrice] = useState(
     coach.ppv_price ?? 0
   )
@@ -51,23 +61,30 @@ export default function AdminCoachDefaultsCard({
   async function saveDefaults() {
     setSaving(true)
 
-    await supabase
+    const { error } = await supabase
       .from("coaches")
       .update({
+        clinic_price: clinicPrice,
+        clinic_expiry: clinicExpiry, // Updated key to match Supabase schema
         ppv_price: ppvPrice,
         ppv_expiry_months: ppvExpiry,
 
         package_5_price: package5Price,
-        package_5_expiry_months:
-          package5Expiry,
+        package_5_expiry_months: package5Expiry,
 
         package_10_price: package10Price,
-        package_10_expiry_months:
-          package10Expiry,
+        package_10_expiry_months: package10Expiry,
       })
       .eq("id", coach.id)
 
     setSaving(false)
+
+    if (error) {
+      alert(`Save failed: ${error.message}`)
+      console.error(error)
+    } else {
+      alert("Saved successfully!")
+    }
   }
 
   return (
@@ -94,6 +111,36 @@ export default function AdminCoachDefaultsCard({
         </thead>
 
         <tbody>
+          <tr className="border-b border-gray-100">
+            <td className="p-2 dashboard-value">Clinic</td>
+
+            <td className="p-2">
+              <input
+                type="number"
+                value={clinicPrice}
+                onChange={(e) =>
+                  setClinicPrice(
+                    Number(e.target.value)
+                  )
+                }
+                className="w-24 rounded-xl border border-[#3A5D49] bg-white px-3 py-1.5 text-black outline-none focus:ring-1 focus:ring-[#3A5D49]"
+              />
+            </td>
+
+            <td className="p-2">
+              <input
+                type="number"
+                value={clinicExpiry}
+                onChange={(e) =>
+                  setClinicExpiry(
+                    Number(e.target.value)
+                  )
+                }
+                className="w-24 rounded-xl border border-[#3A5D49] bg-white px-3 py-1.5 text-black outline-none focus:ring-1 focus:ring-[#3A5D49]"
+              />
+            </td>
+          </tr>
+
           <tr className="border-b border-gray-100">
             <td className="p-2 dashboard-value">PPV</td>
 

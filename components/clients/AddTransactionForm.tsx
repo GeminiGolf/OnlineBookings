@@ -4,6 +4,8 @@ import { useEffect, useState } from "react"
 import { supabase } from "@/lib/supabaseClient"
 
 type CoachDefaults = {
+  clinic_price: number | null
+  clinic_expiry: number | null // Use clinic_expiry_months if that is your column name in DB
   ppv_price: number | null
   ppv_expiry_months: number | null
   package_5_price: number | null
@@ -71,6 +73,8 @@ export default function AddTransactionForm({
     const { data: coachData } = await supabase
       .from("coaches")
       .select(`
+        clinic_price,
+        clinic_expiry,
         ppv_price,
         ppv_expiry_months,
         package_5_price,
@@ -94,6 +98,25 @@ export default function AddTransactionForm({
     setTransactionType(type)
 
     const expiry = new Date()
+
+    if (type === "Clinic") {
+      const months =
+        coachDefaults?.clinic_expiry ?? 6
+
+      expiry.setMonth(
+        expiry.getMonth() + months
+      )
+
+      setTransactionName("Clinic")
+      setLessonsAdded(0)
+      setPrice(
+        coachDefaults?.clinic_price ?? 0
+      )
+
+      setExpirationDate(
+        expiry.toISOString().split("T")[0]
+      )
+    }
 
     if (type === "PPV") {
       const months =
@@ -346,6 +369,7 @@ export default function AddTransactionForm({
             }
             className="w-full rounded-2xl border border-[#3A5D49] bg-[#FCFAF6] px-4 py-2 text-[15px] font-light text-[#2F5A43] outline-none transition focus:border-[#2F5A43] focus:ring-2 focus:ring-[#2F5A43]/15"
           >
+            <option>Clinic</option>
             <option>PPV</option>
             <option>5 Lessons</option>
             <option>10 Lessons</option>
